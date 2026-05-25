@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SkipForward, ArrowRight, X, Volume2, VolumeX } from "lucide-react";
 import { useAppStore } from "@/lib/store";
@@ -8,7 +8,7 @@ import { warmUpExercises } from "@/lib/data";
 import { announceWarmupComplete, announceExerciseStart, announceNextExercise } from "@/lib/speech";
 import { playBeep } from "@/lib/audio";
 
-export default function WarmupPage() {
+function WarmupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectAfter = searchParams.get("redirect") || "/";
@@ -208,5 +208,13 @@ export default function WarmupPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function WarmupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><p className="text-on-surface">Loading...</p></div>}>
+      <WarmupContent />
+    </Suspense>
   );
 }

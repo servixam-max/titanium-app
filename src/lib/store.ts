@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { Routine, TrainingMode, EquipmentPreference, WorkoutSession, ActiveWorkoutState } from "@/lib/types";
+import { apiUrl } from "@/lib/api-config";
 
 interface AppState {
   // Navigation
@@ -285,7 +286,7 @@ export const useAppStore = create<AppState>()(
             ? Math.round((completedSession.endTime.getTime() - completedSession.startTime.getTime()) / 1000)
             : 0;
 
-          const response = await fetch("/api/sessions", {
+          const response = await fetch(apiUrl("sessions"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -388,14 +389,14 @@ export const useAppStore = create<AppState>()(
 
           if (dbSessionId) {
             // Update existing session
-            response = await fetch(`/api/sessions/${dbSessionId}`, {
+            response = await fetch(apiUrl(`sessions/${dbSessionId}`), {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
             });
           } else {
             // Create new partial session
-            response = await fetch("/api/sessions", {
+            response = await fetch(apiUrl("sessions"), {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
@@ -437,7 +438,7 @@ export const useAppStore = create<AppState>()(
       loadSessions: async () => {
         set({ isLoading: true, dbError: null });
         try {
-          const response = await fetch("/api/sessions");
+          const response = await fetch(apiUrl("sessions"));
           if (response.ok) {
             const data = await response.json();
             if (data.sessions) {
@@ -472,7 +473,7 @@ export const useAppStore = create<AppState>()(
 
       clearSessions: async () => {
         try {
-          const response = await fetch("/api/sessions", { method: "DELETE" });
+          const response = await fetch(apiUrl("sessions"), { method: "DELETE" });
           if (response.ok) {
             set({ sessions: [], dbError: null });
           }

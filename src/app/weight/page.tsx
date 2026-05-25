@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus, TrendingDown, TrendingUp, Calendar, Weight } from "lucide-react";
 import BottomNav from "@/components/ui/BottomNav";
+import { apiUrl } from "@/lib/api-config";
 
 interface WeightEntry {
   id: string;
@@ -30,7 +31,7 @@ export default function WeightPage() {
 
   const loadWeights = useCallback(async () => {
     try {
-      const res = await fetch("/api/weight");
+      const res = await fetch(apiUrl("weight"));
       if (res.ok) {
         const data = await res.json();
         setWeights(data.weights || []);
@@ -51,7 +52,7 @@ export default function WeightPage() {
     if (!w || w <= 0) return;
 
     try {
-      const res = await fetch("/api/weight", {
+      const res = await fetch(apiUrl("weight"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ weight: w, date: new Date().toISOString().split("T")[0] }),

@@ -4,15 +4,16 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Circle, Timer, ArrowLeft, ArrowRight, Weight, Volume2, VolumeX } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import { playBeep, playRestEndAlarm } from "@/lib/audio";
 import {
-  announceRest,
-  announceCountdown,
-  announceStart,
+  playBeep,
+  playRestEndAlarm,
   announceExerciseComplete,
   announceNextExercise,
   announceWorkoutComplete,
-} from "@/lib/speech";
+  announceRest,
+  announceCountdown,
+  announceStart,
+} from "@/lib/audio";
 
 export default function IndividualWorkout() {
   const router = useRouter();
@@ -143,36 +144,25 @@ export default function IndividualWorkout() {
       announceExerciseComplete();
     }
     
-    if (currentSet >= currentExercise.sets) {
-      // Exercise complete - auto-save progress
-      saveProgress();
-      
-      if (currentExerciseIndex >= totalExercises - 1) {
+      if (currentSet >= currentExercise.sets) {
+        // Individual mode: save completed exercise as a standalone session to history
         if (audioEnabled) {
-          announceWorkoutComplete();
+          announceExerciseComplete();
         }
         finishWorkout();
         router.push("/history");
       } else {
-        const nextIndex = currentExerciseIndex + 1;
-        const nextEx = activeWorkout.routine?.exercises[nextIndex];
-        setCurrentExerciseIndex(nextIndex);
-        setWorkoutExerciseIndex(nextIndex);
-        setCurrentSet(1);
-        setWorkoutSet(1);
-        if (audioEnabled && nextEx) {
-          announceNextExercise(nextEx.name);
+        // More sets remaining: advance to next set with rest
+        const nextSet = currentSet + 1;
+        setCurrentSet(nextSet);
+        setWorkoutSet(nextSet);
+        if (audioEnabled) {
+          announceRest();
         }
+        setRestTime(currentExercise.restSeconds);
+        setShowRest(true);
+        startRest();
       }
-    } else {
-      const nextSet = currentSet + 1;
-      setCurrentSet(nextSet);
-      setWorkoutSet(nextSet);
-      // Start rest
-      setRestTime(currentExercise.restSeconds);
-      setShowRest(true);
-      startRest();
-    }
   };
 
   return (
