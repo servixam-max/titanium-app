@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Trophy, Clock, Dumbbell, Hash, Calendar, Home } from "lucide-react";
+import { Trophy, Clock, Dumbbell, Hash, Calendar, Home, Sparkles } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import { useAppStore } from "@/lib/store";
 import { playWorkoutComplete } from "@/lib/audio";
 
 export default function WorkoutComplete() {
   const router = useRouter();
-  const { activeWorkout, clearJustFinished } = useAppStore();
+  const { activeWorkout, clearJustFinished, sessions } = useAppStore();
   const completedSession = activeWorkout.session;
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function WorkoutComplete() {
 
   if (!completedSession || !completedSession.completed) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center bg-background px-6 text-center">
+      <div className="h-[100dvh] animate-page-in flex flex-col items-center justify-center bg-background px-6 text-center">
         <p className="text-on-surface-variant mb-4">No hay entrenamiento completado.</p>
         <button
           onClick={() => router.push("/")}
@@ -50,6 +50,20 @@ export default function WorkoutComplete() {
   const minutes = Math.floor(durationSeconds / 60);
   const seconds = durationSeconds % 60;
 
+  const previousSessions = sessions
+    .filter((s) => s.routineId === completedSession.routineId && s.completed && s.id !== completedSession.id)
+    .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+  const lastSession = previousSessions[0];
+  const lastDuration = lastSession?.endTime
+    ? Math.round((lastSession.endTime.getTime() - lastSession.startTime.getTime()) / 1000)
+    : 0;
+  const lastVolume = lastSession?.exercises.reduce(
+    (sum, ex) => sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * (set.reps || 0)), 0),
+    0
+  );
+  const pbDuration = durationSeconds > lastDuration;
+  const pbVolume = totalVolume > (lastVolume || 0);
+
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-background relative">
       <Confetti />
@@ -70,6 +84,15 @@ export default function WorkoutComplete() {
           ¡Entrenamiento completado!
         </h2>
         <p className="text-on-surface-variant mb-6">{routineTitle}</p>
+
+        {(pbDuration || pbVolume) && (
+          <div className="flex items-center gap-2 mb-4 px-4 py-2 bg-primary-container/10 border border-primary-container/30 rounded-full">
+            <Sparkles className="w-4 h-4 text-primary-container" />
+            <span className="text-primary-container font-bold text-sm">
+              {pbVolume && pbDuration ? "¡Nuevos récords!" : pbVolume ? "¡Nuevo récord de volumen!" : "¡Más rápido que la última vez!"}
+            </span>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3 w-full max-w-sm mb-6">
           <StatBox icon={Clock} label="Duración" value={`${minutes}:${seconds.toString().padStart(2, "0")}`} />

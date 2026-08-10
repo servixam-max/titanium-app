@@ -11,7 +11,8 @@ import {
   TrendingUp,
   Calendar,
   Trash2,
-  ArrowLeft,
+  Search,
+  Filter,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
@@ -22,6 +23,7 @@ import { WorkoutSession } from "@/lib/types";
 export default function HistoryPage() {
   const [sessions, setSessions] = useState<WorkoutSession[]>([]);
   const [filter, setFilter] = useState<"all" | "guided" | "individual">("all");
+  const [search, setSearch] = useState("");
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -47,6 +49,11 @@ export default function HistoryPage() {
   const filteredSessions = sessions.filter((s) => {
     if (filter === "all") return true;
     return s.mode === filter;
+  }).filter((s) => {
+    const routine = routines.find((r) => r.day === s.routineId);
+    const routineLabel = routine?.title || `Día ${s.routineId}`;
+    return routineLabel.toLowerCase().includes(search.toLowerCase()) ||
+      s.mode.toLowerCase().includes(search.toLowerCase());
   });
 
   const formatDate = (dateStr: string | Date) => {
@@ -101,7 +108,7 @@ export default function HistoryPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-[120px]">
+      <div className="min-h-screen pb-[120px] animate-page-in">
         <TopAppBar title="FORTIXAM" showBack backHref="/" showSettings />
         <main className="w-full px-container-padding pt-4">
           <div className="space-y-4">
@@ -168,6 +175,18 @@ export default function HistoryPage() {
           </div>
         </section>
 
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar rutina..."
+            className="w-full h-[44px] pl-10 pr-4 bg-surface-container-low border border-surface-container-highest rounded-xl text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary-container"
+          />
+        </div>
+
         <div className="flex p-1 bg-surface-container-low border border-surface-container-highest rounded-full">
           {(["all", "guided", "individual"] as const).map((f) => (
             <button
@@ -197,7 +216,7 @@ export default function HistoryPage() {
             <div className="text-center py-8">
               <p className="font-body-md text-body-md text-on-surface-variant">
                 No hay entrenamientos{" "}
-                {filter !== "all" ? "de este tipo " : ""}registrados.
+                {filter !== "all" || search ? "con estos filtros " : ""}registrados.
               </p>
               <p className="font-label-caps text-label-caps text-on-surface-variant mt-2">
                 ¡Empieza tu primer entrenamiento!
@@ -221,7 +240,7 @@ export default function HistoryPage() {
                     );
                   }, 0);
 
-                  const isHIIT = session.exercises.some((ex) => ex.exerciseId.includes("d3"));
+                  const isHIIT = session.exercises.some((ex) => ex.exerciseId.includes("d3") || ex.exerciseId.includes("d9"));
                   const completedExercises = session.exercises.filter((ex) => ex.sets.length > 0).length;
                   const totalExercises = session.exercises.length;
                   const isExpanded = expandedSession === session.id;
@@ -230,6 +249,7 @@ export default function HistoryPage() {
                         (new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / 1000
                       )
                     : 0;
+                  const routineTitle = routines.find((r) => r.day === session.routineId)?.title || `Día ${session.routineId}`;
 
                   return (
                     <div
@@ -251,8 +271,7 @@ export default function HistoryPage() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <h4 className="font-body-md text-body-md text-on-background font-bold truncate">
-                                Día {session.routineId}{" "}
-                                {session.mode === "individual" ? "• Individual" : "• Guiado"}
+                                {routineTitle}
                               </h4>
                               <span className="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-caps text-[10px]">
                                 {completedExercises}/{totalExercises}

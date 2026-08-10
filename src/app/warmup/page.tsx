@@ -97,7 +97,7 @@ function WarmupContent() {
   const progress = ((currentExerciseIndex + 1) / warmUpExercises.length) * 100;
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden bg-background">
+    <div className="h-[100dvh] animate-page-in flex flex-col overflow-hidden bg-background">
       <TopAppBar
         title="CALENTAMIENTO"
         variant="workout"

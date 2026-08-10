@@ -79,7 +79,7 @@ export default function Dashboard() {
   }, [sessions]);
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden bg-background" onClick={handleFirstInteraction}>
+    <div className="h-[100dvh] animate-page-in flex flex-col overflow-hidden bg-background" onClick={handleFirstInteraction}>
       <TopAppBar title="FORTIXAM" showSettings />
 
       {/* Main Content */}

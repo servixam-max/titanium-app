@@ -65,7 +65,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
   };
 
   return (
-    <div className="min-h-screen pb-[180px]">
+    <div className="min-h-screen pb-[180px] animate-page-in">
       <TopAppBar
         title="FORTIXAM"
         showBack

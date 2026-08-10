@@ -55,6 +55,10 @@ interface AppState {
   addFavoriteExercise: (exerciseId: string) => void;
   removeFavoriteExercise: (exerciseId: string) => void;
   markExerciseRecent: (exerciseId: string) => void;
+
+  // Onboarding
+  onboardingComplete: boolean;
+  completeOnboarding: () => void;
 }
 
 const initialActiveWorkout: ActiveWorkoutState = {
@@ -211,6 +215,9 @@ export const useAppStore = create<AppState>()(
           recentExerciseIds: Array.from(new Set([exerciseId, ...state.recentExerciseIds])).slice(0, 10),
         }));
       },
+
+      onboardingComplete: false,
+      completeOnboarding: () => set({ onboardingComplete: true }),
 
       clearJustFinished: () => {
         set({ activeWorkout: { ...get().activeWorkout, justFinished: false } });
@@ -705,6 +712,7 @@ export const useAppStore = create<AppState>()(
         lastExerciseWeights: state.lastExerciseWeights,
         favoriteExerciseIds: state.favoriteExerciseIds,
         recentExerciseIds: state.recentExerciseIds,
+        onboardingComplete: state.onboardingComplete,
       }),
     }
   )

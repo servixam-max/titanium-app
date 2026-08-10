@@ -113,7 +113,7 @@ export default function StatsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-[120px]">
+      <div className="min-h-screen pb-[120px] animate-page-in">
         <TopAppBar title="FORTIXAM" showBack backHref="/" showSettings />
         <main className="w-full px-container-padding pt-4">
           <div className="space-y-4">
