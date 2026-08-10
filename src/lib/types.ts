@@ -57,6 +57,8 @@ export interface SetLog {
 
 export type EquipmentPreference = "dumbbells" | "bodyweight";
 
+export type AudioMode = "full" | "beeps" | "voice" | "silent";
+
 export interface ActiveWorkoutState {
   routine: Routine | null;
   mode: TrainingMode;

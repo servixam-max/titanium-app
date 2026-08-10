@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus, TrendingDown, TrendingUp, Calendar, Weight, Trash2, Activity, Minus, BarChart3 } from "lucide-react";
+import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
 import { saveWeight, getWeights, deleteWeight, getWeightStats } from "@/lib/db";
 import { apiUrl } from "@/lib/api-config";
@@ -113,26 +114,14 @@ export default function WeightPage() {
   const chartData = [...weights].reverse();
 
   return (
-    <div className="min-h-screen pb-[100px] bg-background">
-      <header className="flex-shrink-0 h-[56px] border-b border-surface-container-highest flex items-center justify-between px-4 bg-background/80 backdrop-blur-md">
-        <button
-          onClick={() => router.push("/")}
-          className="flex items-center justify-center w-10 h-10 text-on-surface hover:opacity-80 active:scale-95"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <h1 className="font-headline-sm text-headline-sm font-bold text-primary-container uppercase tracking-wider">
-          REGISTRO PESO
-        </h1>
-        <button
-          onClick={() => setShowInput(true)}
-          className="flex items-center justify-center w-10 h-10 text-primary-container hover:opacity-80 active:scale-95"
-        >
-          <Plus className="w-6 h-6" />
-        </button>
-      </header>
+    <div className="min-h-screen pb-[120px] bg-background">
+      <TopAppBar
+        title="REGISTRO PESO"
+        showBack
+        backHref="/"
+      />
 
-      <main className="px-4 py-4 space-y-4">
+      <main className="w-full px-container-padding pt-4 flex flex-col gap-section-gap">
         <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-4 text-center">
           {latest ? (
             <>

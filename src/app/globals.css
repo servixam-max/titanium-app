@@ -162,9 +162,31 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+:where(input, textarea, select) {
+  font-size: 16px;
+}
+
+@media (min-width: 640px) {
+  :where(input, textarea, select) {
+    font-size: inherit;
+  }
+}
+
+/* Inputs numéricos en workout/weight: 16px base para evitar zoom iOS */
+input[type="number"],
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"] {
+  font-size: 16px;
+}
+
 /* Focus states */
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
   outline: 2px solid #ccff00;
   outline-offset: 2px;
 }
@@ -180,26 +202,11 @@ nav {
   user-select: none;
 }
 
-/* Backdrop blur support */
-@supports (backdrop-filter: blur(20px)) {
-  .backdrop-blur-safe {
-    backdrop-filter: blur(20px);
-  }
-}
-
-@supports not (backdrop-filter: blur(20px)) {
-  .backdrop-blur-safe {
-    background-color: rgba(19, 19, 19, 0.98);
-  }
-}
-
-/* iOS safe areas */
-@supports (padding-top: env(safe-area-inset-top)) {
-  .safe-top {
-    padding-top: env(safe-area-inset-top);
-  }
-  
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
+/* iOS: evitar auto-zoom al enfocar inputs; viewport ya maneja escala */
+@supports (-webkit-touch-callout: none) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
   }
 }

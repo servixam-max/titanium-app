@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { Routine, TrainingMode, EquipmentPreference, WorkoutSession, ActiveWorkoutState } from "@/lib/types";
+import { Routine, TrainingMode, EquipmentPreference, WorkoutSession, ActiveWorkoutState, AudioMode } from "@/lib/types";
 import { apiUrl } from "@/lib/api-config";
 import { saveSession, getSessions, clearAllSessions } from "@/lib/db";
 
@@ -13,6 +13,10 @@ interface AppState {
   activeWorkout: ActiveWorkoutState;
   startWorkout: (routine: Routine, mode: TrainingMode, startExerciseIndex?: number) => void;
   completeSet: (exerciseIndex: number, setNumber: number, weight?: number, reps?: number, duration?: number) => void;
+  previousExercise: () => void;
+  goToExercise: (index: number) => void;
+  resetCurrentSet: () => void;
+  adjustRest: (deltaSeconds: number) => void;
   setExerciseWeight: (exerciseId: string, weight: number) => void;
   setExerciseReps: (exerciseId: string, reps: number) => void;
   startRest: (seconds?: number) => void;
@@ -38,7 +42,11 @@ interface AppState {
   equipmentPreference: EquipmentPreference;
   setEquipmentPreference: (pref: EquipmentPreference) => void;
   audioEnabled: boolean;
+  audioMode: AudioMode;
   toggleAudio: () => void;
+  setAudioMode: (mode: AudioMode) => void;
+  voiceRate: number;
+  setVoiceRate: (rate: number) => void;
   lastExerciseWeights: Record<string, number>;
 }
 
@@ -156,8 +164,22 @@ export const useAppStore = create<AppState>()(
       },
 
       audioEnabled: true,
+      audioMode: "full" as AudioMode,
+      setAudioMode: (mode) => {
+        set({ audioMode: mode });
+        // Keep legacy flag in sync: silent disables audio, other modes enable it
+        set({ audioEnabled: mode !== "silent" });
+      },
+      voiceRate: 1.05,
+      setVoiceRate: (rate) => set({ voiceRate: Math.max(0.7, Math.min(1.5, rate)) }),
       toggleAudio: () => {
-        set((state) => ({ audioEnabled: !state.audioEnabled }));
+        set((state) => {
+          const nextEnabled = !state.audioEnabled;
+          return {
+            audioEnabled: nextEnabled,
+            audioMode: nextEnabled ? state.audioMode : "silent",
+          };
+        });
       },
 
       lastExerciseWeights: {},
@@ -215,12 +237,17 @@ export const useAppStore = create<AppState>()(
             nextActiveWorkout.currentExerciseIndex = nextIndex;
             nextActiveWorkout.currentSet = 1;
           }
-          // If it is the last exercise, keep currentExerciseIndex/currentSet so the user can press finish
+          // If it is the last exercise, the workout is finished right after saving the last set
         } else {
           nextActiveWorkout.currentSet = setNumber + 1;
         }
 
         set({ activeWorkout: nextActiveWorkout });
+
+        // Finish workout immediately after the very last set is logged (no extra tap needed)
+        if (isLastSet && isLastExercise) {
+          get().finishWorkout();
+        }
       },
 
       startRest: (seconds) => {
@@ -245,6 +272,63 @@ export const useAppStore = create<AppState>()(
         set({
           activeWorkout: {
             ...activeWorkout,
+            isResting: false,
+            restTimeRemaining: 0,
+          },
+        });
+      },
+
+      adjustRest: (deltaSeconds) => {
+        const { activeWorkout } = get();
+        const currentExercise = activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
+        if (!currentExercise) return;
+        const newTime = Math.max(5, activeWorkout.restTimeRemaining + deltaSeconds);
+        if (newTime === activeWorkout.restTimeRemaining) return;
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            isResting: true,
+            restTimeRemaining: newTime,
+          },
+        });
+      },
+
+      previousExercise: () => {
+        const { activeWorkout } = get();
+        if (!activeWorkout.routine) return;
+        const prevIndex = Math.max(0, activeWorkout.currentExerciseIndex - 1);
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            currentExerciseIndex: prevIndex,
+            currentSet: 1,
+            isResting: false,
+            restTimeRemaining: 0,
+          },
+        });
+      },
+
+      goToExercise: (index) => {
+        const { activeWorkout } = get();
+        if (!activeWorkout.routine) return;
+        const clamped = Math.max(0, Math.min(activeWorkout.routine.exercises.length - 1, index));
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            currentExerciseIndex: clamped,
+            currentSet: 1,
+            isResting: false,
+            restTimeRemaining: 0,
+          },
+        });
+      },
+
+      resetCurrentSet: () => {
+        const { activeWorkout } = get();
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            currentSet: 1,
             isResting: false,
             restTimeRemaining: 0,
           },
@@ -583,6 +667,8 @@ export const useAppStore = create<AppState>()(
       partialize: (state) => ({
         sessions: state.sessions,
         audioEnabled: state.audioEnabled,
+        audioMode: state.audioMode,
+        voiceRate: state.voiceRate,
         equipmentPreference: state.equipmentPreference,
         activeWorkout: state.activeWorkout,
         lastExerciseWeights: state.lastExerciseWeights,

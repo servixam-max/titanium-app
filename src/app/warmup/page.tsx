@@ -3,16 +3,18 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SkipForward, ArrowRight, Volume2, VolumeX, Home, ArrowLeft } from "lucide-react";
+import TopAppBar from "@/components/ui/TopAppBar";
 import { useAppStore } from "@/lib/store";
 import { warmUpExercises } from "@/lib/data";
 import { announceWarmupComplete, announceExerciseStart, announceNextExercise, announceGetReady } from "@/lib/speech";
-import { playBeep, playCountdown } from "@/lib/audio";
+import { playBeep, playCountdown, setAudioMode, setVoiceRate } from "@/lib/audio";
+import { haptics } from "@/lib/haptics";
 
 function WarmupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectAfter = searchParams.get("redirect") || "/";
-  const { audioEnabled, toggleAudio } = useAppStore();
+  const { audioEnabled, audioMode, voiceRate, toggleAudio } = useAppStore();
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -29,6 +31,12 @@ function WarmupContent() {
       setTimeLeft(60);
     }
   }, [currentExerciseIndex, router, redirectAfter]);
+
+  // Sync audio engine with store
+  useEffect(() => {
+    setAudioMode(audioMode);
+    setVoiceRate(voiceRate);
+  }, [audioMode, voiceRate]);
 
   // Announce warmup start and first exercise
   useEffect(() => {
@@ -61,6 +69,7 @@ function WarmupContent() {
             if (audioEnabled) {
               announceWarmupComplete();
               playBeep(1000, 0.3, "sine", 0.3);
+              haptics.complete();
               // Aviso de preparación para el primer ejercicio del entreno
               if (redirectAfter !== "/") {
                 setTimeout(() => announceGetReady(), 1200);
@@ -75,6 +84,7 @@ function WarmupContent() {
         }
         if (audioEnabled && prev <= 4 && prev > 1) {
           playCountdown(prev - 1);
+          haptics.tick();
         }
         return prev - 1;
       });
@@ -88,25 +98,11 @@ function WarmupContent() {
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-background">
-      <header className="flex-shrink-0 h-[48px] border-b border-surface-container-highest flex items-center justify-between px-4 bg-background/80 backdrop-blur-md">
-        <button
-          onClick={() => setShowExitConfirm(true)}
-          className="flex items-center gap-1 h-10 px-2 text-on-surface hover:opacity-80 active:scale-95"
-        >
-          <Home className="w-4 h-4" />
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <h1 className="font-headline-sm text-headline-sm font-bold text-primary-container uppercase tracking-wider">
-          CALENTAMIENTO
-        </h1>
-        <button
-          onClick={toggleAudio}
-          className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:opacity-80 active:scale-95"
-          title={audioEnabled ? "Desactivar audio" : "Activar audio"}
-        >
-          {audioEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
-        </button>
-      </header>
+      <TopAppBar
+        title="CALENTAMIENTO"
+        variant="workout"
+        showVolume
+      />
 
       <div className="flex-shrink-0 px-4 pt-2 pb-1">
         <div className="flex justify-between items-center mb-1">

@@ -77,12 +77,21 @@ const config: Config = {
         inter: ["Inter", "sans-serif"],
       },
       fontSize: {
-        "display-timer": ["84px", { lineHeight: "84px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        // Mobile-first: base display-timer escala de 56px en móvil pequeño a 84px en tablet/desktop
+        "display-timer": ["clamp(56px, 15vw, 84px)", { lineHeight: "1", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "display-timer-mobile": ["56px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "display-timer-tablet": ["64px", { lineHeight: "64px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "display-timer-desktop": ["84px", { lineHeight: "84px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "headline-xl": ["40px", { lineHeight: "48px", fontWeight: "700" }],
+        "headline-xl-mobile": ["24px", { lineHeight: "28px", fontWeight: "700" }],
         "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }],
         "headline-lg-mobile": ["28px", { lineHeight: "34px", fontWeight: "700" }],
         "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+        "headline-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }],
+        "headline-sm-mobile": ["16px", { lineHeight: "20px", fontWeight: "600" }],
         "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
         "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
         "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
       },
       spacing: {

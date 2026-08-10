@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Trophy, Clock, Dumbbell, Hash, Calendar, ArrowLeft, Home, Share2 } from "lucide-react";
+import { Trophy, Clock, Dumbbell, Hash, Calendar, Home } from "lucide-react";
+import TopAppBar from "@/components/ui/TopAppBar";
 import { useAppStore } from "@/lib/store";
 import { playWorkoutComplete } from "@/lib/audio";
 
@@ -51,24 +52,16 @@ export default function WorkoutComplete() {
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-background relative">
-      {/* Confetti */}
       <Confetti />
 
-      <header className="flex-shrink-0 h-[56px] border-b border-surface-container-highest flex items-center justify-between px-4 bg-background/80 backdrop-blur-md z-20">
-        <button
-          onClick={() => router.push("/")}
-          className="flex items-center gap-1 h-10 px-2 text-on-surface hover:opacity-80 active:scale-95"
-        >
-          <Home className="w-4 h-4" />
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <h1 className="font-headline-sm text-headline-sm font-bold text-primary-container uppercase tracking-wider absolute left-1/2 -translate-x-1/2">
-          RESUMEN
-        </h1>
-        <div className="w-10" />
-      </header>
+      <TopAppBar
+        title="RESUMEN"
+        variant="workout"
+        showBack
+        backHref="/"
+      />
 
-      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center z-10">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center z-10 pt-4">
         <div className="w-20 h-20 rounded-full bg-primary-container/20 flex items-center justify-center mb-4 shadow-[0_0_24px_rgba(204,255,0,0.4)]">
           <Trophy className="w-10 h-10 text-primary-container" />
         </div>

@@ -2,8 +2,12 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Circle, Timer, ArrowLeft, ArrowRight, Weight, Volume2, VolumeX, Hash, Home, SkipForward, Clock, ChevronRight } from "lucide-react";
+import { CheckCircle, Circle, Timer, ArrowLeft, ArrowRight, Weight, Volume2, VolumeX, Hash, Home, SkipForward, Clock, RotateCcw } from "lucide-react";
 import { useAppStore } from "@/lib/store";
+import RestTimer from "@/components/ui/RestTimer";
+import ExerciseImage from "@/components/ui/ExerciseImage";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import SectionTitle from "@/components/ui/SectionTitle";
 import {
   playRestEndAlarm,
   announceExerciseComplete,
@@ -15,7 +19,14 @@ import {
   announceWorkoutComplete,
   announceTenSecondsLeft,
   announceHalfRest,
+  announceSetsRemaining,
+  announcePrepareNext,
+  announceThirtySecondsLeft,
+  announceHalfwayWorkout,
+  setAudioMode,
+  setVoiceRate,
 } from "@/lib/audio";
+import { haptics } from "@/lib/haptics";
 
 export default function IndividualWorkout() {
   const router = useRouter();
@@ -26,16 +37,17 @@ export default function IndividualWorkout() {
     startRest,
     finishWorkout,
     cancelWorkout,
-    setWorkoutExerciseIndex,
+    previousExercise,
+    goToExercise,
     setExerciseWeight,
     setExerciseReps,
     skipRest,
     audioEnabled,
+    audioMode,
+    voiceRate,
     toggleAudio,
   } = useAppStore();
 
-  const [currentSet, setCurrentSet] = useState(1);
-  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [startIndexLoaded, setStartIndexLoaded] = useState(false);
   const [showRest, setShowRest] = useState(false);
   const [restTime, setRestTime] = useState(0);
@@ -51,6 +63,8 @@ export default function IndividualWorkout() {
   const halfAnnouncedRef = useRef(false);
 
   const routine = activeWorkout.routine;
+  const currentExerciseIndex = activeWorkout.currentExerciseIndex;
+  const currentSet = activeWorkout.currentSet;
   const currentExercise = routine?.exercises[currentExerciseIndex];
   const isBodyweightHIIT = routine?.type === "hiit" && activeWorkout.equipmentPref === "bodyweight";
 
@@ -64,18 +78,17 @@ export default function IndividualWorkout() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const startIndex = Number(params.get("exercise")) || activeWorkout.currentExerciseIndex || 0;
-      setCurrentExerciseIndex(startIndex);
-      setWorkoutExerciseIndex(startIndex);
+      goToExercise(startIndex);
       setStartIndexLoaded(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routine, router]);
 
-  // Sync from store when external changes happen (rest finished, next exercise)
+  // Sync local rest display from store
   useEffect(() => {
-    setCurrentExerciseIndex(activeWorkout.currentExerciseIndex);
-    setCurrentSet(activeWorkout.currentSet);
-  }, [activeWorkout.currentExerciseIndex, activeWorkout.currentSet]);
+    setRestTime(activeWorkout.restTimeRemaining);
+    setShowRest(activeWorkout.isResting);
+  }, [activeWorkout.restTimeRemaining, activeWorkout.isResting]);
 
   useEffect(() => {
     if (currentExercise) {
@@ -96,7 +109,12 @@ export default function IndividualWorkout() {
     if (!currentExercise || showWeightPrompt) return;
     if (audioEnabled) {
       const timer = setTimeout(() => {
-        announceExerciseStart(currentExercise.name, currentExercise.sets, currentExercise.reps, activeWorkout.exerciseWeights[currentExercise.id]);
+        announceExerciseStart(
+          currentExercise.name,
+          currentExercise.sets,
+          currentExercise.reps,
+          activeWorkout.exerciseWeights[currentExercise.id]
+        );
       }, 600);
       return () => clearTimeout(timer);
     }
@@ -110,9 +128,11 @@ export default function IndividualWorkout() {
   }, []);
 
   useEffect(() => {
+    setAudioMode(audioMode);
+    setVoiceRate(voiceRate);
     window.addEventListener("beforeunload", onBeforeUnload);
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  }, [onBeforeUnload]);
+  }, [audioMode, voiceRate, onBeforeUnload]);
 
   // Precise rest timer countdown
   useEffect(() => {
@@ -128,12 +148,14 @@ export default function IndividualWorkout() {
       setRestTime(remaining);
 
       if (audioEnabled) {
-        // Aviso a mitad del descanso (solo descansos largos)
         if (!halfAnnouncedRef.current && baseRest >= 60 && remaining === Math.floor(baseRest / 2)) {
           halfAnnouncedRef.current = true;
           announceHalfRest(remaining);
         }
-        // Aviso hablado a los 10 segundos
+        if (!tenAnnouncedRef.current && remaining === 30 && baseRest >= 60) {
+          tenAnnouncedRef.current = true;
+          announceThirtySecondsLeft();
+        }
         if (!tenAnnouncedRef.current && remaining === 10 && baseRest > 15) {
           tenAnnouncedRef.current = true;
           announceTenSecondsLeft();
@@ -170,6 +192,11 @@ export default function IndividualWorkout() {
   const exerciseWeight = activeWorkout.exerciseWeights[currentExercise.id];
   const nextExerciseObj = currentExerciseIndex < totalExercises - 1 ? routine.exercises[currentExerciseIndex + 1] : null;
 
+  const triggerFeedback = () => {
+    setFlashKey((k) => k + 1);
+    haptics.tick();
+  };
+
   const handleSetWeight = () => {
     const w = Number(weightInput);
     if (w > 0) {
@@ -190,37 +217,60 @@ export default function IndividualWorkout() {
     const reps = Number(repsInput) || activeWorkout.exerciseReps[currentExercise.id] || 0;
     setExerciseReps(currentExercise.id, reps);
 
-    setFlashKey((k) => k + 1);
+    triggerFeedback();
+
+    const isLastSet = currentSet >= currentExercise.sets;
+    const remainingSets = currentExercise.sets - currentSet;
+
     if (audioEnabled) {
-      announceExerciseComplete();
+      if (isLastSet) {
+        announceExerciseComplete();
+      } else if (remainingSets <= 2) {
+        announceSetsRemaining(remainingSets);
+      } else {
+        announceExerciseComplete();
+      }
     }
 
     completeSet(currentExerciseIndex, currentSet, isBodyweightHIIT ? undefined : exerciseWeight, reps);
 
-    // If this was the last set of the last exercise, finish the workout
-    const isLastSet = currentSet >= currentExercise.sets;
     if (isLastSet && currentExerciseIndex >= totalExercises - 1) {
-      if (audioEnabled) {
-        announceWorkoutComplete();
-      }
+      if (audioEnabled) announceWorkoutComplete();
+      haptics.complete();
       finishWorkout();
       router.push("/workout/complete");
       return;
     }
 
-    // For intermediate sets we show a rest overlay; for last set of an intermediate exercise
-    // the store already advanced to the next exercise, so just move to it.
+    // Halfway workout announcement
+    const halfwayIndex = Math.floor(totalExercises / 2);
+    if (isLastSet && currentExerciseIndex === halfwayIndex - 1 && nextExerciseObj) {
+      if (audioEnabled) {
+        setTimeout(() => announceHalfwayWorkout(), 800);
+      }
+    }
+
     if (!isLastSet) {
       setRestTime(currentExercise.restSeconds);
       setRestTotal(currentExercise.restSeconds);
       setShowRest(true);
       startRest(currentExercise.restSeconds);
-      if (audioEnabled) {
-        announceRest(currentExercise.restSeconds);
-      }
+      if (audioEnabled) announceRest(currentExercise.restSeconds);
     } else if (audioEnabled && nextExerciseObj) {
-      setTimeout(() => announceNextExercise(nextExerciseObj.name), 600);
+      setTimeout(() => announcePrepareNext(nextExerciseObj.name, nextExerciseObj.restSeconds), 600);
     }
+  };
+
+  const handleRepeatLastSet = () => {
+    const targetSet = Math.max(1, currentSet - 1);
+    useAppStore.getState().setWorkoutSet(targetSet);
+    triggerFeedback();
+  };
+
+  const navigateExercise = (delta: number) => {
+    const newIndex = Math.max(0, Math.min(totalExercises - 1, currentExerciseIndex + delta));
+    goToExercise(newIndex);
+    setRepsInput(String(activeWorkout.exerciseReps[routine.exercises[newIndex].id] ?? ""));
   };
 
   const handleBack = () => {
@@ -259,7 +309,6 @@ export default function IndividualWorkout() {
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-background">
-      {/* Flash overlay */}
       {flashKey > 0 && (
         <div
           key={flashKey}
@@ -268,16 +317,15 @@ export default function IndividualWorkout() {
         />
       )}
 
-      {/* Weight Prompt Overlay */}
       {showWeightPrompt && (
         <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center px-6">
           <div className="w-full max-w-sm">
             <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-surface-container-high mx-auto mb-6">
               <Weight className="w-8 h-8 text-primary-container" />
             </div>
-            <h2 className="font-headline-lg text-headline-lg text-center mb-2">
+            <SectionTitle align="center" className="mb-2">
               {currentExercise.name}
-            </h2>
+            </SectionTitle>
             <p className="text-on-surface-variant text-center mb-6 text-sm">
               Introduce el peso para este ejercicio.
             </p>
@@ -293,29 +341,23 @@ export default function IndividualWorkout() {
               />
               <span className="font-bold text-on-surface-variant text-lg">kg</span>
             </div>
-            <button
-              className="w-full h-[52px] bg-primary-container text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-50"
-              onClick={handleSetWeight}
-              disabled={!weightInput || Number(weightInput) <= 0}
-            >
+            <PrimaryButton onClick={handleSetWeight} disabled={!weightInput || Number(weightInput) <= 0}>
               CONTINUAR
-            </button>
+            </PrimaryButton>
           </div>
         </div>
       )}
 
-      {/* Header */}
       <header className="flex-shrink-0 h-[56px] border-b border-surface-container-highest flex items-center justify-between px-4 bg-background/80 backdrop-blur-md">
         <button
           onClick={handleBack}
           className="flex items-center gap-1 h-10 px-2 text-on-surface hover:opacity-80 active:scale-95"
         >
           <Home className="w-4 h-4" />
-          <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="font-headline-sm text-headline-sm font-bold text-primary-container uppercase tracking-wider absolute left-1/2 -translate-x-1/2">
+        <SectionTitle align="center" className="absolute left-1/2 -translate-x-1/2 m-0">
           {currentExercise.name}
-        </h1>
+        </SectionTitle>
         <button
           onClick={toggleAudio}
           className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-on-surface active:scale-95"
@@ -325,69 +367,83 @@ export default function IndividualWorkout() {
         </button>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col min-h-0 px-4 py-2 gap-2">
-        {/* Exercise Image */}
-        <div
-          key={currentExerciseIndex}
-          className="flex-shrink-0 flex-1 min-h-0 relative rounded-xl overflow-hidden border border-surface-container-highest my-1 animate-fade-in-up"
-        >
-          {currentExercise.image ? (
-            <img
-              src={currentExercise.image}
-              alt={currentExercise.name}
-              loading="lazy"
-              className="w-full h-full object-contain bg-surface-container"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-surface-container">
-              <svg className="w-16 h-16 text-primary-container opacity-30" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.57 14.86L22 13.43L20.57 12L17 15.57L8.43 7L12 3.43L10.57 2L9.14 3.43L7.71 2L5.57 4.14L4.14 2.71L2.71 4.14L4.14 5.57L2 7.71L3.43 9.14L2 10.57L3.43 12L7 8.43L15.57 17L12 20.57L13.43 22L14.86 20.57L16.29 22L18.43 19.86L19.86 21.29L21.29 19.86L19.86 18.43L22 16.29L20.57 14.86Z" />
-              </svg>
-            </div>
+        <div className="flex-shrink-0">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+            {routine.exercises.map((ex, idx) => {
+              const state = idx < currentExerciseIndex ? "done" : idx === currentExerciseIndex ? "active" : "pending";
+              return (
+                <button
+                  key={ex.id}
+                  onClick={() => navigateExercise(idx - currentExerciseIndex)}
+                  className={`flex-shrink-0 flex flex-col items-center gap-1 min-w-[44px] ${state === "active" ? "opacity-100" : "opacity-60"}`}
+                  aria-label={ex.name}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full border-2 transition-colors ${
+                      state === "done"
+                        ? "bg-primary-container border-primary-container"
+                        : state === "active"
+                          ? "bg-background border-primary-container shadow-[0_0_8px_rgba(204,255,0,0.6)]"
+                          : "bg-surface-container-highest border-surface-container-highest"
+                    }`}
+                  />
+                  <span className={`text-[10px] font-bold leading-tight text-center max-w-[60px] truncate ${state === "active" ? "text-primary-container" : "text-on-surface-variant"}`}>
+                    {ex.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div key={currentExerciseIndex} className="flex-shrink-0 flex-1 min-h-0 relative rounded-xl overflow-hidden border border-surface-container-highest my-1 animate-fade-in-up">
+          <ExerciseImage
+            src={currentExercise.image}
+            alt={currentExercise.name}
+            containerClassName="w-full h-full"
+          />
+        </div>
+
+        <div className="flex-shrink-0 flex items-stretch justify-between gap-2">
+          <div className="flex-1 flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-3 py-2">
+            <span className="text-on-surface-variant font-label-caps text-[11px] mb-1">
+              {currentExercise.sets} series · {currentExercise.reps} reps · {currentExercise.restSeconds}s
+            </span>
+            <span className="font-headline-sm text-headline-sm text-primary-container truncate">
+              {currentExercise.name}
+            </span>
+          </div>
+          {!isBodyweightHIIT && exerciseWeight !== undefined && (
+            <button
+              onClick={handleChangeWeight}
+              className="flex-shrink-0 flex flex-col items-start justify-center px-4 bg-surface-container-high rounded-xl border border-surface-container-highest active:scale-95"
+            >
+              <span className="text-on-surface-variant font-label-caps text-[11px]">PESO</span>
+              <div className="flex items-baseline gap-1">
+                <span className="font-bold text-on-surface text-2xl">{exerciseWeight}</span>
+                <span className="font-bold text-on-surface-variant text-sm">kg</span>
+              </div>
+            </button>
           )}
         </div>
 
-        {/* Exercise Info + Weight */}
-        <div className="flex-shrink-0 flex items-center justify-between">
-          <span className="font-label-caps text-label-caps text-on-surface-variant">
-            {currentExercise.sets} series · {currentExercise.reps} reps · {currentExercise.restSeconds}s
-          </span>
-          <div className="flex items-center gap-2">
-            {!isBodyweightHIIT && exerciseWeight !== undefined && (
-              <button
-                onClick={handleChangeWeight}
-                className="flex items-center gap-1 px-2 py-1 bg-surface-container-high rounded-lg border border-surface-container-highest active:scale-95"
-              >
-                <Weight className="w-3 h-3 text-primary-container" />
-                <span className="font-bold text-primary-container text-sm">{exerciseWeight}kg</span>
-              </button>
-            )}
-            <span className="font-label-caps text-label-caps text-primary-container">
-              {currentExerciseIndex + 1}/{totalExercises}
-            </span>
-          </div>
-        </div>
-
-        {/* Reps input */}
-        <div className="flex-shrink-0 flex items-center gap-2 mb-1">
-          <div className="flex-1 flex items-center gap-2 bg-surface-container-high border border-surface-container-highest rounded-xl px-3 h-[52px]">
-            <Hash className="w-5 h-5 text-primary-container" />
+        <div className="flex-shrink-0 flex items-stretch gap-2">
+          <div className="flex-1 flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-3 py-2">
+            <div className="flex items-center gap-2 mb-1">
+              <Hash className="w-5 h-5 text-primary-container" />
+              <span className="text-on-surface-variant font-label-caps text-[11px]">REPS</span>
+            </div>
             <input
               type="number"
               inputMode="numeric"
-              className="flex-1 bg-transparent font-bold text-on-surface text-xl outline-none"
+              className="w-full bg-transparent font-bold text-on-surface text-2xl outline-none"
               value={repsInput}
               onChange={(e) => setRepsInput(e.target.value)}
             />
-            <span className="text-on-surface-variant font-label-caps">REPS</span>
           </div>
         </div>
 
-        {/* Sets Table */}
         <div className="flex-1 min-h-0 flex flex-col gap-1 overflow-y-auto">
           <div className="flex items-center justify-between text-label-caps font-label-caps text-on-surface-variant px-2">
             <span className="w-12">SERIE</span>
@@ -442,55 +498,58 @@ export default function IndividualWorkout() {
         </div>
       </main>
 
-      {/* Bottom Actions */}
-      <footer className="flex-shrink-0 px-4 pb-[env(safe-area-inset-bottom,0px)] pt-2 bg-background border-t border-surface-container-highest">
-        <button
-          className="w-full h-[52px] bg-primary-container text-on-primary font-bold rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-50 font-headline-sm"
+      <footer className="flex-shrink-0 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-2 bg-background border-t border-surface-container-highest z-50">
+        {currentSet > 1 && (
+          <PrimaryButton
+            variant="secondary"
+            size="sm"
+            leftIcon={<RotateCcw className="w-4 h-4" />}
+            onClick={handleRepeatLastSet}
+            className="mb-2"
+          >
+            Repetir última serie
+          </PrimaryButton>
+        )}
+
+        <PrimaryButton
+          leftIcon={<Timer className="w-6 h-6" />}
+          rightIcon={currentSet >= currentExercise.sets ? <ArrowRight className="w-5 h-5" /> : undefined}
           onClick={handleComplete}
           disabled={!isBodyweightHIIT && exerciseWeight === undefined}
         >
           {currentSet >= currentExercise.sets ? "SIGUIENTE EJERCICIO" : "COMPLETAR SERIE"}
-          <Timer className="w-5 h-5" />
-        </button>
+        </PrimaryButton>
 
         <div className="flex gap-2 mt-2">
           {currentExerciseIndex > 0 && (
-            <button
-              onClick={() => {
-                const prev = currentExerciseIndex - 1;
-                setCurrentExerciseIndex(prev);
-                setWorkoutExerciseIndex(prev);
-                setRepsInput(String(activeWorkout.exerciseReps[routine.exercises[prev].id] ?? ""));
-              }}
-              className="flex-1 h-[44px] bg-surface-container-high text-on-surface font-label-caps text-label-caps rounded-lg border border-surface-container-highest active:scale-95"
+            <PrimaryButton
+              variant="secondary"
+              size="sm"
+              leftIcon={<ArrowLeft className="w-4 h-4" />}
+              onClick={() => navigateExercise(-1)}
+              className="flex-1"
             >
-              <ArrowLeft className="w-4 h-4 inline mr-1" />ANT
-            </button>
+              ANT
+            </PrimaryButton>
           )}
           {currentExerciseIndex < totalExercises - 1 && (
-            <button
-              onClick={() => {
-                const next = currentExerciseIndex + 1;
-                setCurrentExerciseIndex(next);
-                setWorkoutExerciseIndex(next);
-                setRepsInput(String(activeWorkout.exerciseReps[routine.exercises[next].id] ?? ""));
-              }}
-              className="flex-1 h-[44px] bg-surface-container-high text-on-surface font-label-caps text-label-caps rounded-lg border border-surface-container-highest active:scale-95"
+            <PrimaryButton
+              variant="secondary"
+              size="sm"
+              rightIcon={<ArrowRight className="w-4 h-4" />}
+              onClick={() => navigateExercise(1)}
+              className="flex-1"
             >
-              SIG<ArrowRight className="w-4 h-4 inline ml-1" />
-            </button>
+              SIG
+            </PrimaryButton>
           )}
         </div>
       </footer>
 
-      {/* Rest Timer Overlay */}
       {showRest && (
         <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6 overflow-hidden">
-          {/* Halo ambiental neón */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div
-              className={`w-[340px] h-[340px] rounded-full animate-ambient ${restUrgent ? "bg-error/10" : "bg-primary-container/10"} blur-3xl`}
-            />
+            <div className={`w-[340px] h-[340px] rounded-full animate-ambient ${restUrgent ? "bg-error/10" : "bg-primary-container/10"} blur-3xl`} />
           </div>
           <div className="text-center w-full max-w-sm relative z-10">
             <span className="font-label-caps text-label-caps text-primary-container tracking-widest">DESCANSO</span>
@@ -511,28 +570,21 @@ export default function IndividualWorkout() {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span
-                  className={`font-display-timer text-[44px] tabular-nums ${
-                    restUrgent ? "animate-urgent" : "text-primary-container"
-                  }`}
-                >
+                <span className={`font-display-timer text-[44px] tabular-nums ${restUrgent ? "animate-urgent" : "text-primary-container"}`}>
                   {restTime}
                 </span>
                 <span className="text-on-surface-variant font-label-caps text-[10px] tracking-widest">SEG</span>
               </div>
             </div>
 
-            {/* Next exercise preview */}
             {nextExerciseObj && (
               <div className="mt-4 p-3 bg-surface-container-high border border-surface-container-highest rounded-xl flex items-center gap-3 text-left animate-fade-in-up">
                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-surface-container flex-shrink-0">
-                  {nextExerciseObj.image ? (
-                    <img src={nextExerciseObj.image} alt={nextExerciseObj.name} className="w-full h-full object-contain" loading="lazy" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-primary-container/50">
-                      <ChevronRight className="w-6 h-6" />
-                    </div>
-                  )}
+                  <ExerciseImage
+                    src={nextExerciseObj.image}
+                    alt={nextExerciseObj.name}
+                    containerClassName="w-full h-full"
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-on-surface-variant text-xs font-label-caps uppercase">A continuación</p>
@@ -545,51 +597,56 @@ export default function IndividualWorkout() {
             )}
 
             <div className="flex items-center justify-center gap-3 mt-5">
-              <button
+              <PrimaryButton
+                variant="secondary"
+                size="sm"
+                leftIcon={<Clock className="w-4 h-4" />}
                 onClick={() => adjustRest(-15)}
-                className="h-[44px] px-4 bg-surface-container-high text-on-surface font-label-caps text-label-caps rounded-lg border border-surface-container-highest active:scale-95 flex items-center gap-1"
+                className="flex-1 max-w-[140px]"
               >
-                <Clock className="w-4 h-4" /> -15s
-              </button>
-              <button
+                -15s
+              </PrimaryButton>
+              <PrimaryButton
+                variant="secondary"
+                size="sm"
+                leftIcon={<Clock className="w-4 h-4" />}
                 onClick={() => adjustRest(15)}
-                className="h-[44px] px-4 bg-surface-container-high text-on-surface font-label-caps text-label-caps rounded-lg border border-surface-container-highest active:scale-95 flex items-center gap-1"
+                className="flex-1 max-w-[140px]"
               >
-                <Clock className="w-4 h-4" /> +15s
-              </button>
+                +15s
+              </PrimaryButton>
             </div>
 
-            <button
+            <PrimaryButton
+              variant="secondary"
+              size="md"
+              leftIcon={<SkipForward className="w-4 h-4" />}
               onClick={skipRestNow}
-              className="mt-4 h-[48px] px-8 bg-surface-container-high text-on-surface font-label-caps text-label-caps rounded-lg border border-surface-container-highest active:scale-95 flex items-center gap-2"
+              className="mt-4 max-w-[300px] mx-auto"
+              fullWidth={false}
             >
-              <SkipForward className="w-4 h-4" /> Saltar descanso
-            </button>
+              Saltar descanso
+            </PrimaryButton>
           </div>
         </div>
       )}
 
-      {/* Exit Confirmation */}
       {showExitConfirm && (
         <div className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">
           <div className="w-full max-w-sm bg-surface-container-low border border-surface-container-highest rounded-2xl p-6">
-            <h2 className="font-headline-lg text-headline-lg text-center mb-2">¿Salir del entreno?</h2>
+            <SectionTitle align="center" className="mb-2">
+              ¿Salir del entreno?
+            </SectionTitle>
             <p className="text-on-surface-variant text-center mb-6 text-sm">
               Puedes guardar el progreso actual o cancelarlo.
             </p>
             <div className="space-y-2">
-              <button
-                className="w-full h-[52px] bg-primary-container text-on-primary font-bold rounded-xl active:scale-95 transition-transform"
-                onClick={() => handleExit(true)}
-              >
+              <PrimaryButton onClick={() => handleExit(true)}>
                 Guardar y salir
-              </button>
-              <button
-                className="w-full h-[52px] bg-surface-container-high text-error font-bold rounded-xl border border-surface-container-highest active:scale-95 transition-transform"
-                onClick={() => handleExit(false)}
-              >
+              </PrimaryButton>
+              <PrimaryButton variant="danger" onClick={() => handleExit(false)}>
                 Cancelar entreno
-              </button>
+              </PrimaryButton>
               <button
                 className="w-full h-[44px] text-on-surface-variant text-sm active:scale-95"
                 onClick={() => setShowExitConfirm(false)}

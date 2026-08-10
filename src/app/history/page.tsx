@@ -101,9 +101,9 @@ export default function HistoryPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-[100px]">
+      <div className="min-h-screen pb-[120px]">
         <TopAppBar title="FORTIXAM" showBack backHref="/" showSettings />
-        <main className="w-full px-container-padding pt-[80px]">
+        <main className="w-full px-container-padding pt-4">
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-24 bg-surface-container-high rounded-lg animate-pulse" />
@@ -116,10 +116,10 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="min-h-screen pb-[100px]">
+    <div className="min-h-screen pb-[120px]">
       <TopAppBar title="FORTIXAM" showBack backHref="/" showSettings />
 
-      <main className="w-full px-container-padding pt-[80px] flex flex-col gap-section-gap">
+      <main className="w-full px-container-padding pt-4 flex flex-col gap-section-gap">
         <section className="mt-4">
           <h2 className="font-headline-lg-mobile text-headline-lg-mobile text-on-background">
             Tu Progreso

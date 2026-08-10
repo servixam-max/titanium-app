@@ -1,31 +1,35 @@
 "use client";
 
 import RoutineCard from "@/components/ui/RoutineCard";
+import TopAppBar from "@/components/ui/TopAppBar";
 import { routines, warmUpExercises } from "@/lib/data";
-import { Flame, Settings, Play, Zap } from "lucide-react";
+import { Flame, Play, Zap } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import SettingsModal from "@/components/ui/SettingsModal";
 import BottomNav from "@/components/ui/BottomNav";
 import InstallPrompt from "@/components/ui/InstallPrompt";
+import { setAudioMode, setVoiceRate } from "@/lib/audio";
 import { preloadVoices } from "@/lib/speech";
-import { playBeep } from "@/lib/audio";
 import { useAppStore } from "@/lib/store";
 
 export default function Dashboard() {
   const router = useRouter();
-  const { activeWorkout, sessions } = useAppStore();
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const { activeWorkout, sessions, audioMode, voiceRate } = useAppStore();
   const [audioWarmedUp, setAudioWarmedUp] = useState(false);
 
   useEffect(() => {
     preloadVoices();
-  }, []);
+    setAudioMode(audioMode);
+    setVoiceRate(voiceRate);
+  }, [audioMode, voiceRate]);
 
   const handleFirstInteraction = () => {
     if (!audioWarmedUp) {
-      playBeep(300, 0.01, "sine", 0.01);
+      // Warm up AudioContext with a tiny beep if audio is not silent
+      if (audioMode !== "silent") {
+        import("@/lib/audio").then(({ playBeep }) => playBeep(300, 0.01, "sine", 0.01));
+      }
       setAudioWarmedUp(true);
     }
   };
@@ -76,26 +80,7 @@ export default function Dashboard() {
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-background" onClick={handleFirstInteraction}>
-      {/* Header */}
-      <header className="flex-shrink-0 h-[56px] border-b border-surface-container-highest flex items-center justify-between px-4 bg-background/80 backdrop-blur-md">
-        <h1 className="font-headline-sm text-headline-sm font-bold text-primary-container uppercase tracking-wider">
-          FORTIXAM
-        </h1>
-        <div className="flex items-center gap-2">
-          {streak > 0 && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-primary-container/20 rounded-lg">
-              <Zap className="w-4 h-4 text-primary-container" />
-              <span className="text-primary-container font-bold text-sm">{streak}</span>
-            </div>
-          )}
-          <button 
-            onClick={() => setSettingsOpen(true)}
-            className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:opacity-80 active:scale-95"
-          >
-            <Settings className="w-5 h-5" />
-          </button>
-        </div>
-      </header>
+      <TopAppBar title="FORTIXAM" showSettings />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-h-0 px-4 py-3 gap-3">
@@ -159,13 +144,18 @@ export default function Dashboard() {
             Elegir Rutina
           </h3>
         
-          <div className="flex-1 overflow-y-auto space-y-2 pb-[140px]">
-            {routines.map((routine) => (
-              <RoutineCard
+          <div className="flex-1 overflow-y-auto space-y-3 pb-[140px]">
+            {routines.map((routine, index) => (
+              <div
                 key={routine.day}
-                routine={routine}
-                showEquipmentToggle={routine.day === 3}
-              />
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 60}ms` }}
+              >
+                <RoutineCard
+                  routine={routine}
+                  showEquipmentToggle={routine.day === 3}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -173,8 +163,6 @@ export default function Dashboard() {
 
       <InstallPrompt />
       <BottomNav />
-
-      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
 }

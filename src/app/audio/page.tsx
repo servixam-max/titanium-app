@@ -4,17 +4,19 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Volume2, VolumeX } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import { playBeep } from "@/lib/audio";
-import { speak, preloadVoices } from "@/lib/speech";
+import { playBeep, setAudioMode, setVoiceRate, getVoiceRate } from "@/lib/audio";
+import { preloadVoices, speak } from "@/lib/speech";
 
 export default function AudioTestPage() {
   const router = useRouter();
-  const { audioEnabled, toggleAudio } = useAppStore();
+  const { audioEnabled, audioMode, voiceRate, toggleAudio, setAudioMode, setVoiceRate } = useAppStore();
   const [testResult, setTestResult] = useState<"idle" | "testing" | "ok" | "partial" | "error">("idle");
 
   useEffect(() => {
     preloadVoices();
-  }, []);
+    setAudioMode(audioMode);
+    setVoiceRate(voiceRate);
+  }, [audioMode, voiceRate]);
 
   const testAudio = () => {
     setTestResult("testing");
@@ -22,10 +24,10 @@ export default function AudioTestPage() {
     // 1. Test beep (always works)
     setTimeout(() => playBeep(800, 0.15, "sine", 0.3), 100);
 
-    // 2. Test speech
+    {/* Test speech with current voice rate */}
     setTimeout(() => {
       try {
-        speak("Probando audio. Voz activada.");
+        speak(`Probando audio. Voz activada. Velocidad ${voiceRate.toFixed(2)}`);
         setTestResult("ok");
       } catch {
         setTestResult("partial");
@@ -102,7 +104,7 @@ export default function AudioTestPage() {
           onClick={() => router.push("/")}
           className="w-full h-[52px] bg-surface-container-high text-on-surface font-bold rounded-xl border border-surface-container-highest active:scale-95 transition-transform"
         >
-          Continuar a Titanium
+          Continuar a FORTIXAM
         </button>
       </main>
     </div>

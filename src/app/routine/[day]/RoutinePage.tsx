@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Play, ArrowRight } from "lucide-react";
+import { Play } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
 import ModeSelector from "@/components/ui/ModeSelector";
+import ExerciseCard from "@/components/ui/ExerciseCard";
 import { routines } from "@/lib/data";
 import { TrainingMode } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
@@ -68,7 +69,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         showSettings
       />
 
-      <main className="w-full px-container-padding pt-[80px] flex flex-col gap-section-gap">
+      <main className="w-full px-container-padding pt-4 flex flex-col gap-section-gap">
         {/* Header */}
         <section className="flex flex-col gap-base">
           <h1 className="font-headline-lg-mobile text-headline-lg-mobile text-on-background">
@@ -123,68 +124,18 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
 
           <div className="flex flex-col gap-base">
             {exercises.map((exercise, index) => (
-              <div 
-                key={exercise.id} 
+              <ExerciseCard
+                key={exercise.id}
+                exercise={exercise}
+                index={index}
+                selectable={mode === "individual"}
+                isSelected={mode === "individual" && selectedExerciseIndex === index}
                 onClick={() => {
                   if (mode === "individual") {
                     setSelectedExerciseIndex(index);
                   }
                 }}
-                className={`bg-surface-container-low border border-surface-container-highest rounded-lg p-base flex items-center gap-stack-gap min-h-touch-target-min transition-all ${
-                  mode === "individual" 
-                    ? "cursor-pointer hover:bg-surface-container-high active:scale-95" 
-                    : ""
-                } ${
-                  selectedExerciseIndex === index && mode === "individual"
-                    ? "border-primary-container shadow-[0_0_10px_rgba(195,244,0,0.15)]"
-                    : ""
-                }`}
-              >
-                <div className="w-16 h-16 rounded bg-surface-container-highest flex-shrink-0 overflow-hidden">
-                  {exercise.image ? (
-                    <img
-                      src={exercise.image}
-                      alt={exercise.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <svg className="w-8 h-8 text-primary-container" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.57 14.86L22 13.43L20.57 12L17 15.57L8.43 7L12 3.43L10.57 2L9.14 3.43L7.71 2L5.57 4.14L4.14 2.71L2.71 4.14L4.14 5.57L2 7.71L3.43 9.14L2 10.57L3.43 12L7 8.43L15.57 17L12 20.57L13.43 22L14.86 20.57L16.29 22L18.43 19.86L19.86 21.29L21.29 19.86L19.86 18.43L22 16.29L20.57 14.86Z" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1 flex flex-col">
-                  <span className="font-body-md text-body-md text-on-background font-bold">
-                    {exercise.name}
-                  </span>
-                  <span className="font-label-caps text-label-caps text-on-surface-variant">
-                    {exercise.sets} Series • {exercise.reps} Repeticiones
-                  </span>
-                </div>
-
-                {/* Individual mode: show arrow */}
-                {mode === "individual" ? (
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                    selectedExerciseIndex === index
-                      ? "bg-primary-container text-on-primary-container"
-                      : "bg-surface-container-highest text-on-surface-variant"
-                  }`}>
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 16a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2Z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
+              />
             ))}
           </div>
         </section>
