@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: '/titanium',
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  output: 'export',
+  distDir: 'dist',
   images: {
     unoptimized: true,
   },

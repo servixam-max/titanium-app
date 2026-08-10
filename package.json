@@ -5,6 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:apk": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home && export PATH=$JAVA_HOME/bin:$PATH && ./gradlew assembleDebug",
+    "build:apk:clean": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home && export PATH=$JAVA_HOME/bin:$PATH && ./gradlew clean assembleDebug",
+    "sync:android": "npx cap sync android",
+    "open:android": "npx cap open android",
     "start": "next start",
     "lint": "next lint"
   },
@@ -13,7 +17,9 @@
     "@capacitor/cli": "^6.2.1",
     "@capacitor/core": "^6.2.1",
     "@types/pg": "^8.20.0",
+    "cors": "^2.8.6",
     "dexie": "^4.4.2",
+    "express": "^5.2.1",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.16.0",
     "next": "14.2.35",

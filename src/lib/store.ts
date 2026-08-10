@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { Routine, TrainingMode, EquipmentPreference, WorkoutSession, ActiveWorkoutState } from "@/lib/types";
 import { apiUrl } from "@/lib/api-config";
+import { saveSession, getSessions, clearAllSessions } from "@/lib/db";
 
 interface AppState {
   // Navigation
@@ -12,16 +13,18 @@ interface AppState {
   activeWorkout: ActiveWorkoutState;
   startWorkout: (routine: Routine, mode: TrainingMode, startExerciseIndex?: number) => void;
   completeSet: (exerciseIndex: number, setNumber: number, weight?: number, reps?: number, duration?: number) => void;
-  startRest: () => void;
+  setExerciseWeight: (exerciseId: string, weight: number) => void;
+  setExerciseReps: (exerciseId: string, reps: number) => void;
+  startRest: (seconds?: number) => void;
   skipRest: () => void;
   tickRest: () => void;
   nextExercise: () => void;
   setWorkoutExerciseIndex: (index: number) => void;
   setWorkoutSet: (setNumber: number) => void;
-  setWorkoutWeight: (weight: number | undefined) => void;
   saveProgress: () => Promise<void>;
-  finishWorkout: () => Promise<void>;
+  finishWorkout: () => Promise<{ sessionId: string; completedSession: WorkoutSession } | void>;
   cancelWorkout: () => void;
+  clearJustFinished: () => void;
 
   // History
   sessions: WorkoutSession[];
@@ -36,6 +39,7 @@ interface AppState {
   setEquipmentPreference: (pref: EquipmentPreference) => void;
   audioEnabled: boolean;
   toggleAudio: () => void;
+  lastExerciseWeights: Record<string, number>;
 }
 
 const initialActiveWorkout: ActiveWorkoutState = {
@@ -47,9 +51,18 @@ const initialActiveWorkout: ActiveWorkoutState = {
   isResting: false,
   restTimeRemaining: 0,
   session: null,
-  workoutWeight: undefined,
+  exerciseWeights: {},
+  exerciseReps: {},
   dbSessionId: undefined,
+  justFinished: false,
 };
+
+function generateId(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+}
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -60,25 +73,31 @@ export const useAppStore = create<AppState>()(
 
       // Active Workout
       activeWorkout: initialActiveWorkout,
-      
-      setWorkoutWeight: (weight) => {
+
+      setExerciseWeight: (exerciseId, weight) => {
         const { activeWorkout } = get();
         set({
           activeWorkout: {
             ...activeWorkout,
-            workoutWeight: weight,
+            exerciseWeights: { ...activeWorkout.exerciseWeights, [exerciseId]: weight },
+          },
+          lastExerciseWeights: { ...get().lastExerciseWeights, [exerciseId]: weight },
+        });
+      },
+
+      setExerciseReps: (exerciseId, reps) => {
+        const { activeWorkout } = get();
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            exerciseReps: { ...activeWorkout.exerciseReps, [exerciseId]: reps },
           },
         });
       },
-      
+
       startWorkout: (routine, mode, startExerciseIndex = 0) => {
-        // Safari mobile needs HTTPS for crypto.randomUUID, use fallback
-        const sessionId = typeof crypto !== 'undefined' && crypto.randomUUID 
-          ? crypto.randomUUID() 
-          : `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-        
         const session: WorkoutSession = {
-          id: sessionId,
+          id: generateId(),
           routineId: routine.day,
           mode,
           startTime: new Date(),
@@ -88,6 +107,24 @@ export const useAppStore = create<AppState>()(
           })),
           completed: false,
         };
+
+        // Pre-fill default reps from exercise definition
+        const defaultReps: Record<string, number> = {};
+        routine.exercises.forEach((ex) => {
+          const match = ex.reps.match(/(\d+)/);
+          if (match) {
+            defaultReps[ex.id] = parseInt(match[1], 10);
+          }
+        });
+
+        // Pre-fill remembered weights from previous workouts
+        const rememberedWeights: Record<string, number> = {};
+        const lastWeights = get().lastExerciseWeights;
+        routine.exercises.forEach((ex) => {
+          if (lastWeights[ex.id] !== undefined) {
+            rememberedWeights[ex.id] = lastWeights[ex.id];
+          }
+        });
 
         set({
           activeWorkout: {
@@ -99,7 +136,9 @@ export const useAppStore = create<AppState>()(
             isResting: false,
             restTimeRemaining: 0,
             session,
-            workoutWeight: undefined,
+            exerciseWeights: rememberedWeights,
+            exerciseReps: defaultReps,
+            justFinished: false,
           },
         });
       },
@@ -121,51 +160,82 @@ export const useAppStore = create<AppState>()(
         set((state) => ({ audioEnabled: !state.audioEnabled }));
       },
 
+      lastExerciseWeights: {},
+
+      clearJustFinished: () => {
+        set({ activeWorkout: { ...get().activeWorkout, justFinished: false } });
+      },
+
       completeSet: (exerciseIndex, setNumber, weight, reps, duration) => {
         const { activeWorkout } = get();
         if (!activeWorkout.session) return;
 
+        const currentExercise = activeWorkout.routine?.exercises[exerciseIndex];
+        if (!currentExercise) return;
+
         const updatedExercises = [...activeWorkout.session.exercises];
         const exerciseLog = updatedExercises[exerciseIndex];
         if (!exerciseLog) return;
-        
-        // Use global workoutWeight if no explicit weight provided
-        const setWeight = weight ?? activeWorkout.workoutWeight;
-        
+
+        // Use per-exercise weight/reps if not explicitly provided
+        const setWeight = weight ?? activeWorkout.exerciseWeights[currentExercise.id];
+        const setReps = reps ?? activeWorkout.exerciseReps[currentExercise.id];
+
+        // Avoid duplicate set completions for the same set number
+        if (exerciseLog.sets.some((s) => s.setNumber === setNumber)) {
+          return;
+        }
+
         exerciseLog.sets.push({
           setNumber,
           weight: setWeight,
-          reps: undefined, // Reps come from exercise definition, not user input
+          reps: setReps,
           duration,
           completed: true,
           timestamp: new Date(),
         });
 
-        set({
-          activeWorkout: {
-            ...activeWorkout,
-            session: {
-              ...activeWorkout.session,
-              exercises: updatedExercises,
-            },
-          },
-        });
+        const isLastSet = setNumber >= currentExercise.sets;
+        const isLastExercise = exerciseIndex >= (activeWorkout.routine?.exercises.length || 1) - 1;
+        const nextRestSeconds = currentExercise.restSeconds || 60;
 
-        if (activeWorkout.mode === "guided") {
-          get().startRest();
+        const nextActiveWorkout: ActiveWorkoutState = {
+          ...activeWorkout,
+          session: {
+            ...activeWorkout.session,
+            exercises: updatedExercises,
+          },
+          isResting: true,
+          restTimeRemaining: nextRestSeconds,
+        };
+
+        if (isLastSet) {
+          if (!isLastExercise) {
+            const nextIndex = exerciseIndex + 1;
+            nextActiveWorkout.currentExerciseIndex = nextIndex;
+            nextActiveWorkout.currentSet = 1;
+          }
+          // If it is the last exercise, keep currentExerciseIndex/currentSet so the user can press finish
+        } else {
+          nextActiveWorkout.currentSet = setNumber + 1;
         }
+
+        set({ activeWorkout: nextActiveWorkout });
       },
 
-      startRest: () => {
+      startRest: (seconds) => {
         const { activeWorkout } = get();
         const currentExercise = activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
         if (!currentExercise) return;
+
+        const restSeconds = seconds ?? currentExercise.restSeconds;
+        if (restSeconds <= 0) return;
 
         set({
           activeWorkout: {
             ...activeWorkout,
             isResting: true,
-            restTimeRemaining: currentExercise.restSeconds,
+            restTimeRemaining: restSeconds,
           },
         });
       },
@@ -186,21 +256,16 @@ export const useAppStore = create<AppState>()(
         if (!activeWorkout.isResting || activeWorkout.restTimeRemaining <= 0) return;
 
         const newTime = activeWorkout.restTimeRemaining - 1;
-        
+
         if (newTime <= 0) {
-          const currentExercise = activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
-          if (currentExercise && activeWorkout.currentSet >= currentExercise.sets) {
-            get().nextExercise();
-          } else {
-            set({
-              activeWorkout: {
-                ...activeWorkout,
-                isResting: false,
-                restTimeRemaining: 0,
-                currentSet: activeWorkout.currentSet + 1,
-              },
-            });
-          }
+          // Rest finished: just clear resting state. completeSet already advanced the set/exercise.
+          set({
+            activeWorkout: {
+              ...activeWorkout,
+              isResting: false,
+              restTimeRemaining: 0,
+            },
+          });
         } else {
           set({
             activeWorkout: {
@@ -253,7 +318,7 @@ export const useAppStore = create<AppState>()(
       },
 
       finishWorkout: async () => {
-        const { activeWorkout, sessions } = get();
+        const { activeWorkout } = get();
         if (!activeWorkout.session) return;
 
         const completedSession: WorkoutSession = {
@@ -262,13 +327,31 @@ export const useAppStore = create<AppState>()(
           completed: true,
         };
 
-        // Save to localStorage first
-        set({
-          sessions: [...sessions, completedSession],
-          activeWorkout: initialActiveWorkout,
+        // Save to IndexedDB first (offline-first)
+        await saveSession(completedSession);
+        const localSessions = await getSessions();
+
+        // Update lastExerciseWeights from this session
+        const updatedLastWeights = { ...get().lastExerciseWeights };
+        completedSession.exercises.forEach((ex) => {
+          ex.sets.forEach((set) => {
+            if (set.weight) {
+              updatedLastWeights[ex.exerciseId] = set.weight;
+            }
+          });
         });
 
-        // Save to PostgreSQL
+        set({
+          sessions: localSessions,
+          activeWorkout: {
+            ...initialActiveWorkout,
+            justFinished: true,
+            session: completedSession,
+          },
+          lastExerciseWeights: updatedLastWeights,
+        });
+
+        // Best-effort sync to PostgreSQL
         try {
           const routine = activeWorkout.routine;
           if (!routine) return;
@@ -282,7 +365,7 @@ export const useAppStore = create<AppState>()(
           const totalVolume = completedSession.exercises.reduce(
             (sum, ex) => sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * (set.reps || 0)), 0), 0
           );
-          const durationSeconds = completedSession.endTime 
+          const durationSeconds = completedSession.endTime
             ? Math.round((completedSession.endTime.getTime() - completedSession.startTime.getTime()) / 1000)
             : 0;
 
@@ -319,14 +402,14 @@ export const useAppStore = create<AppState>()(
           });
 
           if (!response.ok) {
-            console.error("Failed to save to database");
-            set({ dbError: "Error guardando en base de datos" });
+            console.error("Failed to sync session to server");
+            set({ dbError: "Sin sincronización con servidor" });
           } else {
             set({ dbError: null });
           }
         } catch (error) {
-          console.error("Error saving session:", error);
-          set({ dbError: "Error de conexión con base de datos" });
+          console.error("Error syncing session:", error);
+          set({ dbError: "Sin conexión con servidor (datos guardados localmente)" });
         }
       },
 
@@ -341,7 +424,7 @@ export const useAppStore = create<AppState>()(
 
         const session = activeWorkout.session;
         const routine = activeWorkout.routine;
-        
+
         const totalSets = session.exercises.reduce(
           (sum, ex) => sum + ex.sets.length, 0
         );
@@ -365,7 +448,7 @@ export const useAppStore = create<AppState>()(
           total_sets: totalSets,
           total_reps: totalReps,
           total_volume: totalVolume,
-          completed: false, // Still in progress
+          completed: false,
           exercises: session.exercises.map((ex, idx) => ({
             exercise_id: ex.exerciseId,
             exercise_name: routine.exercises[idx]?.name || ex.exerciseId,
@@ -388,14 +471,12 @@ export const useAppStore = create<AppState>()(
           const dbSessionId = activeWorkout.dbSessionId;
 
           if (dbSessionId) {
-            // Update existing session
             response = await fetch(apiUrl(`sessions/${dbSessionId}`), {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
             });
           } else {
-            // Create new partial session
             response = await fetch(apiUrl("sessions"), {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -406,7 +487,6 @@ export const useAppStore = create<AppState>()(
           if (response.ok) {
             const data = await response.json();
             if (data.session_id && !dbSessionId) {
-              // Save the DB session ID for future updates
               set({
                 activeWorkout: {
                   ...activeWorkout,
@@ -429,54 +509,68 @@ export const useAppStore = create<AppState>()(
       isLoading: false,
       dbError: null,
 
-      addSession: (session) => {
-        set((state) => ({
-          sessions: [...state.sessions, session],
-        }));
+      addSession: async (session) => {
+        await saveSession(session);
+        const localSessions = await getSessions();
+        set({ sessions: localSessions });
       },
 
       loadSessions: async () => {
         set({ isLoading: true, dbError: null });
         try {
-          const response = await fetch(apiUrl("sessions"));
-          if (response.ok) {
-            const data = await response.json();
-            if (data.sessions) {
-              // Transform DB sessions to app format
-              const transformedSessions: WorkoutSession[] = data.sessions.map((s: Record<string, unknown>) => ({
-                id: s.id as string,
-                routineId: s.routine_id as number,
-                mode: s.mode as TrainingMode,
-                startTime: new Date(s.start_time as string),
-                endTime: s.end_time ? new Date(s.end_time as string) : undefined,
-                completed: s.completed as boolean,
-                exercises: ((s.exercises as Record<string, unknown>[]) || []).map((ex) => ({
-                  exerciseId: ex.exercise_id as string,
-                  sets: ((ex.sets as Record<string, unknown>[]) || []).map((set) => ({
-                    setNumber: set.set_number as number,
-                    weight: set.weight ? Number(set.weight) : undefined,
-                    reps: set.reps ? Number(set.reps) : undefined,
-                    duration: set.duration_seconds as number,
-                    completed: set.completed as boolean,
-                    timestamp: new Date(s.start_time as string),
+          // Always load from IndexedDB first (offline-first)
+          const localSessions = await getSessions();
+          set({ sessions: localSessions });
+
+          // Best-effort sync from server
+          try {
+            const response = await fetch(apiUrl("sessions"));
+            if (response.ok) {
+              const data = await response.json();
+              if (data.sessions) {
+                const serverSessions: WorkoutSession[] = data.sessions.map((s: Record<string, unknown>) => ({
+                  id: s.id as string,
+                  routineId: s.routine_id as number,
+                  mode: s.mode as TrainingMode,
+                  startTime: new Date(s.start_time as string),
+                  endTime: s.end_time ? new Date(s.end_time as string) : undefined,
+                  completed: s.completed as boolean,
+                  exercises: ((s.exercises as Record<string, unknown>[]) || []).map((ex) => ({
+                    exerciseId: ex.exercise_id as string,
+                    sets: ((ex.sets as Record<string, unknown>[]) || []).map((set) => ({
+                      setNumber: set.set_number as number,
+                      weight: set.weight ? Number(set.weight) : undefined,
+                      reps: set.reps ? Number(set.reps) : undefined,
+                      duration: set.duration_seconds as number,
+                      completed: set.completed as boolean,
+                      timestamp: new Date(s.start_time as string),
+                    })),
                   })),
-                })),
-              }));
-              set({ sessions: transformedSessions, isLoading: false });
+                }));
+                // Merge: prefer local sessions, add missing server ones
+                const localIds = new Set(localSessions.map((s) => s.id));
+                const merged = [
+                  ...localSessions,
+                  ...serverSessions.filter((s) => !localIds.has(s.id)),
+                ].sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+                set({ sessions: merged });
+              }
             }
+          } catch (serverErr) {
+            console.warn("Server sync unavailable, using local data:", serverErr);
           }
         } catch (error) {
           console.error("Error loading sessions:", error);
           set({ dbError: "Error cargando sesiones", isLoading: false });
+        } finally {
+          set({ isLoading: false });
         }
       },
 
       clearSessions: async () => {
         try {
-          const response = await fetch(apiUrl("sessions"), { method: "DELETE" });
-          if (response.ok) {
-            set({ sessions: [], dbError: null });
-          }
+          await clearAllSessions();
+          set({ sessions: [], dbError: null });
         } catch (error) {
           console.error("Error clearing sessions:", error);
           set({ dbError: "Error eliminando sesiones" });
@@ -491,6 +585,7 @@ export const useAppStore = create<AppState>()(
         audioEnabled: state.audioEnabled,
         equipmentPreference: state.equipmentPreference,
         activeWorkout: state.activeWorkout,
+        lastExerciseWeights: state.lastExerciseWeights,
       }),
     }
   )

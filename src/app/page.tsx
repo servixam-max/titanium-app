@@ -1,32 +1,78 @@
 "use client";
 
 import RoutineCard from "@/components/ui/RoutineCard";
-import { routines } from "@/lib/data";
-import { Flame, Settings } from "lucide-react";
+import { routines, warmUpExercises } from "@/lib/data";
+import { Flame, Settings, Play, Zap } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import SettingsModal from "@/components/ui/SettingsModal";
 import BottomNav from "@/components/ui/BottomNav";
 import InstallPrompt from "@/components/ui/InstallPrompt";
 import { preloadVoices } from "@/lib/speech";
 import { playBeep } from "@/lib/audio";
+import { useAppStore } from "@/lib/store";
 
 export default function Dashboard() {
+  const router = useRouter();
+  const { activeWorkout, sessions } = useAppStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [audioWarmedUp, setAudioWarmedUp] = useState(false);
 
   useEffect(() => {
-    // Preload speech voices on mount
     preloadVoices();
   }, []);
 
   const handleFirstInteraction = () => {
     if (!audioWarmedUp) {
-      // Wake up audio context (critical for iOS Safari)
       playBeep(300, 0.01, "sine", 0.01);
       setAudioWarmedUp(true);
     }
   };
+
+  const streak = useMemo(() => {
+    if (!sessions || sessions.length === 0) return 0;
+    const sorted = [...sessions]
+      .filter((s) => s.completed)
+      .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+
+    const uniqueDays = new Set<string>();
+    sorted.forEach((s) => {
+      const d = new Date(s.startTime);
+      uniqueDays.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
+    });
+
+    const days = Array.from(uniqueDays).map((d) => {
+      const [year, month, day] = d.split("-").map(Number);
+      return new Date(year, month, day);
+    }).sort((a, b) => b.getTime() - a.getTime());
+
+    if (days.length === 0) return 0;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // If no training today or yesterday, streak is 0
+    const mostRecent = days[0];
+    mostRecent.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((today.getTime() - mostRecent.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays > 1) return 0;
+
+    let currentStreak = 1;
+    for (let i = 1; i < days.length; i++) {
+      const prev = days[i - 1];
+      const curr = days[i];
+      prev.setHours(0, 0, 0, 0);
+      curr.setHours(0, 0, 0, 0);
+      const dayDiff = Math.round((prev.getTime() - curr.getTime()) / (1000 * 60 * 60 * 24));
+      if (dayDiff === 1) {
+        currentStreak++;
+      } else {
+        break;
+      }
+    }
+    return currentStreak;
+  }, [sessions]);
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-background" onClick={handleFirstInteraction}>
@@ -35,12 +81,20 @@ export default function Dashboard() {
         <h1 className="font-headline-sm text-headline-sm font-bold text-primary-container uppercase tracking-wider">
           FORTIXAM
         </h1>
-        <button 
-          onClick={() => setSettingsOpen(true)}
-          className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:opacity-80 active:scale-95"
-        >
-          <Settings className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-2">
+          {streak > 0 && (
+            <div className="flex items-center gap-1 px-2 py-1 bg-primary-container/20 rounded-lg">
+              <Zap className="w-4 h-4 text-primary-container" />
+              <span className="text-primary-container font-bold text-sm">{streak}</span>
+            </div>
+          )}
+          <button 
+            onClick={() => setSettingsOpen(true)}
+            className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:opacity-80 active:scale-95"
+          >
+            <Settings className="w-5 h-5" />
+          </button>
+        </div>
       </header>
 
       {/* Main Content */}
@@ -68,7 +122,7 @@ export default function Dashboard() {
               Calentamiento Rápido
             </span>
             <span className="font-label-caps text-[10px] text-on-surface-variant">
-              4 ejercicios · 60 segundos
+              {warmUpExercises.length} ejercicios · 60 segundos
             </span>
           </div>
           <svg className="w-5 h-5 text-primary-container flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -76,12 +130,35 @@ export default function Dashboard() {
           </svg>
         </Link>
 
+        {/* Resume Workout Banner */}
+        {activeWorkout.routine && (
+          <button
+            onClick={() => router.push(`/workout/${activeWorkout.mode}`)}
+            className="flex-shrink-0 h-[64px] bg-primary-container text-on-primary-container rounded-xl flex items-center gap-3 px-4 active:scale-95 transition-all shadow-neon"
+          >
+            <div className="w-10 h-10 rounded-full bg-on-primary-container/20 flex items-center justify-center flex-shrink-0">
+              <Play className="w-5 h-5 text-on-primary-container fill-current" />
+            </div>
+            <div className="flex-1 min-w-0 text-left">
+              <span className="font-body-md text-body-md font-bold block truncate">
+                Continuar entrenamiento
+              </span>
+              <span className="font-label-caps text-[10px] text-on-primary-container/80">
+                {activeWorkout.routine.title} · Ejercicio {activeWorkout.currentExerciseIndex + 1}
+              </span>
+            </div>
+            <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        )}
+
         {/* Routines List - scrollable */}
         <div className="flex-1 min-h-0 flex flex-col">
           <h3 className="flex-shrink-0 font-headline-sm text-headline-sm border-l-4 border-primary-container pl-3 mb-2">
             Elegir Rutina
           </h3>
-          
+        
           <div className="flex-1 overflow-y-auto space-y-2 pb-[140px]">
             {routines.map((routine) => (
               <RoutineCard
@@ -94,10 +171,7 @@ export default function Dashboard() {
         </div>
       </main>
 
-      {/* PWA Install Prompt */}
       <InstallPrompt />
-
-      {/* Bottom Nav */}
       <BottomNav />
 
       <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />

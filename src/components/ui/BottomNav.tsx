@@ -1,21 +1,25 @@
 "use client";
 
-import { Home, History, Scale } from "lucide-react";
+import { Home, History, Scale, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function BottomNav() {
   const pathname = usePathname();
 
+  // Hide during active workout to prevent accidental navigation
+  if (pathname.startsWith("/workout")) return null;
+
   const navItems = [
     { href: "/", label: "Inicio", icon: Home },
     { href: "/history", label: "Historial", icon: History },
+    { href: "/stats", label: "Stats", icon: BarChart3 },
     { href: "/weight", label: "Peso", icon: Scale },
   ];
 
   return (
     <nav className="fixed bottom-0 w-full z-50 bg-surface border-t border-surface-container-highest shadow-rest max-w-app left-1/2 -translate-x-1/2">
-      <div className="flex justify-around items-center h-[72px] px-container-padding">
+      <div className="flex justify-around items-center h-[72px] px-2">
         {navItems.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(item.href + "/");

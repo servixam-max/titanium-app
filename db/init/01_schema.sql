@@ -1,4 +1,4 @@
--- Titanium PWA Database Schema
+-- Titanium PWA Database Schema v2.0
 -- PostgreSQL 15
 
 -- Enable UUID extension
@@ -109,6 +109,18 @@ CREATE TABLE IF NOT EXISTS user_preferences (
     theme VARCHAR(20) DEFAULT 'dark'
 );
 
+-- Weight Logs table (for body weight tracking)
+CREATE TABLE IF NOT EXISTS weight_logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+    weight DECIMAL(8,2) NOT NULL,
+    date DATE NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_weight_logs_user_id ON weight_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_weight_logs_date ON weight_logs(date);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON workout_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_start_time ON workout_sessions(start_time);
@@ -127,6 +139,7 @@ END;
 $$ language 'plpgsql';
 
 -- Trigger for profiles
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON profiles;
 CREATE TRIGGER update_profiles_updated_at 
     BEFORE UPDATE ON profiles 
     FOR EACH ROW 
@@ -149,6 +162,18 @@ INSERT INTO exercise_library (id, name, category, equipment, primary_muscle, des
 ('glute_bridge', 'Puente de Glúteo', 'strength', 'bodyweight', 'glutes', 'Hip thrust en suelo'),
 ('plank', 'Plancha Abdominal', 'strength', 'bodyweight', 'abs', 'Plancha isométrica'),
 ('step_up', 'Step-Up', 'strength', 'dumbbells', 'quads', 'Subida a banco con mancuernas'),
+-- NEW Day 1 exercises
+('lateral_raise', 'Elevaciones Laterales', 'strength', 'dumbbells', 'shoulders', 'Elevación lateral de brazos'),
+('front_raise', 'Elevaciones Frontales', 'strength', 'dumbbells', 'shoulders', 'Elevación frontal de brazos'),
+('upright_row', 'Remo al Mentón', 'strength', 'dumbbells', 'shoulders', 'Tira vertical hacia el mentón'),
+('reverse_fly', 'Aperturas Inversas', 'strength', 'dumbbells', 'back', 'Apertura invertida para deltoides posterior'),
+('shrug', 'Encogimientos', 'strength', 'dumbbells', 'shoulders', 'Encogimiento de hombros con mancuernas'),
+-- NEW Day 2 exercises
+('calf_raise', 'Elevación de Gemelos', 'strength', 'dumbbells', 'calves', 'Elevación de talones con mancuernas'),
+('wall_sit', 'Sentadilla en Pared', 'strength', 'bodyweight', 'quads', 'Isométrico con espalda en pared'),
+('leg_raise', 'Elevación de Piernas', 'strength', 'bodyweight', 'abs', 'Elevación de piernas rectas tumbado'),
+('russian_twist', 'Russian Twist', 'strength', 'bodyweight', 'abs', 'Giro de torso ruso con peso'),
+-- HIIT exercises
 ('thrusters', 'Dumbbell Thrusters', 'hiit', 'dumbbells', 'full_body', 'Sentadilla con press de hombros'),
 ('renegade_row', 'Renegade Row', 'hiit', 'dumbbells', 'full_body', 'Remo en posición de plancha'),
 ('dumbbell_swing', 'Swing con Mancuerna', 'hiit', 'dumbbells', 'full_body', 'Swing ruso con mancuerna'),
@@ -158,41 +183,79 @@ INSERT INTO exercise_library (id, name, category, equipment, primary_muscle, des
 ('push_up', 'Flexiones', 'hiit', 'bodyweight', 'chest', 'Push-ups clásicas'),
 ('mountain_climber', 'Mountain Climbers', 'hiit', 'bodyweight', 'full_body', 'Escaladores en plancha'),
 ('jumping_jack', 'Jumping Jacks', 'hiit', 'bodyweight', 'full_body', 'Saltos de tijera'),
-('burpee', 'Burpees Clásicos', 'hiit', 'bodyweight', 'full_body', 'Burpees completos con pecho al suelo')
+('burpee', 'Burpees Clásicos', 'hiit', 'bodyweight', 'full_body', 'Burpees completos con pecho al suelo'),
+-- NEW HIIT exercises
+('high_knees', 'High Knees', 'hiit', 'bodyweight', 'full_body', 'Corre en sitio subiendo rodillas'),
+('plank_jack', 'Plank Jacks', 'hiit', 'bodyweight', 'core', 'Abre y cierra piernas en plancha'),
+('tuck_jump', 'Tuck Jumps', 'hiit', 'bodyweight', 'legs', 'Salto vertical con rodillas al pecho'),
+-- NEW Day 5 Full Body exercises
+('clean_press', 'Clean & Press', 'strength', 'dumbbells', 'full_body', 'Clean con mancuernas seguido de press'),
+('sumo_squat', 'Sentadilla Sumo', 'strength', 'dumbbells', 'quads', 'Sentadilla con pies abiertos'),
+('deadlift', 'Peso Muerto', 'strength', 'dumbbells', 'full_body', 'Peso muerto con mancuernas'),
+('push_press', 'Push Press', 'strength', 'dumbbells', 'shoulders', 'Press con impulso de piernas'),
+('woodchopper', 'Woodchopper', 'strength', 'dumbbells', 'core', 'Giro diagonal con mancuerna'),
+('man_maker', 'Man Makers', 'strength', 'dumbbells', 'full_body', 'Burpee + remo + flexión + press')
 ON CONFLICT (id) DO NOTHING;
 
 -- Insert routine templates
 INSERT INTO routine_templates (id, name, title, subtitle, type, duration, difficulty, equipment, exercises) VALUES
-(1, 'Día 1', 'Día 1: Tronco Superior (Empuje y Tirón)', 'Combinación explosiva de movimientos de tracción y empuje', 'strength', '45 MIN', 'Intermedio', 'MANCUERNAS • CABLES', 
+(1, 'Día 1', 'Día 1: Empuje/Tirón', 'Combinación explosiva de movimientos de tracción y empuje', 'strength', '50 MIN', 'Intermedio', 'MANCUERNAS • CABLES', 
 '[
-  {"id": "d1-1", "name": "Press de Banca Plano", "sets": 3, "reps": "10-12", "restSeconds": 75},
-  {"id": "d1-2", "name": "Remo a una mano", "sets": 3, "reps": "10-12", "restSeconds": 75},
-  {"id": "d1-3", "name": "Press Militar Sentado", "sets": 3, "reps": "10", "restSeconds": 60},
-  {"id": "d1-4", "name": "Curl de Bíceps Clásico", "sets": 3, "reps": "12", "restSeconds": 45},
+  {"id": "d1-1", "name": "Press de Banca Plano", "sets": 3, "reps": "10-12", "restSeconds": 90},
+  {"id": "d1-2", "name": "Remo a una mano", "sets": 3, "reps": "10-12", "restSeconds": 90},
+  {"id": "d1-3", "name": "Press Militar Sentado", "sets": 3, "reps": "10", "restSeconds": 90},
+  {"id": "d1-4", "name": "Curl de Bíceps Clásico", "sets": 3, "reps": "12", "restSeconds": 60},
   {"id": "d1-5", "name": "Aperturas en Banco", "sets": 3, "reps": "12-15", "restSeconds": 60},
-  {"id": "d1-6", "name": "Copa de Tríceps", "sets": 3, "reps": "12", "restSeconds": 45},
-  {"id": "d1-7", "name": "Curl Martillo", "sets": 3, "reps": "12", "restSeconds": 45},
-  {"id": "d1-8", "name": "Patada de Tríceps", "sets": 3, "reps": "12", "restSeconds": 45}
+  {"id": "d1-6", "name": "Copa de Tríceps", "sets": 3, "reps": "12", "restSeconds": 60},
+  {"id": "d1-7", "name": "Curl Martillo", "sets": 3, "reps": "12", "restSeconds": 60},
+  {"id": "d1-8", "name": "Patada de Tríceps", "sets": 3, "reps": "12", "restSeconds": 60},
+  {"id": "d1-9", "name": "Elevaciones Laterales", "sets": 3, "reps": "12-15", "restSeconds": 60},
+  {"id": "d1-10", "name": "Elevaciones Frontales", "sets": 3, "reps": "12", "restSeconds": 60},
+  {"id": "d1-11", "name": "Remo al Mentón", "sets": 3, "reps": "10-12", "restSeconds": 75},
+  {"id": "d1-12", "name": "Aperturas Inversas", "sets": 3, "reps": "12-15", "restSeconds": 60},
+  {"id": "d1-13", "name": "Encogimientos", "sets": 3, "reps": "15", "restSeconds": 45}
 ]'::jsonb
 ),
-(2, 'Día 2', 'Día 2: Tronco Inferior y Core', 'Cimiento sólido. Trabajo pesado de tren inferior y estabilidad abdominal', 'strength', '50 MIN', 'Avanzado', 'MANCUERNAS • PESO CORPORAL',
+(2, 'Día 2', 'Día 2: Tronco Inferior y Core', 'Cimiento sólido. Trabajo pesado de tren inferior y estabilidad abdominal', 'strength', '55 MIN', 'Avanzado', 'MANCUERNAS • PESO CORPORAL',
 '[
   {"id": "d2-1", "name": "Sentadilla Goblet", "sets": 4, "reps": "12", "restSeconds": 90},
   {"id": "d2-2", "name": "Peso Muerto Rumano", "sets": 4, "reps": "12-15", "restSeconds": 90},
-  {"id": "d2-3", "name": "Crunch Abdominal", "sets": 3, "reps": "20", "restSeconds": 45},
-  {"id": "d2-4", "name": "Zancada Búlgara", "sets": 3, "reps": "10", "restSeconds": 75},
+  {"id": "d2-3", "name": "Crunch Abdominal", "sets": 3, "reps": "20", "restSeconds": 60},
+  {"id": "d2-4", "name": "Zancada Búlgara", "sets": 3, "reps": "10", "restSeconds": 90},
   {"id": "d2-5", "name": "Puente de Glúteo", "sets": 3, "reps": "15", "restSeconds": 60},
-  {"id": "d2-6", "name": "Plancha Abdominal", "sets": 3, "reps": "45-60s", "restSeconds": 45},
-  {"id": "d2-7", "name": "Step-Up", "sets": 3, "reps": "12", "restSeconds": 60}
+  {"id": "d2-6", "name": "Plancha Abdominal", "sets": 3, "reps": "45-60s", "restSeconds": 60},
+  {"id": "d2-7", "name": "Step-Up", "sets": 3, "reps": "12", "restSeconds": 90},
+  {"id": "d2-8", "name": "Elevación de Gemelos", "sets": 4, "reps": "20", "restSeconds": 45},
+  {"id": "d2-9", "name": "Sentadilla en Pared", "sets": 3, "reps": "45s", "restSeconds": 60},
+  {"id": "d2-10", "name": "Elevación de Piernas", "sets": 3, "reps": "15", "restSeconds": 60},
+  {"id": "d2-11", "name": "Russian Twist", "sets": 3, "reps": "20", "restSeconds": 45}
 ]'::jsonb
 ),
 (3, 'Día 3', 'Día 3: HIIT', 'Máxima intensidad en corto tiempo', 'hiit', '30 MIN', 'Cardio HIIT', 'EQUIPAMIENTO',
 '[
-  {"id": "d3-a-1", "name": "Dumbbell Thrusters", "sets": 4, "reps": "15", "restSeconds": 15},
-  {"id": "d3-a-2", "name": "Renegade Row", "sets": 4, "reps": "12", "restSeconds": 15},
-  {"id": "d3-a-3", "name": "Swing con Mancuerna", "sets": 4, "reps": "20", "restSeconds": 15},
-  {"id": "d3-a-4", "name": "Zancadas con Salto", "sets": 4, "reps": "30s", "restSeconds": 15},
-  {"id": "d3-a-5", "name": "Devil Press", "sets": 4, "reps": "10", "restSeconds": 120}
+  {"id": "d3-a-1", "name": "Dumbbell Thrusters", "sets": 4, "reps": "15", "restSeconds": 90},
+  {"id": "d3-a-2", "name": "Renegade Row", "sets": 4, "reps": "12", "restSeconds": 90},
+  {"id": "d3-a-3", "name": "Swing con Mancuerna", "sets": 4, "reps": "20", "restSeconds": 90},
+  {"id": "d3-a-4", "name": "Zancadas con Salto", "sets": 4, "reps": "30s", "restSeconds": 60},
+  {"id": "d3-a-5", "name": "Devil Press", "sets": 4, "reps": "10", "restSeconds": 90},
+  {"id": "d3-a-6", "name": "High Knees", "sets": 4, "reps": "45s", "restSeconds": 60},
+  {"id": "d3-a-7", "name": "Plank Jacks", "sets": 4, "reps": "30s", "restSeconds": 45},
+  {"id": "d3-a-8", "name": "Tuck Jumps", "sets": 4, "reps": "10", "restSeconds": 60}
+]'::jsonb
+),
+(4, 'Extra', 'Extra: Libre', 'Ejercicio libre configurable', 'strength', '20 MIN', 'Intermedio', 'LIBRE',
+'[
+  {"id": "ex-1", "name": "Ejercicio Libre", "sets": 3, "reps": "Tu elección", "restSeconds": 60}
+]'::jsonb
+),
+(5, 'Día 5', 'Día 5: Full Body', 'Entrenamiento completo de cuerpo entero', 'strength', '45 MIN', 'Avanzado', 'MANCUERNAS',
+'[
+  {"id": "d5-1", "name": "Clean & Press", "sets": 4, "reps": "10", "restSeconds": 90},
+  {"id": "d5-2", "name": "Sentadilla Sumo", "sets": 4, "reps": "12", "restSeconds": 90},
+  {"id": "d5-3", "name": "Peso Muerto", "sets": 4, "reps": "10-12", "restSeconds": 90},
+  {"id": "d5-4", "name": "Push Press", "sets": 3, "reps": "12", "restSeconds": 75},
+  {"id": "d5-5", "name": "Woodchopper", "sets": 3, "reps": "12", "restSeconds": 60},
+  {"id": "d5-6", "name": "Man Makers", "sets": 3, "reps": "8", "restSeconds": 90}
 ]'::jsonb
 )
 ON CONFLICT (id) DO NOTHING;
@@ -200,10 +263,11 @@ ON CONFLICT (id) DO NOTHING;
 -- Add alternative exercises for Day 3
 UPDATE routine_templates 
 SET alternative_exercises = '[
-  {"id": "d3-b-1", "name": "Sentadillas con Salto", "sets": 4, "reps": "15", "restSeconds": 15},
-  {"id": "d3-b-2", "name": "Flexiones", "sets": 4, "reps": "Al fallo", "restSeconds": 15},
-  {"id": "d3-b-3", "name": "Mountain Climbers", "sets": 4, "reps": "45s", "restSeconds": 15},
-  {"id": "d3-b-4", "name": "Jumping Jacks", "sets": 4, "reps": "60s", "restSeconds": 15},
-  {"id": "d3-b-5", "name": "Burpees Clásicos", "sets": 4, "reps": "12", "restSeconds": 120}
+  {"id": "d3-b-1", "name": "Sentadillas con Salto", "sets": 4, "reps": "15", "restSeconds": 60},
+  {"id": "d3-b-2", "name": "Flexiones", "sets": 4, "reps": "Al fallo", "restSeconds": 60},
+  {"id": "d3-b-3", "name": "Mountain Climbers", "sets": 4, "reps": "45s", "restSeconds": 60},
+  {"id": "d3-b-4", "name": "Jumping Jacks", "sets": 4, "reps": "60s", "restSeconds": 60},
+  {"id": "d3-b-5", "name": "Burpees Clásicos", "sets": 4, "reps": "12", "restSeconds": 60},
+  {"id": "d3-b-6", "name": "Sentadilla con Salto", "sets": 4, "reps": "15", "restSeconds": 60}
 ]'::jsonb
 WHERE id = 3;

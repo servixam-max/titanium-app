@@ -8,6 +8,11 @@ export interface Exercise {
   image?: string;
   description?: string;
   tempo?: string;
+  category?: string; // chest, back, shoulders, biceps, triceps, legs, core, full_body
+  difficulty?: "Principiante" | "Intermedio" | "Avanzado";
+  // Parsed target reps range for progression suggestions
+  targetRepsMin?: number;
+  targetRepsMax?: number;
 }
 
 export interface Routine {
@@ -16,12 +21,12 @@ export interface Routine {
   subtitle: string;
   type: "strength" | "hiit";
   duration: string;
-  difficulty: "Intermedio" | "Avanzado" | "Cardio HIIT";
+  difficulty: "Intermedio" | "Avanzado" | "Cardio HIIT" | "Principiante";
   equipment: string;
-  coverImage?: string; // Portada default (mancuernas)
-  coverImageBodyweight?: string; // Portada alternativa (sin material)
+  coverImage?: string;
+  coverImageBodyweight?: string;
   exercises: Exercise[];
-  alternativeExercises?: Exercise[]; // For HIIT day toggle
+  alternativeExercises?: Exercise[];
 }
 
 export type TrainingMode = "guided" | "individual";
@@ -45,7 +50,7 @@ export interface SetLog {
   setNumber: number;
   weight?: number;
   reps?: number;
-  duration?: number; // For timed exercises (HIIT)
+  duration?: number;
   completed: boolean;
   timestamp: Date;
 }
@@ -61,6 +66,44 @@ export interface ActiveWorkoutState {
   isResting: boolean;
   restTimeRemaining: number;
   session: WorkoutSession | null;
-  workoutWeight?: number; // Global weight for the entire workout session
-  dbSessionId?: string; // PostgreSQL session ID for auto-save
+  // Per-exercise weight and reps overrides (keyed by exercise id)
+  exerciseWeights: Record<string, number>;
+  exerciseReps: Record<string, number>;
+  dbSessionId?: string;
+  // Completed flag used by celebration screen
+  justFinished?: boolean;
+}
+
+// Stats types
+export interface WorkoutStats {
+  totalSessions: number;
+  totalSets: number;
+  totalReps: number;
+  totalVolume: number;
+  totalDuration: number; // seconds
+  avgDuration: number;
+  avgVolume: number;
+  streak: number; // consecutive days
+  lastSessionDate?: Date;
+  sessionsThisWeek: number;
+  sessionsThisMonth: number;
+}
+
+export interface WeightStats {
+  current: number;
+  previous: number;
+  diff: number;
+  average: number;
+  min: number;
+  max: number;
+  trend: "up" | "down" | "stable";
+  entries: number;
+  bmi?: number;
+}
+
+export interface WeightEntry {
+  id: string;
+  weight: number;
+  date: string;
+  created_at: string;
 }

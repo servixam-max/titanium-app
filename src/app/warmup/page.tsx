@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { SkipForward, ArrowRight, X, Volume2, VolumeX } from "lucide-react";
+import { SkipForward, ArrowRight, Volume2, VolumeX, Home, ArrowLeft } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { warmUpExercises } from "@/lib/data";
-import { announceWarmupComplete, announceExerciseStart, announceNextExercise } from "@/lib/speech";
-import { playBeep } from "@/lib/audio";
+import { announceWarmupComplete, announceExerciseStart, announceNextExercise, announceGetReady } from "@/lib/speech";
+import { playBeep, playCountdown } from "@/lib/audio";
 
 function WarmupContent() {
   const router = useRouter();
@@ -15,6 +15,20 @@ function WarmupContent() {
   const { audioEnabled, toggleAudio } = useAppStore();
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+  const handleSkip = useCallback(() => {
+    router.push(redirectAfter);
+  }, [router, redirectAfter]);
+
+  const handleNext = useCallback(() => {
+    if (currentExerciseIndex >= warmUpExercises.length - 1) {
+      router.push(redirectAfter);
+    } else {
+      setCurrentExerciseIndex((i) => i + 1);
+      setTimeLeft(60);
+    }
+  }, [currentExerciseIndex, router, redirectAfter]);
 
   // Announce warmup start and first exercise
   useEffect(() => {
@@ -44,22 +58,23 @@ function WarmupContent() {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           if (currentExerciseIndex >= warmUpExercises.length - 1) {
-            // Warmup finished - always go back to home
             if (audioEnabled) {
               announceWarmupComplete();
               playBeep(1000, 0.3, "sine", 0.3);
+              // Aviso de preparación para el primer ejercicio del entreno
+              if (redirectAfter !== "/") {
+                setTimeout(() => announceGetReady(), 1200);
+              }
             }
             router.push(redirectAfter);
             return 0;
           } else {
-            // Next exercise
             setCurrentExerciseIndex((i) => i + 1);
             return 60;
           }
         }
-        // Countdown beeps: 3, 2, 1
-        if (audioEnabled && prev <= 3) {
-          playBeep(600 + (3 - prev) * 200, 0.1, "sine", 0.2);
+        if (audioEnabled && prev <= 4 && prev > 1) {
+          playCountdown(prev - 1);
         }
         return prev - 1;
       });
@@ -71,33 +86,20 @@ function WarmupContent() {
   const currentExercise = warmUpExercises[currentExerciseIndex];
   const progress = ((currentExerciseIndex + 1) / warmUpExercises.length) * 100;
 
-  const handleSkip = () => {
-    router.push(redirectAfter);
-  };
-
-  const handleNext = () => {
-    if (currentExerciseIndex >= warmUpExercises.length - 1) {
-      router.push(redirectAfter);
-    } else {
-      setCurrentExerciseIndex(currentExerciseIndex + 1);
-      setTimeLeft(60);
-    }
-  };
-
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-background">
-      {/* Header */}
       <header className="flex-shrink-0 h-[48px] border-b border-surface-container-highest flex items-center justify-between px-4 bg-background/80 backdrop-blur-md">
-        <button 
-          onClick={handleSkip}
-          className="flex items-center justify-center w-10 h-10 text-on-surface hover:opacity-80 active:scale-95"
+        <button
+          onClick={() => setShowExitConfirm(true)}
+          className="flex items-center gap-1 h-10 px-2 text-on-surface hover:opacity-80 active:scale-95"
         >
-          <X className="w-5 h-5" />
+          <Home className="w-4 h-4" />
+          <ArrowLeft className="w-5 h-5" />
         </button>
         <h1 className="font-headline-sm text-headline-sm font-bold text-primary-container uppercase tracking-wider">
           CALENTAMIENTO
         </h1>
-        <button 
+        <button
           onClick={toggleAudio}
           className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:opacity-80 active:scale-95"
           title={audioEnabled ? "Desactivar audio" : "Activar audio"}
@@ -106,7 +108,6 @@ function WarmupContent() {
         </button>
       </header>
 
-      {/* Progress Bar */}
       <div className="flex-shrink-0 px-4 pt-2 pb-1">
         <div className="flex justify-between items-center mb-1">
           <span className="text-primary-container font-label-caps uppercase tracking-widest text-[10px]">
@@ -124,15 +125,16 @@ function WarmupContent() {
         </div>
       </div>
 
-      {/* Exercise Name */}
       <div className="flex-shrink-0 px-4 py-2 text-center">
         <h2 className="font-headline-md text-headline-md">{currentExercise?.name}</h2>
         <p className="text-on-surface-variant font-body-sm mt-1">{currentExercise?.description}</p>
       </div>
 
-      {/* Exercise Image */}
       <div className="flex-shrink-0 flex-1 min-h-0 px-4">
-        <div className="w-full h-full rounded-xl overflow-hidden border border-surface-container-highest relative">
+        <div
+          key={currentExerciseIndex}
+          className="w-full h-full rounded-xl overflow-hidden border border-surface-container-highest relative animate-fade-in-up"
+        >
           {currentExercise?.image ? (
             <img
               src={currentExercise.image}
@@ -152,24 +154,16 @@ function WarmupContent() {
         </div>
       </div>
 
-      {/* Timer & Objective */}
       <div className="flex-shrink-0 flex items-center justify-between py-2 px-4">
-        <div className="relative w-[120px] h-[120px]">
+        <div className={`relative w-[120px] h-[120px] ${timeLeft <= 10 ? "" : "animate-breathe"}`}>
           <svg className="w-full h-full transform -rotate-90">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#1f1f1f" strokeWidth="5" />
             <circle
               cx="60"
               cy="60"
               r="54"
               fill="none"
-              stroke="#1f1f1f"
-              strokeWidth="5"
-            />
-            <circle
-              cx="60"
-              cy="60"
-              r="54"
-              fill="none"
-              stroke="#ccff00"
+              stroke={timeLeft <= 10 ? "#ffb4ab" : "#ccff00"}
               strokeWidth="5"
               strokeLinecap="round"
               strokeDasharray={`${2 * Math.PI * 54}`}
@@ -177,8 +171,15 @@ function WarmupContent() {
               className="transition-all duration-1000"
             />
           </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="font-display-timer text-[32px] text-primary-container tabular-nums">{timeLeft}</span>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span
+              className={`font-display-timer text-[32px] tabular-nums ${
+                timeLeft <= 10 ? "animate-urgent" : "text-primary-container"
+              }`}
+            >
+              {timeLeft}
+            </span>
+            <span className="text-on-surface-variant font-label-caps text-[9px] tracking-widest">SEG</span>
           </div>
         </div>
 
@@ -188,11 +189,10 @@ function WarmupContent() {
         </div>
       </div>
 
-      {/* Bottom Actions */}
       <footer className="flex-shrink-0 px-4 pb-[env(safe-area-inset-bottom,0px)] pt-2 bg-background border-t border-surface-container-highest">
         <div className="flex gap-2">
           <button
-            onClick={handleSkip}
+            onClick={() => setShowExitConfirm(true)}
             className="flex-1 h-[52px] bg-surface-container-high text-on-surface font-bold rounded-xl border border-surface-container-highest flex items-center justify-center gap-2 active:scale-95 transition-transform"
           >
             <SkipForward className="w-5 h-5" />
@@ -207,13 +207,40 @@ function WarmupContent() {
           </button>
         </div>
       </footer>
+
+      {showExitConfirm && (
+        <div className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">
+          <div className="w-full max-w-sm bg-surface-container-low border border-surface-container-highest rounded-2xl p-6">
+            <h2 className="font-headline-lg text-headline-lg text-center mb-2">¿Saltar calentamiento?</h2>
+            <p className="text-on-surface-variant text-center mb-6 text-sm">
+              Se recomienda completarlo para evitar lesiones.
+            </p>
+            <div className="space-y-2">
+              <button
+                className="w-full h-[52px] bg-primary-container text-on-primary font-bold rounded-xl active:scale-95 transition-transform"
+                onClick={handleSkip}
+              >
+                Ir al entreno
+              </button>
+              <button
+                className="w-full h-[44px] text-on-surface-variant text-sm active:scale-95"
+                onClick={() => setShowExitConfirm(false)}
+              >
+                Continuar calentando
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default function WarmupPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><p className="text-on-surface">Loading...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">
+      <p className="text-on-surface">Loading...</p>
+    </div>}>
       <WarmupContent />
     </Suspense>
   );
