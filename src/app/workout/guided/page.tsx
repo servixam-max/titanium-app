@@ -13,6 +13,9 @@ import {
   announceNextExercise,
   announceExerciseStart,
   announceRest,
+  setAudioMode as setGlobalAudioMode,
+  setVoiceRate as setGlobalVoiceRate,
+  unlockAudio,
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
 
@@ -27,6 +30,8 @@ export default function GuidedWorkout() {
     goToExercise,
     startRest,
     audioEnabled,
+    audioMode,
+    voiceRate,
     toggleAudio,
   } = useAppStore();
 
@@ -61,10 +66,17 @@ export default function GuidedWorkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExerciseIndex, activeWorkout.exerciseWeights]);
 
+  // Sync audio engine with store settings on mount and when changed
+  useEffect(() => {
+    setGlobalAudioMode(audioMode);
+    setGlobalVoiceRate(voiceRate);
+  }, [audioMode, voiceRate]);
+
   // Speak exercise start when switching exercises
   useEffect(() => {
     if (!routine || !currentExercise || showWeightPrompt) return;
-    if (audioEnabled) {
+    if (audioEnabled && audioMode !== "silent") {
+      unlockAudio();
       const timer = setTimeout(() => {
         announceExerciseStart(
           currentExercise.name,
@@ -109,7 +121,7 @@ export default function GuidedWorkout() {
 
   const handleSetWeight = () => {
     const w = Number(weightInput);
-    if (w > 0) {
+    if (!Number.isNaN(w) && w >= 0) {
       setExerciseWeight(currentExercise.id, w);
       setShowWeightPrompt(false);
       setWeightInput("");

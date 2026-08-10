@@ -43,6 +43,7 @@ interface AppState {
   setEquipmentPreference: (pref: EquipmentPreference) => void;
   audioEnabled: boolean;
   audioMode: AudioMode;
+  lastAudioMode: AudioMode;
   toggleAudio: () => void;
   setAudioMode: (mode: AudioMode) => void;
   voiceRate: number;
@@ -176,19 +177,23 @@ export const useAppStore = create<AppState>()(
 
       audioEnabled: true,
       audioMode: "full" as AudioMode,
+      lastAudioMode: "full" as AudioMode,
       setAudioMode: (mode) => {
-        set({ audioMode: mode });
-        // Keep legacy flag in sync: silent disables audio, other modes enable it
-        set({ audioEnabled: mode !== "silent" });
+        set((state) => ({
+          audioMode: mode,
+          audioEnabled: mode !== "silent",
+          lastAudioMode: mode !== "silent" ? mode : state.lastAudioMode,
+        }));
       },
       voiceRate: 1.05,
       setVoiceRate: (rate) => set({ voiceRate: Math.max(0.7, Math.min(1.5, rate)) }),
       toggleAudio: () => {
         set((state) => {
           const nextEnabled = !state.audioEnabled;
+          const nextMode = nextEnabled ? state.lastAudioMode : "silent";
           return {
             audioEnabled: nextEnabled,
-            audioMode: nextEnabled ? state.audioMode : "silent",
+            audioMode: nextMode,
           };
         });
       },
@@ -713,6 +718,7 @@ export const useAppStore = create<AppState>()(
         favoriteExerciseIds: state.favoriteExerciseIds,
         recentExerciseIds: state.recentExerciseIds,
         onboardingComplete: state.onboardingComplete,
+        lastAudioMode: state.lastAudioMode,
       }),
     }
   )

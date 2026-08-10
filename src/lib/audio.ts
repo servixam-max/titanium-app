@@ -10,6 +10,7 @@ let voiceRate = 1.05;
 let voicePitch = 1;
 let preferredVoice: SpeechSynthesisVoice | null = null;
 let voicesLoaded = false;
+let voicesLoadAttempts = 0;
 
 export type AudioMode = "full" | "beeps" | "voice" | "silent";
 let audioMode: AudioMode = "full";
@@ -43,25 +44,45 @@ function selectSpanishVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoic
     esVoices.find((v) => v.name.includes("Google")) ||
     esVoices.find((v) => v.lang === "es-ES" && v.localService) ||
     esVoices.find((v) => v.lang === "es-ES") ||
-    esVoices[0] ||
+    esVoices.find((v) => v.lang.startsWith("es")) ||
     voices.find((v) => v.lang.startsWith("en") && /neural|Google/i.test(v.name)) ||
+    voices.find((v) => v.lang.startsWith("en")) ||
     voices[0] ||
     null
   );
 }
 
+function loadVoicesNow(): boolean {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return false;
+  const voices = window.speechSynthesis.getVoices();
+  if (voices && voices.length) {
+    preferredVoice = selectSpanishVoice(voices);
+    voicesLoaded = true;
+    return true;
+  }
+  return false;
+}
+
 function preloadVoicesInternal(): void {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  const load = () => {
-    if (voicesLoaded) return;
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length) {
-      preferredVoice = selectSpanishVoice(voices);
-      voicesLoaded = true;
+  if (voicesLoaded) return;
+
+  // Try immediately
+  if (loadVoicesNow()) return;
+
+  // Some Android WebViews never fire onvoiceschanged; poll a few times
+  voicesLoadAttempts = 0;
+  const poll = setInterval(() => {
+    voicesLoadAttempts += 1;
+    if (loadVoicesNow() || voicesLoadAttempts >= 8) {
+      clearInterval(poll);
     }
+  }, 350);
+
+  window.speechSynthesis.onvoiceschanged = () => {
+    loadVoicesNow();
+    clearInterval(poll);
   };
-  load();
-  window.speechSynthesis.onvoiceschanged = load;
 }
 
 // Unlock AudioContext on first user interaction (required by Android WebView)
@@ -75,9 +96,15 @@ export function unlockAudio() {
     try {
       preloadVoicesInternal();
       const utter = new SpeechSynthesisUtterance(" ");
-      utter.volume = 0;
+      utter.volume = 0.01;
+      utter.rate = 1.5;
       window.speechSynthesis.speak(utter);
-      window.speechSynthesis.cancel();
+      // Do NOT cancel immediately on WebView; let the engine initialise
+      setTimeout(() => {
+        try {
+          window.speechSynthesis.cancel();
+        } catch {}
+      }, 400);
     } catch {}
   }
 }
@@ -93,6 +120,8 @@ if (typeof window !== "undefined") {
 
 export function setAudioMode(mode: AudioMode): void {
   audioMode = mode;
+  // Sync the legacy muted flag for consumers that still read getMuted()
+  isMuted = mode === "silent";
 }
 
 export function getAudioMode(): AudioMode {
@@ -287,33 +316,50 @@ function processSpeakQueue(): void {
   if (!job) return;
   isSpeaking = true;
 
-  unlockAudio();
-  resumeContext();
+  // Resume/unlock audio context FIRST, then load voices, then speak
+  Promise.resolve()
+    .then(() => unlockAudio())
+    .then(() => resumeContext())
+    .then(() => {
+      if (!voicesLoaded) {
+        loadVoicesNow();
+        preloadVoicesInternal();
+      }
 
-  const utter = new SpeechSynthesisUtterance(job.text);
-  if (preferredVoice) utter.voice = preferredVoice;
-  utter.lang = preferredVoice?.lang || "es-ES";
-  utter.pitch = job.pitch;
-  utter.rate = job.rate;
-  utter.volume = job.volume;
+      const utter = new SpeechSynthesisUtterance(job.text);
+      if (preferredVoice) utter.voice = preferredVoice;
+      utter.lang = preferredVoice?.lang || "es-ES";
+      utter.pitch = job.pitch;
+      utter.rate = job.rate;
+      utter.volume = job.volume;
 
-  utter.onend = () => {
-    isSpeaking = false;
-    setTimeout(processSpeakQueue, 80);
-  };
-  utter.onerror = () => {
-    isSpeaking = false;
-    setTimeout(processSpeakQueue, 80);
-  };
+      const safetyTimeout = setTimeout(() => {
+        isSpeaking = false;
+        processSpeakQueue();
+      }, 6000);
 
-  try {
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utter);
-  } catch (err) {
-    console.warn("Speech synthesis error:", err);
-    isSpeaking = false;
-    processSpeakQueue();
-  }
+      utter.onend = () => {
+        clearTimeout(safetyTimeout);
+        isSpeaking = false;
+        setTimeout(processSpeakQueue, 80);
+      };
+      utter.onerror = (e) => {
+        clearTimeout(safetyTimeout);
+        console.warn("TTS error:", e);
+        isSpeaking = false;
+        setTimeout(processSpeakQueue, 80);
+      };
+
+      try {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utter);
+      } catch (err) {
+        clearTimeout(safetyTimeout);
+        console.warn("Speech synthesis error:", err);
+        isSpeaking = false;
+        processSpeakQueue();
+      }
+    });
 }
 
 export function speak(text: string, pitch: number = voicePitch, rate: number = voiceRate): void {
@@ -323,6 +369,11 @@ export function speak(text: string, pitch: number = voicePitch, rate: number = v
   // Ensure audio context is unlocked
   unlockAudio();
   resumeContext();
+
+  // WebView sometimes returns empty voices on first call; try to load now
+  if (!voicesLoaded && !loadVoicesNow()) {
+    preloadVoicesInternal();
+  }
 
   speakQueue.push({ text, pitch, rate, volume: 1 });
   if (!isSpeaking) {

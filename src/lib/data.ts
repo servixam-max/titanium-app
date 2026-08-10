@@ -837,16 +837,16 @@ export const routines: Routine[] = [
     exercises: [
       {
         id: "d10-1",
-        name: "Rotación Articular",
+        name: "Plancha Activa",
         sets: 2,
-        reps: "10 círculos",
+        reps: "30s",
         restSeconds: 30,
         equipment: "bodyweight",
-        description: "Círculos de tobillos, rodillas, caderas y hombros.",
-        tempo: "Lento",
-        category: "full_body",
+        description: "Core, hombros y glúteos activados en posición neutra.",
+        tempo: "Estático",
+        category: "core",
         difficulty: "Principiante",
-        image: getImg("joint_rotations"),
+        image: getImg("plank_single"),
       },
       {
         id: "d10-2",

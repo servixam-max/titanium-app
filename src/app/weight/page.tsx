@@ -320,7 +320,15 @@ export default function WeightPage() {
         </div>
       )}
 
-      <BottomNav />
+      {<BottomNav />}
+
+      <button
+        onClick={() => setShowInput(true)}
+        className="fixed right-4 bottom-[80px] w-14 h-14 rounded-full bg-primary-container text-on-primary shadow-neon flex items-center justify-center z-40 active:scale-95"
+        aria-label="Añadir peso"
+      >
+        <Plus className="w-7 h-7" />
+      </button>
     </div>
   );
 }

@@ -23,6 +23,7 @@ import {
   announceHalfwayWorkout,
   setAudioMode,
   setVoiceRate,
+  unlockAudio,
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
 
@@ -104,7 +105,8 @@ export default function IndividualWorkout() {
   // Announce exercise start
   useEffect(() => {
     if (!currentExercise || showWeightPrompt) return;
-    if (audioEnabled) {
+    if (audioEnabled && audioMode !== "silent") {
+      unlockAudio();
       const timer = setTimeout(() => {
         announceExerciseStart(
           currentExercise.name,
@@ -196,7 +198,7 @@ export default function IndividualWorkout() {
 
   const handleSetWeight = () => {
     const w = Number(weightInput);
-    if (w > 0) {
+    if (!Number.isNaN(w) && w >= 0) {
       setExerciseWeight(currentExercise.id, w);
       setShowWeightPrompt(false);
       setWeightInput("");
