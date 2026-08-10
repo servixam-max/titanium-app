@@ -11,7 +11,6 @@ import SectionTitle from "@/components/ui/SectionTitle";
 import {
   announceExerciseComplete,
   announceNextExercise,
-  announceWorkoutComplete,
   announceExerciseStart,
   announceRest,
 } from "@/lib/audio";
@@ -22,7 +21,6 @@ export default function GuidedWorkout() {
   const {
     activeWorkout,
     completeSet,
-    finishWorkout,
     cancelWorkout,
     setExerciseWeight,
     setExerciseReps,

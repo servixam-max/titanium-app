@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Volume2, VolumeX } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import { playBeep, setAudioMode, setVoiceRate, getVoiceRate } from "@/lib/audio";
+import { playBeep } from "@/lib/audio";
 import { preloadVoices, speak } from "@/lib/speech";
 
 export default function AudioTestPage() {
@@ -16,7 +16,7 @@ export default function AudioTestPage() {
     preloadVoices();
     setAudioMode(audioMode);
     setVoiceRate(voiceRate);
-  }, [audioMode, voiceRate]);
+  }, [audioMode, voiceRate, setAudioMode, setVoiceRate]);
 
   const testAudio = () => {
     setTestResult("testing");

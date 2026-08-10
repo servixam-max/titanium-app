@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { AudioMode } from "@/lib/types";
-import { setAudioMode as setGlobalAudioMode, setVoiceRate as setGlobalVoiceRate, getVoiceRate } from "@/lib/audio";
+import { setAudioMode as setGlobalAudioMode, setVoiceRate as setGlobalVoiceRate } from "@/lib/audio";
 
 interface SettingsModalProps {
   isOpen: boolean;

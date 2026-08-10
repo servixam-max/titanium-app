@@ -1,6 +1,6 @@
 "use client";
 
-import { FastForward, Plus, Minus, ChevronRight, Dumbbell, Hash } from "lucide-react";
+import { FastForward, Plus, Minus, Dumbbell, Hash } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { useEffect, useRef } from "react";
 import TimerCircle from "@/components/ui/TimerCircle";

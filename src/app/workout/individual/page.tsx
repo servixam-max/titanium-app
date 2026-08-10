@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Circle, Timer, ArrowLeft, ArrowRight, Weight, Volume2, VolumeX, Hash, Home, SkipForward, Clock, RotateCcw } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import RestTimer from "@/components/ui/RestTimer";
 import ExerciseImage from "@/components/ui/ExerciseImage";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SectionTitle from "@/components/ui/SectionTitle";
@@ -15,7 +14,6 @@ import {
   announceCountdown,
   announceStart,
   announceExerciseStart,
-  announceNextExercise,
   announceWorkoutComplete,
   announceTenSecondsLeft,
   announceHalfRest,
@@ -37,7 +35,6 @@ export default function IndividualWorkout() {
     startRest,
     finishWorkout,
     cancelWorkout,
-    previousExercise,
     goToExercise,
     setExerciseWeight,
     setExerciseReps,
