@@ -7,7 +7,7 @@ import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
 import ModeSelector from "@/components/ui/ModeSelector";
 import ExerciseCard from "@/components/ui/ExerciseCard";
-import { routines } from "@/lib/data";
+import { routines, getAllExercises, getExerciseById } from "@/lib/data";
 import { TrainingMode } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
 
@@ -18,7 +18,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
 
   const [mode, setMode] = useState<TrainingMode>("guided");
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<number | null>(null);
-  const { startWorkout, equipmentPreference, setEquipmentPreference } = useAppStore();
+  const [freeExerciseId, setFreeExerciseId] = useState<string | null>(null);
+  const { startWorkout, equipmentPreference, setEquipmentPreference, favoriteExerciseIds, recentExerciseIds, addFavoriteExercise, removeFavoriteExercise } = useAppStore();
 
   if (!routine) {
     return (
@@ -31,10 +32,13 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
   }
 
   const isHIIT = routine.type === "hiit";
+  const isFreeDay = routine.day === 4;
   const exercises =
     isHIIT && equipmentPreference === "bodyweight" && routine.alternativeExercises
       ? routine.alternativeExercises
-      : routine.exercises;
+      : isFreeDay && freeExerciseId
+        ? [getExerciseById(freeExerciseId) || routine.exercises[0]]
+        : routine.exercises;
 
   const handleStart = (exerciseIndex?: number) => {
     const workoutRoutine = {
@@ -111,11 +115,102 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         {/* Mode Selector */}
         <ModeSelector mode={mode} onChange={setMode} />
 
+        {/* Free day favorites / recents */}
+        {isFreeDay && (
+          <section className="flex flex-col gap-stack-gap">
+            <div className="flex justify-between items-end">
+              <h2 className="font-headline-md text-headline-md text-on-surface">
+                Favoritos
+              </h2>
+            </div>
+            {favoriteExerciseIds.length === 0 ? (
+              <p className="text-on-surface-variant text-sm">
+                Aún no tienes favoritos. Aparecerán los ejercicios que más usas.
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {favoriteExerciseIds.map((id) => {
+                  const ex = getExerciseById(id);
+                  if (!ex) return null;
+                  const isSelected = freeExerciseId === id;
+                  const isFavorite = favoriteExerciseIds.includes(id);
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => setFreeExerciseId(isSelected ? null : id)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
+                        isSelected
+                          ? "bg-primary-container text-on-primary-container border-primary-container shadow-neon"
+                          : "bg-surface-container-low text-on-surface border-surface-container-highest"
+                      }`}
+                    >
+                      <span>{ex.name}</span>
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isFavorite) removeFavoriteExercise(id);
+                          else addFavoriteExercise(id);
+                        }}
+                        className="text-xs"
+                      >
+                        {isFavorite ? "★" : "☆"}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="flex justify-between items-end mt-2">
+              <h2 className="font-headline-md text-headline-md text-on-surface">
+                Recientes
+              </h2>
+            </div>
+            {recentExerciseIds.length === 0 ? (
+              <p className="text-on-surface-variant text-sm">
+                Aún no hay ejercicios recientes. Haz algún entrenamiento primero.
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {recentExerciseIds.map((id) => {
+                  const ex = getExerciseById(id);
+                  if (!ex) return null;
+                  const isSelected = freeExerciseId === id;
+                  const isFavorite = favoriteExerciseIds.includes(id);
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => setFreeExerciseId(isSelected ? null : id)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
+                        isSelected
+                          ? "bg-primary-container text-on-primary-container border-primary-container shadow-neon"
+                          : "bg-surface-container-low text-on-surface border-surface-container-highest"
+                      }`}
+                    >
+                      <span>{ex.name}</span>
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isFavorite) removeFavoriteExercise(id);
+                          else addFavoriteExercise(id);
+                        }}
+                        className="text-xs"
+                      >
+                        {isFavorite ? "★" : "☆"}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        )}
+
         {/* Exercise List */}
         <section className="flex flex-col gap-stack-gap">
           <div className="flex justify-between items-end">
             <h2 className="font-headline-md text-headline-md text-on-surface">
-              Ejercicios ({exercises.length})
+              {isFreeDay ? "Ejercicio seleccionado" : `Ejercicios (${exercises.length})`}
             </h2>
             <span className="font-label-caps text-label-caps text-on-surface-variant">
               {routine.duration} EST.

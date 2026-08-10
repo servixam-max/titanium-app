@@ -29,6 +29,17 @@ export interface Routine {
   alternativeExercises?: Exercise[];
 }
 
+export interface Plan {
+  id: string;
+  name: string;
+  description: string;
+  daysPerWeek: number;
+  schedule: number[]; // routine day numbers per week, in order (length = weeks * daysPerWeek)
+  weeks: number;
+  tags: string[];
+  recommended: boolean;
+}
+
 export type TrainingMode = "guided" | "individual";
 
 export interface WorkoutSession {

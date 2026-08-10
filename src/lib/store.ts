@@ -48,6 +48,13 @@ interface AppState {
   voiceRate: number;
   setVoiceRate: (rate: number) => void;
   lastExerciseWeights: Record<string, number>;
+
+  // Favorites / recents
+  favoriteExerciseIds: string[];
+  recentExerciseIds: string[];
+  addFavoriteExercise: (exerciseId: string) => void;
+  removeFavoriteExercise: (exerciseId: string) => void;
+  markExerciseRecent: (exerciseId: string) => void;
 }
 
 const initialActiveWorkout: ActiveWorkoutState = {
@@ -184,6 +191,27 @@ export const useAppStore = create<AppState>()(
 
       lastExerciseWeights: {},
 
+      favoriteExerciseIds: [],
+      recentExerciseIds: [],
+
+      addFavoriteExercise: (exerciseId) => {
+        set((state) => ({
+          favoriteExerciseIds: Array.from(new Set([...state.favoriteExerciseIds, exerciseId])),
+        }));
+      },
+
+      removeFavoriteExercise: (exerciseId) => {
+        set((state) => ({
+          favoriteExerciseIds: state.favoriteExerciseIds.filter((id) => id !== exerciseId),
+        }));
+      },
+
+      markExerciseRecent: (exerciseId) => {
+        set((state) => ({
+          recentExerciseIds: Array.from(new Set([exerciseId, ...state.recentExerciseIds])).slice(0, 10),
+        }));
+      },
+
       clearJustFinished: () => {
         set({ activeWorkout: { ...get().activeWorkout, justFinished: false } });
       },
@@ -216,6 +244,9 @@ export const useAppStore = create<AppState>()(
           completed: true,
           timestamp: new Date(),
         });
+
+        // Mark exercise as recent when any set is completed
+        get().markExerciseRecent(currentExercise.id);
 
         const isLastSet = setNumber >= currentExercise.sets;
         const isLastExercise = exerciseIndex >= (activeWorkout.routine?.exercises.length || 1) - 1;
@@ -672,6 +703,8 @@ export const useAppStore = create<AppState>()(
         equipmentPreference: state.equipmentPreference,
         activeWorkout: state.activeWorkout,
         lastExerciseWeights: state.lastExerciseWeights,
+        favoriteExerciseIds: state.favoriteExerciseIds,
+        recentExerciseIds: state.recentExerciseIds,
       }),
     }
   )
