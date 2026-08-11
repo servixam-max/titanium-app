@@ -15,6 +15,7 @@ import {
   announceRest,
   setAudioMode as setGlobalAudioMode,
   setVoiceRate as setGlobalVoiceRate,
+  getVoiceRate,
   unlockAudio,
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
@@ -135,7 +136,17 @@ export default function GuidedWorkout() {
     setExerciseReps(currentExercise.id, reps);
 
     triggerFeedback();
-    if (audioEnabled) {
+    // Speak directly within the user gesture to satisfy WebView audio policies
+    if (audioEnabled && audioMode !== "silent" && typeof window !== "undefined" && "speechSynthesis" in window) {
+      unlockAudio();
+      try {
+        const utter = new SpeechSynthesisUtterance("Serie completada");
+        utter.lang = "es-ES";
+        utter.rate = voiceRate || 1.05;
+        window.speechSynthesis.speak(utter);
+      } catch {}
+      announceExerciseComplete();
+    } else if (audioEnabled) {
       announceExerciseComplete();
     }
 

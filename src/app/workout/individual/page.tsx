@@ -221,6 +221,11 @@ export default function IndividualWorkout() {
     const isLastSet = currentSet >= currentExercise.sets;
     const remainingSets = currentExercise.sets - currentSet;
 
+    // Prime TTS inside the user gesture, then let the audio engine handle the announcement queue
+    if (audioEnabled && audioMode !== "silent" && typeof window !== "undefined" && "speechSynthesis" in window) {
+      unlockAudio();
+    }
+
     if (audioEnabled) {
       if (isLastSet) {
         announceExerciseComplete();

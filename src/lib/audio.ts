@@ -88,23 +88,23 @@ function preloadVoicesInternal(): void {
 // Unlock AudioContext on first user interaction (required by Android WebView)
 export function unlockAudio() {
   if (audioUnlocked) return;
-  resumeContext().then(() => {
-    audioUnlocked = true;
-  });
-  // Also warm up speech synthesis
+  audioUnlocked = true;
+
+  resumeContext().catch(() => {});
+
+  // Warm up speech synthesis with a real but tiny utterance inside the user gesture.
+  // WebView allows subsequent speaks from timers once the engine has been primed.
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     try {
       preloadVoicesInternal();
-      const utter = new SpeechSynthesisUtterance(" ");
+      if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+      const utter = new SpeechSynthesisUtterance("ok");
       utter.volume = 0.01;
-      utter.rate = 1.5;
+      utter.rate = 1.8;
+      if (preferredVoice) utter.voice = preferredVoice;
+      utter.lang = preferredVoice?.lang || "es-ES";
+      // No cancel — cancel often deadlocks WebView TTS.
       window.speechSynthesis.speak(utter);
-      // Do NOT cancel immediately on WebView; let the engine initialise
-      setTimeout(() => {
-        try {
-          window.speechSynthesis.cancel();
-        } catch {}
-      }, 400);
     } catch {}
   }
 }
@@ -113,7 +113,7 @@ export function unlockAudio() {
 if (typeof window !== "undefined") {
   const events = ["touchstart", "touchend", "click", "pointerdown"];
   events.forEach((ev) => {
-    window.addEventListener(ev, unlockAudio, { once: true, passive: true });
+    window.addEventListener(ev, unlockAudio, { once: true, passive: true, capture: true });
   });
   preloadVoicesInternal();
 }
@@ -292,93 +292,46 @@ export function playSetFlash(): void {
   haptics.tick();
 }
 
-// ── Speech Synthesis Queue ──
+// ── Speech Synthesis (WebView-safe) ──
 
-interface SpeakJob {
-  text: string;
-  pitch: number;
-  rate: number;
-  volume: number;
-}
+let lastUtterance: SpeechSynthesisUtterance | null = null;
 
-const speakQueue: SpeakJob[] = [];
-let isSpeaking = false;
-
-function processSpeakQueue(): void {
-  if (isSpeaking || speakQueue.length === 0) return;
-  if (isAudioSilent() || !isVoiceAllowed()) {
-    speakQueue.length = 0;
-    return;
-  }
+function doSpeak(text: string, pitch: number, rate: number): void {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  if (isAudioSilent() || !isVoiceAllowed()) return;
 
-  const job = speakQueue.shift();
-  if (!job) return;
-  isSpeaking = true;
-
-  // Resume/unlock audio context FIRST, then load voices, then speak
-  Promise.resolve()
-    .then(() => unlockAudio())
-    .then(() => resumeContext())
-    .then(() => {
-      if (!voicesLoaded) {
-        loadVoicesNow();
-        preloadVoicesInternal();
-      }
-
-      const utter = new SpeechSynthesisUtterance(job.text);
+  // Load voices and unlock audio context
+  if (!voicesLoaded) {
+    loadVoicesNow();
+    preloadVoicesInternal();
+  }
+  unlockAudio();
+  resumeContext().then(() => {
+    try {
+      // Android WebView TTS works better when we do NOT cancel first.
+      // Cancelling often kills the engine state and the next utterance is dropped.
+      const utter = new SpeechSynthesisUtterance(text);
       if (preferredVoice) utter.voice = preferredVoice;
       utter.lang = preferredVoice?.lang || "es-ES";
-      utter.pitch = job.pitch;
-      utter.rate = job.rate;
-      utter.volume = job.volume;
+      utter.pitch = pitch;
+      utter.rate = rate;
+      utter.volume = 1;
 
-      const safetyTimeout = setTimeout(() => {
-        isSpeaking = false;
-        processSpeakQueue();
-      }, 6000);
+      // Some WebViews stall if the previous utterance is still referenced
+      lastUtterance = utter;
 
-      utter.onend = () => {
-        clearTimeout(safetyTimeout);
-        isSpeaking = false;
-        setTimeout(processSpeakQueue, 80);
-      };
-      utter.onerror = (e) => {
-        clearTimeout(safetyTimeout);
-        console.warn("TTS error:", e);
-        isSpeaking = false;
-        setTimeout(processSpeakQueue, 80);
-      };
+      // Force resume (required for Chrome/WebView)
+      if (window.speechSynthesis.paused) window.speechSynthesis.resume();
 
-      try {
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utter);
-      } catch (err) {
-        clearTimeout(safetyTimeout);
-        console.warn("Speech synthesis error:", err);
-        isSpeaking = false;
-        processSpeakQueue();
-      }
-    });
+      window.speechSynthesis.speak(utter);
+    } catch (err) {
+      console.warn("TTS speak error:", err);
+    }
+  });
 }
 
 export function speak(text: string, pitch: number = voicePitch, rate: number = voiceRate): void {
-  if (isAudioSilent() || !isVoiceAllowed()) return;
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-
-  // Ensure audio context is unlocked
-  unlockAudio();
-  resumeContext();
-
-  // WebView sometimes returns empty voices on first call; try to load now
-  if (!voicesLoaded && !loadVoicesNow()) {
-    preloadVoicesInternal();
-  }
-
-  speakQueue.push({ text, pitch, rate, volume: 1 });
-  if (!isSpeaking) {
-    processSpeakQueue();
-  }
+  doSpeak(text, pitch, rate);
 }
 
 export function speakWithQueue(text: string, priority: "normal" | "high" = "normal"): void {
@@ -386,21 +339,18 @@ export function speakWithQueue(text: string, priority: "normal" | "high" = "norm
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
   if (priority === "high") {
-    // Clear queue and interrupt current speech for urgent announcements
     stopSpeaking();
-    speakQueue.length = 0;
-    speak(text);
-  } else {
-    speak(text);
   }
+  speak(text);
 }
 
 export function stopSpeaking(): void {
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
+    try {
+      window.speechSynthesis.cancel();
+    } catch {}
   }
-  isSpeaking = false;
-  speakQueue.length = 0;
+  lastUtterance = null;
 }
 
 // ── Announcements (voice + beep + vibration) ──

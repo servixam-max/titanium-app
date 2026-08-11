@@ -956,13 +956,13 @@ export const plans: Plan[] = [
 export const warmUpExercises = [
   {
     id: "wu-1",
-    name: "Rotación articular",
+    name: "Plancha Jack",
     sets: 1,
-    reps: "10 círculos",
+    reps: "30s",
     restSeconds: 60,
     equipment: "bodyweight" as const,
-    description: "Tobillos, rodillas, cadera, hombros",
-    image: getImg("joint_rotations"),
+    description: "Core activado, pies abren y cierran sin mover los hombros.",
+    image: getImg("plank_jack"),
   },
   {
     id: "wu-2",
