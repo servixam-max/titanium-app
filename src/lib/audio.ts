@@ -1,7 +1,11 @@
 // Audio utility using Web Audio API + Speech Synthesis
 // Optimised for Capacitor WebView on Android (needs user-gesture unlock)
+// Includes pre-recorded MP3 voice fallback because WebView TTS is unreliable.
 
 import { haptics } from "./haptics";
+
+const VOICE_BASE_PATH = "/audio/voice/";
+const voiceCache = new Map<string, AudioBuffer>();
 
 let audioCtx: AudioContext | null = null;
 let audioUnlocked = false;
@@ -28,6 +32,39 @@ function getAudioContext(): AudioContext | null {
     }
   }
   return audioCtx;
+}
+
+async function loadVoiceFile(name: string): Promise<AudioBuffer | null> {
+  if (typeof window === "undefined") return null;
+  if (voiceCache.has(name)) return voiceCache.get(name) || null;
+  const ctx = getAudioContext();
+  if (!ctx) return null;
+  try {
+    const resp = await fetch(`${VOICE_BASE_PATH}${name}.mp3`);
+    if (!resp.ok) return null;
+    const buf = await resp.arrayBuffer();
+    const audioBuf = await ctx.decodeAudioData(buf);
+    voiceCache.set(name, audioBuf);
+    return audioBuf;
+  } catch {
+    return null;
+  }
+}
+
+async function playVoiceFile(name: string, volume: number = 1): Promise<void> {
+  if (isAudioSilent() || !isVoiceAllowed()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  await resumeContext();
+  const buf = await loadVoiceFile(name);
+  if (!buf) return;
+  const source = ctx.createBufferSource();
+  source.buffer = buf;
+  const gain = ctx.createGain();
+  gain.gain.value = volume;
+  source.connect(gain);
+  gain.connect(ctx.destination);
+  source.start(0);
 }
 
 function resumeContext(): Promise<void> {
@@ -331,6 +368,30 @@ function doSpeak(text: string, pitch: number, rate: number): void {
 }
 
 export function speak(text: string, pitch: number = voicePitch, rate: number = voiceRate): void {
+  // Prefer pre-recorded MP3 voice files — WebView TTS is too unreliable.
+  if (typeof window === "undefined") return;
+  const map: Record<string, string> = {
+    "Serie completada": "serie_completada",
+    "Última serie, dalo todo": "ultima_serie",
+    "Quedan 2 series": "quedan_dos",
+    "Entrenamiento completado. Buen trabajo.": "entrenamiento_completado",
+    "Calentamiento completado.": "calentamiento_completado",
+    "Prepárate": "preparate",
+    "tres": "tres",
+    "dos": "dos",
+    "uno": "uno",
+    "Siguiente ejercicio": "siguiente_ejercicio",
+    "A entrenar.": "a_entrenar",
+    "Diez segundos": "diez_segundos",
+    "Faltan 30 segundos": "faltan_30",
+    "Vas por la mitad del entrenamiento. Sigue así.": "vas_por_la_mitad",
+  };
+  const key = map[text.trim()];
+  if (key) {
+    playVoiceFile(key).catch(() => doSpeak(text, pitch, rate));
+    return;
+  }
+  // For dynamic text (names, reps, weights) fall back to TTS
   doSpeak(text, pitch, rate);
 }
 
@@ -364,17 +425,15 @@ export function announceExerciseStart(name: string, sets?: number, reps?: string
   if (isAudioSilent()) return;
   playExerciseStart();
   if (!isVoiceAllowed()) return;
-  const weightText = weight ? ` a ${weight} kilos` : "";
-  const setsText = sets ? `${sets} series de ${reps || "repeticiones"}` : "";
-  // Coma tras el nombre para que el TTS haga una pausa natural
-  speak(`${name}, ${setsText}${weightText}`, voicePitch, voiceRate);
+  // Use pre-recorded generic cue instead of dynamic TTS (WebView TTS fails often)
+  playVoiceFile("siguiente_ejercicio");
 }
 
 export function announceNextExercise(name?: string): void {
   if (isAudioSilent()) return;
   playDoubleBeep();
   haptics.doubleTick();
-  if (name && isVoiceAllowed()) speak(`Siguiente ejercicio: ${name}`, voicePitch, 1.0);
+  if (isVoiceAllowed()) playVoiceFile("siguiente_ejercicio");
 }
 
 export function announceWorkoutComplete(): void {
