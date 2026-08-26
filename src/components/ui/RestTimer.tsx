@@ -20,7 +20,8 @@ import {
 import { haptics } from "@/lib/haptics";
 
 export default function RestTimer() {
-  const { activeWorkout, skipRest, tickRest, adjustRest, audioEnabled } = useAppStore();
+  const { activeWorkout, skipRest, tickRest, adjustRest, audioEnabled } =
+    useAppStore();
   const prevTimeRef = useRef(activeWorkout.restTimeRemaining);
   const hasAnnouncedRef = useRef(false);
 
@@ -52,7 +53,9 @@ export default function RestTimer() {
 
     const timeLeft = activeWorkout.restTimeRemaining;
     const prevTime = prevTimeRef.current;
-    const totalTime = activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex]?.restSeconds || 60;
+    const totalTime =
+      activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex]
+        ?.restSeconds || 60;
 
     // Voice countdown: 3, 2, 1
     if (timeLeft <= 3 && timeLeft > 0 && timeLeft !== prevTime) {
@@ -65,7 +68,11 @@ export default function RestTimer() {
     if (totalTime >= 60 && prevTime > 30 && timeLeft === 30) {
       announceThirtySecondsLeft();
     }
-    if (totalTime >= 60 && prevTime > Math.floor(totalTime / 2) && timeLeft === Math.floor(totalTime / 2)) {
+    if (
+      totalTime >= 60 &&
+      prevTime > Math.floor(totalTime / 2) &&
+      timeLeft === Math.floor(totalTime / 2)
+    ) {
       announceHalfRest(timeLeft);
     }
 
@@ -74,14 +81,21 @@ export default function RestTimer() {
       playRestEndAlarm();
       haptics.countdownEnd();
       announceStart();
-      const nextEx = activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
+      const nextEx =
+        activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
       if (nextEx) {
-        setTimeout(() => announceNextExercise(nextEx.name), 800);
+        setTimeout(() => announceNextExercise(), 800);
       }
     }
 
     prevTimeRef.current = timeLeft;
-  }, [activeWorkout.restTimeRemaining, activeWorkout.isResting, audioEnabled, activeWorkout.routine, activeWorkout.currentExerciseIndex]);
+  }, [
+    activeWorkout.restTimeRemaining,
+    activeWorkout.isResting,
+    audioEnabled,
+    activeWorkout.routine,
+    activeWorkout.currentExerciseIndex,
+  ]);
 
   // Reset on close
   useEffect(() => {
@@ -92,20 +106,24 @@ export default function RestTimer() {
 
   if (!activeWorkout.isResting) return null;
 
-  const currentExercise = activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
+  const currentExercise =
+    activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
   const totalTime = currentExercise?.restSeconds || 60;
   const timeLeft = activeWorkout.restTimeRemaining;
   const restUrgent = timeLeft <= 10;
 
   const isLastSet = activeWorkout.currentSet >= (currentExercise?.sets || 1);
-  const nextExercise = activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex + 1];
+  const nextExercise =
+    activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex + 1];
   const hasNextExercise = isLastSet && !!nextExercise;
 
   return (
     <div className="fixed inset-0 z-[60] bg-[#0a0a0a]/98 backdrop-blur-md flex flex-col items-center justify-center p-6 overflow-hidden">
       {/* Pulsing neon halo background */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className={`w-[520px] h-[520px] rounded-full blur-[120px] animate-ambient ${restUrgent ? "bg-error/15" : "bg-primary-container/12"}`} />
+        <div
+          className={`w-[520px] h-[520px] rounded-full blur-[120px] animate-ambient ${restUrgent ? "bg-error/15" : "bg-primary-container/12"}`}
+        />
       </div>
 
       <div className="relative z-10 flex flex-col items-center w-full max-w-md">
@@ -136,8 +154,16 @@ export default function RestTimer() {
           <div className="w-full bg-surface-container-high border border-surface-container-highest rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up">
             <div className="w-16 h-16 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 border border-surface-container-highest">
               <ExerciseImage
-                src={(hasNextExercise ? nextExercise?.image : currentExercise?.image) || ""}
-                alt={(hasNextExercise ? nextExercise?.name : currentExercise?.name) || "Ejercicio"}
+                src={
+                  (hasNextExercise
+                    ? nextExercise?.image
+                    : currentExercise?.image) || ""
+                }
+                alt={
+                  (hasNextExercise
+                    ? nextExercise?.name
+                    : currentExercise?.name) || "Ejercicio"
+                }
                 containerClassName="w-full h-full"
               />
             </div>
@@ -154,7 +180,9 @@ export default function RestTimer() {
                 </span>
                 <span className="flex items-center gap-1">
                   <Hash className="w-3.5 h-3.5 text-primary-container" />
-                  {hasNextExercise ? nextExercise?.reps : `${currentExercise?.reps} reps`}
+                  {hasNextExercise
+                    ? nextExercise?.reps
+                    : `${currentExercise?.reps} reps`}
                 </span>
               </div>
             </div>

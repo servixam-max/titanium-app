@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "build:apk": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home && export PATH=$JAVA_HOME/bin:$PATH && ./gradlew assembleDebug",
-    "build:apk:clean": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home && export PATH=$JAVA_HOME/bin:$PATH && ./gradlew clean assembleDebug",
+    "build": "next build && node scripts/generate-sw.js",
+    "build:apk": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && ./gradlew assembleRelease",
+    "build:apk:clean": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && ./gradlew clean assembleRelease",
     "sync:android": "npx cap sync android",
     "open:android": "npx cap open android",
     "start": "next start",
@@ -14,9 +14,7 @@
   },
   "dependencies": {
     "@capacitor/android": "^6.2.1",
-    "@capacitor/cli": "^6.2.1",
     "@capacitor/core": "^6.2.1",
-    "@types/pg": "^8.20.0",
     "clsx": "^2.1.1",
     "cors": "^2.8.6",
     "dexie": "^4.4.2",
@@ -31,7 +29,9 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@capacitor/cli": "^6.2.1",
     "@playwright/test": "^1.60.0",
+    "@types/pg": "^8.20.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

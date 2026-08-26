@@ -23,7 +23,10 @@ function getAudioContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
   if (!audioCtx) {
     try {
-      const AC = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      const AC =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
       if (AC) {
         audioCtx = new AC();
       }
@@ -74,7 +77,9 @@ function resumeContext(): Promise<void> {
   return Promise.resolve();
 }
 
-function selectSpanishVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
+function selectSpanishVoice(
+  voices: SpeechSynthesisVoice[],
+): SpeechSynthesisVoice | null {
   const esVoices = voices.filter((v) => v.lang.startsWith("es"));
   return (
     esVoices.find((v) => /neural|premium|enhanced|natural/i.test(v.name)) ||
@@ -82,7 +87,9 @@ function selectSpanishVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoic
     esVoices.find((v) => v.lang === "es-ES" && v.localService) ||
     esVoices.find((v) => v.lang === "es-ES") ||
     esVoices.find((v) => v.lang.startsWith("es")) ||
-    voices.find((v) => v.lang.startsWith("en") && /neural|Google/i.test(v.name)) ||
+    voices.find(
+      (v) => v.lang.startsWith("en") && /neural|Google/i.test(v.name),
+    ) ||
     voices.find((v) => v.lang.startsWith("en")) ||
     voices[0] ||
     null
@@ -90,7 +97,8 @@ function selectSpanishVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoic
 }
 
 function loadVoicesNow(): boolean {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return false;
+  if (typeof window === "undefined" || !("speechSynthesis" in window))
+    return false;
   const voices = window.speechSynthesis.getVoices();
   if (voices && voices.length) {
     preferredVoice = selectSpanishVoice(voices);
@@ -150,7 +158,11 @@ export function unlockAudio() {
 if (typeof window !== "undefined") {
   const events = ["touchstart", "touchend", "click", "pointerdown"];
   events.forEach((ev) => {
-    window.addEventListener(ev, unlockAudio, { once: true, passive: true, capture: true });
+    window.addEventListener(ev, unlockAudio, {
+      once: true,
+      passive: true,
+      capture: true,
+    });
   });
   preloadVoicesInternal();
 }
@@ -213,13 +225,16 @@ function envelope(
   attack: number,
   sustain: number,
   release: number,
-  peak: number
+  peak: number,
 ) {
   const now = ctx.currentTime;
   gain.gain.setValueAtTime(0, now);
   gain.gain.linearRampToValueAtTime(peak, now + attack);
   gain.gain.setValueAtTime(peak, now + attack + sustain);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + attack + sustain + release);
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    now + attack + sustain + release,
+  );
 }
 
 export function playTone(
@@ -227,7 +242,7 @@ export function playTone(
   duration: number = 0.2,
   type: OscillatorType = "sine",
   volume: number = 0.25,
-  harmonic?: number
+  harmonic?: number,
 ): void {
   if (isAudioSilent() || !isBeepAllowed()) return;
   try {
@@ -268,7 +283,7 @@ export function playBeep(
   frequency: number = 880,
   duration: number = 0.15,
   type: OscillatorType = "sine",
-  volume: number = 0.3
+  volume: number = 0.3,
 ): void {
   playTone(frequency, duration, type, volume);
 }
@@ -331,8 +346,6 @@ export function playSetFlash(): void {
 
 // ── Speech Synthesis (WebView-safe) ──
 
-let lastUtterance: SpeechSynthesisUtterance | null = null;
-
 function doSpeak(text: string, pitch: number, rate: number): void {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   if (isAudioSilent() || !isVoiceAllowed()) return;
@@ -354,20 +367,21 @@ function doSpeak(text: string, pitch: number, rate: number): void {
       utter.rate = rate;
       utter.volume = 1;
 
-      // Some WebViews stall if the previous utterance is still referenced
-      lastUtterance = utter;
-
       // Force resume (required for Chrome/WebView)
       if (window.speechSynthesis.paused) window.speechSynthesis.resume();
 
       window.speechSynthesis.speak(utter);
-    } catch (err) {
-      console.warn("TTS speak error:", err);
+    } catch {
+      // WebView TTS is unreliable; silently fail and rely on MP3 fallback
     }
   });
 }
 
-export function speak(text: string, pitch: number = voicePitch, rate: number = voiceRate): void {
+export function speak(
+  text: string,
+  pitch: number = voicePitch,
+  rate: number = voiceRate,
+): void {
   // Prefer pre-recorded MP3 voice files — WebView TTS is too unreliable.
   if (typeof window === "undefined") return;
   const map: Record<string, string> = {
@@ -376,15 +390,21 @@ export function speak(text: string, pitch: number = voicePitch, rate: number = v
     "Quedan 2 series": "quedan_dos",
     "Entrenamiento completado. Buen trabajo.": "entrenamiento_completado",
     "Calentamiento completado.": "calentamiento_completado",
-    "Prepárate": "preparate",
-    "tres": "tres",
-    "dos": "dos",
-    "uno": "uno",
+    Prepárate: "preparate",
+    tres: "tres",
+    dos: "dos",
+    uno: "uno",
     "Siguiente ejercicio": "siguiente_ejercicio",
     "A entrenar.": "a_entrenar",
     "Diez segundos": "diez_segundos",
     "Faltan 30 segundos": "faltan_30",
     "Vas por la mitad del entrenamiento. Sigue así.": "vas_por_la_mitad",
+    "¡Trabajo!": "trabajo",
+    "¡Tiempo!": "tiempo",
+    "Circuito uno": "circuito_uno",
+    "Circuito dos": "circuito_dos",
+    "Circuito tres": "circuito_tres",
+    "Último circuito. ¡Dalo todo!": "ultimo_circuito",
   };
   const key = map[text.trim()];
   if (key) {
@@ -395,7 +415,10 @@ export function speak(text: string, pitch: number = voicePitch, rate: number = v
   doSpeak(text, pitch, rate);
 }
 
-export function speakWithQueue(text: string, priority: "normal" | "high" = "normal"): void {
+export function speakWithQueue(
+  text: string,
+  priority: "normal" | "high" = "normal",
+): void {
   if (isAudioSilent() || !isVoiceAllowed()) return;
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
@@ -411,7 +434,6 @@ export function stopSpeaking(): void {
       window.speechSynthesis.cancel();
     } catch {}
   }
-  lastUtterance = null;
 }
 
 // ── Announcements (voice + beep + vibration) ──
@@ -421,7 +443,7 @@ export function announceExerciseComplete(): void {
   speak("Serie completada", voicePitch, 1.0);
 }
 
-export function announceExerciseStart(name: string, sets?: number, reps?: string, weight?: number): void {
+export function announceExerciseStart(): void {
   if (isAudioSilent()) return;
   playExerciseStart();
   if (!isVoiceAllowed()) return;
@@ -429,7 +451,7 @@ export function announceExerciseStart(name: string, sets?: number, reps?: string
   playVoiceFile("siguiente_ejercicio");
 }
 
-export function announceNextExercise(name?: string): void {
+export function announceNextExercise(): void {
   if (isAudioSilent()) return;
   playDoubleBeep();
   haptics.doubleTick();
@@ -473,7 +495,8 @@ export function announceHalfRest(secondsLeft: number): void {
 export function announceGetReady(name?: string): void {
   if (isAudioSilent()) return;
   playTripleBeep();
-  if (isVoiceAllowed()) speak(name ? `Prepárate. ${name}` : "Prepárate", voicePitch, 1.0);
+  if (isVoiceAllowed())
+    speak(name ? `Prepárate. ${name}` : "Prepárate", voicePitch, 1.0);
 }
 
 export function announceStart(): void {
@@ -491,6 +514,48 @@ export function announceSetFlash(): void {
   playSetFlash();
 }
 
+// ── HIIT work-interval cues ──
+
+/** "¡Trabajo!" — plays at the start of a timed work interval */
+export function announceWorkStart(): void {
+  if (isAudioSilent()) return;
+  playExerciseStart();
+  if (isVoiceAllowed())
+    playVoiceFile("trabajo").catch(() => doSpeak("¡Trabajo!", voicePitch, 1.0));
+}
+
+/** "¡Tiempo!" — plays when a timed work interval ends */
+export function announceWorkEnd(): void {
+  if (isAudioSilent()) return;
+  playRestStart();
+  if (isVoiceAllowed())
+    playVoiceFile("tiempo").catch(() => doSpeak("¡Tiempo!", voicePitch, 1.05));
+}
+
+/** Circuit cue for HIIT: "Circuito uno/dos/tres", last one says "¡Dalo todo!" */
+export function announceCircuit(
+  circuitNumber: number,
+  totalCircuits: number,
+): void {
+  if (isAudioSilent() || !isVoiceAllowed()) return;
+  const keys: Record<number, string> = {
+    1: "circuito_uno",
+    2: "circuito_dos",
+    3: "circuito_tres",
+  };
+  const fallback = `Circuito ${circuitNumber}`;
+  if (circuitNumber === totalCircuits && circuitNumber > 1) {
+    playVoiceFile("ultimo_circuito").catch(() =>
+      doSpeak("Último circuito. ¡Dalo todo!", voicePitch, 1.05),
+    );
+    return;
+  }
+  const key = keys[circuitNumber];
+  if (key) playVoiceFile(key).catch(() => doSpeak(fallback, voicePitch, 1.05));
+  else
+    doSpeak(`Circuito ${circuitNumber} de ${totalCircuits}`, voicePitch, 1.05);
+}
+
 // ── Contextual workout announcements (Task B2) ──
 
 export function announceSetsRemaining(remaining: number): void {
@@ -499,7 +564,10 @@ export function announceSetsRemaining(remaining: number): void {
   else if (remaining === 1) speak("Última serie, dalo todo", voicePitch, 1.05);
 }
 
-export function announcePrepareNext(nextName: string, restSeconds?: number): void {
+export function announcePrepareNext(
+  nextName: string,
+  restSeconds?: number,
+): void {
   if (isAudioSilent()) return;
   playDoubleBeep();
   haptics.doubleTick();

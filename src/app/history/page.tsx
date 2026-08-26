@@ -12,7 +12,6 @@ import {
   Calendar,
   Trash2,
   Search,
-  Filter,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
@@ -46,15 +45,19 @@ export default function HistoryPage() {
     return match ? parseInt(match[1], 10) : 0;
   };
 
-  const filteredSessions = sessions.filter((s) => {
-    if (filter === "all") return true;
-    return s.mode === filter;
-  }).filter((s) => {
-    const routine = routines.find((r) => r.day === s.routineId);
-    const routineLabel = routine?.title || `Día ${s.routineId}`;
-    return routineLabel.toLowerCase().includes(search.toLowerCase()) ||
-      s.mode.toLowerCase().includes(search.toLowerCase());
-  });
+  const filteredSessions = sessions
+    .filter((s) => {
+      if (filter === "all") return true;
+      return s.mode === filter;
+    })
+    .filter((s) => {
+      const routine = routines.find((r) => r.day === s.routineId);
+      const routineLabel = routine?.title || `Día ${s.routineId}`;
+      return (
+        routineLabel.toLowerCase().includes(search.toLowerCase()) ||
+        s.mode.toLowerCase().includes(search.toLowerCase())
+      );
+    });
 
   const formatDate = (dateStr: string | Date) => {
     const date = new Date(dateStr);
@@ -66,11 +69,6 @@ export default function HistoryPage() {
     });
   };
 
-  const formatTime = (dateStr: string | Date) => {
-    const date = new Date(dateStr);
-    return date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
-  };
-
   const formatDuration = (seconds: number) => {
     if (!seconds) return "--";
     const mins = Math.floor(seconds / 60);
@@ -80,7 +78,9 @@ export default function HistoryPage() {
 
   const completed = sessions.filter((s) => s.completed && s.endTime);
   const guidedCount = completed.filter((s) => s.mode === "guided").length;
-  const individualCount = completed.filter((s) => s.mode === "individual").length;
+  const individualCount = completed.filter(
+    (s) => s.mode === "individual",
+  ).length;
   const completedCount = completed.length;
 
   const totalVolume = sessions.reduce((total, session) => {
@@ -88,12 +88,15 @@ export default function HistoryPage() {
       total +
       session.exercises.reduce((exTotal, ex) => {
         const routine = routines.find((r) => r.day === session.routineId);
-        const exerciseDef = routine?.exercises.find((e) => e.id === ex.exerciseId);
+        const exerciseDef = routine?.exercises.find(
+          (e) => e.id === ex.exerciseId,
+        );
         const baseReps = parseReps(exerciseDef?.reps);
         return (
           exTotal +
           ex.sets.reduce((sum, set) => {
-            return sum + (set.weight ? set.weight * baseReps : 0);
+            const reps = set.reps ?? baseReps;
+            return sum + (set.weight && reps ? set.weight * reps : 0);
           }, 0)
         );
       }, 0)
@@ -113,7 +116,10 @@ export default function HistoryPage() {
         <main className="w-full px-container-padding pt-4">
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-24 bg-surface-container-high rounded-lg animate-pulse" />
+              <div
+                key={i}
+                className="h-24 bg-surface-container-high rounded-lg animate-pulse"
+              />
             ))}
           </div>
         </main>
@@ -142,8 +148,12 @@ export default function HistoryPage() {
               <CheckCircle className="w-5 h-5 text-primary-container" />
             </div>
             <div>
-              <span className="font-headline-lg text-headline-lg text-primary-container block leading-none">{completedCount}</span>
-              <span className="font-label-caps text-[10px] text-on-surface-variant">COMPLETADOS</span>
+              <span className="font-headline-lg text-headline-lg text-primary-container block leading-none">
+                {completedCount}
+              </span>
+              <span className="font-label-caps text-[10px] text-on-surface-variant">
+                COMPLETADOS
+              </span>
             </div>
           </div>
           <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-3 flex items-center gap-3">
@@ -151,8 +161,12 @@ export default function HistoryPage() {
               <Dumbbell className="w-5 h-5 text-primary-container" />
             </div>
             <div>
-              <span className="font-headline-lg text-headline-lg text-primary-container block leading-none">{(totalVolume / 1000).toFixed(1)}T</span>
-              <span className="font-label-caps text-[10px] text-on-surface-variant">VOLUMEN TOTAL</span>
+              <span className="font-headline-lg text-headline-lg text-primary-container block leading-none">
+                {(totalVolume / 1000).toFixed(1)}T
+              </span>
+              <span className="font-label-caps text-[10px] text-on-surface-variant">
+                VOLUMEN TOTAL
+              </span>
             </div>
           </div>
           <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-3 flex items-center gap-3">
@@ -160,8 +174,12 @@ export default function HistoryPage() {
               <TrendingUp className="w-5 h-5 text-primary-container" />
             </div>
             <div>
-              <span className="font-headline-lg text-headline-lg text-primary-container block leading-none">{guidedCount}</span>
-              <span className="font-label-caps text-[10px] text-on-surface-variant">GUIADOS</span>
+              <span className="font-headline-lg text-headline-lg text-primary-container block leading-none">
+                {guidedCount}
+              </span>
+              <span className="font-label-caps text-[10px] text-on-surface-variant">
+                GUIADOS
+              </span>
             </div>
           </div>
           <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-3 flex items-center gap-3">
@@ -169,8 +187,12 @@ export default function HistoryPage() {
               <Calendar className="w-5 h-5 text-primary-container" />
             </div>
             <div>
-              <span className="font-headline-lg text-headline-lg text-primary-container block leading-none">{individualCount}</span>
-              <span className="font-label-caps text-[10px] text-on-surface-variant">INDIVIDUALES</span>
+              <span className="font-headline-lg text-headline-lg text-primary-container block leading-none">
+                {individualCount}
+              </span>
+              <span className="font-label-caps text-[10px] text-on-surface-variant">
+                INDIVIDUALES
+              </span>
             </div>
           </div>
         </section>
@@ -179,11 +201,13 @@ export default function HistoryPage() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
           <input
+            id="session-search"
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar rutina..."
             className="w-full h-[44px] pl-10 pr-4 bg-surface-container-low border border-surface-container-highest rounded-xl text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary-container"
+            aria-label="Buscar rutina en historial"
           />
         </div>
 
@@ -198,25 +222,35 @@ export default function HistoryPage() {
                   : "bg-transparent text-on-surface-variant"
               }`}
             >
-              {f === "all" ? "Todos" : f === "guided" ? "Guiados" : "Individuales"}
+              {f === "all"
+                ? "Todos"
+                : f === "guided"
+                  ? "Guiados"
+                  : "Individuales"}
             </button>
           ))}
         </div>
 
         <section className="flex flex-col gap-stack-gap">
-          <h3 className="font-headline-md text-headline-md text-on-surface">Registros</h3>
+          <h3 className="font-headline-md text-headline-md text-on-surface">
+            Registros
+          </h3>
 
           {!mounted ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-24 bg-surface-container-high rounded-lg animate-pulse" />
+                <div
+                  key={i}
+                  className="h-24 bg-surface-container-high rounded-lg animate-pulse"
+                />
               ))}
             </div>
           ) : filteredSessions.length === 0 ? (
             <div className="text-center py-8">
               <p className="font-body-md text-body-md text-on-surface-variant">
                 No hay entrenamientos{" "}
-                {filter !== "all" || search ? "con estos filtros " : ""}registrados.
+                {filter !== "all" || search ? "con estos filtros " : ""}
+                registrados.
               </p>
               <p className="font-label-caps text-label-caps text-on-surface-variant mt-2">
                 ¡Empieza tu primer entrenamiento!
@@ -228,28 +262,48 @@ export default function HistoryPage() {
                 .slice()
                 .reverse()
                 .map((session) => {
-                  const sessionVolume = session.exercises.reduce((total, ex) => {
-                    const routine = routines.find((r) => r.day === session.routineId);
-                    const exerciseDef = routine?.exercises.find((e) => e.id === ex.exerciseId);
-                    const baseReps = parseReps(exerciseDef?.reps);
-                    return (
-                      total +
-                      ex.sets.reduce((sum, set) => {
-                        return sum + (set.weight ? set.weight * baseReps : 0);
-                      }, 0)
-                    );
-                  }, 0);
+                  const sessionVolume = session.exercises.reduce(
+                    (total, ex) => {
+                      const routine = routines.find(
+                        (r) => r.day === session.routineId,
+                      );
+                      const exerciseDef = routine?.exercises.find(
+                        (e) => e.id === ex.exerciseId,
+                      );
+                      const baseReps = parseReps(exerciseDef?.reps);
+                      return (
+                        total +
+                        ex.sets.reduce((sum, set) => {
+                          const reps = set.reps ?? baseReps;
+                          return (
+                            sum + (set.weight && reps ? set.weight * reps : 0)
+                          );
+                        }, 0)
+                      );
+                    },
+                    0,
+                  );
 
-                  const isHIIT = session.exercises.some((ex) => ex.exerciseId.includes("d3") || ex.exerciseId.includes("d9"));
-                  const completedExercises = session.exercises.filter((ex) => ex.sets.length > 0).length;
+                  const isHIIT = session.exercises.some(
+                    (ex) =>
+                      ex.exerciseId.includes("d3") ||
+                      ex.exerciseId.includes("d9"),
+                  );
+                  const completedExercises = session.exercises.filter(
+                    (ex) => ex.sets.length > 0,
+                  ).length;
                   const totalExercises = session.exercises.length;
                   const isExpanded = expandedSession === session.id;
                   const duration = session.endTime
                     ? Math.round(
-                        (new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / 1000
+                        (new Date(session.endTime).getTime() -
+                          new Date(session.startTime).getTime()) /
+                          1000,
                       )
                     : 0;
-                  const routineTitle = routines.find((r) => r.day === session.routineId)?.title || `Día ${session.routineId}`;
+                  const routineTitle =
+                    routines.find((r) => r.day === session.routineId)?.title ||
+                    `Día ${session.routineId}`;
 
                   return (
                     <div
@@ -258,7 +312,9 @@ export default function HistoryPage() {
                     >
                       <div className="flex items-center">
                         <button
-                          onClick={() => setExpandedSession(isExpanded ? null : session.id)}
+                          onClick={() =>
+                            setExpandedSession(isExpanded ? null : session.id)
+                          }
                           className="flex-1 p-stack-gap flex items-center gap-stack-gap text-left active:scale-[0.98] transition-transform"
                         >
                           <div className="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center flex-shrink-0">
@@ -327,39 +383,61 @@ export default function HistoryPage() {
                           {session.exercises
                             .filter((ex) => ex.sets.length > 0)
                             .map((ex) => {
-                              const routine = routines.find((r) => r.day === session.routineId);
-                              const exerciseDef = routine?.exercises.find((e) => e.id === ex.exerciseId);
-                              const exerciseName = exerciseDef?.name || ex.exerciseId;
+                              const routine = routines.find(
+                                (r) => r.day === session.routineId,
+                              );
+                              const exerciseDef = routine?.exercises.find(
+                                (e) => e.id === ex.exerciseId,
+                              );
+                              const exerciseName =
+                                exerciseDef?.name || ex.exerciseId;
                               const exerciseReps = exerciseDef?.reps || "";
 
                               return (
-                                <div key={ex.exerciseId} className="py-3 border-b border-surface-container-highest last:border-b-0">
+                                <div
+                                  key={ex.exerciseId}
+                                  className="py-3 border-b border-surface-container-highest last:border-b-0"
+                                >
                                   <h5 className="font-body-md text-body-md font-bold text-primary-container mb-2">
                                     {exerciseName}{" "}
-                                    <span className="text-on-surface-variant font-normal">({exerciseReps})</span>
+                                    <span className="text-on-surface-variant font-normal">
+                                      ({exerciseReps})
+                                    </span>
                                   </h5>
                                   <div className="grid grid-cols-3 gap-2">
                                     {ex.sets.map((set, setIdx) => (
-                                      <div key={setIdx} className="bg-surface-container-high rounded-lg p-2 text-center">
+                                      <div
+                                        key={setIdx}
+                                        className="bg-surface-container-high rounded-lg p-2 text-center"
+                                      >
                                         <span className="font-label-caps text-[10px] text-on-surface-variant block mb-1">
                                           Serie {set.setNumber}
                                         </span>
                                         <span className="font-body-md text-body-md font-bold text-on-surface">
-                                          {set.weight ? `${set.weight}kg` : "--"}
+                                          {set.weight
+                                            ? `${set.weight}kg`
+                                            : "--"}
                                         </span>
                                         {" · "}
                                         <span className="font-body-md text-body-md font-bold text-primary-container">
                                           {set.reps ?? "--"}
                                         </span>
-                                        <span className="text-[10px] text-on-surface-variant"> reps</span>
+                                        <span className="text-[10px] text-on-surface-variant">
+                                          {" "}
+                                          reps
+                                        </span>
                                       </div>
                                     ))}
                                   </div>
                                 </div>
                               );
                             })}
-                          {session.exercises.every((ex) => ex.sets.length === 0) && (
-                            <p className="text-center py-4 font-body-md text-on-surface-variant">No hay series registradas</p>
+                          {session.exercises.every(
+                            (ex) => ex.sets.length === 0,
+                          ) && (
+                            <p className="text-center py-4 font-body-md text-on-surface-variant">
+                              No hay series registradas
+                            </p>
                           )}
                           {sessionVolume > 0 && (
                             <div className="mt-3 pt-3 border-t border-surface-container-high">

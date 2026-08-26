@@ -1,7 +1,15 @@
 // Haptic feedback utility with fallback for unsupported devices
 // Patterns: success, error, tick, countdown, complete, light, doubleTick, restStart
 
-export type HapticPattern = "success" | "error" | "tick" | "countdown" | "complete" | "light" | "doubleTick" | "restStart";
+export type HapticPattern =
+  | "success"
+  | "error"
+  | "tick"
+  | "countdown"
+  | "complete"
+  | "light"
+  | "doubleTick"
+  | "restStart";
 
 const PATTERNS: Record<HapticPattern, number | number[]> = {
   success: [80, 40, 80],

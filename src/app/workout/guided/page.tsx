@@ -2,9 +2,18 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Weight, Hash, Home, Volume2, VolumeX, RotateCcw } from "lucide-react";
+import {
+  CheckCircle,
+  Weight,
+  Hash,
+  Home,
+  Volume2,
+  VolumeX,
+  RotateCcw,
+} from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import RestTimer from "@/components/ui/RestTimer";
+import WorkTimer from "@/components/ui/WorkTimer";
 import ExerciseImage from "@/components/ui/ExerciseImage";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SectionTitle from "@/components/ui/SectionTitle";
@@ -15,7 +24,6 @@ import {
   announceRest,
   setAudioMode as setGlobalAudioMode,
   setVoiceRate as setGlobalVoiceRate,
-  getVoiceRate,
   unlockAudio,
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
@@ -29,7 +37,8 @@ export default function GuidedWorkout() {
     setExerciseWeight,
     setExerciseReps,
     goToExercise,
-    startRest,
+    startWork,
+    skipWork,
     audioEnabled,
     audioMode,
     voiceRate,
@@ -46,7 +55,17 @@ export default function GuidedWorkout() {
   const currentExerciseIndex = activeWorkout.currentExerciseIndex;
   const currentSet = activeWorkout.currentSet;
   const currentExercise = routine?.exercises[currentExerciseIndex];
-  const isBodyweightHIIT = routine?.type === "hiit" && activeWorkout.equipmentPref === "bodyweight";
+  const isBodyweightHIIT =
+    routine?.type === "hiit" && activeWorkout.equipmentPref === "bodyweight";
+  const isHIIT = routine?.type === "hiit";
+  // Time-based set? ("45s" in reps or explicit workSeconds)
+  const timedSeconds =
+    currentExercise?.workSeconds ??
+    (() => {
+      const m = /(\d+)\s*s/i.exec(currentExercise?.reps || "");
+      return m ? Number(m[1]) : 0;
+    })();
+  const isTimedSet = timedSeconds > 0;
 
   // Redirect if no routine or workout just finished
   useEffect(() => {
@@ -57,11 +76,20 @@ export default function GuidedWorkout() {
     if (activeWorkout.justFinished && activeWorkout.session?.completed) {
       router.push("/workout/complete");
     }
-  }, [routine, activeWorkout.justFinished, activeWorkout.session?.completed, router]);
+  }, [
+    routine,
+    activeWorkout.justFinished,
+    activeWorkout.session?.completed,
+    router,
+  ]);
 
   // Weight prompt when exercise has no weight
   useEffect(() => {
-    if (currentExercise && !isBodyweightHIIT && activeWorkout.exerciseWeights[currentExercise.id] === undefined) {
+    if (
+      currentExercise &&
+      !isBodyweightHIIT &&
+      activeWorkout.exerciseWeights[currentExercise.id] === undefined
+    ) {
       setShowWeightPrompt(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,12 +107,7 @@ export default function GuidedWorkout() {
     if (audioEnabled && audioMode !== "silent") {
       unlockAudio();
       const timer = setTimeout(() => {
-        announceExerciseStart(
-          currentExercise.name,
-          currentExercise.sets,
-          currentExercise.reps,
-          activeWorkout.exerciseWeights[currentExercise.id]
-        );
+        announceExerciseStart();
       }, 600);
       return () => clearTimeout(timer);
     }
@@ -94,9 +117,36 @@ export default function GuidedWorkout() {
   // Reps input sync
   useEffect(() => {
     if (currentExercise) {
-      setRepsInput(String(activeWorkout.exerciseReps[currentExercise.id] ?? ""));
+      setRepsInput(
+        String(activeWorkout.exerciseReps[currentExercise.id] ?? ""),
+      );
     }
   }, [currentExercise, activeWorkout.exerciseReps]);
+
+  // Auto-start the work timer for time-based (HIIT) sets
+  useEffect(() => {
+    if (
+      routine &&
+      isTimedSet &&
+      !activeWorkout.isWorking &&
+      !activeWorkout.isResting &&
+      !showWeightPrompt &&
+      !activeWorkout.justFinished
+    ) {
+      startWork(timedSeconds);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    routine,
+    isTimedSet,
+    timedSeconds,
+    activeWorkout.isWorking,
+    activeWorkout.isResting,
+    showWeightPrompt,
+    activeWorkout.justFinished,
+    currentExerciseIndex,
+    currentSet,
+  ]);
 
   // Confirm before leaving the page
   const onBeforeUnload = useCallback((e: BeforeUnloadEvent) => {
@@ -113,7 +163,10 @@ export default function GuidedWorkout() {
 
   const totalExercises = routine.exercises.length;
   const exerciseWeight = activeWorkout.exerciseWeights[currentExercise.id];
-  const nextExerciseObj = currentExerciseIndex < totalExercises - 1 ? routine.exercises[currentExerciseIndex + 1] : null;
+  const nextExerciseObj =
+    currentExerciseIndex < totalExercises - 1
+      ? routine.exercises[currentExerciseIndex + 1]
+      : null;
 
   const triggerFeedback = () => {
     setFlashKey((k) => k + 1);
@@ -132,12 +185,22 @@ export default function GuidedWorkout() {
   const handleComplete = () => {
     if (!isBodyweightHIIT && exerciseWeight === undefined) return;
 
-    const reps = Number(repsInput) || activeWorkout.exerciseReps[currentExercise.id] || 0;
+    // If a work timer is still running (shouldn't happen — WorkTimer overlay
+    // covers the screen — but be safe), stop it before progressing.
+    if (activeWorkout.isWorking) skipWork();
+
+    const reps =
+      Number(repsInput) || activeWorkout.exerciseReps[currentExercise.id] || 0;
     setExerciseReps(currentExercise.id, reps);
 
     triggerFeedback();
     // Speak directly within the user gesture to satisfy WebView audio policies
-    if (audioEnabled && audioMode !== "silent" && typeof window !== "undefined" && "speechSynthesis" in window) {
+    if (
+      audioEnabled &&
+      audioMode !== "silent" &&
+      typeof window !== "undefined" &&
+      "speechSynthesis" in window
+    ) {
       unlockAudio();
       try {
         const utter = new SpeechSynthesisUtterance("Serie completada");
@@ -150,21 +213,24 @@ export default function GuidedWorkout() {
       announceExerciseComplete();
     }
 
-    completeSet(currentExerciseIndex, currentSet, isBodyweightHIIT ? undefined : exerciseWeight, reps);
+    completeSet(
+      currentExerciseIndex,
+      currentSet,
+      isBodyweightHIIT ? undefined : exerciseWeight,
+      reps,
+    );
 
     const isLastSet = currentSet >= currentExercise.sets;
     if (isLastSet && nextExerciseObj) {
       if (audioEnabled) {
-        setTimeout(() => announceNextExercise(nextExerciseObj.name), 1500);
+        setTimeout(() => announceNextExercise(), 1500);
       }
     } else if (audioEnabled) {
       announceRest(currentExercise.restSeconds);
     }
 
-    // Store will call finishWorkout on the very last set; avoid starting rest then.
-    if (!(isLastSet && currentExerciseIndex >= totalExercises - 1)) {
-      startRest(currentExercise.restSeconds);
-    }
+    // completeSet() already starts the rest and advances the set/exercise.
+    // We must NOT call startRest again to avoid double countdowns.
   };
 
   const handleRepeatLastSet = () => {
@@ -205,17 +271,26 @@ export default function GuidedWorkout() {
             </p>
             <div className="flex items-center gap-2 mb-4">
               <input
+                id="weight-input"
                 className="flex-1 bg-surface-container-high border border-surface-container-highest rounded-xl h-[56px] text-center font-bold text-on-surface text-2xl focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none"
                 type="number"
+                inputMode="decimal"
                 placeholder="0"
                 value={weightInput}
                 onChange={(e) => setWeightInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSetWeight()}
                 autoFocus
+                aria-label="Peso en kilogramos"
+                step="0.5"
               />
-              <span className="font-bold text-on-surface-variant text-lg">kg</span>
+              <span className="font-bold text-on-surface-variant text-lg">
+                kg
+              </span>
             </div>
-            <PrimaryButton onClick={handleSetWeight} disabled={!weightInput || Number(weightInput) <= 0}>
+            <PrimaryButton
+              onClick={handleSetWeight}
+              disabled={!weightInput || Number(weightInput) <= 0}
+            >
               CONTINUAR
             </PrimaryButton>
           </div>
@@ -229,7 +304,10 @@ export default function GuidedWorkout() {
         >
           <Home className="w-4 h-4" />
         </button>
-        <SectionTitle align="center" className="absolute left-1/2 -translate-x-1/2 m-0">
+        <SectionTitle
+          align="center"
+          className="absolute left-1/2 -translate-x-1/2 m-0"
+        >
           ENTRENAMIENTO
         </SectionTitle>
         <button
@@ -237,7 +315,11 @@ export default function GuidedWorkout() {
           className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-on-surface active:scale-95"
           title={audioEnabled ? "Desactivar audio" : "Activar audio"}
         >
-          {audioEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+          {audioEnabled ? (
+            <Volume2 className="w-5 h-5" />
+          ) : (
+            <VolumeX className="w-5 h-5" />
+          )}
         </button>
       </header>
 
@@ -253,7 +335,12 @@ export default function GuidedWorkout() {
           </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
             {routine.exercises.map((ex, idx) => {
-              const state = idx < currentExerciseIndex ? "done" : idx === currentExerciseIndex ? "active" : "pending";
+              const state =
+                idx < currentExerciseIndex
+                  ? "done"
+                  : idx === currentExerciseIndex
+                    ? "active"
+                    : "pending";
               return (
                 <button
                   key={ex.id}
@@ -270,7 +357,9 @@ export default function GuidedWorkout() {
                           : "bg-surface-container-highest border-surface-container-highest"
                     }`}
                   />
-                  <span className={`text-[10px] font-bold leading-tight text-center max-w-[60px] truncate ${state === "active" ? "text-primary-container" : "text-on-surface-variant"}`}>
+                  <span
+                    className={`text-[10px] font-bold leading-tight text-center max-w-[60px] truncate ${state === "active" ? "text-primary-container" : "text-on-surface-variant"}`}
+                  >
                     {ex.name}
                   </span>
                 </button>
@@ -279,7 +368,10 @@ export default function GuidedWorkout() {
           </div>
         </div>
 
-        <div key={currentExerciseIndex} className="flex-1 min-h-0 relative rounded-xl overflow-hidden border border-surface-container-highest mb-3 animate-fade-in-up">
+        <div
+          key={currentExerciseIndex}
+          className="flex-1 min-h-0 relative rounded-xl overflow-hidden border border-surface-container-highest mb-3 animate-fade-in-up"
+        >
           <ExerciseImage
             src={currentExercise.image}
             alt={currentExercise.name}
@@ -292,8 +384,17 @@ export default function GuidedWorkout() {
             {currentExercise.name}
           </h2>
           <p className="text-on-surface-variant font-body-md mt-1">
-            Serie {currentSet} de {currentExercise.sets} · {currentExercise.reps} reps
+            Serie {currentSet} de {currentExercise.sets} ·{" "}
+            {isTimedSet
+              ? `${timedSeconds} segundos`
+              : `${currentExercise.reps} reps`}
           </p>
+          {isHIIT && (
+            <p className="text-primary-container font-label-caps tracking-[0.2em] text-[11px] uppercase mt-1">
+              Circuito {Math.floor(currentExerciseIndex / 3) + 1} de{" "}
+              {Math.ceil(totalExercises / 3)}
+            </p>
+          )}
           <div className="flex items-center justify-center gap-1.5 mt-2">
             {Array.from({ length: currentExercise.sets }).map((_, i) => {
               const done = i < currentSet - 1;
@@ -319,11 +420,15 @@ export default function GuidedWorkout() {
             <div className="flex-[1.1] flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-3 py-2">
               <div className="flex items-center gap-2 mb-1">
                 <Weight className="w-5 h-5 text-primary-container" />
-                <span className="text-on-surface-variant font-label-caps text-[11px]">PESO</span>
+                <span className="text-on-surface-variant font-label-caps text-[11px]">
+                  PESO
+                </span>
               </div>
               <button
                 onClick={() => {
-                  setWeightInput(exerciseWeight !== undefined ? String(exerciseWeight) : "");
+                  setWeightInput(
+                    exerciseWeight !== undefined ? String(exerciseWeight) : "",
+                  );
                   setShowWeightPrompt(true);
                 }}
                 className="flex items-baseline gap-1 w-full text-left"
@@ -331,23 +436,33 @@ export default function GuidedWorkout() {
                 <span className="font-bold text-on-surface text-2xl">
                   {exerciseWeight !== undefined ? exerciseWeight : "--"}
                 </span>
-                <span className="font-bold text-on-surface-variant text-sm">kg</span>
+                <span className="font-bold text-on-surface-variant text-sm">
+                  kg
+                </span>
               </button>
             </div>
           )}
-          <div className={`${isBodyweightHIIT ? "flex-1" : "flex-[0.9]"} flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-3 py-2`}>
-            <div className="flex items-center gap-2 mb-1">
-              <Hash className="w-5 h-5 text-primary-container" />
-              <span className="text-on-surface-variant font-label-caps text-[11px]">REPS</span>
+          {!isTimedSet && (
+            <div
+              className={`${isBodyweightHIIT ? "flex-1" : "flex-[0.9]"} flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-3 py-2`}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <Hash className="w-5 h-5 text-primary-container" />
+                <span className="text-on-surface-variant font-label-caps text-[11px]">
+                  REPS
+                </span>
+              </div>
+              <input
+                id="reps-input"
+                type="number"
+                inputMode="numeric"
+                className="w-full bg-transparent font-bold text-on-surface text-2xl outline-none"
+                value={repsInput}
+                onChange={(e) => setRepsInput(e.target.value)}
+                aria-label="Repeticiones completadas"
+              />
             </div>
-            <input
-              type="number"
-              inputMode="numeric"
-              className="w-full bg-transparent font-bold text-on-surface text-2xl outline-none"
-              value={repsInput}
-              onChange={(e) => setRepsInput(e.target.value)}
-            />
-          </div>
+          )}
         </div>
       </main>
 
@@ -369,13 +484,15 @@ export default function GuidedWorkout() {
           onClick={handleComplete}
           disabled={!isBodyweightHIIT && exerciseWeight === undefined}
         >
-          {currentSet >= currentExercise.sets && currentExerciseIndex >= totalExercises - 1
+          {currentSet >= currentExercise.sets &&
+          currentExerciseIndex >= totalExercises - 1
             ? "FINALIZAR"
             : "COMPLETAR SERIE"}
         </PrimaryButton>
       </footer>
 
       <RestTimer />
+      <WorkTimer />
 
       {showExitConfirm && (
         <div className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">

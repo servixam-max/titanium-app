@@ -21,10 +21,14 @@ export default function PrimaryButton({
   ...props
 }: PrimaryButtonProps) {
   const variants = {
-    primary: "bg-primary-container text-on-primary border-primary-container shadow-neon hover:shadow-neon-strong",
-    secondary: "bg-surface-container-high text-on-surface border-surface-container-highest hover:border-surface-variant",
-    danger: "bg-surface-container-high text-error border-surface-container-highest",
-    ghost: "bg-transparent text-on-surface-variant border-transparent hover:text-on-surface",
+    primary:
+      "bg-primary-container text-on-primary border-primary-container shadow-neon hover:shadow-neon-strong",
+    secondary:
+      "bg-surface-container-high text-on-surface border-surface-container-highest hover:border-surface-variant",
+    danger:
+      "bg-surface-container-high text-error border-surface-container-highest",
+    ghost:
+      "bg-transparent text-on-surface-variant border-transparent hover:text-on-surface",
   };
 
   const sizes = {
@@ -40,7 +44,7 @@ export default function PrimaryButton({
         variants[variant],
         sizes[size],
         fullWidth && "w-full",
-        className
+        className,
       )}
       {...props}
     >

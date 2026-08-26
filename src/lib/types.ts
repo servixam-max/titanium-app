@@ -10,6 +10,8 @@ export interface Exercise {
   tempo?: string;
   category?: string; // chest, back, shoulders, biceps, triceps, legs, core, full_body
   difficulty?: "Principiante" | "Intermedio" | "Avanzado";
+  // Explicit work duration (seconds) for time-based sets; also parsed from reps like "45s"
+  workSeconds?: number;
   // Parsed target reps range for progression suggestions
   targetRepsMin?: number;
   targetRepsMax?: number;
@@ -78,6 +80,9 @@ export interface ActiveWorkoutState {
   equipmentPref: EquipmentPreference;
   isResting: boolean;
   restTimeRemaining: number;
+  /** Work-interval timer (HIIT): countdown while performing a time-based set */
+  isWorking: boolean;
+  workTimeRemaining: number;
   session: WorkoutSession | null;
   // Per-exercise weight and reps overrides (keyed by exercise id)
   exerciseWeights: Record<string, number>;

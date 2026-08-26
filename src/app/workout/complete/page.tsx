@@ -2,7 +2,15 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Trophy, Clock, Dumbbell, Hash, Calendar, Home, Sparkles } from "lucide-react";
+import {
+  Trophy,
+  Clock,
+  Dumbbell,
+  Hash,
+  Calendar,
+  Home,
+  Sparkles,
+} from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import { useAppStore } from "@/lib/store";
 import { playWorkoutComplete } from "@/lib/audio";
@@ -23,7 +31,9 @@ export default function WorkoutComplete() {
   if (!completedSession || !completedSession.completed) {
     return (
       <div className="h-[100dvh] animate-page-in flex flex-col items-center justify-center bg-background px-6 text-center">
-        <p className="text-on-surface-variant mb-4">No hay entrenamiento completado.</p>
+        <p className="text-on-surface-variant mb-4">
+          No hay entrenamiento completado.
+        </p>
         <button
           onClick={() => router.push("/")}
           className="h-[48px] px-6 bg-primary-container text-on-primary font-bold rounded-xl flex items-center gap-2"
@@ -36,30 +46,52 @@ export default function WorkoutComplete() {
 
   const routineTitle = activeWorkout.routine?.title || "Entrenamiento";
   const durationSeconds = completedSession.endTime
-    ? Math.round((completedSession.endTime.getTime() - completedSession.startTime.getTime()) / 1000)
+    ? Math.round(
+        (completedSession.endTime.getTime() -
+          completedSession.startTime.getTime()) /
+          1000,
+      )
     : 0;
-  const totalSets = completedSession.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
+  const totalSets = completedSession.exercises.reduce(
+    (sum, ex) => sum + ex.sets.length,
+    0,
+  );
   const totalReps = completedSession.exercises.reduce(
     (sum, ex) => sum + ex.sets.reduce((s, set) => s + (set.reps || 0), 0),
-    0
+    0,
   );
   const totalVolume = completedSession.exercises.reduce(
-    (sum, ex) => sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * (set.reps || 0)), 0),
-    0
+    (sum, ex) =>
+      sum +
+      ex.sets.reduce((s, set) => s + (set.weight || 0) * (set.reps || 0), 0),
+    0,
   );
   const minutes = Math.floor(durationSeconds / 60);
   const seconds = durationSeconds % 60;
 
   const previousSessions = sessions
-    .filter((s) => s.routineId === completedSession.routineId && s.completed && s.id !== completedSession.id)
-    .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+    .filter(
+      (s) =>
+        s.routineId === completedSession.routineId &&
+        s.completed &&
+        s.id !== completedSession.id,
+    )
+    .sort(
+      (a, b) =>
+        new Date(b.startTime).getTime() - new Date(a.startTime).getTime(),
+    );
   const lastSession = previousSessions[0];
   const lastDuration = lastSession?.endTime
-    ? Math.round((lastSession.endTime.getTime() - lastSession.startTime.getTime()) / 1000)
+    ? Math.round(
+        (lastSession.endTime.getTime() - lastSession.startTime.getTime()) /
+          1000,
+      )
     : 0;
   const lastVolume = lastSession?.exercises.reduce(
-    (sum, ex) => sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * (set.reps || 0)), 0),
-    0
+    (sum, ex) =>
+      sum +
+      ex.sets.reduce((s, set) => s + (set.weight || 0) * (set.reps || 0), 0),
+    0,
   );
   const pbDuration = durationSeconds > lastDuration;
   const pbVolume = totalVolume > (lastVolume || 0);
@@ -68,12 +100,7 @@ export default function WorkoutComplete() {
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-background relative">
       <Confetti />
 
-      <TopAppBar
-        title="RESUMEN"
-        variant="workout"
-        showBack
-        backHref="/"
-      />
+      <TopAppBar title="RESUMEN" variant="workout" showBack backHref="/" />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 text-center z-10 pt-4">
         <div className="w-20 h-20 rounded-full bg-primary-container/20 flex items-center justify-center mb-4 shadow-[0_0_24px_rgba(204,255,0,0.4)]">
@@ -89,15 +116,27 @@ export default function WorkoutComplete() {
           <div className="flex items-center gap-2 mb-4 px-4 py-2 bg-primary-container/10 border border-primary-container/30 rounded-full">
             <Sparkles className="w-4 h-4 text-primary-container" />
             <span className="text-primary-container font-bold text-sm">
-              {pbVolume && pbDuration ? "¡Nuevos récords!" : pbVolume ? "¡Nuevo récord de volumen!" : "¡Más rápido que la última vez!"}
+              {pbVolume && pbDuration
+                ? "¡Nuevos récords!"
+                : pbVolume
+                  ? "¡Nuevo récord de volumen!"
+                  : "¡Más rápido que la última vez!"}
             </span>
           </div>
         )}
 
         <div className="grid grid-cols-2 gap-3 w-full max-w-sm mb-6">
-          <StatBox icon={Clock} label="Duración" value={`${minutes}:${seconds.toString().padStart(2, "0")}`} />
+          <StatBox
+            icon={Clock}
+            label="Duración"
+            value={`${minutes}:${seconds.toString().padStart(2, "0")}`}
+          />
           <StatBox icon={Hash} label="Series" value={String(totalSets)} />
-          <StatBox icon={Dumbbell} label="Volumen" value={`${Math.round(totalVolume)}kg`} />
+          <StatBox
+            icon={Dumbbell}
+            label="Volumen"
+            value={`${Math.round(totalVolume)}kg`}
+          />
           <StatBox icon={Calendar} label="Reps" value={String(totalReps)} />
         </div>
 
@@ -120,11 +159,21 @@ export default function WorkoutComplete() {
   );
 }
 
-function StatBox({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+function StatBox({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="bg-surface-container-high border border-surface-container-highest rounded-xl p-4 flex flex-col items-center">
       <Icon className="w-5 h-5 text-primary-container mb-1" />
-      <span className="text-on-surface-variant text-xs font-label-caps uppercase">{label}</span>
+      <span className="text-on-surface-variant text-xs font-label-caps uppercase">
+        {label}
+      </span>
       <span className="text-primary-container font-bold text-xl">{value}</span>
     </div>
   );
@@ -137,7 +186,9 @@ function Confetti() {
     delay: `${Math.random() * 1.5}s`,
     duration: `${1.5 + Math.random() * 2}s`,
     size: 6 + Math.random() * 8,
-    color: ["#ccff00", "#ffffff", "#88cc00", "#aaff00"][Math.floor(Math.random() * 4)],
+    color: ["#ccff00", "#ffffff", "#88cc00", "#aaff00"][
+      Math.floor(Math.random() * 4)
+    ],
   }));
 
   return (

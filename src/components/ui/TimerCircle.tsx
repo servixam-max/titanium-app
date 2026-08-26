@@ -31,7 +31,13 @@ export default function TimerCircle({
   const dashOffset = circumference * (1 - progress);
 
   return (
-    <div className={cn("relative flex items-center justify-center", breathe && !urgent && "animate-breathe", className)}>
+    <div
+      className={cn(
+        "relative flex items-center justify-center",
+        breathe && !urgent && "animate-breathe",
+        className,
+      )}
+    >
       <svg
         width={size}
         height={size}
@@ -65,7 +71,7 @@ export default function TimerCircle({
             <span
               className={cn(
                 "font-display-timer text-[56px] leading-none tabular-nums",
-                urgent ? "animate-urgent" : "text-primary-container neon-glow"
+                urgent ? "animate-urgent" : "text-primary-container neon-glow",
               )}
             >
               {seconds}

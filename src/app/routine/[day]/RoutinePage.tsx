@@ -7,7 +7,7 @@ import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
 import ModeSelector from "@/components/ui/ModeSelector";
 import ExerciseCard from "@/components/ui/ExerciseCard";
-import { routines, getAllExercises, getExerciseById } from "@/lib/data";
+import { routines, getExerciseById } from "@/lib/data";
 import { TrainingMode } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
 
@@ -17,9 +17,19 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
   const routine = routines.find((r) => r.day === day);
 
   const [mode, setMode] = useState<TrainingMode>("guided");
-  const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<number | null>(null);
+  const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<
+    number | null
+  >(null);
   const [freeExerciseId, setFreeExerciseId] = useState<string | null>(null);
-  const { startWorkout, equipmentPreference, setEquipmentPreference, favoriteExerciseIds, recentExerciseIds, addFavoriteExercise, removeFavoriteExercise } = useAppStore();
+  const {
+    startWorkout,
+    equipmentPreference,
+    setEquipmentPreference,
+    favoriteExerciseIds,
+    recentExerciseIds,
+    addFavoriteExercise,
+    removeFavoriteExercise,
+  } = useAppStore();
 
   if (!routine) {
     return (
@@ -34,7 +44,9 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
   const isHIIT = routine.type === "hiit";
   const isFreeDay = routine.day === 4;
   const exercises =
-    isHIIT && equipmentPreference === "bodyweight" && routine.alternativeExercises
+    isHIIT &&
+    equipmentPreference === "bodyweight" &&
+    routine.alternativeExercises
       ? routine.alternativeExercises
       : isFreeDay && freeExerciseId
         ? [getExerciseById(freeExerciseId) || routine.exercises[0]]
@@ -50,7 +62,10 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
     if (mode === "guided" && routine.day !== 4) {
       startWorkout(workoutRoutine, mode);
       router.push("/warmup?redirect=/workout/guided");
-    } else if (mode === "individual" || (mode === "guided" && routine.day === 4)) {
+    } else if (
+      mode === "individual" ||
+      (mode === "guided" && routine.day === 4)
+    ) {
       // Individual or Extra day: go directly to workout
       const idx = exerciseIndex ?? 0;
       startWorkout(workoutRoutine, mode, idx);
@@ -66,12 +81,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
 
   return (
     <div className="min-h-screen pb-[180px] animate-page-in">
-      <TopAppBar
-        title="FORTIXAM"
-        showBack
-        backHref="/"
-        showSettings
-      />
+      <TopAppBar title="FORTIXAM" showBack backHref="/" showSettings />
 
       <main className="w-full px-container-padding pt-4 flex flex-col gap-section-gap">
         {/* Header */}
@@ -168,7 +178,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
             </div>
             {recentExerciseIds.length === 0 ? (
               <p className="text-on-surface-variant text-sm">
-                Aún no hay ejercicios recientes. Haz algún entrenamiento primero.
+                Aún no hay ejercicios recientes. Haz algún entrenamiento
+                primero.
               </p>
             ) : (
               <div className="flex flex-wrap gap-2">
@@ -210,7 +221,9 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         <section className="flex flex-col gap-stack-gap">
           <div className="flex justify-between items-end">
             <h2 className="font-headline-md text-headline-md text-on-surface">
-              {isFreeDay ? "Ejercicio seleccionado" : `Ejercicios (${exercises.length})`}
+              {isFreeDay
+                ? "Ejercicio seleccionado"
+                : `Ejercicios (${exercises.length})`}
             </h2>
             <span className="font-label-caps text-label-caps text-on-surface-variant">
               {routine.duration} EST.
@@ -224,7 +237,9 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                 exercise={exercise}
                 index={index}
                 selectable={mode === "individual"}
-                isSelected={mode === "individual" && selectedExerciseIndex === index}
+                isSelected={
+                  mode === "individual" && selectedExerciseIndex === index
+                }
                 onClick={() => {
                   if (mode === "individual") {
                     setSelectedExerciseIndex(index);
@@ -252,8 +267,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
             <Play className="w-6 h-6 fill-current" />
             {mode === "individual" && selectedExerciseIndex !== null
               ? `EMPEZAR: ${exercises[selectedExerciseIndex]?.name.toUpperCase()}`
-              : "INICIAR ENTRENAMIENTO"
-            }
+              : "INICIAR ENTRENAMIENTO"}
           </button>
         </div>
       </div>

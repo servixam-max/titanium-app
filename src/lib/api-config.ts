@@ -1,6 +1,8 @@
 // Base URL for API calls from the mobile app
-// Points to the Mac server via Tailscale magic DNS
-export const API_BASE_URL = "https://servi.tail31979d.ts.net/titanium/api";
+// Override via NEXT_PUBLIC_API_BASE_URL env variable
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://servi.tail31979d.ts.net/titanium/api";
 
 // Helper to build full API URLs
 export function apiUrl(path: string): string {

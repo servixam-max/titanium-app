@@ -9,8 +9,17 @@ import { preloadVoices, speak } from "@/lib/speech";
 
 export default function AudioTestPage() {
   const router = useRouter();
-  const { audioEnabled, audioMode, voiceRate, toggleAudio, setAudioMode, setVoiceRate } = useAppStore();
-  const [testResult, setTestResult] = useState<"idle" | "testing" | "ok" | "partial" | "error">("idle");
+  const {
+    audioEnabled,
+    audioMode,
+    voiceRate,
+    toggleAudio,
+    setAudioMode,
+    setVoiceRate,
+  } = useAppStore();
+  const [testResult, setTestResult] = useState<
+    "idle" | "testing" | "ok" | "partial" | "error"
+  >("idle");
 
   useEffect(() => {
     preloadVoices();
@@ -24,10 +33,14 @@ export default function AudioTestPage() {
     // 1. Test beep (always works)
     setTimeout(() => playBeep(800, 0.15, "sine", 0.3), 100);
 
-    {/* Test speech with current voice rate */}
+    {
+      /* Test speech with current voice rate */
+    }
     setTimeout(() => {
       try {
-        speak(`Probando audio. Voz activada. Velocidad ${voiceRate.toFixed(2)}`);
+        speak(
+          `Probando audio. Voz activada. Velocidad ${voiceRate.toFixed(2)}`,
+        );
         setTestResult("ok");
       } catch {
         setTestResult("partial");
@@ -43,7 +56,9 @@ export default function AudioTestPage() {
         </div>
 
         <div className="text-center">
-          <h1 className="font-headline-lg text-headline-lg mb-2">Audio y Voz</h1>
+          <h1 className="font-headline-lg text-headline-lg mb-2">
+            Audio y Voz
+          </h1>
           <p className="font-body-md text-secondary">
             Comprueba que los sonidos y la voz guía funcionan en tu dispositivo.
           </p>
@@ -55,7 +70,9 @@ export default function AudioTestPage() {
             onClick={toggleAudio}
             className={`w-12 h-7 rounded-full transition-all ${audioEnabled ? "bg-primary-container" : "bg-surface-container-highest"}`}
           >
-            <div className={`w-5 h-5 rounded-full bg-white transition-transform ${audioEnabled ? "translate-x-6" : "translate-x-1"}`} />
+            <div
+              className={`w-5 h-5 rounded-full bg-white transition-transform ${audioEnabled ? "translate-x-6" : "translate-x-1"}`}
+            />
           </button>
           <span className="font-body-md text-on-surface">
             {audioEnabled ? "Audio Activado" : "Audio Desactivado"}

@@ -5,16 +5,32 @@ const fs = require("fs");
 const { Pool } = require("pg");
 
 const app = express();
-app.use(cors());
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins.length
+      ? allowedOrigins
+      : ["https://servi.tail31979d.ts.net", "capacitor://localhost", "http://localhost"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // PostgreSQL
+if (!process.env.DATABASE_PASSWORD) {
+  throw new Error("DATABASE_PASSWORD environment variable is required");
+}
+
 const pool = new Pool({
   host: process.env.DATABASE_HOST || "localhost",
   port: Number(process.env.DATABASE_PORT) || 54322,
   database: process.env.DATABASE_NAME || "titanium",
   user: process.env.DATABASE_USER || "titanium",
-  password: process.env.DATABASE_PASSWORD || "titanium123",
+  password: process.env.DATABASE_PASSWORD,
 });
 
 const base = "/titanium";

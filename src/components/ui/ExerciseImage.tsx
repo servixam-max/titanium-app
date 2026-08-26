@@ -26,16 +26,22 @@ export default function ExerciseImage({
   const showFallback = !src || error;
 
   return (
-    <div className={cn("relative overflow-hidden bg-surface-container flex items-center justify-center", containerClassName)}>
+    <div
+      className={cn(
+        "relative overflow-hidden bg-surface-container flex items-center justify-center",
+        containerClassName,
+      )}
+    >
       {!showFallback && (
         <img
           src={src}
           alt={alt}
           loading={priority ? "eager" : "lazy"}
+          decoding={priority ? "sync" : "async"}
           className={cn(
             "w-full h-full object-contain transition-opacity duration-300",
             loaded ? "opacity-100" : "opacity-0",
-            className
+            className,
           )}
           onError={() => setError(true)}
           onLoad={() => setLoaded(true)}

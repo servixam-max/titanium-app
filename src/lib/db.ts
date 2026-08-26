@@ -58,7 +58,8 @@ export async function getWeightStats() {
   if (weights.length === 0) return null;
   const values = weights.map((w) => w.weight);
   const current = weights[weights.length - 1].weight;
-  const previous = weights.length > 1 ? weights[weights.length - 2].weight : current;
+  const previous =
+    weights.length > 1 ? weights[weights.length - 2].weight : current;
   return {
     entries: weights.length,
     min: Math.min(...values),

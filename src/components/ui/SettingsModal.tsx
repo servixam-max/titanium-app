@@ -24,7 +24,10 @@ import {
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { AudioMode } from "@/lib/types";
-import { setAudioMode as setGlobalAudioMode, setVoiceRate as setGlobalVoiceRate } from "@/lib/audio";
+import {
+  setAudioMode as setGlobalAudioMode,
+  setVoiceRate as setGlobalVoiceRate,
+} from "@/lib/audio";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -116,7 +119,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     setAudioMode(mode);
   };
 
-  const modeOptions: { value: AudioMode; label: string; icon: React.ReactNode; desc: string }[] = [
+  const modeOptions: {
+    value: AudioMode;
+    label: string;
+    icon: React.ReactNode;
+    desc: string;
+  }[] = [
     {
       value: "full",
       label: "Completo",
@@ -224,7 +232,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               <div className="flex flex-col gap-section-gap">
                 {/* Audio */}
                 <section className="flex flex-col gap-stack-gap">
-                  <SectionHeader icon={<Music className="w-4 h-4" />} label="Audio" />
+                  <SectionHeader
+                    icon={<Music className="w-4 h-4" />}
+                    label="Audio"
+                  />
                   <button
                     onClick={toggleAudio}
                     className={`w-full h-touch-target-min rounded-xl border-2 flex items-center justify-between px-4 transition-all active:scale-95 ${
@@ -240,7 +251,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <VolumeX className="w-6 h-6 text-on-surface-variant" />
                       )}
                       <span className="font-body-md text-body-md font-bold">
-                        {audioEnabled ? "Sonidos Activados" : "Sonidos Desactivados"}
+                        {audioEnabled
+                          ? "Sonidos Activados"
+                          : "Sonidos Desactivados"}
                       </span>
                     </div>
                     <div
@@ -273,9 +286,21 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               : "border-surface-container-highest bg-surface-container-low text-on-surface-variant"
                           } ${!audioEnabled && option.value !== "silent" ? "opacity-50" : ""}`}
                         >
-                          <span className={selected ? "text-primary-container" : "text-on-surface-variant"}>{option.icon}</span>
-                          <span className="font-body-sm text-body-sm font-bold">{option.label}</span>
-                          <span className="font-label-caps text-[10px] leading-tight text-center">{option.desc}</span>
+                          <span
+                            className={
+                              selected
+                                ? "text-primary-container"
+                                : "text-on-surface-variant"
+                            }
+                          >
+                            {option.icon}
+                          </span>
+                          <span className="font-body-sm text-body-sm font-bold">
+                            {option.label}
+                          </span>
+                          <span className="font-label-caps text-[10px] leading-tight text-center">
+                            {option.desc}
+                          </span>
                         </button>
                       );
                     })}
@@ -286,9 +311,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-on-surface">
                         <Gauge className="w-4 h-4 text-primary-container" />
-                        <span className="font-body-md text-body-md font-bold">Velocidad de Voz</span>
+                        <span className="font-body-md text-body-md font-bold">
+                          Velocidad de Voz
+                        </span>
                       </div>
-                      <span className="font-label-caps text-label-caps text-primary-container">{voiceRate.toFixed(2)}x</span>
+                      <span className="font-label-caps text-label-caps text-primary-container">
+                        {voiceRate.toFixed(2)}x
+                      </span>
                     </div>
                     <input
                       type="range"
@@ -298,7 +327,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       value={voiceRate}
                       onChange={(e) => setVoiceRate(parseFloat(e.target.value))}
                       className="w-full accent-primary-container"
-                      disabled={!audioEnabled || audioMode === "silent" || audioMode === "beeps"}
+                      disabled={
+                        !audioEnabled ||
+                        audioMode === "silent" ||
+                        audioMode === "beeps"
+                      }
                     />
                     <div className="flex justify-between text-on-surface-variant text-xs">
                       <span>Lenta</span>
@@ -309,7 +342,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                 {/* Equipment Preference */}
                 <section className="flex flex-col gap-stack-gap">
-                  <SectionHeader icon={<Briefcase className="w-4 h-4" />} label="Equipamiento por Defecto" />
+                  <SectionHeader
+                    icon={<Briefcase className="w-4 h-4" />}
+                    label="Equipamiento por Defecto"
+                  />
                   <div className="flex gap-2">
                     <button
                       onClick={() => setEquipmentPreference("bodyweight")}
@@ -336,7 +372,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                 {/* Data Management */}
                 <section className="flex flex-col gap-stack-gap">
-                  <SectionHeader icon={<Database className="w-4 h-4" />} label="Datos" />
+                  <SectionHeader
+                    icon={<Database className="w-4 h-4" />}
+                    label="Datos"
+                  />
 
                   <button
                     onClick={handleExportData}
@@ -366,8 +405,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   ) : (
                     <div className="bg-error-container/20 border border-error rounded-xl p-stack-gap">
                       <p className="font-body-md text-body-md text-on-error-container mb-4">
-                        ¿Seguro? Se eliminarán todos tus entrenamientos guardados.
-                        Esta acción no se puede deshacer.
+                        ¿Seguro? Se eliminarán todos tus entrenamientos
+                        guardados. Esta acción no se puede deshacer.
                       </p>
                       <div className="flex gap-2">
                         <button
@@ -399,7 +438,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                 {/* Stats */}
                 <section className="flex flex-col gap-stack-gap">
-                  <SectionHeader icon={<BarChart3 className="w-4 h-4" />} label="Estadísticas" />
+                  <SectionHeader
+                    icon={<BarChart3 className="w-4 h-4" />}
+                    label="Estadísticas"
+                  />
                   <div className="grid grid-cols-2 gap-stack-gap">
                     <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-stack-gap text-center">
                       <Dumbbell className="w-6 h-6 text-primary-container mx-auto mb-2" />

@@ -26,6 +26,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
 
 # vercel
@@ -37,3 +38,17 @@ next-env.d.ts
 dist/
 
 *.apk
+
+# Android signing / keystores
+*.keystore
+*.jks
+android/key.properties
+!android/key.properties.template
+android/local.properties
+android/app/debug.keystore
+android/fortixam.keystore
+
+# Test artifacts
+test-results/
+test-screenshots/
+*.log

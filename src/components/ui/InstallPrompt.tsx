@@ -5,7 +5,9 @@ import { Download, X, Share2, PlusSquare } from "lucide-react";
 
 export default function InstallPrompt() {
   const [show, setShow] = useState(false);
-  const [platform, setPlatform] = useState<"android" | "ios" | "other">("other");
+  const [platform, setPlatform] = useState<"android" | "ios" | "other">(
+    "other",
+  );
   const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null);
 
   useEffect(() => {
@@ -86,13 +88,22 @@ export default function InstallPrompt() {
                 Para instalar en iPhone/iPad:
               </p>
               <ol className="text-secondary text-sm mt-1 space-y-1 ml-4 list-decimal">
-                <li>Toca el botón <Share2 className="w-3 h-3 inline mx-0.5" /> Compartir</li>
-                <li>Selecciona <strong className="text-primary-container">Añadir a pantalla de inicio</strong></li>
+                <li>
+                  Toca el botón <Share2 className="w-3 h-3 inline mx-0.5" />{" "}
+                  Compartir
+                </li>
+                <li>
+                  Selecciona{" "}
+                  <strong className="text-primary-container">
+                    Añadir a pantalla de inicio
+                  </strong>
+                </li>
               </ol>
             </>
           ) : (
             <p className="text-secondary text-sm mt-0.5">
-              Añade la app a tu pantalla de inicio para acceso rápido y modo offline.
+              Añade la app a tu pantalla de inicio para acceso rápido y modo
+              offline.
             </p>
           )}
 

@@ -1,8 +1,16 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { Routine, TrainingMode, EquipmentPreference, WorkoutSession, ActiveWorkoutState, AudioMode } from "@/lib/types";
+import {
+  Routine,
+  TrainingMode,
+  EquipmentPreference,
+  WorkoutSession,
+  ActiveWorkoutState,
+  AudioMode,
+} from "@/lib/types";
 import { apiUrl } from "@/lib/api-config";
 import { saveSession, getSessions, clearAllSessions } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 interface AppState {
   // Navigation
@@ -11,8 +19,18 @@ interface AppState {
 
   // Active Workout
   activeWorkout: ActiveWorkoutState;
-  startWorkout: (routine: Routine, mode: TrainingMode, startExerciseIndex?: number) => void;
-  completeSet: (exerciseIndex: number, setNumber: number, weight?: number, reps?: number, duration?: number) => void;
+  startWorkout: (
+    routine: Routine,
+    mode: TrainingMode,
+    startExerciseIndex?: number,
+  ) => void;
+  completeSet: (
+    exerciseIndex: number,
+    setNumber: number,
+    weight?: number,
+    reps?: number,
+    duration?: number,
+  ) => void;
   previousExercise: () => void;
   goToExercise: (index: number) => void;
   resetCurrentSet: () => void;
@@ -22,11 +40,17 @@ interface AppState {
   startRest: (seconds?: number) => void;
   skipRest: () => void;
   tickRest: () => void;
+  startWork: (seconds?: number) => void;
+  tickWork: () => void;
+  skipWork: () => void;
   nextExercise: () => void;
   setWorkoutExerciseIndex: (index: number) => void;
   setWorkoutSet: (setNumber: number) => void;
   saveProgress: () => Promise<void>;
-  finishWorkout: () => Promise<{ sessionId: string; completedSession: WorkoutSession } | void>;
+  finishWorkout: () => Promise<{
+    sessionId: string;
+    completedSession: WorkoutSession;
+  } | void>;
   cancelWorkout: () => void;
   clearJustFinished: () => void;
 
@@ -70,6 +94,8 @@ const initialActiveWorkout: ActiveWorkoutState = {
   equipmentPref: "dumbbells",
   isResting: false,
   restTimeRemaining: 0,
+  isWorking: false,
+  workTimeRemaining: 0,
   session: null,
   exerciseWeights: {},
   exerciseReps: {},
@@ -99,9 +125,15 @@ export const useAppStore = create<AppState>()(
         set({
           activeWorkout: {
             ...activeWorkout,
-            exerciseWeights: { ...activeWorkout.exerciseWeights, [exerciseId]: weight },
+            exerciseWeights: {
+              ...activeWorkout.exerciseWeights,
+              [exerciseId]: weight,
+            },
           },
-          lastExerciseWeights: { ...get().lastExerciseWeights, [exerciseId]: weight },
+          lastExerciseWeights: {
+            ...get().lastExerciseWeights,
+            [exerciseId]: weight,
+          },
         });
       },
 
@@ -155,6 +187,8 @@ export const useAppStore = create<AppState>()(
             equipmentPref: get().equipmentPreference,
             isResting: false,
             restTimeRemaining: 0,
+            isWorking: false,
+            workTimeRemaining: 0,
             session,
             exerciseWeights: rememberedWeights,
             exerciseReps: defaultReps,
@@ -186,7 +220,8 @@ export const useAppStore = create<AppState>()(
         }));
       },
       voiceRate: 1.05,
-      setVoiceRate: (rate) => set({ voiceRate: Math.max(0.7, Math.min(1.5, rate)) }),
+      setVoiceRate: (rate) =>
+        set({ voiceRate: Math.max(0.7, Math.min(1.5, rate)) }),
       toggleAudio: () => {
         set((state) => {
           const nextEnabled = !state.audioEnabled;
@@ -205,19 +240,25 @@ export const useAppStore = create<AppState>()(
 
       addFavoriteExercise: (exerciseId) => {
         set((state) => ({
-          favoriteExerciseIds: Array.from(new Set([...state.favoriteExerciseIds, exerciseId])),
+          favoriteExerciseIds: Array.from(
+            new Set([...state.favoriteExerciseIds, exerciseId]),
+          ),
         }));
       },
 
       removeFavoriteExercise: (exerciseId) => {
         set((state) => ({
-          favoriteExerciseIds: state.favoriteExerciseIds.filter((id) => id !== exerciseId),
+          favoriteExerciseIds: state.favoriteExerciseIds.filter(
+            (id) => id !== exerciseId,
+          ),
         }));
       },
 
       markExerciseRecent: (exerciseId) => {
         set((state) => ({
-          recentExerciseIds: Array.from(new Set([exerciseId, ...state.recentExerciseIds])).slice(0, 10),
+          recentExerciseIds: Array.from(
+            new Set([exerciseId, ...state.recentExerciseIds]),
+          ).slice(0, 10),
         }));
       },
 
@@ -240,7 +281,8 @@ export const useAppStore = create<AppState>()(
         if (!exerciseLog) return;
 
         // Use per-exercise weight/reps if not explicitly provided
-        const setWeight = weight ?? activeWorkout.exerciseWeights[currentExercise.id];
+        const setWeight =
+          weight ?? activeWorkout.exerciseWeights[currentExercise.id];
         const setReps = reps ?? activeWorkout.exerciseReps[currentExercise.id];
 
         // Avoid duplicate set completions for the same set number
@@ -261,7 +303,8 @@ export const useAppStore = create<AppState>()(
         get().markExerciseRecent(currentExercise.id);
 
         const isLastSet = setNumber >= currentExercise.sets;
-        const isLastExercise = exerciseIndex >= (activeWorkout.routine?.exercises.length || 1) - 1;
+        const isLastExercise =
+          exerciseIndex >= (activeWorkout.routine?.exercises.length || 1) - 1;
         const nextRestSeconds = currentExercise.restSeconds || 60;
 
         const nextActiveWorkout: ActiveWorkoutState = {
@@ -270,6 +313,8 @@ export const useAppStore = create<AppState>()(
             ...activeWorkout.session,
             exercises: updatedExercises,
           },
+          isWorking: false,
+          workTimeRemaining: 0,
           isResting: true,
           restTimeRemaining: nextRestSeconds,
         };
@@ -295,7 +340,8 @@ export const useAppStore = create<AppState>()(
 
       startRest: (seconds) => {
         const { activeWorkout } = get();
-        const currentExercise = activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
+        const currentExercise =
+          activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
         if (!currentExercise) return;
 
         const restSeconds = seconds ?? currentExercise.restSeconds;
@@ -323,14 +369,15 @@ export const useAppStore = create<AppState>()(
 
       adjustRest: (deltaSeconds) => {
         const { activeWorkout } = get();
-        const currentExercise = activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
-        if (!currentExercise) return;
-        const newTime = Math.max(5, activeWorkout.restTimeRemaining + deltaSeconds);
+        if (!activeWorkout.isResting) return;
+        const newTime = Math.max(
+          5,
+          activeWorkout.restTimeRemaining + deltaSeconds,
+        );
         if (newTime === activeWorkout.restTimeRemaining) return;
         set({
           activeWorkout: {
             ...activeWorkout,
-            isResting: true,
             restTimeRemaining: newTime,
           },
         });
@@ -347,6 +394,8 @@ export const useAppStore = create<AppState>()(
             currentSet: 1,
             isResting: false,
             restTimeRemaining: 0,
+            isWorking: false,
+            workTimeRemaining: 0,
           },
         });
       },
@@ -354,7 +403,10 @@ export const useAppStore = create<AppState>()(
       goToExercise: (index) => {
         const { activeWorkout } = get();
         if (!activeWorkout.routine) return;
-        const clamped = Math.max(0, Math.min(activeWorkout.routine.exercises.length - 1, index));
+        const clamped = Math.max(
+          0,
+          Math.min(activeWorkout.routine.exercises.length - 1, index),
+        );
         set({
           activeWorkout: {
             ...activeWorkout,
@@ -362,6 +414,8 @@ export const useAppStore = create<AppState>()(
             currentSet: 1,
             isResting: false,
             restTimeRemaining: 0,
+            isWorking: false,
+            workTimeRemaining: 0,
           },
         });
       },
@@ -374,13 +428,16 @@ export const useAppStore = create<AppState>()(
             currentSet: 1,
             isResting: false,
             restTimeRemaining: 0,
+            isWorking: false,
+            workTimeRemaining: 0,
           },
         });
       },
 
       tickRest: () => {
         const { activeWorkout } = get();
-        if (!activeWorkout.isResting || activeWorkout.restTimeRemaining <= 0) return;
+        if (!activeWorkout.isResting || activeWorkout.restTimeRemaining <= 0)
+          return;
 
         const newTime = activeWorkout.restTimeRemaining - 1;
 
@@ -403,6 +460,87 @@ export const useAppStore = create<AppState>()(
         }
       },
 
+      // Work-interval countdown (HIIT time-based sets). When it hits 0, the set
+      // is auto-completed via completeSet(), which owns progression + rest start.
+      startWork: (seconds) => {
+        const { activeWorkout } = get();
+        const currentExercise =
+          activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
+        if (!currentExercise) return;
+
+        const workSeconds =
+          seconds ??
+          currentExercise.workSeconds ??
+          (() => {
+            const m = /(\d+)\s*s/i.exec(currentExercise.reps || "");
+            return m ? Number(m[1]) : 0;
+          })();
+        if (!workSeconds || workSeconds <= 0) return;
+
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            isWorking: true,
+            workTimeRemaining: workSeconds,
+          },
+        });
+      },
+
+      skipWork: () => {
+        const { activeWorkout } = get();
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            isWorking: false,
+            workTimeRemaining: 0,
+          },
+        });
+      },
+
+      tickWork: () => {
+        const { activeWorkout } = get();
+        if (!activeWorkout.isWorking || activeWorkout.workTimeRemaining <= 0)
+          return;
+
+        const newTime = activeWorkout.workTimeRemaining - 1;
+
+        if (newTime <= 0) {
+          const currentExercise =
+            activeWorkout.routine?.exercises[
+              activeWorkout.currentExerciseIndex
+            ];
+          const totalWork =
+            currentExercise?.workSeconds ??
+            (() => {
+              const m = /(\d+)\s*s/i.exec(currentExercise?.reps || "");
+              return m ? Number(m[1]) : 0;
+            })() ??
+            activeWorkout.workTimeRemaining;
+          set({
+            activeWorkout: {
+              ...activeWorkout,
+              isWorking: false,
+              workTimeRemaining: 0,
+            },
+          });
+          // Auto-complete the current set: logs it (with real elapsed duration), advances, and starts rest.
+          get().completeSet(
+            activeWorkout.currentExerciseIndex,
+            activeWorkout.currentSet,
+            undefined,
+            undefined,
+            totalWork,
+          );
+        } else {
+          set({
+            activeWorkout: {
+              ...activeWorkout,
+              workTimeRemaining: newTime,
+            },
+          });
+        }
+      },
+
       nextExercise: () => {
         const { activeWorkout } = get();
         if (!activeWorkout.routine) return;
@@ -418,6 +556,8 @@ export const useAppStore = create<AppState>()(
               currentSet: 1,
               isResting: false,
               restTimeRemaining: 0,
+              isWorking: false,
+              workTimeRemaining: 0,
             },
           });
         }
@@ -484,16 +624,29 @@ export const useAppStore = create<AppState>()(
           if (!routine) return;
 
           const totalSets = completedSession.exercises.reduce(
-            (sum, ex) => sum + ex.sets.length, 0
+            (sum, ex) => sum + ex.sets.length,
+            0,
           );
           const totalReps = completedSession.exercises.reduce(
-            (sum, ex) => sum + ex.sets.reduce((s, set) => s + (set.reps || 0), 0), 0
+            (sum, ex) =>
+              sum + ex.sets.reduce((s, set) => s + (set.reps || 0), 0),
+            0,
           );
           const totalVolume = completedSession.exercises.reduce(
-            (sum, ex) => sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * (set.reps || 0)), 0), 0
+            (sum, ex) =>
+              sum +
+              ex.sets.reduce(
+                (s, set) => s + (set.weight || 0) * (set.reps || 0),
+                0,
+              ),
+            0,
           );
           const durationSeconds = completedSession.endTime
-            ? Math.round((completedSession.endTime.getTime() - completedSession.startTime.getTime()) / 1000)
+            ? Math.round(
+                (completedSession.endTime.getTime() -
+                  completedSession.startTime.getTime()) /
+                  1000,
+              )
             : 0;
 
           const response = await fetch(apiUrl("sessions"), {
@@ -529,14 +682,16 @@ export const useAppStore = create<AppState>()(
           });
 
           if (!response.ok) {
-            console.error("Failed to sync session to server");
+            logger.error("Failed to sync session to server");
             set({ dbError: "Sin sincronización con servidor" });
           } else {
             set({ dbError: null });
           }
         } catch (error) {
-          console.error("Error syncing session:", error);
-          set({ dbError: "Sin conexión con servidor (datos guardados localmente)" });
+          logger.error("Error syncing session:", error);
+          set({
+            dbError: "Sin conexión con servidor (datos guardados localmente)",
+          });
         }
       },
 
@@ -553,16 +708,24 @@ export const useAppStore = create<AppState>()(
         const routine = activeWorkout.routine;
 
         const totalSets = session.exercises.reduce(
-          (sum, ex) => sum + ex.sets.length, 0
+          (sum, ex) => sum + ex.sets.length,
+          0,
         );
         const totalReps = session.exercises.reduce(
-          (sum, ex) => sum + ex.sets.reduce((s, set) => s + (set.reps || 0), 0), 0
+          (sum, ex) => sum + ex.sets.reduce((s, set) => s + (set.reps || 0), 0),
+          0,
         );
         const totalVolume = session.exercises.reduce(
-          (sum, ex) => sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * (set.reps || 0)), 0), 0
+          (sum, ex) =>
+            sum +
+            ex.sets.reduce(
+              (s, set) => s + (set.weight || 0) * (set.reps || 0),
+              0,
+            ),
+          0,
         );
         const durationSeconds = Math.round(
-          (new Date().getTime() - session.startTime.getTime()) / 1000
+          (new Date().getTime() - session.startTime.getTime()) / 1000,
         );
 
         const payload = {
@@ -626,7 +789,7 @@ export const useAppStore = create<AppState>()(
             set({ dbError: "Error guardando progreso" });
           }
         } catch (error) {
-          console.error("Error saving progress:", error);
+          logger.error("Error saving progress:", error);
           set({ dbError: "Error de conexión" });
         }
       },
@@ -655,39 +818,54 @@ export const useAppStore = create<AppState>()(
             if (response.ok) {
               const data = await response.json();
               if (data.sessions) {
-                const serverSessions: WorkoutSession[] = data.sessions.map((s: Record<string, unknown>) => ({
-                  id: s.id as string,
-                  routineId: s.routine_id as number,
-                  mode: s.mode as TrainingMode,
-                  startTime: new Date(s.start_time as string),
-                  endTime: s.end_time ? new Date(s.end_time as string) : undefined,
-                  completed: s.completed as boolean,
-                  exercises: ((s.exercises as Record<string, unknown>[]) || []).map((ex) => ({
-                    exerciseId: ex.exercise_id as string,
-                    sets: ((ex.sets as Record<string, unknown>[]) || []).map((set) => ({
-                      setNumber: set.set_number as number,
-                      weight: set.weight ? Number(set.weight) : undefined,
-                      reps: set.reps ? Number(set.reps) : undefined,
-                      duration: set.duration_seconds as number,
-                      completed: set.completed as boolean,
-                      timestamp: new Date(s.start_time as string),
+                const serverSessions: WorkoutSession[] = data.sessions.map(
+                  (s: Record<string, unknown>) => ({
+                    id: s.id as string,
+                    routineId: s.routine_id as number,
+                    mode: s.mode as TrainingMode,
+                    startTime: new Date(s.start_time as string),
+                    endTime: s.end_time
+                      ? new Date(s.end_time as string)
+                      : undefined,
+                    completed: s.completed as boolean,
+                    exercises: (
+                      (s.exercises as Record<string, unknown>[]) || []
+                    ).map((ex) => ({
+                      exerciseId: ex.exercise_id as string,
+                      sets: ((ex.sets as Record<string, unknown>[]) || []).map(
+                        (set) => ({
+                          setNumber: set.set_number as number,
+                          weight: set.weight ? Number(set.weight) : undefined,
+                          reps: set.reps ? Number(set.reps) : undefined,
+                          duration: set.duration_seconds as number,
+                          completed: set.completed as boolean,
+                          timestamp: new Date(s.start_time as string),
+                        }),
+                      ),
                     })),
-                  })),
-                }));
+                  }),
+                );
                 // Merge: prefer local sessions, add missing server ones
                 const localIds = new Set(localSessions.map((s) => s.id));
                 const merged = [
                   ...localSessions,
                   ...serverSessions.filter((s) => !localIds.has(s.id)),
-                ].sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+                ].sort(
+                  (a, b) =>
+                    new Date(b.startTime).getTime() -
+                    new Date(a.startTime).getTime(),
+                );
                 set({ sessions: merged });
               }
             }
           } catch (serverErr) {
-            console.warn("Server sync unavailable, using local data:", serverErr);
+            logger.warn(
+              "Server sync unavailable, using local data:",
+              serverErr,
+            );
           }
         } catch (error) {
-          console.error("Error loading sessions:", error);
+          logger.error("Error loading sessions:", error);
           set({ dbError: "Error cargando sesiones", isLoading: false });
         } finally {
           set({ isLoading: false });
@@ -699,7 +877,7 @@ export const useAppStore = create<AppState>()(
           await clearAllSessions();
           set({ sessions: [], dbError: null });
         } catch (error) {
-          console.error("Error clearing sessions:", error);
+          logger.error("Error clearing sessions:", error);
           set({ dbError: "Error eliminando sesiones" });
         }
       },
@@ -707,19 +885,44 @@ export const useAppStore = create<AppState>()(
     {
       name: "titanium-storage",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        sessions: state.sessions,
-        audioEnabled: state.audioEnabled,
-        audioMode: state.audioMode,
-        voiceRate: state.voiceRate,
-        equipmentPreference: state.equipmentPreference,
-        activeWorkout: state.activeWorkout,
-        lastExerciseWeights: state.lastExerciseWeights,
-        favoriteExerciseIds: state.favoriteExerciseIds,
-        recentExerciseIds: state.recentExerciseIds,
-        onboardingComplete: state.onboardingComplete,
-        lastAudioMode: state.lastAudioMode,
-      }),
-    }
-  )
+      partialize: (state) => {
+        // Persist active workout data, but never transient timer/animation state
+        const persistedActiveWorkout: ActiveWorkoutState = state.activeWorkout
+          .routine
+          ? {
+              ...state.activeWorkout,
+              isResting: false,
+              restTimeRemaining: 0,
+              isWorking: false,
+              workTimeRemaining: 0,
+              justFinished: false,
+            }
+          : initialActiveWorkout;
+        return {
+          sessions: state.sessions,
+          audioEnabled: state.audioEnabled,
+          audioMode: state.audioMode,
+          voiceRate: state.voiceRate,
+          equipmentPreference: state.equipmentPreference,
+          activeWorkout: persistedActiveWorkout,
+          lastExerciseWeights: state.lastExerciseWeights,
+          favoriteExerciseIds: state.favoriteExerciseIds,
+          recentExerciseIds: state.recentExerciseIds,
+          onboardingComplete: state.onboardingComplete,
+          lastAudioMode: state.lastAudioMode,
+        };
+      },
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+        // Ensure transient flags are never resumed from storage
+        if (state.activeWorkout.routine) {
+          state.activeWorkout.isResting = false;
+          state.activeWorkout.restTimeRemaining = 0;
+          state.activeWorkout.isWorking = false;
+          state.activeWorkout.workTimeRemaining = 0;
+          state.activeWorkout.justFinished = false;
+        }
+      },
+    },
+  ),
 );

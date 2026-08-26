@@ -1,0 +1,6 @@
+# Copy this file to key.properties and fill with your secure values.
+# Never commit key.properties or the keystore file.
+storeFile=../fortixam.keystore
+storePassword=CHANGE_ME
+keyAlias=fortixam
+keyPassword=CHANGE_ME

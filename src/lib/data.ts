@@ -1,7 +1,7 @@
 import { Plan, Routine, Exercise } from "./types";
 
 // Helper to get image path - folder names are normalized (no trailing dots)
-const getImg = (name: string) => `/images/exercises/${name}/screen.png`;
+const getImg = (name: string) => `/images/exercises/${name}/screen.webp`;
 
 // Unique exercise catalog built from all routines (including alternatives)
 const allExerciseMap = new Map<string, Exercise>();
@@ -9,8 +9,10 @@ const addExercise = (ex: Exercise) => {
   if (!allExerciseMap.has(ex.id)) allExerciseMap.set(ex.id, ex);
 };
 
-export const getAllExercises = (): Exercise[] => Array.from(allExerciseMap.values());
-export const getExerciseById = (id: string): Exercise | undefined => allExerciseMap.get(id);
+export const getAllExercises = (): Exercise[] =>
+  Array.from(allExerciseMap.values());
+export const getExerciseById = (id: string): Exercise | undefined =>
+  allExerciseMap.get(id);
 
 export const routines: Routine[] = [
   {
@@ -30,7 +32,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 75,
         equipment: "dumbbells",
-        description: "Empuje horizontal con mancuernas. Mantén los codos a 45 grados y núcleo estable.",
+        description:
+          "Empuje horizontal con mancuernas. Mantén los codos a 45 grados y núcleo estable.",
         tempo: "2 - 0 - 2 - 0",
         category: "chest",
         difficulty: "Intermedio",
@@ -43,7 +46,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 75,
         equipment: "dumbbells",
-        description: "Press de hombros sentado. Evita arquear la espalda al subir.",
+        description:
+          "Press de hombros sentado. Evita arquear la espalda al subir.",
         tempo: "2 - 0 - 2 - 0",
         category: "shoulders",
         difficulty: "Intermedio",
@@ -56,7 +60,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Sujeta la mancuerna con ambas manos y extiende por encima de la cabeza. Controla la bajada.",
+        description:
+          "Sujeta la mancuerna con ambas manos y extiende por encima de la cabeza. Controla la bajada.",
         tempo: "2 - 0 - 2 - 1",
         category: "triceps",
         difficulty: "Intermedio",
@@ -69,7 +74,8 @@ export const routines: Routine[] = [
         reps: "12-15",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Aperturas controladas. Siente el estiramiento en el pecho.",
+        description:
+          "Aperturas controladas. Siente el estiramiento en el pecho.",
         tempo: "3 - 0 - 2 - 0",
         category: "chest",
         difficulty: "Intermedio",
@@ -82,7 +88,8 @@ export const routines: Routine[] = [
         reps: "12-15",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Eleva los brazos a los lados hasta la altura de los hombros. Controla el descenso.",
+        description:
+          "Eleva los brazos a los lados hasta la altura de los hombros. Controla el descenso.",
         tempo: "2 - 0 - 2 - 0",
         category: "shoulders",
         difficulty: "Principiante",
@@ -95,7 +102,8 @@ export const routines: Routine[] = [
         reps: "12-15",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Con torso inclinado, extiende el brazo hacia atrás hasta bloquear el codo. Tríceps aislado.",
+        description:
+          "Con torso inclinado, extiende el brazo hacia atrás hasta bloquear el codo. Tríceps aislado.",
         tempo: "2 - 0 - 2 - 1",
         category: "triceps",
         difficulty: "Intermedio",
@@ -108,7 +116,8 @@ export const routines: Routine[] = [
         reps: "Al fallo",
         restSeconds: 60,
         equipment: "bodyweight",
-        description: "Remata pecho y tríceps con flexiones al fallo. Mantén el cuerpo recto.",
+        description:
+          "Remata pecho y tríceps con flexiones al fallo. Mantén el cuerpo recto.",
         tempo: "2 - 0 - 2 - 0",
         category: "chest",
         difficulty: "Principiante",
@@ -133,7 +142,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 75,
         equipment: "dumbbells",
-        description: "Peso muerto con piernas semi-rígidas. Espalda recta, caderas hacia atrás y tronco fuerte.",
+        description:
+          "Peso muerto con piernas semi-rígidas. Espalda recta, caderas hacia atrás y tronco fuerte.",
         tempo: "3 - 1 - 2 - 0",
         category: "back",
         difficulty: "Avanzado",
@@ -146,7 +156,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Curl con palmas hacia arriba. Control total, no balancees el cuerpo.",
+        description:
+          "Curl con palmas hacia arriba. Control total, no balancees el cuerpo.",
         tempo: "2 - 0 - 2 - 0",
         category: "biceps",
         difficulty: "Principiante",
@@ -159,7 +170,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 75,
         equipment: "dumbbells",
-        description: "Sujeta una mancuerna al pecho y baja en sentadilla profunda. Piernas y glúteos.",
+        description:
+          "Sujeta una mancuerna al pecho y baja en sentadilla profunda. Piernas y glúteos.",
         tempo: "2 - 0 - 2 - 0",
         category: "legs",
         difficulty: "Intermedio",
@@ -172,7 +184,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 75,
         equipment: "dumbbells",
-        description: "Remo unilateral con mancuerna. Mantén la espalda recta y tira hacia el bolsillo.",
+        description:
+          "Remo unilateral con mancuerna. Mantén la espalda recta y tira hacia el bolsillo.",
         tempo: "2 - 1 - 2 - 0",
         category: "back",
         difficulty: "Intermedio",
@@ -185,7 +198,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Curl con palmas neutras. Trabaja braquial y braquiorradial.",
+        description:
+          "Curl con palmas neutras. Trabaja braquial y braquiorradial.",
         tempo: "2 - 0 - 2 - 0",
         category: "biceps",
         difficulty: "Principiante",
@@ -198,7 +212,8 @@ export const routines: Routine[] = [
         reps: "10-12 por pierna",
         restSeconds: 60,
         equipment: "bodyweight",
-        description: "Da un paso largo hacia delante, baja la rodilla y vuelve. Alterna piernas.",
+        description:
+          "Da un paso largo hacia delante, baja la rodilla y vuelve. Alterna piernas.",
         tempo: "2 - 0 - 2 - 0",
         category: "legs",
         difficulty: "Principiante",
@@ -211,7 +226,8 @@ export const routines: Routine[] = [
         reps: "Al fallo",
         restSeconds: 75,
         equipment: "bodyweight",
-        description: "Burpees completos hasta el fallo. Carga piernas, espalda y bíceps en el fondo.",
+        description:
+          "Burpees completos hasta el fallo. Carga piernas, espalda y bíceps en el fondo.",
         tempo: "1 - 0 - 1 - 0",
         category: "legs",
         difficulty: "Avanzado",
@@ -222,7 +238,8 @@ export const routines: Routine[] = [
   {
     day: 3,
     title: "Día 3: HIIT",
-    subtitle: "Máxima intensidad. Quema calórica extrema y mejora cardiovascular.",
+    subtitle:
+      "Máxima intensidad. Quema calórica extrema y mejora cardiovascular.",
     type: "hiit",
     duration: "30 MIN",
     difficulty: "Cardio HIIT",
@@ -237,7 +254,8 @@ export const routines: Routine[] = [
         reps: "15",
         restSeconds: 90,
         equipment: "dumbbells",
-        description: "Sentadilla con press de hombros. Movimiento fluido y continuo.",
+        description:
+          "Sentadilla con press de hombros. Movimiento fluido y continuo.",
         tempo: "Potente",
         category: "full_body",
         difficulty: "Avanzado",
@@ -263,7 +281,8 @@ export const routines: Routine[] = [
         reps: "20",
         restSeconds: 90,
         equipment: "dumbbells",
-        description: "Swing ruso con mancuerna. Impulsa con caderas, no con brazos.",
+        description:
+          "Swing ruso con mancuerna. Impulsa con caderas, no con brazos.",
         tempo: "Explosivo",
         category: "full_body",
         difficulty: "Intermedio",
@@ -289,7 +308,8 @@ export const routines: Routine[] = [
         reps: "10",
         restSeconds: 90,
         equipment: "dumbbells",
-        description: "Burpee con mancuernas + press. Ejercicio compuesto total.",
+        description:
+          "Burpee con mancuernas + press. Ejercicio compuesto total.",
         tempo: "Potente",
         category: "full_body",
         difficulty: "Avanzado",
@@ -302,7 +322,8 @@ export const routines: Routine[] = [
         reps: "45s",
         restSeconds: 60,
         equipment: "bodyweight",
-        description: "Corre en el sitio subiendo las rodillas al pecho. Ritmo máximo.",
+        description:
+          "Corre en el sitio subiendo las rodillas al pecho. Ritmo máximo.",
         tempo: "Rápido",
         category: "full_body",
         difficulty: "Intermedio",
@@ -315,7 +336,8 @@ export const routines: Routine[] = [
         reps: "30s",
         restSeconds: 45,
         equipment: "bodyweight",
-        description: "En posición de plancha, abre y cierra las piernas. Core activo.",
+        description:
+          "En posición de plancha, abre y cierra las piernas. Core activo.",
         tempo: "Rápido",
         category: "core",
         difficulty: "Intermedio",
@@ -328,7 +350,8 @@ export const routines: Routine[] = [
         reps: "10",
         restSeconds: 60,
         equipment: "bodyweight",
-        description: "Salto vertical llevando las rodillas al pecho. Aterriza suave.",
+        description:
+          "Salto vertical llevando las rodillas al pecho. Aterriza suave.",
         tempo: "Explosivo",
         category: "legs",
         difficulty: "Avanzado",
@@ -343,7 +366,8 @@ export const routines: Routine[] = [
         reps: "15",
         restSeconds: 60,
         equipment: "bodyweight",
-        description: "Sentadilla con salto en la subida. Aterriza amortiguando.",
+        description:
+          "Sentadilla con salto en la subida. Aterriza amortiguando.",
         tempo: "Explosivo",
         category: "legs",
         difficulty: "Avanzado",
@@ -408,7 +432,8 @@ export const routines: Routine[] = [
         reps: "15",
         restSeconds: 60,
         equipment: "bodyweight",
-        description: "Sentadilla profunda con salto explosivo. Aterriza con control.",
+        description:
+          "Sentadilla profunda con salto explosivo. Aterriza con control.",
         tempo: "Explosivo",
         category: "legs",
         difficulty: "Avanzado",
@@ -419,7 +444,8 @@ export const routines: Routine[] = [
   {
     day: 4,
     title: "Extra: Libre",
-    subtitle: "Ejercicio libre para trabajar lo que tú quieras. Configurable y adaptable.",
+    subtitle:
+      "Ejercicio libre para trabajar lo que tú quieras. Configurable y adaptable.",
     type: "strength",
     duration: "20 MIN",
     difficulty: "Intermedio",
@@ -433,7 +459,8 @@ export const routines: Routine[] = [
         reps: "Tu elección",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Elección libre. Elige el movimiento, el peso y las repeticiones según tu objetivo del día.",
+        description:
+          "Elección libre. Elige el movimiento, el peso y las repeticiones según tu objetivo del día.",
         category: "full_body",
         difficulty: "Principiante",
         image: getImg("free_workout"),
@@ -457,7 +484,8 @@ export const routines: Routine[] = [
         reps: "8",
         restSeconds: 75,
         equipment: "dumbbells",
-        description: "Burpee + remo unilateral + flexión + press. Ejercicio total completo.",
+        description:
+          "Burpee + remo unilateral + flexión + press. Ejercicio total completo.",
         tempo: "Potente",
         category: "full_body",
         difficulty: "Avanzado",
@@ -470,7 +498,8 @@ export const routines: Routine[] = [
         reps: "10",
         restSeconds: 75,
         equipment: "dumbbells",
-        description: "Clean con mancuernas seguido de press militar. Movimiento olímpico adaptado.",
+        description:
+          "Clean con mancuernas seguido de press militar. Movimiento olímpico adaptado.",
         tempo: "Potente",
         category: "full_body",
         difficulty: "Avanzado",
@@ -483,7 +512,8 @@ export const routines: Routine[] = [
         reps: "12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Sentadilla con pies abiertos. Trabaja inner thigh y glúteos.",
+        description:
+          "Sentadilla con pies abiertos. Trabaja inner thigh y glúteos.",
         tempo: "3 - 0 - 2 - 0",
         category: "legs",
         difficulty: "Intermedio",
@@ -509,7 +539,8 @@ export const routines: Routine[] = [
         reps: "10",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Press con impulso de piernas. Sube explosivo, baja controlado.",
+        description:
+          "Press con impulso de piernas. Sube explosivo, baja controlado.",
         tempo: "Potente",
         category: "shoulders",
         difficulty: "Avanzado",
@@ -522,7 +553,8 @@ export const routines: Routine[] = [
         reps: "12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Giro diagonal de arriba a abajo. Trabaja core y oblicuos.",
+        description:
+          "Giro diagonal de arriba a abajo. Trabaja core y oblicuos.",
         tempo: "2 - 0 - 2 - 0",
         category: "core",
         difficulty: "Intermedio",
@@ -533,7 +565,8 @@ export const routines: Routine[] = [
   {
     day: 6,
     title: "Día 6: Pierna y Core",
-    subtitle: "Fuerza de tren inferior y estabilidad central. 6 ejercicios, ~30 min.",
+    subtitle:
+      "Fuerza de tren inferior y estabilidad central. 6 ejercicios, ~30 min.",
     type: "strength",
     duration: "30 MIN",
     difficulty: "Intermedio",
@@ -547,7 +580,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 75,
         equipment: "dumbbells",
-        description: "Sentadilla unilateral con pie trasero elevado. Controla el equilibrio.",
+        description:
+          "Sentadilla unilateral con pie trasero elevado. Controla el equilibrio.",
         tempo: "3 - 0 - 2 - 0",
         category: "legs",
         difficulty: "Avanzado",
@@ -560,7 +594,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 75,
         equipment: "dumbbells",
-        description: "Peso muerto con piernas anchas. Espalda recta y caderas hacia atrás.",
+        description:
+          "Peso muerto con piernas anchas. Espalda recta y caderas hacia atrás.",
         tempo: "3 - 1 - 2 - 0",
         category: "legs",
         difficulty: "Intermedio",
@@ -586,7 +621,8 @@ export const routines: Routine[] = [
         reps: "12-15",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Empuja las caderas hacia arriba apoyado en un banco. Contrae glúteos arriba.",
+        description:
+          "Empuja las caderas hacia arriba apoyado en un banco. Contrae glúteos arriba.",
         tempo: "2 - 1 - 2 - 0",
         category: "legs",
         difficulty: "Intermedio",
@@ -612,7 +648,8 @@ export const routines: Routine[] = [
         reps: "20",
         restSeconds: 45,
         equipment: "bodyweight",
-        description: "Codo contralateral con rodilla. Core activo sin tirar del cuello.",
+        description:
+          "Codo contralateral con rodilla. Core activo sin tirar del cuello.",
         tempo: "2 - 0 - 2 - 0",
         category: "core",
         difficulty: "Intermedio",
@@ -637,7 +674,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Curl con palmas hacia arriba. Control total, no balancees el cuerpo.",
+        description:
+          "Curl con palmas hacia arriba. Control total, no balancees el cuerpo.",
         tempo: "2 - 0 - 2 - 0",
         category: "biceps",
         difficulty: "Principiante",
@@ -650,7 +688,8 @@ export const routines: Routine[] = [
         reps: "10-12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Curl con palmas neutras. Trabaja braquial y braquiorradial.",
+        description:
+          "Curl con palmas neutras. Trabaja braquial y braquiorradial.",
         tempo: "2 - 0 - 2 - 0",
         category: "biceps",
         difficulty: "Principiante",
@@ -676,7 +715,8 @@ export const routines: Routine[] = [
         reps: "12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Extensión por encima de la cabeza. Mantén los codos fijos.",
+        description:
+          "Extensión por encima de la cabeza. Mantén los codos fijos.",
         tempo: "2 - 0 - 2 - 0",
         category: "triceps",
         difficulty: "Intermedio",
@@ -702,7 +742,8 @@ export const routines: Routine[] = [
         reps: "12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Extensión de tríceps a una mano inclinado hacia delante. Codo fijo.",
+        description:
+          "Extensión de tríceps a una mano inclinado hacia delante. Codo fijo.",
         tempo: "2 - 1 - 2 - 0",
         category: "triceps",
         difficulty: "Intermedio",
@@ -753,7 +794,8 @@ export const routines: Routine[] = [
         reps: "12",
         restSeconds: 60,
         equipment: "dumbbells",
-        description: "Sentadilla con mancuerna al pecho. Piernas profundas y espalda recta.",
+        description:
+          "Sentadilla con mancuerna al pecho. Piernas profundas y espalda recta.",
         tempo: "3 - 0 - 2 - 0",
         category: "legs",
         difficulty: "Principiante",
@@ -894,7 +936,8 @@ export const routines: Routine[] = [
         reps: "12",
         restSeconds: 30,
         equipment: "dumbbells",
-        description: "Elevación posterior de brazos. Trabaja deltoides posterior y espalda baja.",
+        description:
+          "Elevación posterior de brazos. Trabaja deltoides posterior y espalda baja.",
         tempo: "2 - 1 - 2 - 0",
         category: "back",
         difficulty: "Intermedio",
@@ -920,11 +963,148 @@ export const routines: Routine[] = [
         reps: "1 min",
         restSeconds: 0,
         equipment: "bodyweight",
-        description: "Respiración diafragmática profunda para bajar ritmo cardíaco.",
+        description:
+          "Respiración diafragmática profunda para bajar ritmo cardíaco.",
         tempo: "Lento",
         category: "core",
         difficulty: "Principiante",
         image: getImg("free_workout"),
+      },
+    ],
+  },
+  {
+    day: 11,
+    title: "Super HIIT",
+    subtitle:
+      "3 circuitos × 3 ejercicios × 3 sets. 45s trabajo + 15s recuperación.",
+    type: "hiit",
+    duration: "30 MIN",
+    difficulty: "Cardio HIIT",
+    equipment: "PESO CORPORAL",
+    coverImage: getImg("burpees_bodyweight"),
+    exercises: [
+      {
+        id: "sh-1",
+        name: "Sprint",
+        sets: 3,
+        reps: "45s",
+        restSeconds: 15,
+        equipment: "bodyweight",
+        description:
+          "Corre en el sitio a máxima intensidad. Brazos y rodillas altas.",
+        tempo: "Rápido",
+        category: "cardio",
+        difficulty: "Intermedio",
+        image: getImg("high_knees"),
+      },
+      {
+        id: "sh-2",
+        name: "Abdominales de Bicicleta",
+        sets: 3,
+        reps: "45s",
+        restSeconds: 15,
+        equipment: "bodyweight",
+        description:
+          "Codo contralateral a rodilla. Core activo sin tirar del cuello.",
+        tempo: "Rápido",
+        category: "core",
+        difficulty: "Intermedio",
+        image: getImg("abdominal_crunch"),
+      },
+      {
+        id: "sh-3",
+        name: "Salto de Caja",
+        sets: 3,
+        reps: "45s",
+        restSeconds: 15,
+        equipment: "bodyweight",
+        description:
+          "Salta con ambos pies a una superficie estable y baja controlando.",
+        tempo: "Explosivo",
+        category: "legs",
+        difficulty: "Avanzado",
+        image: getImg("box_jump"),
+      },
+      {
+        id: "sh-4",
+        name: "Flexiones con Palma",
+        sets: 3,
+        reps: "45s",
+        restSeconds: 15,
+        equipment: "bodyweight",
+        description:
+          "Flexión clásica con palmas apoyadas. Mantén el cuerpo recto.",
+        tempo: "Rápido",
+        category: "chest",
+        difficulty: "Intermedio",
+        image: getImg("classic_push_ups"),
+      },
+      {
+        id: "sh-5",
+        name: "Burpees",
+        sets: 3,
+        reps: "45s",
+        restSeconds: 15,
+        equipment: "bodyweight",
+        description: "Burpees completos: pecho al suelo y salto vertical.",
+        tempo: "Potente",
+        category: "full_body",
+        difficulty: "Avanzado",
+        image: getImg("burpees_bodyweight"),
+      },
+      {
+        id: "sh-6",
+        name: "Plank Jacks",
+        sets: 3,
+        reps: "45s",
+        restSeconds: 15,
+        equipment: "bodyweight",
+        description:
+          "En plancha, abre y cierra las piernas sin mover los hombros.",
+        tempo: "Rápido",
+        category: "core",
+        difficulty: "Intermedio",
+        image: getImg("plank_jack"),
+      },
+      {
+        id: "sh-7",
+        name: "Mountain Climbers",
+        sets: 3,
+        reps: "45s",
+        restSeconds: 15,
+        equipment: "bodyweight",
+        description: "Escaladores rápidos manteniendo plancha. Core estable.",
+        tempo: "Rápido",
+        category: "full_body",
+        difficulty: "Intermedio",
+        image: getImg("mountain_climbers"),
+      },
+      {
+        id: "sh-8",
+        name: "Sentadillas con Salto",
+        sets: 3,
+        reps: "45s",
+        restSeconds: 15,
+        equipment: "bodyweight",
+        description: "Sentadilla profunda con salto explosivo. Aterriza suave.",
+        tempo: "Explosivo",
+        category: "legs",
+        difficulty: "Avanzado",
+        image: getImg("squat_jump"),
+      },
+      {
+        id: "sh-9",
+        name: "High Knees",
+        sets: 3,
+        reps: "45s",
+        restSeconds: 15,
+        equipment: "bodyweight",
+        description:
+          "Corre en el sitio llevando las rodillas al pecho. Ritmo máximo.",
+        tempo: "Rápido",
+        category: "cardio",
+        difficulty: "Intermedio",
+        image: getImg("high_knees"),
       },
     ],
   },
@@ -940,7 +1120,8 @@ export const plans: Plan[] = [
   {
     id: "strength-3",
     name: "Fuerza 3 días",
-    description: "Empuje, tirón y full body. Equilibrio muscular y fuerza progresiva.",
+    description:
+      "Empuje, tirón y full body. Equilibrio muscular y fuerza progresiva.",
     daysPerWeek: 3,
     weeks: 4,
     schedule: [1, 2, 5, 1, 2, 5, 1, 2, 5, 1, 2, 5],
@@ -950,7 +1131,8 @@ export const plans: Plan[] = [
   {
     id: "strength-4",
     name: "Fuerza 4 días",
-    description: "Empuje, tirón, HIIT, pierna/core y full body. Más volumen, más variedad.",
+    description:
+      "Empuje, tirón, HIIT, pierna/core y full body. Más volumen, más variedad.",
     daysPerWeek: 4,
     weeks: 4,
     schedule: [1, 2, 5, 6, 1, 2, 5, 6, 1, 2, 5, 6, 1, 2, 5, 6],
@@ -960,7 +1142,8 @@ export const plans: Plan[] = [
   {
     id: "hiit-2",
     name: "HIIT 2 días",
-    description: "Dos sesiones cardiolimíticas a la semana combinadas con fuerza.",
+    description:
+      "Dos sesiones cardiolimíticas a la semana combinadas con fuerza.",
     daysPerWeek: 2,
     weeks: 4,
     schedule: [3, 9, 3, 9, 3, 9, 3, 9],
@@ -970,7 +1153,8 @@ export const plans: Plan[] = [
   {
     id: "mixed",
     name: "Mixto Semanal",
-    description: "Fuerza, HIIT, movilidad y libre. Semana equilibrada sin aburrirse.",
+    description:
+      "Fuerza, HIIT, movilidad y libre. Semana equilibrada sin aburrirse.",
     daysPerWeek: 5,
     weeks: 4,
     schedule: [1, 2, 3, 10, 4, 1, 2, 3, 10, 4, 1, 2, 3, 10, 4, 1, 2, 3, 10, 4],

@@ -20,13 +20,24 @@ export default function SectionTitle({
   accent = true,
 }: SectionTitleProps) {
   return (
-    <div className={cn("flex flex-col", align === "center" && "items-center text-center", className)}>
-      <div className={cn("flex items-center gap-2", align === "center" && "justify-center")}>
+    <div
+      className={cn(
+        "flex flex-col",
+        align === "center" && "items-center text-center",
+        className,
+      )}
+    >
+      <div
+        className={cn(
+          "flex items-center gap-2",
+          align === "center" && "justify-center",
+        )}
+      >
         {icon && <span className="text-primary-container">{icon}</span>}
         <h2
           className={cn(
             "font-headline-md text-headline-md uppercase tracking-wider",
-            accent && "text-primary-container"
+            accent && "text-primary-container",
           )}
         >
           {children}

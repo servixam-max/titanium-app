@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { ArrowLeft, Settings, Volume2, VolumeX, X } from "lucide-react";
 import Link from "next/link";
 import { useAppStore } from "@/lib/store";
-import SettingsModal from "./SettingsModal";
+
+const SettingsModal = dynamic(() => import("./SettingsModal"), { ssr: false });
 
 export type TopAppBarVariant = "default" | "transparent" | "solid" | "workout";
 
@@ -71,9 +73,7 @@ export default function TopAppBar({
           )}
         </div>
 
-        <h1
-          className="font-headline-md text-headline-md font-bold text-primary-container uppercase tracking-wider text-center flex-1"
-        >
+        <h1 className="font-headline-md text-headline-md font-bold text-primary-container uppercase tracking-wider text-center flex-1">
           {title}
         </h1>
 
@@ -104,10 +104,16 @@ export default function TopAppBar({
       </header>
 
       {withSpacer && (
-        <div className={`w-full ${topAppBarHeightClass} safe-top`} aria-hidden="true" />
+        <div
+          className={`w-full ${topAppBarHeightClass} safe-top`}
+          aria-hidden="true"
+        />
       )}
 
-      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <SettingsModal
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+      />
     </>
   );
 }

@@ -4,6 +4,7 @@ import { Clock, Flame, Layers, Star } from "lucide-react";
 import Link from "next/link";
 import { Routine } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
+import ExerciseImage from "@/components/ui/ExerciseImage";
 
 interface RoutineCardProps {
   routine: Routine;
@@ -29,7 +30,8 @@ const MUSCLE_COLORS: Record<string, string> = {
   triceps: "bg-violet-500/15 text-violet-300 border-violet-500/25",
   legs: "bg-orange-500/15 text-orange-300 border-orange-500/25",
   core: "bg-cyan-500/15 text-cyan-300 border-cyan-500/25",
-  full_body: "bg-primary-container/20 text-primary-container border-primary-container/30",
+  full_body:
+    "bg-primary-container/20 text-primary-container border-primary-container/30",
 };
 
 export default function RoutineCard({
@@ -44,8 +46,8 @@ export default function RoutineCard({
     new Set(
       routine.exercises
         .map((ex) => ex.category)
-        .filter((cat): cat is string => Boolean(cat))
-    )
+        .filter((cat): cat is string => Boolean(cat)),
+    ),
   );
 
   const handleEquipmentChange = (pref: "dumbbells" | "bodyweight") => {
@@ -69,11 +71,11 @@ export default function RoutineCard({
       {/* Card Header Image */}
       <div className="h-36 bg-surface-container-high relative overflow-hidden">
         {coverSrc ? (
-          <img
+          <ExerciseImage
             src={coverSrc}
             alt={routine.title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            style={{ opacity: 0.9 }}
+            containerClassName="absolute inset-0"
+            className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-105"
           />
         ) : null}
 
@@ -102,7 +104,9 @@ export default function RoutineCard({
                   : "bg-surface-container-highest text-on-surface border-surface-variant"
               }`}
             >
-              {isPersonalized ? "PERSONALIZADO" : routine.difficulty.toUpperCase()}
+              {isPersonalized
+                ? "PERSONALIZADO"
+                : routine.difficulty.toUpperCase()}
             </span>
           </div>
           {isPersonalized && (
@@ -114,9 +118,7 @@ export default function RoutineCard({
       {/* Card Content */}
       <div className="p-4 flex flex-col gap-3 relative z-20">
         <div className="flex items-start justify-between gap-2">
-          <h4 className="font-headline-md text-headline-md">
-            {routine.title}
-          </h4>
+          <h4 className="font-headline-md text-headline-md">{routine.title}</h4>
         </div>
 
         <p className="font-body-md text-body-md text-secondary leading-snug">

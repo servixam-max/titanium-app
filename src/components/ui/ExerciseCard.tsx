@@ -1,7 +1,15 @@
 "use client";
 
-import { GripVertical, Clock, Timer, Activity, Dumbbell, ArrowRight } from "lucide-react";
+import {
+  GripVertical,
+  Clock,
+  Timer,
+  Activity,
+  Dumbbell,
+  ArrowRight,
+} from "lucide-react";
 import { Exercise } from "@/lib/types";
+import ExerciseImage from "@/components/ui/ExerciseImage";
 
 interface ExerciseCardProps {
   exercise: Exercise;
@@ -31,7 +39,8 @@ const MUSCLE_COLORS: Record<string, string> = {
   triceps: "bg-violet-500/15 text-violet-300 border-violet-500/25",
   legs: "bg-orange-500/15 text-orange-300 border-orange-500/25",
   core: "bg-cyan-500/15 text-cyan-300 border-cyan-500/25",
-  full_body: "bg-primary-container/20 text-primary-container border-primary-container/30",
+  full_body:
+    "bg-primary-container/20 text-primary-container border-primary-container/30",
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
@@ -57,7 +66,9 @@ export default function ExerciseCard({
 }: ExerciseCardProps) {
   const muscleKey = exercise.category || "full_body";
   const muscleColors = MUSCLE_COLORS[muscleKey] || MUSCLE_COLORS.full_body;
-  const difficultyColor = exercise.difficulty ? DIFFICULTY_COLORS[exercise.difficulty] || "text-on-surface-variant" : "text-on-surface-variant";
+  const difficultyColor = exercise.difficulty
+    ? DIFFICULTY_COLORS[exercise.difficulty] || "text-on-surface-variant"
+    : "text-on-surface-variant";
 
   return (
     <div
@@ -67,9 +78,10 @@ export default function ExerciseCard({
         flex items-center gap-stack-gap min-h-touch-target-min
         transition-all duration-200 overflow-hidden
         ${selectable ? "cursor-pointer hover:bg-surface-container-high active:scale-[0.98]" : ""}
-        ${isSelected
-          ? "border-primary-container shadow-[0_0_18px_rgba(204,255,0,0.15)] bg-surface-container-high"
-          : "border-surface-container-highest hover:border-surface-variant"
+        ${
+          isSelected
+            ? "border-primary-container shadow-[0_0_18px_rgba(204,255,0,0.15)] bg-surface-container-high"
+            : "border-surface-container-highest hover:border-surface-variant"
         }
         ${isSelected ? "animate-soft-pulse" : ""}
       `}
@@ -80,18 +92,21 @@ export default function ExerciseCard({
       )}
 
       {/* Exercise Image/Icon */}
-      <div className={`
+      <div
+        className={`
         rounded bg-surface-container-highest flex-shrink-0 flex items-center justify-center overflow-hidden
         ${compact ? "w-14 h-14" : "w-16 h-16"}
-      `}>
+      `}
+      >
         {exercise.image ? (
-          <img
+          <ExerciseImage
             src={exercise.image}
             alt={exercise.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
+            containerClassName="w-full h-full"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            fallbackIcon={
+              <Dumbbell className="w-7 h-7 text-primary-container/60" />
+            }
           />
         ) : (
           <Dumbbell className="w-7 h-7 text-primary-container/60" />
@@ -118,7 +133,9 @@ export default function ExerciseCard({
 
         {/* Secondary meta: muscle badge, rest, difficulty */}
         <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
-          <span className={`font-label-caps text-[10px] px-2 py-0.5 rounded-full border ${muscleColors}`}>
+          <span
+            className={`font-label-caps text-[10px] px-2 py-0.5 rounded-full border ${muscleColors}`}
+          >
             {MUSCLE_LABELS[muscleKey] || muscleKey}
           </span>
 
@@ -130,7 +147,9 @@ export default function ExerciseCard({
           )}
 
           {exercise.difficulty && (
-            <span className={`font-label-caps text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest border border-surface-container-highest flex items-center gap-1 ${difficultyColor}`}>
+            <span
+              className={`font-label-caps text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest border border-surface-container-highest flex items-center gap-1 ${difficultyColor}`}
+            >
               <Activity className="w-3 h-3" />
               {exercise.difficulty}
             </span>
@@ -143,9 +162,10 @@ export default function ExerciseCard({
         <div
           className={`
             w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0
-            ${isSelected
-              ? "bg-primary-container text-on-primary-container"
-              : "bg-surface-container-highest text-on-surface-variant group-hover:bg-surface-container"
+            ${
+              isSelected
+                ? "bg-primary-container text-on-primary-container"
+                : "bg-surface-container-highest text-on-surface-variant group-hover:bg-surface-container"
             }
           `}
         >
