@@ -16,6 +16,11 @@ export function generateStaticParams() {
   ];
 }
 
-export default function Page({ params }: { params: { day: string } }) {
-  return <RoutinePageComponent day={Number(params.day)} />;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ day: string }>;
+}) {
+  const { day } = await params;
+  return <RoutinePageComponent day={Number(day)} />;
 }
