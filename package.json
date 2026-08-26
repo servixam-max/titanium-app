@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && node scripts/generate-sw.js",
-    "build:apk": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && ./gradlew assembleRelease",
-    "build:apk:clean": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && ./gradlew clean assembleRelease",
+    "build:apk": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && ./gradlew assembleDebug",
+    "build:apk:clean": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && ./gradlew clean assembleDebug",
+    "build:apk:signed": "cp next.config.apk.mjs next.config.mjs && npm run build && npx cap sync android && cd android && ./gradlew clean assembleRelease",
     "sync:android": "npx cap sync android",
     "open:android": "npx cap open android",
     "start": "next start",
