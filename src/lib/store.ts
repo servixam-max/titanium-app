@@ -8,7 +8,7 @@ import {
   ActiveWorkoutState,
   AudioMode,
 } from "@/lib/types";
-import { apiUrl } from "@/lib/api-config";
+import { apiUrl, isApiEnabled } from "@/lib/api-config";
 import { saveSession, getSessions, clearAllSessions } from "@/lib/db";
 import { logger } from "@/lib/logger";
 
@@ -618,10 +618,15 @@ export const useAppStore = create<AppState>()(
           lastExerciseWeights: updatedLastWeights,
         });
 
-        // Best-effort sync to PostgreSQL
+        // Best-effort sync to PostgreSQL (only if an API base URL is configured)
+        if (!isApiEnabled()) {
+          set({ dbError: null });
+          return { sessionId: completedSession.id, completedSession };
+        }
+
         try {
           const routine = activeWorkout.routine;
-          if (!routine) return;
+          if (!routine) return { sessionId: completedSession.id, completedSession };
 
           const totalSets = completedSession.exercises.reduce(
             (sum, ex) => sum + ex.sets.length,
@@ -648,6 +653,9 @@ export const useAppStore = create<AppState>()(
                   1000,
               )
             : 0;
+
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
 
           const response = await fetch(apiUrl("sessions"), {
             method: "POST",
@@ -679,7 +687,9 @@ export const useAppStore = create<AppState>()(
                 })),
               })),
             }),
+            signal: controller.signal,
           });
+          clearTimeout(timeoutId);
 
           if (!response.ok) {
             logger.error("Failed to sync session to server");
@@ -693,16 +703,31 @@ export const useAppStore = create<AppState>()(
             dbError: "Sin conexión con servidor (datos guardados localmente)",
           });
         }
+
+        return { sessionId: completedSession.id, completedSession };
       },
 
       cancelWorkout: () => {
         set({ activeWorkout: initialActiveWorkout });
       },
 
-      // Auto-save progress for individual mode
+      // Auto-save progress for individual mode (local + best-effort server if configured)
       saveProgress: async () => {
         const { activeWorkout } = get();
         if (!activeWorkout.session || !activeWorkout.routine) return;
+
+        // Always persist current progress to IndexedDB first
+        await saveSession({
+          ...activeWorkout.session,
+          endTime: new Date(),
+          completed: false,
+        });
+
+        // Optional server sync only if API is configured
+        if (!isApiEnabled()) {
+          set({ dbError: null });
+          return;
+        }
 
         const session = activeWorkout.session;
         const routine = activeWorkout.routine;
@@ -757,6 +782,8 @@ export const useAppStore = create<AppState>()(
         };
 
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
           let response;
           const dbSessionId = activeWorkout.dbSessionId;
 
@@ -765,14 +792,17 @@ export const useAppStore = create<AppState>()(
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
+              signal: controller.signal,
             });
           } else {
             response = await fetch(apiUrl("sessions"), {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
+              signal: controller.signal,
             });
           }
+          clearTimeout(timeoutId);
 
           if (response.ok) {
             const data = await response.json();
@@ -786,11 +816,11 @@ export const useAppStore = create<AppState>()(
             }
             set({ dbError: null });
           } else {
-            set({ dbError: "Error guardando progreso" });
+            set({ dbError: "Progreso guardado localmente" });
           }
         } catch (error) {
           logger.error("Error saving progress:", error);
-          set({ dbError: "Error de conexión" });
+          set({ dbError: "Progreso guardado localmente" });
         }
       },
 

@@ -6,10 +6,10 @@ import {
   CheckCircle,
   Weight,
   Hash,
-  Home,
   Volume2,
   VolumeX,
   RotateCcw,
+  ArrowLeft,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import RestTimer from "@/components/ui/RestTimer";
@@ -301,8 +301,9 @@ export default function GuidedWorkout() {
         <button
           onClick={handleBack}
           className="flex items-center gap-1 h-10 px-2 text-on-surface hover:opacity-80 active:scale-95"
+          aria-label="Volver atrás"
         >
-          <Home className="w-4 h-4" />
+          <ArrowLeft className="w-6 h-6" />
         </button>
         <SectionTitle
           align="center"

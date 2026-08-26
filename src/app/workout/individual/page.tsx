@@ -12,7 +12,6 @@ import {
   Volume2,
   VolumeX,
   Hash,
-  Home,
   SkipForward,
   Clock,
   RotateCcw,
@@ -420,8 +419,9 @@ export default function IndividualWorkout() {
         <button
           onClick={handleBack}
           className="flex items-center gap-1 h-10 px-2 text-on-surface hover:opacity-80 active:scale-95"
+          aria-label="Volver atrás"
         >
-          <Home className="w-4 h-4" />
+          <ArrowLeft className="w-6 h-6" />
         </button>
         <SectionTitle
           align="center"

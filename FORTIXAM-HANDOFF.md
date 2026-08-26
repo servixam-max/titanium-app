@@ -166,12 +166,13 @@ adb install -r android/app/build/outputs/apk/debug/app-debug.apk
 
 ## 5. Configuraciones importantes
 
-### 5.1. Modo offline-first
+### 5.2. Modo offline-first
 
-- `src/lib/api-config.ts` debe tener el backend deshabilitado.
+- `src/lib/api-config.ts` tiene el backend **desactivado por defecto** (`API_BASE_URL` vacío). La app no intenta sync remoto salvo que configures `NEXT_PUBLIC_API_BASE_URL`.
 - `src/lib/db.ts` usa Dexie con tablas `sessions` y `weightEntries`.
 - `src/lib/store.ts` sincroniza Zustand con IndexedDB.
 - El servidor en `server/` y `docker-compose.yml` son **opcionales** para sync futura.
+- Si configuras un backend, `finishWorkout` y `saveProgress` usan un timeout de 5s; si falla, los datos siguen guardados localmente.
 
 ### 5.2. Imágenes de ejercicios
 
