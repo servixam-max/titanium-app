@@ -1,9 +1,8 @@
 "use client";
 
-import { Clock, Flame, Layers, Star } from "lucide-react";
+import { Clock, Layers, ChevronRight, Star, Dumbbell } from "lucide-react";
 import Link from "next/link";
 import { Routine } from "@/lib/types";
-import { useAppStore } from "@/lib/store";
 import ExerciseImage from "@/components/ui/ExerciseImage";
 
 interface RoutineCardProps {
@@ -36,10 +35,7 @@ const MUSCLE_COLORS: Record<string, string> = {
 
 export default function RoutineCard({
   routine,
-  showEquipmentToggle = false,
 }: RoutineCardProps) {
-  const { equipmentPreference, setEquipmentPreference } = useAppStore();
-
   const totalSets = routine.exercises.reduce((sum, ex) => sum + ex.sets, 0);
 
   const muscleGroups = Array.from(
@@ -50,90 +46,103 @@ export default function RoutineCard({
     ),
   );
 
-  const handleEquipmentChange = (pref: "dumbbells" | "bodyweight") => {
-    setEquipmentPreference(pref);
-  };
+  const isPersonalized =
+    routine.categoryTag === "personalizado" || routine.day === 11;
+  const isHIIT = routine.type === "hiit";
 
-  const isPersonalized = routine.day === 4;
-  const coverSrc =
-    showEquipmentToggle &&
-    equipmentPreference === "bodyweight" &&
-    routine.coverImageBodyweight
-      ? routine.coverImageBodyweight
-      : routine.coverImage;
+  // Format day label
+  const dayLabel = isPersonalized
+    ? "EXTRA"
+    : isHIIT
+      ? `DÍA ${routine.day} · HIIT`
+      : `DÍA ${routine.day < 10 ? `0${routine.day}` : routine.day}`;
 
   return (
-    <div
-      className={`group bg-surface rounded-xl border border-surface-container-highest overflow-hidden relative shadow-rest flex flex-col transition-all duration-200 hover:shadow-neon hover:border-primary-container/30 active:scale-[0.98] ${
-        isPersonalized ? "border-primary-container/40" : ""
-      }`}
+    <Link
+      href={`/routine/${routine.day}`}
+      className="group block bg-surface-container-low/90 backdrop-blur-md rounded-2xl border border-surface-container-highest/80 overflow-hidden relative shadow-lg transition-all duration-300 hover:border-primary-container/60 hover:shadow-[0_8px_30px_rgba(204,255,0,0.12)] active:scale-[0.98]"
     >
-      {/* Card Header Image */}
-      <div className="h-36 bg-surface-container-high relative overflow-hidden">
-        {coverSrc ? (
-          <ExerciseImage
-            src={coverSrc}
-            alt={routine.title}
-            containerClassName="absolute inset-0"
-            className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : null}
-
-        {/* Strong gradient overlay for text readability and tactile depth */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/20 z-10" />
-        <div className="absolute inset-0 bg-black/20 z-10" />
-
-        {/* HIIT Fire Icon fallback */}
-        {routine.type === "hiit" && !routine.coverImage && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-20 z-0">
-            <Flame className="w-20 h-20 text-primary-container" />
-          </div>
-        )}
-
-        {/* Badges */}
-        <div className="absolute top-3 left-3 right-3 z-20 flex items-start justify-between gap-2">
-          <div className="flex flex-wrap gap-1.5">
-            <span className="bg-surface-container-highest text-on-surface font-label-caps text-label-caps px-2 py-1 rounded-full border border-surface-variant flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
+      {/* Top Header Strip */}
+      <div className="p-4 pb-3 flex items-start justify-between gap-3 border-b border-white/5 bg-gradient-to-r from-surface-container/60 to-surface-container-low/40">
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-mono text-[11px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-primary-container text-black shadow-sm">
+              {dayLabel}
+            </span>
+            <span className="font-label-caps text-[10px] text-on-surface-variant flex items-center gap-1 bg-surface-container-highest px-2 py-0.5 rounded-full">
+              <Clock className="w-3 h-3 text-primary-container" />
               {routine.duration}
             </span>
-            <span
-              className={`font-label-caps text-label-caps px-2 py-1 rounded-full border flex items-center gap-1 ${
-                routine.difficulty === "Cardio HIIT"
-                  ? "bg-primary-container/20 text-primary-container border-primary-container/30"
-                  : "bg-surface-container-highest text-on-surface border-surface-variant"
-              }`}
-            >
-              {isPersonalized
-                ? "PERSONALIZADO"
-                : routine.difficulty.toUpperCase()}
+            <span className="font-label-caps text-[10px] text-on-surface-variant flex items-center gap-1 bg-surface-container-highest px-2 py-0.5 rounded-full">
+              <Layers className="w-3 h-3 text-primary-container" />
+              {totalSets} series
             </span>
           </div>
-          {isPersonalized && (
-            <Star className="w-5 h-5 text-primary-container fill-primary-container flex-shrink-0" />
-          )}
+
+          <h3 className="font-headline-md text-lg text-white font-bold tracking-wide mt-1 truncate group-hover:text-primary-container transition-colors">
+            {routine.title}
+          </h3>
+          <p className="text-xs text-on-surface-variant line-clamp-1">
+            {routine.subtitle}
+          </p>
+        </div>
+
+        <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant group-hover:bg-primary-container group-hover:text-black transition-all flex-shrink-0 mt-1">
+          <ChevronRight className="w-4 h-4" />
         </div>
       </div>
 
-      {/* Card Content */}
-      <div className="p-4 flex flex-col gap-3 relative z-20">
-        <div className="flex items-start justify-between gap-2">
-          <h4 className="font-headline-md text-headline-md">{routine.title}</h4>
+      {/* Exercise Preview Gallery */}
+      <div className="p-3.5 bg-black/20 flex flex-col gap-2.5">
+        <div className="flex items-center justify-between text-[11px] text-on-surface-variant font-medium">
+          <span>{routine.exercises.length} Ejercicios incluidos:</span>
+          {isPersonalized && (
+            <Star className="w-3.5 h-3.5 text-primary-container fill-primary-container" />
+          )}
         </div>
 
-        <p className="font-body-md text-body-md text-secondary leading-snug">
-          {routine.subtitle}
-        </p>
+        {/* Thumbnail row */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+          {routine.exercises.slice(0, 4).map((ex, idx) => (
+            <div
+              key={ex.id || idx}
+              className="flex items-center gap-2 bg-surface-container-high/80 border border-white/5 rounded-xl p-1.5 pr-3 flex-shrink-0 max-w-[170px]"
+            >
+              <div className="w-8 h-8 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 flex items-center justify-center">
+                {ex.image ? (
+                  <ExerciseImage
+                    src={ex.image}
+                    alt={ex.name}
+                    containerClassName="w-full h-full"
+                    className="object-cover"
+                    fallbackIcon={<Dumbbell className="w-4 h-4 text-primary-container/70" />}
+                  />
+                ) : (
+                  <Dumbbell className="w-4 h-4 text-primary-container/70" />
+                )}
+              </div>
+              <span className="text-[11px] font-bold text-on-surface truncate">
+                {ex.name}
+              </span>
+            </div>
+          ))}
+
+          {routine.exercises.length > 4 && (
+            <div className="flex-shrink-0 h-11 px-2.5 rounded-xl bg-surface-container-highest/80 border border-white/5 flex items-center justify-center text-[11px] font-bold text-primary-container">
+              +{routine.exercises.length - 4} más
+            </div>
+          )}
+        </div>
 
         {/* Muscle group chips */}
         {muscleGroups.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1.5 pt-1">
             {muscleGroups.map((group) => {
               const colors = MUSCLE_COLORS[group] || MUSCLE_COLORS.full_body;
               return (
                 <span
                   key={group}
-                  className={`font-label-caps text-label-caps px-2 py-1 rounded-full border ${colors}`}
+                  className={`font-label-caps text-[9px] px-2 py-0.5 rounded-full border ${colors}`}
                 >
                   {MUSCLE_LABELS[group] || group}
                 </span>
@@ -141,57 +150,7 @@ export default function RoutineCard({
             })}
           </div>
         )}
-
-        {/* Quick stats */}
-        <div className="flex items-center gap-3">
-          <span className="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-1">
-            <Layers className="w-3.5 h-3.5" />
-            {totalSets} series
-          </span>
-          <span className="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-1">
-            <span className="w-1 h-1 rounded-full bg-surface-variant" />
-            {routine.exercises.length} ejercicios
-          </span>
-        </div>
-
-        {/* Equipment Toggle for Day 3 */}
-        {showEquipmentToggle && (
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleEquipmentChange("bodyweight")}
-                className={`flex-1 py-2.5 rounded-lg border font-label-caps text-label-caps transition-all active:scale-95 ${
-                  equipmentPreference === "bodyweight"
-                    ? "bg-primary-container text-on-primary-fixed border-primary-container shadow-[0_0_10px_rgba(195,244,0,0.2)]"
-                    : "bg-surface-container-low text-secondary border-surface-container-highest hover:border-surface-variant"
-                }`}
-              >
-                SIN MATERIAL
-              </button>
-              <button
-                onClick={() => handleEquipmentChange("dumbbells")}
-                className={`flex-1 py-2.5 rounded-lg border font-label-caps text-label-caps transition-all active:scale-95 ${
-                  equipmentPreference === "dumbbells"
-                    ? "bg-primary-container text-on-primary-fixed border-primary-container shadow-[0_0_10px_rgba(195,244,0,0.2)]"
-                    : "bg-surface-container-low text-secondary border-surface-container-highest hover:border-surface-variant"
-                }`}
-              >
-                MANCUERNAS
-              </button>
-            </div>
-          </div>
-        )}
-
-        <Link
-          href={`/routine/${routine.day}`}
-          className="w-full h-touch-target-min mt-1 bg-primary-container text-on-primary-fixed font-headline-md text-headline-md rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon hover:shadow-neon-strong focus-visible:outline-2 focus-visible:outline-primary-container focus-visible:outline-offset-2"
-        >
-          Empezar
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </Link>
       </div>
-    </div>
+    </Link>
   );
 }

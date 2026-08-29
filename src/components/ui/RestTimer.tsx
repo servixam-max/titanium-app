@@ -1,18 +1,19 @@
 "use client";
 
-import { FastForward, Plus, Minus, Dumbbell, Hash } from "lucide-react";
+import { FastForward, Plus, Minus, Dumbbell, Hash, ArrowLeft, Volume2, VolumeX } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useAppStore } from "@/lib/store";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import TimerCircle from "@/components/ui/TimerCircle";
 import ExerciseImage from "@/components/ui/ExerciseImage";
 import PrimaryButton from "@/components/ui/PrimaryButton";
+import SectionTitle from "@/components/ui/SectionTitle";
 import {
   playBeep,
   playRestEndAlarm,
   announceRest,
   announceCountdown,
   announceStart,
-  announceNextExercise,
   stopSpeaking,
   announceThirtySecondsLeft,
   announceHalfRest,
@@ -20,10 +21,19 @@ import {
 import { haptics } from "@/lib/haptics";
 
 export default function RestTimer() {
-  const { activeWorkout, skipRest, tickRest, adjustRest, audioEnabled } =
-    useAppStore();
+  const router = useRouter();
+  const {
+    activeWorkout,
+    skipRest,
+    tickRest,
+    adjustRest,
+    cancelWorkout,
+    audioEnabled,
+    toggleAudio,
+  } = useAppStore();
   const prevTimeRef = useRef(activeWorkout.restTimeRemaining);
   const hasAnnouncedRef = useRef(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   useEffect(() => {
     if (!activeWorkout.isResting) return;
@@ -81,11 +91,6 @@ export default function RestTimer() {
       playRestEndAlarm();
       haptics.countdownEnd();
       announceStart();
-      const nextEx =
-        activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
-      if (nextEx) {
-        setTimeout(() => announceNextExercise(), 800);
-      }
     }
 
     prevTimeRef.current = timeLeft;
@@ -117,8 +122,43 @@ export default function RestTimer() {
     activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex + 1];
   const hasNextExercise = isLastSet && !!nextExercise;
 
+  const handleExit = (save: boolean) => {
+    stopSpeaking();
+    if (!save) {
+      cancelWorkout();
+    }
+    setShowExitConfirm(false);
+    router.push("/");
+  };
+
   return (
-    <div className="fixed inset-0 z-[60] bg-[#0a0a0a]/98 backdrop-blur-md flex flex-col items-center justify-center p-6 overflow-hidden">
+    <div className="fixed inset-0 z-[60] bg-[#0a0a0a]/98 backdrop-blur-md flex flex-col justify-between p-4 overflow-hidden">
+      {/* Top Navigation Bar */}
+      <header className="flex-shrink-0 h-[56px] flex items-center justify-between px-2 w-full z-20">
+        <button
+          onClick={() => setShowExitConfirm(true)}
+          className="flex items-center gap-1 h-10 px-2 text-on-surface hover:text-primary-container active:scale-95 transition-all"
+          aria-label="Volver atrás o cancelar"
+        >
+          <ArrowLeft className="w-6 h-6" />
+          <span className="text-xs font-bold font-label-caps uppercase">Salir</span>
+        </button>
+        <span className="text-primary-container font-label-caps tracking-[0.2em] text-xs uppercase font-bold">
+          DESCANSO
+        </span>
+        <button
+          onClick={toggleAudio}
+          className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-on-surface active:scale-95"
+          title={audioEnabled ? "Desactivar audio" : "Activar audio"}
+        >
+          {audioEnabled ? (
+            <Volume2 className="w-5 h-5" />
+          ) : (
+            <VolumeX className="w-5 h-5" />
+          )}
+        </button>
+      </header>
+
       {/* Pulsing neon halo background */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
@@ -126,11 +166,8 @@ export default function RestTimer() {
         />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center w-full max-w-md">
-        <div className="flex flex-col items-center mb-8">
-          <span className="text-primary-container font-label-caps tracking-[0.3em] text-xs mb-2">
-            DESCANSO
-          </span>
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto my-auto">
+        <div className="flex flex-col items-center mb-4">
           <h2 className="font-headline-lg text-headline-lg text-on-surface uppercase">
             Recupera
           </h2>
@@ -139,20 +176,20 @@ export default function RestTimer() {
         <TimerCircle
           seconds={timeLeft}
           total={totalTime}
-          size={288}
+          size={260}
           strokeWidth={10}
           urgent={restUrgent}
           label="segundos"
-          className="mb-10"
+          className="mb-6"
         />
 
         {/* Next Exercise Preview Card */}
-        <div className="w-full mb-8">
-          <p className="text-on-surface-variant font-label-caps tracking-[0.2em] text-[11px] uppercase mb-3 text-center">
+        <div className="w-full mb-6">
+          <p className="text-on-surface-variant font-label-caps tracking-[0.2em] text-[11px] uppercase mb-2 text-center">
             {hasNextExercise ? "A continuación" : "Continúas con"}
           </p>
-          <div className="w-full bg-surface-container-high border border-surface-container-highest rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up">
-            <div className="w-16 h-16 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 border border-surface-container-highest">
+          <div className="w-full bg-surface-container-high border border-surface-container-highest rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 border border-surface-container-highest">
               <ExerciseImage
                 src={
                   (hasNextExercise
@@ -171,7 +208,7 @@ export default function RestTimer() {
               <p className="text-on-surface font-headline-md text-headline-md truncate">
                 {hasNextExercise ? nextExercise?.name : currentExercise?.name}
               </p>
-              <div className="flex items-center gap-3 mt-1.5 text-on-surface-variant text-xs">
+              <div className="flex items-center gap-3 mt-1 text-on-surface-variant text-xs">
                 <span className="flex items-center gap-1">
                   <Dumbbell className="w-3.5 h-3.5 text-primary-container" />
                   {hasNextExercise
@@ -190,7 +227,7 @@ export default function RestTimer() {
         </div>
 
         {/* Time adjust controls */}
-        <div className="flex items-center justify-center gap-4 mb-6 w-full">
+        <div className="flex items-center justify-center gap-4 mb-4 w-full">
           <PrimaryButton
             variant="secondary"
             size="md"
@@ -225,6 +262,34 @@ export default function RestTimer() {
           Saltar descanso
         </PrimaryButton>
       </div>
+
+      {showExitConfirm && (
+        <div className="fixed inset-0 z-[70] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">
+          <div className="w-full max-w-sm bg-surface-container-low border border-surface-container-highest rounded-2xl p-6 shadow-2xl">
+            <SectionTitle align="center" className="mb-2">
+              ¿Salir del entreno?
+            </SectionTitle>
+            <p className="text-on-surface-variant text-center mb-6 text-sm">
+              Puedes guardar el progreso realizado o cancelar el entrenamiento.
+            </p>
+            <div className="space-y-2.5">
+              <PrimaryButton onClick={() => handleExit(true)}>
+                Guardar y salir
+              </PrimaryButton>
+              <PrimaryButton variant="danger" onClick={() => handleExit(false)}>
+                Cancelar entreno
+              </PrimaryButton>
+              <button
+                type="button"
+                onClick={() => setShowExitConfirm(false)}
+                className="w-full py-3 text-center text-sm font-bold text-on-surface-variant hover:text-white"
+              >
+                Continuar entrenando
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

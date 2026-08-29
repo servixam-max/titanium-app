@@ -1,12 +1,10 @@
-"use client";
-
 import {
   GripVertical,
-  Clock,
   Timer,
   Activity,
   Dumbbell,
-  ArrowRight,
+  Play,
+  ChevronRight,
 } from "lucide-react";
 import { Exercise } from "@/lib/types";
 import ExerciseImage from "@/components/ui/ExerciseImage";
@@ -18,6 +16,7 @@ interface ExerciseCardProps {
   isSelected?: boolean;
   onClick?: () => void;
   compact?: boolean;
+  mode?: "guided" | "individual";
 }
 
 const MUSCLE_LABELS: Record<string, string> = {
@@ -63,6 +62,7 @@ export default function ExerciseCard({
   isSelected = false,
   onClick,
   compact = false,
+  mode = "guided",
 }: ExerciseCardProps) {
   const muscleKey = exercise.category || "full_body";
   const muscleColors = MUSCLE_COLORS[muscleKey] || MUSCLE_COLORS.full_body;
@@ -70,31 +70,29 @@ export default function ExerciseCard({
     ? DIFFICULTY_COLORS[exercise.difficulty] || "text-on-surface-variant"
     : "text-on-surface-variant";
 
+  const isIndividual = mode === "individual";
+
   return (
     <div
       onClick={onClick}
       className={`
-        group relative bg-surface-container-low border rounded-lg p-base
-        flex items-center gap-stack-gap min-h-touch-target-min
-        transition-all duration-200 overflow-hidden
-        ${selectable ? "cursor-pointer hover:bg-surface-container-high active:scale-[0.98]" : ""}
+        group relative bg-surface-container-low border rounded-xl p-3.5
+        flex items-center gap-3 min-h-touch-target-min
+        transition-all duration-200 overflow-hidden cursor-pointer
+        active:scale-[0.98]
         ${
-          isSelected
-            ? "border-primary-container shadow-[0_0_18px_rgba(204,255,0,0.15)] bg-surface-container-high"
-            : "border-surface-container-highest hover:border-surface-variant"
+          isIndividual
+            ? "hover:border-primary-container hover:bg-surface-container-high border-surface-container-highest shadow-sm"
+            : isSelected
+              ? "border-primary-container shadow-[0_0_18px_rgba(204,255,0,0.15)] bg-surface-container-high"
+              : "border-surface-container-highest hover:border-surface-variant hover:bg-surface-container-high"
         }
-        ${isSelected ? "animate-soft-pulse" : ""}
       `}
     >
-      {/* Lime accent strip on selected */}
-      {isSelected && (
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-container" />
-      )}
-
       {/* Exercise Image/Icon */}
       <div
         className={`
-        rounded bg-surface-container-highest flex-shrink-0 flex items-center justify-center overflow-hidden
+        rounded-lg bg-surface-container-highest flex-shrink-0 flex items-center justify-center overflow-hidden border border-white/5 relative
         ${compact ? "w-14 h-14" : "w-16 h-16"}
       `}
       >
@@ -111,73 +109,52 @@ export default function ExerciseCard({
         ) : (
           <Dumbbell className="w-7 h-7 text-primary-container/60" />
         )}
+        {index !== undefined && !isIndividual && (
+          <span className="absolute top-1 left-1 bg-black/70 backdrop-blur-sm text-white font-mono text-[9px] font-bold px-1.5 py-0.5 rounded">
+            #{index + 1}
+          </span>
+        )}
       </div>
 
       {/* Exercise Info */}
       <div className="flex-1 flex flex-col gap-0.5 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="font-body-md text-body-md text-on-background font-bold truncate">
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-body-md text-sm text-on-background font-bold truncate group-hover:text-primary-container transition-colors">
             {exercise.name}
           </span>
-          {index !== undefined && (
-            <span className="font-label-caps text-label-caps text-on-surface-variant flex-shrink-0">
-              #{index + 1}
-            </span>
-          )}
         </div>
 
         {/* Main meta: sets × reps */}
-        <span className="font-label-caps text-label-caps text-on-surface-variant">
-          {exercise.sets} Series · {exercise.reps} Reps
+        <span className="font-label-caps text-xs text-on-surface-variant font-medium">
+          {exercise.sets} Series · <strong className="text-white">{exercise.reps}</strong> Reps
         </span>
 
         {/* Secondary meta: muscle badge, rest, difficulty */}
-        <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+        <div className="flex flex-wrap items-center gap-1.5 mt-1">
           <span
-            className={`font-label-caps text-[10px] px-2 py-0.5 rounded-full border ${muscleColors}`}
+            className={`font-label-caps text-[9px] px-2 py-0.5 rounded-full border ${muscleColors}`}
           >
             {MUSCLE_LABELS[muscleKey] || muscleKey}
           </span>
 
           {exercise.restSeconds > 0 && (
-            <span className="font-label-caps text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant border border-surface-container-highest flex items-center gap-1">
-              <Timer className="w-3 h-3" />
+            <span className="font-label-caps text-[9px] px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant border border-surface-container-highest flex items-center gap-1">
+              <Timer className="w-2.5 h-2.5" />
               {formatRest(exercise.restSeconds)}
-            </span>
-          )}
-
-          {exercise.difficulty && (
-            <span
-              className={`font-label-caps text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest border border-surface-container-highest flex items-center gap-1 ${difficultyColor}`}
-            >
-              <Activity className="w-3 h-3" />
-              {exercise.difficulty}
             </span>
           )}
         </div>
       </div>
 
-      {/* Action / Drag Handle */}
-      {selectable ? (
-        <div
-          className={`
-            w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0
-            ${
-              isSelected
-                ? "bg-primary-container text-on-primary-container"
-                : "bg-surface-container-highest text-on-surface-variant group-hover:bg-surface-container"
-            }
-          `}
-        >
-          {isSelected ? (
-            <Clock className="w-4 h-4" />
-          ) : (
-            <ArrowRight className="w-4 h-4" />
-          )}
+      {/* Action CTA on Card */}
+      {isIndividual ? (
+        <div className="flex items-center gap-1.5 bg-primary-container text-on-primary-container px-3 py-2 rounded-lg font-bold text-xs shadow-neon group-hover:scale-105 transition-transform flex-shrink-0">
+          <Play className="w-3.5 h-3.5 fill-current" />
+          <span>Iniciar</span>
         </div>
       ) : (
-        <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
-          <GripVertical className="w-4 h-4" />
+        <div className="w-8 h-8 rounded-full bg-surface-container-highest group-hover:bg-primary-container/20 group-hover:text-primary-container flex items-center justify-center text-on-surface-variant transition-colors flex-shrink-0">
+          <ChevronRight className="w-4 h-4" />
         </div>
       )}
     </div>

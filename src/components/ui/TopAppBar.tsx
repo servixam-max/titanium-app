@@ -77,11 +77,11 @@ export default function TopAppBar({
           {title}
         </h1>
 
-        <div className="w-12 flex justify-end">
+        <div className="w-16 flex justify-end">
           {showVolume && (
             <button
               onClick={toggleAudio}
-              className="flex items-center justify-center w-12 h-12 text-on-surface hover:opacity-80 transition-opacity active:scale-95"
+              className="flex items-center justify-center w-8 h-12 text-on-surface hover:opacity-80 transition-opacity active:scale-95"
               aria-label={audioEnabled ? "Desactivar audio" : "Activar audio"}
             >
               {audioEnabled ? (

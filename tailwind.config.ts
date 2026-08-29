@@ -118,6 +118,8 @@ const config: Config = {
         'pulse-a': 'pulseA 2s infinite ease-in-out',
         'pulse-b': 'pulseB 2s infinite ease-in-out',
         'fade-in-up': 'fadeInUp 0.4s ease-out forwards',
+        'pulse-slow': 'pulseSlow 4s infinite ease-in-out',
+        'gradient-x': 'gradientX 3s ease infinite',
       },
       keyframes: {
         pulseA: {
@@ -131,6 +133,20 @@ const config: Config = {
         fadeInUp: {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        pulseSlow: {
+          '0%, 100%': { opacity: '0.3', transform: 'scale(1)' },
+          '50%': { opacity: '0.6', transform: 'scale(1.1)' },
+        },
+        gradientX: {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          },
         },
       },
     },

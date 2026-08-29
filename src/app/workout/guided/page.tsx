@@ -34,7 +34,6 @@ export default function GuidedWorkout() {
     activeWorkout,
     completeSet,
     cancelWorkout,
-    setExerciseWeight,
     setExerciseReps,
     goToExercise,
     startWork,
@@ -45,8 +44,6 @@ export default function GuidedWorkout() {
     toggleAudio,
   } = useAppStore();
 
-  const [showWeightPrompt, setShowWeightPrompt] = useState(false);
-  const [weightInput, setWeightInput] = useState("");
   const [repsInput, setRepsInput] = useState("");
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
@@ -55,8 +52,6 @@ export default function GuidedWorkout() {
   const currentExerciseIndex = activeWorkout.currentExerciseIndex;
   const currentSet = activeWorkout.currentSet;
   const currentExercise = routine?.exercises[currentExerciseIndex];
-  const isBodyweightHIIT =
-    routine?.type === "hiit" && activeWorkout.equipmentPref === "bodyweight";
   const isHIIT = routine?.type === "hiit";
   // Time-based set? ("45s" in reps or explicit workSeconds)
   const timedSeconds =
@@ -83,18 +78,6 @@ export default function GuidedWorkout() {
     router,
   ]);
 
-  // Weight prompt when exercise has no weight
-  useEffect(() => {
-    if (
-      currentExercise &&
-      !isBodyweightHIIT &&
-      activeWorkout.exerciseWeights[currentExercise.id] === undefined
-    ) {
-      setShowWeightPrompt(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentExerciseIndex, activeWorkout.exerciseWeights]);
-
   // Sync audio engine with store settings on mount and when changed
   useEffect(() => {
     setGlobalAudioMode(audioMode);
@@ -103,7 +86,7 @@ export default function GuidedWorkout() {
 
   // Speak exercise start when switching exercises
   useEffect(() => {
-    if (!routine || !currentExercise || showWeightPrompt) return;
+    if (!routine || !currentExercise) return;
     if (audioEnabled && audioMode !== "silent") {
       unlockAudio();
       const timer = setTimeout(() => {
@@ -112,7 +95,7 @@ export default function GuidedWorkout() {
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentExerciseIndex, showWeightPrompt, audioEnabled]);
+  }, [currentExerciseIndex, audioEnabled]);
 
   // Reps input sync
   useEffect(() => {
@@ -130,7 +113,6 @@ export default function GuidedWorkout() {
       isTimedSet &&
       !activeWorkout.isWorking &&
       !activeWorkout.isResting &&
-      !showWeightPrompt &&
       !activeWorkout.justFinished
     ) {
       startWork(timedSeconds);
@@ -142,7 +124,6 @@ export default function GuidedWorkout() {
     timedSeconds,
     activeWorkout.isWorking,
     activeWorkout.isResting,
-    showWeightPrompt,
     activeWorkout.justFinished,
     currentExerciseIndex,
     currentSet,
@@ -162,29 +143,13 @@ export default function GuidedWorkout() {
   if (!routine || !currentExercise) return null;
 
   const totalExercises = routine.exercises.length;
-  const exerciseWeight = activeWorkout.exerciseWeights[currentExercise.id];
-  const nextExerciseObj =
-    currentExerciseIndex < totalExercises - 1
-      ? routine.exercises[currentExerciseIndex + 1]
-      : null;
 
   const triggerFeedback = () => {
     setFlashKey((k) => k + 1);
     haptics.tick();
   };
 
-  const handleSetWeight = () => {
-    const w = Number(weightInput);
-    if (!Number.isNaN(w) && w >= 0) {
-      setExerciseWeight(currentExercise.id, w);
-      setShowWeightPrompt(false);
-      setWeightInput("");
-    }
-  };
-
   const handleComplete = () => {
-    if (!isBodyweightHIIT && exerciseWeight === undefined) return;
-
     // If a work timer is still running (shouldn't happen — WorkTimer overlay
     // covers the screen — but be safe), stop it before progressing.
     if (activeWorkout.isWorking) skipWork();
@@ -205,7 +170,7 @@ export default function GuidedWorkout() {
       try {
         const utter = new SpeechSynthesisUtterance("Serie completada");
         utter.lang = "es-ES";
-        utter.rate = voiceRate || 1.05;
+        utter.rate = voiceRate || 0.92;
         window.speechSynthesis.speak(utter);
       } catch {}
       announceExerciseComplete();
@@ -216,16 +181,12 @@ export default function GuidedWorkout() {
     completeSet(
       currentExerciseIndex,
       currentSet,
-      isBodyweightHIIT ? undefined : exerciseWeight,
+      undefined,
       reps,
     );
 
     const isLastSet = currentSet >= currentExercise.sets;
-    if (isLastSet && nextExerciseObj) {
-      if (audioEnabled) {
-        setTimeout(() => announceNextExercise(), 1500);
-      }
-    } else if (audioEnabled) {
+    if (audioEnabled) {
       announceRest(currentExercise.restSeconds);
     }
 
@@ -255,46 +216,6 @@ export default function GuidedWorkout() {
           className="fixed inset-0 z-[70] bg-primary-container/30 pointer-events-none animate-flash"
           onAnimationEnd={() => setFlashKey(0)}
         />
-      )}
-
-      {showWeightPrompt && (
-        <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center px-6">
-          <div className="w-full max-w-sm">
-            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-surface-container-high mx-auto mb-6">
-              <Weight className="w-8 h-8 text-primary-container" />
-            </div>
-            <SectionTitle align="center" className="mb-2">
-              {currentExercise.name}
-            </SectionTitle>
-            <p className="text-on-surface-variant text-center mb-6 text-sm">
-              Introduce el peso para este ejercicio.
-            </p>
-            <div className="flex items-center gap-2 mb-4">
-              <input
-                id="weight-input"
-                className="flex-1 bg-surface-container-high border border-surface-container-highest rounded-xl h-[56px] text-center font-bold text-on-surface text-2xl focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none"
-                type="number"
-                inputMode="decimal"
-                placeholder="0"
-                value={weightInput}
-                onChange={(e) => setWeightInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSetWeight()}
-                autoFocus
-                aria-label="Peso en kilogramos"
-                step="0.5"
-              />
-              <span className="font-bold text-on-surface-variant text-lg">
-                kg
-              </span>
-            </div>
-            <PrimaryButton
-              onClick={handleSetWeight}
-              disabled={!weightInput || Number(weightInput) <= 0}
-            >
-              CONTINUAR
-            </PrimaryButton>
-          </div>
-        </div>
       )}
 
       <header className="flex-shrink-0 h-[56px] border-b border-surface-container-highest flex items-center justify-between px-4 bg-background/80 backdrop-blur-md z-50">
@@ -416,41 +337,13 @@ export default function GuidedWorkout() {
           </div>
         </div>
 
-        <div className="flex-shrink-0 flex items-stretch gap-2 mb-3">
-          {!isBodyweightHIIT && (
-            <div className="flex-[1.1] flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-3 py-2">
-              <div className="flex items-center gap-2 mb-1">
-                <Weight className="w-5 h-5 text-primary-container" />
-                <span className="text-on-surface-variant font-label-caps text-[11px]">
-                  PESO
-                </span>
-              </div>
-              <button
-                onClick={() => {
-                  setWeightInput(
-                    exerciseWeight !== undefined ? String(exerciseWeight) : "",
-                  );
-                  setShowWeightPrompt(true);
-                }}
-                className="flex items-baseline gap-1 w-full text-left"
-              >
-                <span className="font-bold text-on-surface text-2xl">
-                  {exerciseWeight !== undefined ? exerciseWeight : "--"}
-                </span>
-                <span className="font-bold text-on-surface-variant text-sm">
-                  kg
-                </span>
-              </button>
-            </div>
-          )}
-          {!isTimedSet && (
-            <div
-              className={`${isBodyweightHIIT ? "flex-1" : "flex-[0.9]"} flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-3 py-2`}
-            >
+        {!isTimedSet && (
+          <div className="flex-shrink-0 flex items-stretch gap-2 mb-3">
+            <div className="flex-1 flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-4 py-2.5">
               <div className="flex items-center gap-2 mb-1">
                 <Hash className="w-5 h-5 text-primary-container" />
                 <span className="text-on-surface-variant font-label-caps text-[11px]">
-                  REPS
+                  REPETICIONES COMPLETADAS
                 </span>
               </div>
               <input
@@ -463,8 +356,8 @@ export default function GuidedWorkout() {
                 aria-label="Repeticiones completadas"
               />
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </main>
 
       <footer className="flex-shrink-0 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-2 bg-background border-t border-surface-container-highest z-50">
@@ -483,7 +376,6 @@ export default function GuidedWorkout() {
         <PrimaryButton
           leftIcon={<CheckCircle className="w-6 h-6" />}
           onClick={handleComplete}
-          disabled={!isBodyweightHIIT && exerciseWeight === undefined}
         >
           {currentSet >= currentExercise.sets &&
           currentExerciseIndex >= totalExercises - 1

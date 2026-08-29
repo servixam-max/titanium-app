@@ -50,7 +50,6 @@ export default function IndividualWorkout() {
     finishWorkout,
     cancelWorkout,
     goToExercise,
-    setExerciseWeight,
     setExerciseReps,
     skipRest,
     audioEnabled,
@@ -62,8 +61,6 @@ export default function IndividualWorkout() {
   const [startIndexLoaded, setStartIndexLoaded] = useState(false);
   const [showRest, setShowRest] = useState(false);
   const [restTime, setRestTime] = useState(0);
-  const [showWeightPrompt, setShowWeightPrompt] = useState(false);
-  const [weightInput, setWeightInput] = useState("");
   const [repsInput, setRepsInput] = useState("");
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
@@ -77,8 +74,6 @@ export default function IndividualWorkout() {
   const currentExerciseIndex = activeWorkout.currentExerciseIndex;
   const currentSet = activeWorkout.currentSet;
   const currentExercise = routine?.exercises[currentExerciseIndex];
-  const isBodyweightHIIT =
-    routine?.type === "hiit" && activeWorkout.equipmentPref === "bodyweight";
 
   // Load start exercise index from URL or store
   useEffect(() => {
@@ -113,22 +108,9 @@ export default function IndividualWorkout() {
     }
   }, [currentExercise, activeWorkout.exerciseReps]);
 
-  // Show weight prompt if no weight set for this exercise (skip bodyweight HIIT)
-  useEffect(() => {
-    if (
-      startIndexLoaded &&
-      currentExercise &&
-      !isBodyweightHIIT &&
-      activeWorkout.exerciseWeights[currentExercise.id] === undefined
-    ) {
-      setShowWeightPrompt(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startIndexLoaded, currentExerciseIndex, activeWorkout.exerciseWeights]);
-
   // Announce exercise start
   useEffect(() => {
-    if (!currentExercise || showWeightPrompt) return;
+    if (!currentExercise) return;
     if (audioEnabled && audioMode !== "silent") {
       unlockAudio();
       const timer = setTimeout(() => {
@@ -137,7 +119,7 @@ export default function IndividualWorkout() {
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentExerciseIndex, showWeightPrompt, audioEnabled]);
+  }, [currentExerciseIndex, audioEnabled]);
 
   // Confirm before leaving the page (browser back/close)
   const onBeforeUnload = useCallback((e: BeforeUnloadEvent) => {
@@ -212,7 +194,6 @@ export default function IndividualWorkout() {
   const totalExercises = routine.exercises.length;
   const storeSets =
     activeWorkout.session?.exercises[currentExerciseIndex]?.sets || [];
-  const exerciseWeight = activeWorkout.exerciseWeights[currentExercise.id];
   const nextExerciseObj =
     currentExerciseIndex < totalExercises - 1
       ? routine.exercises[currentExerciseIndex + 1]
@@ -223,23 +204,7 @@ export default function IndividualWorkout() {
     haptics.tick();
   };
 
-  const handleSetWeight = () => {
-    const w = Number(weightInput);
-    if (!Number.isNaN(w) && w >= 0) {
-      setExerciseWeight(currentExercise.id, w);
-      setShowWeightPrompt(false);
-      setWeightInput("");
-    }
-  };
-
-  const handleChangeWeight = () => {
-    setWeightInput(exerciseWeight?.toString() || "");
-    setShowWeightPrompt(true);
-  };
-
   const handleComplete = () => {
-    if (!isBodyweightHIIT && exerciseWeight === undefined) return;
-
     const reps =
       Number(repsInput) || activeWorkout.exerciseReps[currentExercise.id] || 0;
     setExerciseReps(currentExercise.id, reps);
@@ -272,7 +237,7 @@ export default function IndividualWorkout() {
     completeSet(
       currentExerciseIndex,
       currentSet,
-      isBodyweightHIIT ? undefined : exerciseWeight,
+      undefined,
       reps,
     );
 
@@ -375,46 +340,6 @@ export default function IndividualWorkout() {
         />
       )}
 
-      {showWeightPrompt && (
-        <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center px-6">
-          <div className="w-full max-w-sm">
-            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-surface-container-high mx-auto mb-6">
-              <Weight className="w-8 h-8 text-primary-container" />
-            </div>
-            <SectionTitle align="center" className="mb-2">
-              {currentExercise.name}
-            </SectionTitle>
-            <p className="text-on-surface-variant text-center mb-6 text-sm">
-              Introduce el peso para este ejercicio.
-            </p>
-            <div className="flex items-center gap-2 mb-4">
-              <input
-                id="weight-input"
-                className="flex-1 bg-surface-container-high border border-surface-container-highest rounded-xl h-[56px] text-center font-bold text-on-surface text-2xl focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none"
-                type="number"
-                inputMode="decimal"
-                placeholder="0"
-                value={weightInput}
-                onChange={(e) => setWeightInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSetWeight()}
-                autoFocus
-                aria-label="Peso en kilogramos"
-                step="0.5"
-              />
-              <span className="font-bold text-on-surface-variant text-lg">
-                kg
-              </span>
-            </div>
-            <PrimaryButton
-              onClick={handleSetWeight}
-              disabled={!weightInput || Number(weightInput) <= 0}
-            >
-              CONTINUAR
-            </PrimaryButton>
-          </div>
-        </div>
-      )}
-
       <header className="flex-shrink-0 h-[56px] border-b border-surface-container-highest flex items-center justify-between px-4 bg-background/80 backdrop-blur-md">
         <button
           onClick={handleBack}
@@ -491,41 +416,23 @@ export default function IndividualWorkout() {
         </div>
 
         <div className="flex-shrink-0 flex items-stretch justify-between gap-2">
-          <div className="flex-1 flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-3 py-2">
-            <span className="text-on-surface-variant font-label-caps text-[11px] mb-1">
+          <div className="flex-1 flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-4 py-2.5">
+            <span className="text-on-surface-variant font-label-caps text-[11px] mb-0.5">
               {currentExercise.sets} series · {currentExercise.reps} reps ·{" "}
-              {currentExercise.restSeconds}s
+              {currentExercise.restSeconds}s descanso
             </span>
             <span className="font-headline-sm text-headline-sm text-primary-container truncate">
               {currentExercise.name}
             </span>
           </div>
-          {!isBodyweightHIIT && exerciseWeight !== undefined && (
-            <button
-              onClick={handleChangeWeight}
-              className="flex-shrink-0 flex flex-col items-start justify-center px-4 bg-surface-container-high rounded-xl border border-surface-container-highest active:scale-95"
-            >
-              <span className="text-on-surface-variant font-label-caps text-[11px]">
-                PESO
-              </span>
-              <div className="flex items-baseline gap-1">
-                <span className="font-bold text-on-surface text-2xl">
-                  {exerciseWeight}
-                </span>
-                <span className="font-bold text-on-surface-variant text-sm">
-                  kg
-                </span>
-              </div>
-            </button>
-          )}
         </div>
 
         <div className="flex-shrink-0 flex items-stretch gap-2">
-          <div className="flex-1 flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-3 py-2">
+          <div className="flex-1 flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-4 py-2.5">
             <div className="flex items-center gap-2 mb-1">
               <Hash className="w-5 h-5 text-primary-container" />
               <span className="text-on-surface-variant font-label-caps text-[11px]">
-                REPS
+                REPETICIONES COMPLETADAS
               </span>
             </div>
             <input
@@ -541,12 +448,9 @@ export default function IndividualWorkout() {
         </div>
 
         <div className="flex-1 min-h-0 flex flex-col gap-1 overflow-y-auto">
-          <div className="flex items-center justify-between text-label-caps font-label-caps text-on-surface-variant px-2">
-            <span className="w-12">SERIE</span>
-            {!isBodyweightHIIT && (
-              <span className="flex-1 text-center">PESO</span>
-            )}
-            <span className="w-12 text-center">REPS</span>
+          <div className="flex items-center justify-between text-label-caps font-label-caps text-on-surface-variant px-3 py-1">
+            <span className="w-16">SERIE</span>
+            <span className="flex-1 text-center">REPETICIONES</span>
             <span className="w-8"></span>
           </div>
 
@@ -562,16 +466,11 @@ export default function IndividualWorkout() {
                   key={setNum}
                   className="flex-shrink-0 h-[44px] flex items-center justify-between px-3 bg-surface-container border border-surface-container-highest rounded-lg"
                 >
-                  <span className="w-12 font-bold text-primary-container">
-                    {setNum}
+                  <span className="w-16 font-bold text-primary-container">
+                    Serie {setNum}
                   </span>
-                  {!isBodyweightHIIT && (
-                    <span className="flex-1 text-center font-bold text-on-surface">
-                      {storeSet.weight}kg
-                    </span>
-                  )}
-                  <span className="w-12 text-center font-bold text-on-surface">
-                    {storeSet.reps ?? "--"}
+                  <span className="flex-1 text-center font-bold text-on-surface">
+                    {storeSet.reps ?? "--"} reps
                   </span>
                   <CheckCircle className="w-5 h-5 text-primary-container" />
                 </div>
@@ -582,20 +481,13 @@ export default function IndividualWorkout() {
               return (
                 <div
                   key={setNum}
-                  className="flex-shrink-0 h-[52px] flex items-center justify-between px-3 bg-surface-container-high border-2 border-primary-container rounded-lg"
+                  className="flex-shrink-0 h-[48px] flex items-center justify-between px-3 bg-surface-container-high border-2 border-primary-container rounded-lg"
                 >
-                  <span className="w-12 font-bold text-primary-container">
-                    {setNum}
+                  <span className="w-16 font-bold text-primary-container">
+                    Serie {setNum}
                   </span>
-                  {!isBodyweightHIIT && (
-                    <span className="flex-1 text-center font-bold text-on-surface text-lg">
-                      {exerciseWeight !== undefined
-                        ? `${exerciseWeight}kg`
-                        : "--"}
-                    </span>
-                  )}
-                  <span className="w-12 text-center font-bold text-on-surface text-lg">
-                    {repsInput || "--"}
+                  <span className="flex-1 text-center font-bold text-on-surface text-lg">
+                    {repsInput || "--"} reps (Actual)
                   </span>
                   <Circle className="w-5 h-5 text-primary-container" />
                 </div>
@@ -607,13 +499,10 @@ export default function IndividualWorkout() {
                 key={setNum}
                 className="flex-shrink-0 h-[44px] flex items-center justify-between px-3 bg-surface-container border border-surface-container-highest rounded-lg opacity-40"
               >
-                <span className="w-12 font-bold text-on-surface-variant">
-                  {setNum}
+                <span className="w-16 font-bold text-on-surface-variant">
+                  Serie {setNum}
                 </span>
-                {!isBodyweightHIIT && (
-                  <span className="flex-1 text-center">--</span>
-                )}
-                <span className="w-12 text-center">--</span>
+                <span className="flex-1 text-center">--</span>
                 <div className="w-5" />
               </div>
             );
@@ -642,7 +531,6 @@ export default function IndividualWorkout() {
             ) : undefined
           }
           onClick={handleComplete}
-          disabled={!isBodyweightHIIT && exerciseWeight === undefined}
         >
           {currentSet >= currentExercise.sets
             ? "SIGUIENTE EJERCICIO"

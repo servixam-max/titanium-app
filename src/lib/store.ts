@@ -11,6 +11,7 @@ import {
 import { apiUrl, isApiEnabled } from "@/lib/api-config";
 import { saveSession, getSessions, clearAllSessions } from "@/lib/db";
 import { logger } from "@/lib/logger";
+import { syncToServer, syncFromServer } from "@/lib/ota-sync";
 
 interface AppState {
   // Navigation
@@ -219,9 +220,9 @@ export const useAppStore = create<AppState>()(
           lastAudioMode: mode !== "silent" ? mode : state.lastAudioMode,
         }));
       },
-      voiceRate: 1.05,
+      voiceRate: 0.92,
       setVoiceRate: (rate) =>
-        set({ voiceRate: Math.max(0.7, Math.min(1.5, rate)) }),
+        set({ voiceRate: Math.max(0.6, Math.min(1.4, rate)) }),
       toggleAudio: () => {
         set((state) => {
           const nextEnabled = !state.audioEnabled;
@@ -608,6 +609,13 @@ export const useAppStore = create<AppState>()(
           });
         });
 
+        // Autoguardado en el PC vía Tailscale/WiFi
+        syncToServer({
+          sessions: localSessions,
+          lastExerciseWeights: updatedLastWeights,
+          exportDate: new Date().toISOString(),
+        }).catch((e) => logger.warn("Auto-sync background error:", e));
+
         set({
           sessions: localSessions,
           activeWorkout: {
@@ -838,62 +846,46 @@ export const useAppStore = create<AppState>()(
       loadSessions: async () => {
         set({ isLoading: true, dbError: null });
         try {
-          // Always load from IndexedDB first (offline-first)
-          const localSessions = await getSessions();
-          set({ sessions: localSessions });
+          let localSessions = await getSessions();
 
-          // Best-effort sync from server
+          // Sincronizar desde PC si está disponible
           try {
-            const response = await fetch(apiUrl("sessions"));
-            if (response.ok) {
-              const data = await response.json();
-              if (data.sessions) {
-                const serverSessions: WorkoutSession[] = data.sessions.map(
-                  (s: Record<string, unknown>) => ({
-                    id: s.id as string,
-                    routineId: s.routine_id as number,
-                    mode: s.mode as TrainingMode,
-                    startTime: new Date(s.start_time as string),
-                    endTime: s.end_time
-                      ? new Date(s.end_time as string)
-                      : undefined,
-                    completed: s.completed as boolean,
-                    exercises: (
-                      (s.exercises as Record<string, unknown>[]) || []
-                    ).map((ex) => ({
-                      exerciseId: ex.exercise_id as string,
-                      sets: ((ex.sets as Record<string, unknown>[]) || []).map(
-                        (set) => ({
-                          setNumber: set.set_number as number,
-                          weight: set.weight ? Number(set.weight) : undefined,
-                          reps: set.reps ? Number(set.reps) : undefined,
-                          duration: set.duration_seconds as number,
-                          completed: set.completed as boolean,
-                          timestamp: new Date(s.start_time as string),
-                        }),
-                      ),
-                    })),
-                  }),
-                );
-                // Merge: prefer local sessions, add missing server ones
-                const localIds = new Set(localSessions.map((s) => s.id));
-                const merged = [
-                  ...localSessions,
-                  ...serverSessions.filter((s) => !localIds.has(s.id)),
-                ].sort(
-                  (a, b) =>
-                    new Date(b.startTime).getTime() -
-                    new Date(a.startTime).getTime(),
-                );
-                set({ sessions: merged });
+            const data = await syncFromServer();
+            if (data && data.sessions && Array.isArray(data.sessions)) {
+              // Restaurar pesos
+              if (data.lastExerciseWeights) {
+                set({ lastExerciseWeights: { ...get().lastExerciseWeights, ...data.lastExerciseWeights } });
+              }
+              
+              // Parse date strings back to Date objects
+              const serverSessions = data.sessions.map((s: any) => ({
+                ...s,
+                startTime: new Date(s.startTime),
+                endTime: s.endTime ? new Date(s.endTime) : undefined,
+                exercises: (s.exercises || []).map((ex: any) => ({
+                  ...ex,
+                  sets: (ex.sets || []).map((set: any) => ({
+                    ...set,
+                    timestamp: set.timestamp ? new Date(set.timestamp) : undefined
+                  }))
+                }))
+              }));
+
+              const localIds = new Set(localSessions.map((s) => s.id));
+              const newServerSessions = serverSessions.filter((s: any) => !localIds.has(s.id));
+              
+              if (newServerSessions.length > 0) {
+                for (const s of newServerSessions) {
+                  await saveSession(s); // Save to local IndexedDB
+                }
+                localSessions = await getSessions(); // Reload from DB
               }
             }
           } catch (serverErr) {
-            logger.warn(
-              "Server sync unavailable, using local data:",
-              serverErr,
-            );
+            logger.warn("Sync no disponible:", serverErr);
           }
+
+          set({ sessions: localSessions });
         } catch (error) {
           logger.error("Error loading sessions:", error);
           set({ dbError: "Error cargando sesiones", isLoading: false });

@@ -10,8 +10,8 @@ const voiceCache = new Map<string, AudioBuffer>();
 let audioCtx: AudioContext | null = null;
 let audioUnlocked = false;
 let isMuted = false;
-let voiceRate = 1.05;
-let voicePitch = 1;
+let voiceRate = 0.92;
+let voicePitch = 1.0;
 let preferredVoice: SpeechSynthesisVoice | null = null;
 let voicesLoaded = false;
 let voicesLoadAttempts = 0;
@@ -440,33 +440,36 @@ export function stopSpeaking(): void {
 
 export function announceExerciseComplete(): void {
   playCompletionTone();
-  speak("Serie completada", voicePitch, 1.0);
+  speak("Serie completada", voicePitch, 0.92);
 }
 
 export function announceExerciseStart(): void {
   if (isAudioSilent()) return;
   playExerciseStart();
-  if (!isVoiceAllowed()) return;
-  // Use pre-recorded generic cue instead of dynamic TTS (WebView TTS fails often)
-  playVoiceFile("siguiente_ejercicio");
 }
 
-export function announceNextExercise(): void {
+export function announceNextExercise(name?: string): void {
   if (isAudioSilent()) return;
   playDoubleBeep();
   haptics.doubleTick();
-  if (isVoiceAllowed()) playVoiceFile("siguiente_ejercicio");
+  if (isVoiceAllowed()) {
+    if (name) {
+      speak(`Siguiente: ${name}`, voicePitch, 0.92);
+    } else {
+      playVoiceFile("siguiente_ejercicio");
+    }
+  }
 }
 
 export function announceWorkoutComplete(): void {
   playWorkoutComplete();
-  speak("Entrenamiento completado. Buen trabajo.", voicePitch, 0.95);
+  speak("Entrenamiento completado. Buen trabajo.", voicePitch, 0.90);
 }
 
 export function announceRest(seconds?: number): void {
   playRestStart();
   if (seconds && seconds > 0 && isVoiceAllowed()) {
-    speak(`Descansa ${seconds} segundos`, voicePitch, 1.0);
+    speak(`Descansa ${seconds} segundos`, voicePitch, 0.92);
   }
 }
 
@@ -474,7 +477,7 @@ export function announceCountdown(seconds: number): void {
   playCountdown(seconds);
   if (seconds <= 3 && seconds > 0 && isVoiceAllowed()) {
     const words: Record<number, string> = { 3: "tres", 2: "dos", 1: "uno" };
-    speak(words[seconds] || String(seconds), voicePitch, 1.15);
+    speak(words[seconds] || String(seconds), voicePitch, 0.92);
   }
 }
 
@@ -482,13 +485,13 @@ export function announceCountdown(seconds: number): void {
 export function announceTenSecondsLeft(): void {
   if (isAudioSilent()) return;
   haptics.tick();
-  speak("Diez segundos", voicePitch, 1.05);
+  speak("Diez segundos", voicePitch, 0.92);
 }
 
 // Aviso a mitad del descanso largo (>= 60s)
 export function announceHalfRest(secondsLeft: number): void {
   if (isAudioSilent() || !isVoiceAllowed()) return;
-  speak(`Quedan ${secondsLeft} segundos de descanso`, voicePitch, 1.05);
+  speak(`Quedan ${secondsLeft} segundos de descanso`, voicePitch, 0.92);
 }
 
 // Aviso de preparación al final del calentamiento
@@ -496,18 +499,18 @@ export function announceGetReady(name?: string): void {
   if (isAudioSilent()) return;
   playTripleBeep();
   if (isVoiceAllowed())
-    speak(name ? `Prepárate. ${name}` : "Prepárate", voicePitch, 1.0);
+    speak(name ? `Prepárate. ${name}` : "Prepárate", voicePitch, 0.92);
 }
 
 export function announceStart(): void {
   if (isAudioSilent()) return;
   playExerciseStart();
-  speak("A entrenar.", voicePitch, 1.0);
+  speak("A entrenar.", voicePitch, 0.92);
 }
 
 export function announceWarmupComplete(): void {
   playCompletionTone();
-  speak("Calentamiento completado.", voicePitch, 1.0);
+  speak("Calentamiento completado.", voicePitch, 0.92);
 }
 
 export function announceSetFlash(): void {
@@ -521,7 +524,7 @@ export function announceWorkStart(): void {
   if (isAudioSilent()) return;
   playExerciseStart();
   if (isVoiceAllowed())
-    playVoiceFile("trabajo").catch(() => doSpeak("¡Trabajo!", voicePitch, 1.0));
+    playVoiceFile("trabajo").catch(() => doSpeak("¡Trabajo!", voicePitch, 0.92));
 }
 
 /** "¡Tiempo!" — plays when a timed work interval ends */
@@ -529,7 +532,7 @@ export function announceWorkEnd(): void {
   if (isAudioSilent()) return;
   playRestStart();
   if (isVoiceAllowed())
-    playVoiceFile("tiempo").catch(() => doSpeak("¡Tiempo!", voicePitch, 1.05));
+    playVoiceFile("tiempo").catch(() => doSpeak("¡Tiempo!", voicePitch, 0.92));
 }
 
 /** Circuit cue for HIIT: "Circuito uno/dos/tres", last one says "¡Dalo todo!" */
@@ -546,22 +549,22 @@ export function announceCircuit(
   const fallback = `Circuito ${circuitNumber}`;
   if (circuitNumber === totalCircuits && circuitNumber > 1) {
     playVoiceFile("ultimo_circuito").catch(() =>
-      doSpeak("Último circuito. ¡Dalo todo!", voicePitch, 1.05),
+      doSpeak("Último circuito. ¡Dalo todo!", voicePitch, 0.92),
     );
     return;
   }
   const key = keys[circuitNumber];
-  if (key) playVoiceFile(key).catch(() => doSpeak(fallback, voicePitch, 1.05));
+  if (key) playVoiceFile(key).catch(() => doSpeak(fallback, voicePitch, 0.92));
   else
-    doSpeak(`Circuito ${circuitNumber} de ${totalCircuits}`, voicePitch, 1.05);
+    doSpeak(`Circuito ${circuitNumber} de ${totalCircuits}`, voicePitch, 0.92);
 }
 
 // ── Contextual workout announcements (Task B2) ──
 
 export function announceSetsRemaining(remaining: number): void {
   if (isAudioSilent() || !isVoiceAllowed()) return;
-  if (remaining === 2) speak("Quedan 2 series", voicePitch, 1.05);
-  else if (remaining === 1) speak("Última serie, dalo todo", voicePitch, 1.05);
+  if (remaining === 2) speak("Quedan 2 series", voicePitch, 0.92);
+  else if (remaining === 1) speak("Última serie, dalo todo", voicePitch, 0.92);
 }
 
 export function announcePrepareNext(
@@ -573,16 +576,16 @@ export function announcePrepareNext(
   haptics.doubleTick();
   if (!isVoiceAllowed()) return;
   const restText = restSeconds ? `Descanso de ${restSeconds} segundos. ` : "";
-  speak(`${restText}Prepara ${nextName}`, voicePitch, 1.0);
+  speak(`${restText}Prepara ${nextName}`, voicePitch, 0.92);
 }
 
 export function announceThirtySecondsLeft(): void {
   if (isAudioSilent()) return;
   haptics.tick();
-  speak("Faltan 30 segundos", voicePitch, 1.05);
+  speak("Faltan 30 segundos", voicePitch, 0.92);
 }
 
 export function announceHalfwayWorkout(): void {
   if (isAudioSilent() || !isVoiceAllowed()) return;
-  speak("Vas por la mitad del entrenamiento. Sigue así.", voicePitch, 1.0);
+  speak("Vas por la mitad del entrenamiento. Sigue así.", voicePitch, 0.90);
 }

@@ -108,7 +108,13 @@ function WarmupContent() {
 
   return (
     <div className="h-[100dvh] animate-page-in flex flex-col overflow-hidden bg-background">
-      <TopAppBar title="CALENTAMIENTO" variant="workout" showVolume />
+      <TopAppBar
+        title="CALENTAMIENTO"
+        variant="workout"
+        showBack
+        backHref="/"
+        showVolume
+      />
 
       <div className="flex-shrink-0 px-4 pt-2 pb-1">
         <div className="flex justify-between items-center mb-1">

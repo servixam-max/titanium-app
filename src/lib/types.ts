@@ -27,6 +27,7 @@ export interface Routine {
   equipment: string;
   coverImage?: string;
   coverImageBodyweight?: string;
+  categoryTag?: "fuerza" | "full_body" | "hiit" | "movilidad" | "personalizado";
   exercises: Exercise[];
   alternativeExercises?: Exercise[];
 }

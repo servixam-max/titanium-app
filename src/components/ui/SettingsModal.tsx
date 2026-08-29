@@ -21,13 +21,26 @@ import {
   BellOff,
   Speaker,
   Gauge,
+  CheckCircle2,
+  AlertTriangle,
+  Loader2,
+  Sparkles,
+  Server,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { AudioMode } from "@/lib/types";
 import {
   setAudioMode as setGlobalAudioMode,
   setVoiceRate as setGlobalVoiceRate,
+  speak,
 } from "@/lib/audio";
+import {
+  APP_VERSION,
+  checkOtaUpdate,
+  syncToServer,
+  syncFromServer,
+  openApkDownload,
+} from "@/lib/ota-sync";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -46,10 +59,19 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     setEquipmentPreference,
     equipmentPreference,
     clearSessions,
+    loadSessions,
   } = useAppStore();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [showExportSuccess, setShowExportSuccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  // OTA state
+  const [otaStatus, setOtaStatus] = useState<"idle" | "checking" | "update-found" | "up-to-date" | "error">("idle");
+  const [otaInfo, setOtaInfo] = useState<{ version: string; downloadUrl: string; serverUrl: string } | null>(null);
+  const [otaError, setOtaError] = useState("");
+
+  // Sync state
+  const [syncStatus, setSyncStatus] = useState<"idle" | "syncing" | "success" | "error">("idle");
+  const [syncMsg, setSyncMsg] = useState("");
 
   // Sync audio engine with store when modal opens / settings change
   useEffect(() => {
@@ -83,28 +105,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     onClose();
   };
 
-  const handleExportData = () => {
-    const data = {
-      sessions,
-      exportDate: new Date().toISOString(),
-      appVersion: "2.0.0",
-    };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `titanium-backup-${new Date().toISOString().split("T")[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    setShowExportSuccess(true);
-    setTimeout(() => setShowExportSuccess(false), 2000);
-  };
 
   const handleResetAll = () => {
     localStorage.clear();
@@ -154,7 +155,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -166,7 +167,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             aria-hidden="true"
           />
 
-          {/* Modal / Bottom Sheet */}
+          {/* Modal */}
           <motion.div
             initial={
               isMobile
@@ -187,26 +188,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               damping: 30,
               duration: isMobile ? undefined : 0.25,
             }}
-            drag={isMobile ? "y" : false}
-            dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={0.2}
-            onDragEnd={(_, info) => {
-              if (isMobile && info.offset.y > 120 && info.velocity.y > 0) {
-                onClose();
-              }
-            }}
-            className="relative w-full md:max-w-app md:w-full bg-surface border border-surface-container-highest md:rounded-2xl rounded-t-2xl shadow-2xl max-h-[90vh] md:max-h-[85vh] overflow-hidden"
+            className="relative w-full h-full md:h-auto md:max-w-app bg-surface md:rounded-2xl shadow-2xl md:max-h-[85vh] flex flex-col overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="settings-title"
           >
-            {/* Drag handle (mobile only) */}
-            {isMobile && (
-              <div className="w-full flex justify-center pt-3 pb-1">
-                <div className="w-10 h-1.5 rounded-full bg-surface-container-highest" />
-              </div>
-            )}
-
             {/* Header */}
             <div className="sticky top-0 bg-surface border-b border-surface-container-highest p-container-padding flex items-center justify-between z-10">
               <div className="flex items-center gap-3">
@@ -228,7 +214,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             </div>
 
             {/* Content */}
-            <div className="p-container-padding overflow-y-auto max-h-[calc(90vh-72px)] md:max-h-[calc(85vh-72px)]">
+            <div className="p-container-padding flex-1 overflow-y-auto pb-[10vh]">
               <div className="flex flex-col gap-section-gap">
                 {/* Audio */}
                 <section className="flex flex-col gap-stack-gap">
@@ -307,7 +293,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
 
                   {/* Voice Rate */}
-                  <div className="flex flex-col gap-2 bg-surface-container-low border border-surface-container-highest rounded-xl p-stack-gap">
+                  <div className="flex flex-col gap-3 bg-surface-container-low border border-surface-container-highest rounded-xl p-stack-gap">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-on-surface">
                         <Gauge className="w-4 h-4 text-primary-container" />
@@ -315,14 +301,43 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           Velocidad de Voz
                         </span>
                       </div>
-                      <span className="font-label-caps text-label-caps text-primary-container">
+                      <span className="font-label-caps text-label-caps text-primary-container font-mono font-bold">
                         {voiceRate.toFixed(2)}x
                       </span>
                     </div>
+
+                    {/* Speed Presets */}
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { label: "Lenta", rate: 0.80 },
+                        { label: "Normal", rate: 0.92, recommended: true },
+                        { label: "Rápida", rate: 1.05 },
+                      ].map((preset) => {
+                        const isSelected = Math.abs(voiceRate - preset.rate) < 0.04;
+                        return (
+                          <button
+                            key={preset.label}
+                            type="button"
+                            onClick={() => {
+                              setVoiceRate(preset.rate);
+                              speak("Velocidad ajustada", 1.0, preset.rate);
+                            }}
+                            className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all border ${
+                              isSelected
+                                ? "bg-primary-container text-black border-primary-container shadow-sm"
+                                : "bg-surface-container-high text-on-surface-variant border-surface-container-highest hover:text-white"
+                            }`}
+                          >
+                            {preset.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+
                     <input
                       type="range"
-                      min={0.7}
-                      max={1.5}
+                      min={0.65}
+                      max={1.30}
                       step={0.05}
                       value={voiceRate}
                       onChange={(e) => setVoiceRate(parseFloat(e.target.value))}
@@ -333,9 +348,19 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         audioMode === "beeps"
                       }
                     />
-                    <div className="flex justify-between text-on-surface-variant text-xs">
-                      <span>Lenta</span>
-                      <span>Rápida</span>
+
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-on-surface-variant">0.65x (Muy pausada)</span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          speak("Prepárate, tres, dos, uno, a entrenar", 1.0, voiceRate)
+                        }
+                        className="text-primary-container font-bold underline hover:opacity-80 active:scale-95"
+                      >
+                        🔊 Probar Voz
+                      </button>
+                      <span className="text-on-surface-variant">1.30x</span>
                     </div>
                   </div>
                 </section>
@@ -370,70 +395,202 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
                 </section>
 
+                {/* OTA Updates */}
+                <section className="flex flex-col gap-stack-gap">
+                  <SectionHeader
+                    icon={<Download className="w-4 h-4" />}
+                    label="Actualizaciones OTA"
+                  />
+                  <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-4 flex flex-col gap-3">
+                    <div className="flex items-center justify-between text-xs text-on-surface-variant pb-2 border-b border-surface-container-highest">
+                      <span>Versión instalada:</span>
+                      <span className="font-bold text-primary-container">v{APP_VERSION}</span>
+                    </div>
+
+                    {otaStatus === "idle" && (
+                      <button
+                        onClick={async () => {
+                          setOtaStatus("checking");
+                          setOtaError("");
+                          setOtaInfo(null);
+                          try {
+                            const result = await checkOtaUpdate();
+                            if (result.hasUpdate) {
+                              setOtaStatus("update-found");
+                              setOtaInfo({
+                                version: result.latestVersion,
+                                downloadUrl: result.downloadUrl,
+                                serverUrl: result.serverUrl,
+                              });
+                            } else {
+                              setOtaStatus("up-to-date");
+                            }
+                          } catch (err: any) {
+                            setOtaStatus("error");
+                            setOtaError(err?.message || "No se pudo contactar con el servidor");
+                          }
+                        }}
+                        className="w-full h-12 bg-primary text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-neon"
+                      >
+                        <RefreshCw className="w-5 h-5" />
+                        Comprobar Actualizaciones
+                      </button>
+                    )}
+
+                    {otaStatus === "checking" && (
+                      <div className="w-full h-12 bg-surface-container-high border border-primary/30 rounded-xl flex items-center justify-center gap-3 text-primary-container font-bold">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-sm">Conectando con PC...</span>
+                      </div>
+                    )}
+
+                    {otaStatus === "update-found" && otaInfo && (
+                      <div className="bg-primary/10 border-2 border-primary rounded-xl p-4 flex flex-col gap-3">
+                        <div className="flex items-center gap-2 text-primary font-bold">
+                          <Sparkles className="w-5 h-5" />
+                          <span>¡Nueva versión v{otaInfo.version} lista!</span>
+                        </div>
+                        <p className="text-xs text-on-surface-variant">
+                          Detectada en <strong className="text-white">{otaInfo.serverUrl}</strong>
+                        </p>
+                        <button
+                          onClick={() => {
+                            openApkDownload(otaInfo.downloadUrl);
+                          }}
+                          className="w-full h-12 bg-primary text-black font-bold rounded-xl flex items-center justify-center gap-2 shadow-neon hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                        >
+                          <Download className="w-5 h-5" />
+                          Descargar e Instalar v{otaInfo.version}
+                        </button>
+                        <button
+                          onClick={() => setOtaStatus("idle")}
+                          className="text-xs text-on-surface-variant underline text-center hover:text-white"
+                        >
+                          Volver a comprobar
+                        </button>
+                      </div>
+                    )}
+
+                    {otaStatus === "up-to-date" && (
+                      <div className="bg-surface-container-high border border-primary/20 rounded-xl p-4 flex flex-col items-center gap-2 text-center">
+                        <CheckCircle2 className="w-6 h-6 text-primary" />
+                        <span className="font-bold text-white text-sm">Tu aplicación está al día (v{APP_VERSION})</span>
+                        <button
+                          onClick={() => setOtaStatus("idle")}
+                          className="text-xs text-primary-container underline mt-1"
+                        >
+                          Comprobar de nuevo
+                        </button>
+                      </div>
+                    )}
+
+                    {otaStatus === "error" && (
+                      <div className="bg-error/10 border border-error/30 rounded-xl p-4 flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-error font-bold text-sm">
+                          <AlertTriangle className="w-5 h-5" />
+                          <span>Sin conexión con el PC</span>
+                        </div>
+                        <p className="text-xs text-on-surface-variant">{otaError}</p>
+                        <button
+                          onClick={() => setOtaStatus("idle")}
+                          className="w-full h-10 mt-1 bg-surface-container-highest text-white font-bold rounded-lg flex items-center justify-center gap-2 text-xs active:scale-95"
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                          Reintentar
+                        </button>
+                      </div>
+                    )}
+
+                    <p className="text-[11px] text-on-surface-variant text-center">
+                      Funciona a través de tu red VPN Tailscale o en la misma red WiFi del PC.
+                    </p>
+                  </div>
+                </section>
+
                 {/* Data Management */}
                 <section className="flex flex-col gap-stack-gap">
                   <SectionHeader
                     icon={<Database className="w-4 h-4" />}
-                    label="Datos"
+                    label="Datos y Copias de Seguridad"
                   />
-
-                  <button
-                    onClick={handleExportData}
-                    className="w-full h-touch-target-min bg-surface-container-low border border-surface-container-highest rounded-xl flex items-center gap-3 px-4 hover:bg-surface-container-high active:scale-95 transition-all"
-                  >
-                    <Download className="w-5 h-5 text-primary-container" />
-                    <span className="font-body-md text-body-md font-bold">
-                      Exportar Datos (JSON)
-                    </span>
-                    {showExportSuccess && (
-                      <span className="ml-auto font-label-caps text-label-caps text-primary-container">
-                        ¡Exportado!
-                      </span>
-                    )}
-                  </button>
-
-                  {!showResetConfirm ? (
+                  <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-4 flex flex-col gap-3">
                     <button
-                      onClick={() => setShowResetConfirm(true)}
-                      className="w-full h-touch-target-min bg-surface-container-low border border-surface-container-highest rounded-xl flex items-center gap-3 px-4 hover:bg-surface-container-high active:scale-95 transition-all"
+                      disabled={syncStatus === "syncing"}
+                      onClick={async () => {
+                        setSyncStatus("syncing");
+                        setSyncMsg("");
+                        try {
+                          const ok = await syncToServer({
+                            sessions,
+                            lastExerciseWeights: useAppStore.getState().lastExerciseWeights,
+                            exportDate: new Date().toISOString()
+                          });
+                          if (ok) {
+                            setSyncStatus("success");
+                            setSyncMsg("¡Copia guardada con éxito en sync.json!");
+                            setTimeout(() => setSyncStatus("idle"), 4000);
+                          } else {
+                            setSyncStatus("error");
+                            setSyncMsg("Error al guardar copia. ¿Está encendido el servidor?");
+                          }
+                        } catch {
+                          setSyncStatus("error");
+                          setSyncMsg("Error de red.");
+                        }
+                      }}
+                      className="w-full h-12 bg-surface-container-high border border-primary/20 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-primary-container"
                     >
-                      <Trash2 className="w-5 h-5 text-error" />
-                      <span className="font-body-md text-body-md font-bold text-error">
-                        Reiniciar Historial
+                      <Server className="w-5 h-5" />
+                      <span className="font-bold">
+                        {syncStatus === "syncing" ? "Sincronizando..." : "Guardar copia en PC"}
                       </span>
                     </button>
-                  ) : (
-                    <div className="bg-error-container/20 border border-error rounded-xl p-stack-gap">
-                      <p className="font-body-md text-body-md text-on-error-container mb-4">
-                        ¿Seguro? Se eliminarán todos tus entrenamientos
-                        guardados. Esta acción no se puede deshacer.
-                      </p>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setShowResetConfirm(false)}
-                          className="flex-1 h-touch-target-min bg-surface-container-high rounded-lg font-label-caps text-label-caps active:scale-95 transition-all"
-                        >
-                          Cancelar
-                        </button>
-                        <button
-                          onClick={handleResetHistory}
-                          className="flex-1 h-touch-target-min bg-error text-on-error rounded-lg font-label-caps text-label-caps active:scale-95 transition-all"
-                        >
-                          Sí, Eliminar
-                        </button>
-                      </div>
-                    </div>
-                  )}
 
-                  <button
-                    onClick={handleResetAll}
-                    className="w-full h-touch-target-min bg-surface-container-low border border-surface-container-highest rounded-xl flex items-center gap-3 px-4 hover:bg-surface-container-high active:scale-95 transition-all"
-                  >
-                    <RefreshCw className="w-5 h-5 text-error" />
-                    <span className="font-body-md text-body-md font-bold text-error">
-                      Restablecer Todo
-                    </span>
-                  </button>
+                    <button
+                      disabled={syncStatus === "syncing"}
+                      onClick={async () => {
+                        setSyncStatus("syncing");
+                        setSyncMsg("");
+                        try {
+                          await loadSessions();
+                          setSyncStatus("success");
+                          setSyncMsg("¡Datos e historial restaurados desde el PC!");
+                          setTimeout(() => setSyncStatus("idle"), 4000);
+                        } catch {
+                          setSyncStatus("error");
+                          setSyncMsg("Error al restaurar desde el PC.");
+                        }
+                      }}
+                      className="w-full h-12 bg-surface-container border border-surface-container-highest rounded-lg flex items-center justify-center gap-2 text-on-surface hover:text-white active:scale-95 transition-all"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span className="text-sm font-semibold">Restaurar datos desde PC</span>
+                    </button>
+                    
+                    {syncMsg && (
+                      <p className={`text-xs text-center font-bold ${syncStatus === "error" ? "text-error" : "text-primary-container"}`}>
+                        {syncMsg}
+                      </p>
+                    )}
+
+                    {!showResetConfirm ? (
+                      <button
+                        onClick={() => setShowResetConfirm(true)}
+                        className="w-full h-10 bg-surface-container flex items-center justify-center gap-2 rounded-lg text-error hover:bg-error/10 active:scale-95 transition-all mt-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span className="text-xs font-bold">Borrar todos los datos locales</span>
+                      </button>
+                    ) : (
+                      <div className="bg-error/10 border border-error/20 rounded-lg p-3 mt-2">
+                        <p className="text-xs text-error mb-3 text-center">¿Seguro? Se perderán tus entrenamientos en este dispositivo.</p>
+                        <div className="flex gap-2">
+                          <button onClick={() => setShowResetConfirm(false)} className="flex-1 h-10 bg-surface rounded-md text-xs font-bold">Cancelar</button>
+                          <button onClick={handleResetHistory} className="flex-1 h-10 bg-error text-black rounded-md text-xs font-bold">Sí, borrar</button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </section>
 
                 {/* Stats */}

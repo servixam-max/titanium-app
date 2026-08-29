@@ -42,7 +42,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
   }
 
   const isHIIT = routine.type === "hiit";
-  const isFreeDay = routine.day === 4;
+  const isFreeDay =
+    routine.categoryTag === "personalizado" || routine.day === 11;
   const exercises =
     isHIIT &&
     equipmentPreference === "bodyweight" &&
@@ -58,13 +59,13 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
       exercises,
     };
 
-    // Warmup only for guided mode (skip warmup for Extra day)
-    if (mode === "guided" && routine.day !== 4) {
+    // Warmup only for guided mode (skip warmup for Extra free day)
+    if (mode === "guided" && !isFreeDay) {
       startWorkout(workoutRoutine, mode);
       router.push("/warmup?redirect=/workout/guided");
     } else if (
       mode === "individual" ||
-      (mode === "guided" && routine.day === 4)
+      (mode === "guided" && isFreeDay)
     ) {
       // Individual or Extra day: go directly to workout
       const idx = exerciseIndex ?? 0;
@@ -220,13 +221,20 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         {/* Exercise List */}
         <section className="flex flex-col gap-stack-gap">
           <div className="flex justify-between items-end">
-            <h2 className="font-headline-md text-headline-md text-on-surface">
-              {isFreeDay
-                ? "Ejercicio seleccionado"
-                : `Ejercicios (${exercises.length})`}
-            </h2>
-            <span className="font-label-caps text-label-caps text-on-surface-variant">
-              {routine.duration} EST.
+            <div>
+              <h2 className="font-headline-md text-headline-md text-on-surface">
+                {isFreeDay
+                  ? "Ejercicio seleccionado"
+                  : `Ejercicios (${exercises.length})`}
+              </h2>
+              <p className="text-xs text-on-surface-variant mt-0.5">
+                {mode === "individual"
+                  ? "⚡ Toca cualquier ejercicio para empezar al instante"
+                  : "🧭 Flujo secuencial guiado paso a paso"}
+              </p>
+            </div>
+            <span className="font-label-caps text-label-caps text-primary-container font-bold">
+              {routine.duration}
             </span>
           </div>
 
@@ -236,13 +244,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                 key={exercise.id}
                 exercise={exercise}
                 index={index}
-                selectable={mode === "individual"}
-                isSelected={
-                  mode === "individual" && selectedExerciseIndex === index
-                }
+                mode={mode}
                 onClick={() => {
                   if (mode === "individual") {
-                    setSelectedExerciseIndex(index);
+                    handleStart(index);
+                  } else {
+                    handleStart(index);
                   }
                 }}
               />
@@ -251,26 +258,20 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         </section>
       </main>
 
-      {/* Giant Bottom CTA */}
-      <div className="fixed bottom-[72px] w-full z-40 bg-gradient-to-t from-background via-background to-transparent pb-stack-gap pt-8 pointer-events-none">
-        <div className="max-w-app mx-auto px-container-padding pointer-events-auto">
-          <button
-            onClick={() => {
-              if (mode === "individual" && selectedExerciseIndex !== null) {
-                handleStart(selectedExerciseIndex);
-              } else {
-                handleStart();
-              }
-            }}
-            className="w-full bg-primary-container text-on-primary-container font-headline-md text-headline-md font-bold h-[64px] rounded-full flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon-strong hover:shadow-[0_0_40px_rgba(195,244,0,0.25)]"
-          >
-            <Play className="w-6 h-6 fill-current" />
-            {mode === "individual" && selectedExerciseIndex !== null
-              ? `EMPEZAR: ${exercises[selectedExerciseIndex]?.name.toUpperCase()}`
-              : "INICIAR ENTRENAMIENTO"}
-          </button>
+      {/* Bottom CTA for Guided Mode */}
+      {mode === "guided" && (
+        <div className="fixed bottom-[72px] w-full z-40 bg-gradient-to-t from-background via-background/90 to-transparent pb-stack-gap pt-8 pointer-events-none">
+          <div className="max-w-app mx-auto px-container-padding pointer-events-auto">
+            <button
+              onClick={() => handleStart(0)}
+              className="w-full bg-primary-container text-on-primary-container font-headline-md text-headline-md font-bold h-[60px] rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon hover:shadow-[0_0_30px_rgba(195,244,0,0.3)]"
+            >
+              <Play className="w-6 h-6 fill-current" />
+              <span>INICIAR MODO GUIADO</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <BottomNav />
     </div>
