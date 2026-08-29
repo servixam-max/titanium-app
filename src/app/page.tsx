@@ -1,6 +1,7 @@
 "use client";
 
 import RoutineCard from "@/components/ui/RoutineCard";
+import RoutineDetailModal from "@/components/ui/RoutineDetailModal";
 import TopAppBar from "@/components/ui/TopAppBar";
 import { routines, warmUpExercises } from "@/lib/data";
 import { Flame, Play, Sparkles, Zap } from "lucide-react";
@@ -13,7 +14,7 @@ import { setAudioMode, setVoiceRate } from "@/lib/audio";
 import { preloadVoices } from "@/lib/speech";
 import { useAppStore } from "@/lib/store";
 import { getSessions } from "@/lib/db";
-import { WorkoutSession } from "@/lib/types";
+import { Routine, WorkoutSession } from "@/lib/types";
 import { APP_VERSION } from "@/lib/ota-sync";
 
 const InstallPrompt = dynamic(() => import("@/components/ui/InstallPrompt"), {
@@ -65,6 +66,7 @@ export default function Dashboard() {
   const { activeWorkout, audioMode, voiceRate } = useAppStore();
   const [audioWarmedUp, setAudioWarmedUp] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("all");
+  const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
   const [streakCount, setStreakCount] = useState(0);
 
   useEffect(() => {
@@ -244,25 +246,28 @@ export default function Dashboard() {
             )}
           </div>
 
-          <div className="flex-1 overflow-y-auto space-y-3 pb-[140px] pr-0.5">
+          <div className="flex-1 overflow-y-auto space-y-2.5 pb-[140px] pr-0.5">
             {filteredRoutines.map((routine, index) => (
               <div
                 key={routine.day}
                 className="animate-fade-in-up"
-                style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
+                style={{ animationDelay: `${Math.min(index * 40, 250)}ms` }}
               >
                 <RoutineCard
                   routine={routine}
-                  showEquipmentToggle={
-                    routine.type === "hiit" &&
-                    Boolean(routine.alternativeExercises)
-                  }
+                  onClick={() => setSelectedRoutine(routine)}
                 />
               </div>
             ))}
           </div>
         </div>
       </main>
+
+      <RoutineDetailModal
+        routine={selectedRoutine}
+        isOpen={Boolean(selectedRoutine)}
+        onClose={() => setSelectedRoutine(null)}
+      />
 
       <InstallPrompt />
       <BottomNav />

@@ -7,6 +7,7 @@ import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
 import ModeSelector from "@/components/ui/ModeSelector";
 import ExerciseCard from "@/components/ui/ExerciseCard";
+import WarmupModal from "@/components/ui/WarmupModal";
 import { routines, getExerciseById } from "@/lib/data";
 import { TrainingMode } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
@@ -20,6 +21,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<
     number | null
   >(null);
+  const [showWarmupModal, setShowWarmupModal] = useState(false);
+  const [targetExerciseIndex, setTargetExerciseIndex] = useState<number>(0);
   const [freeExerciseId, setFreeExerciseId] = useState<string | null>(null);
   const {
     startWorkout,
@@ -54,29 +57,30 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         : routine.exercises;
 
   const handleStart = (exerciseIndex?: number) => {
+    setTargetExerciseIndex(exerciseIndex ?? 0);
+    setShowWarmupModal(true);
+  };
+
+  const handleWarmupConfirm = (wantWarmup: boolean) => {
+    setShowWarmupModal(false);
     const workoutRoutine = {
       ...routine,
       exercises,
     };
 
-    // Warmup only for guided mode (skip warmup for Extra free day)
-    if (mode === "guided" && !isFreeDay) {
-      startWorkout(workoutRoutine, mode);
-      router.push("/warmup?redirect=/workout/guided");
-    } else if (
-      mode === "individual" ||
-      (mode === "guided" && isFreeDay)
-    ) {
-      // Individual or Extra day: go directly to workout
-      const idx = exerciseIndex ?? 0;
-      startWorkout(workoutRoutine, mode, idx);
+    const idx = targetExerciseIndex;
+    startWorkout(workoutRoutine, mode, idx);
+
+    if (wantWarmup) {
+      router.push(
+        `/warmup?redirect=/workout/${mode}${mode === "individual" ? `?exercise=${idx}` : ""}`
+      );
+    } else {
       if (mode === "guided") {
         router.push("/workout/guided");
       } else {
         router.push(`/workout/individual?exercise=${idx}`);
       }
-    } else {
-      startWorkout(workoutRoutine, mode);
     }
   };
 
@@ -272,6 +276,14 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
           </div>
         </div>
       )}
+
+      <WarmupModal
+        isOpen={showWarmupModal}
+        onClose={() => setShowWarmupModal(false)}
+        onStartWarmup={() => handleWarmupConfirm(true)}
+        onSkipWarmup={() => handleWarmupConfirm(false)}
+        routineTitle={routine.title}
+      />
 
       <BottomNav />
     </div>
