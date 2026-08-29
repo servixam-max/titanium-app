@@ -106,19 +106,19 @@ export default function RoutineCard({
           {routine.exercises.slice(0, 4).map((ex, idx) => (
             <div
               key={ex.id || idx}
-              className="flex items-center gap-2 bg-surface-container-high/80 border border-white/5 rounded-xl p-1.5 pr-3 flex-shrink-0 max-w-[170px]"
+              className="flex items-center gap-2 bg-surface-container-high/90 border border-white/10 rounded-xl p-1.5 pr-3 flex-shrink-0 max-w-[190px]"
             >
-              <div className="w-8 h-8 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0 flex items-center justify-center border border-white/5">
                 {ex.image ? (
                   <ExerciseImage
                     src={ex.image}
                     alt={ex.name}
                     containerClassName="w-full h-full"
                     className="object-cover"
-                    fallbackIcon={<Dumbbell className="w-4 h-4 text-primary-container/70" />}
+                    fallbackIcon={<Dumbbell className="w-5 h-5 text-primary-container/70" />}
                   />
                 ) : (
-                  <Dumbbell className="w-4 h-4 text-primary-container/70" />
+                  <Dumbbell className="w-5 h-5 text-primary-container/70" />
                 )}
               </div>
               <span className="text-[11px] font-bold text-on-surface truncate">
@@ -128,7 +128,7 @@ export default function RoutineCard({
           ))}
 
           {routine.exercises.length > 4 && (
-            <div className="flex-shrink-0 h-11 px-2.5 rounded-xl bg-surface-container-highest/80 border border-white/5 flex items-center justify-center text-[11px] font-bold text-primary-container">
+            <div className="flex-shrink-0 h-13 px-3 rounded-xl bg-surface-container-highest/90 border border-white/10 flex items-center justify-center text-[11px] font-bold text-primary-container">
               +{routine.exercises.length - 4} más
             </div>
           )}
