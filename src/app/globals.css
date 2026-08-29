@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #131313;
-  --foreground: #e2e2e2;
+  --background: #080808;
+  --foreground: #f3f3f3;
 }
 
 html {
@@ -12,8 +12,8 @@ html {
 }
 
 body {
-  background-color: #131313;
-  color: #e2e2e2;
+  background-color: #080808;
+  color: #f3f3f3;
   min-height: 100dvh;
   overflow-x: hidden;
 }
@@ -45,13 +45,37 @@ body {
   display: none;
 }
 
+/* Cyber-Titanium Glows & Borders */
+.glass-titanium {
+  background: rgba(14, 14, 16, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-modal {
+  background: rgba(10, 10, 12, 0.92);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glow-neon-box {
+  box-shadow: 0 0 25px rgba(204, 255, 0, 0.15), inset 0 0 15px rgba(204, 255, 0, 0.05);
+}
+
+.glow-card-hover:hover {
+  border-color: rgba(204, 255, 0, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(204, 255, 0, 0.12);
+}
+
 /* Custom animations */
 .neon-glow {
   text-shadow: 0 0 10px rgba(195, 244, 0, 0.4);
 }
 
 .neon-glow-strong {
-  text-shadow: 0 0 12px rgba(204, 255, 0, 0.4);
+  text-shadow: 0 0 16px rgba(204, 255, 0, 0.6);
 }
 
 /* Fade in slide up (entrada de tarjetas/ejercicios) */

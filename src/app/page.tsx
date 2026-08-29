@@ -16,6 +16,7 @@ import { useAppStore } from "@/lib/store";
 import { getSessions } from "@/lib/db";
 import { Routine, WorkoutSession } from "@/lib/types";
 import { APP_VERSION } from "@/lib/ota-sync";
+import { motion } from "framer-motion";
 
 const InstallPrompt = dynamic(() => import("@/components/ui/InstallPrompt"), {
   ssr: false,
@@ -98,99 +99,78 @@ export default function Dashboard() {
 
   return (
     <div
-      className="h-[100dvh] animate-page-in flex flex-col overflow-hidden bg-background"
+      className="h-[100dvh] flex flex-col overflow-hidden bg-[#080808] text-white select-none"
       onClick={handleFirstInteraction}
     >
-      {/* Subtle Background Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-container/10 rounded-full blur-[100px] pointer-events-none animate-pulse-slow" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-surface-variant/20 rounded-full blur-[100px] pointer-events-none animate-pulse-slow" />
+      {/* Background Cyber Ambient Mesh Glows */}
+      <div className="fixed top-[-15%] left-[-15%] w-[55%] h-[55%] bg-primary-container/10 rounded-full blur-[140px] pointer-events-none animate-pulse-slow" />
+      <div className="fixed bottom-[-15%] right-[-15%] w-[55%] h-[55%] bg-primary-container/5 rounded-full blur-[140px] pointer-events-none animate-pulse-slow" />
 
       <TopAppBar title="FORTIXAM" showSettings />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-h-0 px-4 py-2 gap-3 relative z-10">
         {/* Welcome & Streak Banner */}
-        <div className="relative flex-shrink-0 flex items-center justify-between gap-3 bg-surface-container-lowest/60 backdrop-blur-xl border border-surface-container-highest/50 rounded-2xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden group">
+        <motion.div
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="relative flex-shrink-0 flex items-center justify-between gap-3 bg-[#111116]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 shadow-[0_10px_35px_rgba(0,0,0,0.6)] overflow-hidden group"
+        >
           {/* Subtle animated border top */}
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-container/50 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-container/60 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
           
           <div className="min-w-0 z-10">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-label-caps text-on-surface-variant uppercase tracking-wider">
+              <span className="text-[11px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
                 FORTIXAM v{APP_VERSION}
               </span>
               <Sparkles className="w-3.5 h-3.5 text-primary-container animate-pulse" />
             </div>
-            <h2 className="font-headline-md text-headline-md font-bold truncate bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-container to-white animate-gradient-x">
-              ¡Vamos xam!
+            <h2 className="font-headline-md text-xl sm:text-2xl font-bold truncate text-white mt-0.5 tracking-tight">
+              ¡A darlo todo, xam!
             </h2>
-            <p className="font-body-sm text-xs text-on-surface-variant mt-0.5 truncate">
-              Tu cuerpo escucha todo lo que tu mente dice.
+            <p className="text-xs text-zinc-400 mt-0.5 truncate">
+              Tu cuerpo escucha todo lo que tu mente decide.
             </p>
           </div>
 
-          <div className="flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-surface-container-high/80 border border-primary-container/40 flex-shrink-0 shadow-[0_0_15px_rgba(204,255,0,0.15)] z-10">
+          <div className="flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-black/60 border border-primary-container/40 flex-shrink-0 shadow-[0_0_15px_rgba(204,255,0,0.15)] z-10">
             <div className="flex items-center gap-1.5">
-              <Flame className="w-4 h-4 text-primary-container fill-primary-container animate-soft-pulse" />
-              <span className="font-bold text-primary-container text-lg leading-none">
+              <Flame className="w-4 h-4 text-primary-container fill-primary-container animate-pulse" />
+              <span className="font-bold text-primary-container text-lg leading-none font-mono">
                 {streakCount}
               </span>
             </div>
-            <span className="text-[10px] font-label-caps text-on-surface-variant uppercase tracking-tighter mt-0.5">
+            <span className="text-[9px] font-label-caps text-zinc-400 uppercase tracking-tighter mt-0.5 font-bold">
               {streakCount === 1 ? "Día" : "Días"}
             </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Quick Warmup */}
-        <Link
-          href="/warmup"
-          className="flex-shrink-0 h-[52px] bg-surface-container-high border border-primary-container/30 rounded-xl flex items-center gap-3 px-3.5 hover:bg-surface-container-high active:scale-95 transition-all shadow-rest"
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.05 }}
         >
-          <div className="w-8 h-8 rounded-lg bg-primary-container/20 flex items-center justify-center flex-shrink-0">
-            <Zap className="w-4 h-4 text-primary-container" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <span className="font-body-md text-sm font-bold text-primary-container block truncate">
-              Calentamiento Rápido
-            </span>
-            <span className="font-label-caps text-[10px] text-on-surface-variant">
-              {warmUpExercises.length} ejercicios · 60s por ejercicio
-            </span>
-          </div>
-          <svg
-            className="w-4 h-4 text-primary-container flex-shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+          <Link
+            href="/warmup"
+            className="flex-shrink-0 h-[52px] bg-[#111116]/80 hover:bg-[#16161d] border border-primary-container/30 hover:border-primary-container/60 rounded-xl flex items-center gap-3 px-3.5 active:scale-98 transition-all shadow-md group"
           >
-            <path d="M9 18l6-6-6-6" />
-          </svg>
-        </Link>
-
-        {/* Resume Workout Banner */}
-        {activeWorkout.routine && (
-          <button
-            onClick={() => router.push(`/workout/${activeWorkout.mode}`)}
-            className="flex-shrink-0 h-[58px] bg-primary-container text-on-primary-container rounded-xl flex items-center gap-3 px-3.5 active:scale-95 transition-all shadow-neon"
-          >
-            <div className="w-8 h-8 rounded-lg bg-on-primary-container/20 flex items-center justify-center flex-shrink-0">
-              <Play className="w-4 h-4 text-on-primary-container fill-current" />
+            <div className="w-8 h-8 rounded-lg bg-primary-container/15 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-container group-hover:text-black transition-colors">
+              <Zap className="w-4 h-4 text-primary-container group-hover:text-black transition-colors" />
             </div>
-            <div className="flex-1 min-w-0 text-left">
-              <span className="font-body-md text-sm font-bold block truncate">
-                Continuar entrenamiento
+            <div className="flex-1 min-w-0">
+              <span className="font-body-md text-sm font-bold text-white group-hover:text-primary-container block truncate transition-colors">
+                Calentamiento Rápido
               </span>
-              <span className="font-label-caps text-[10px] text-on-primary-container/80">
-                {activeWorkout.routine.title} · Ejercicio{" "}
-                {activeWorkout.currentExerciseIndex + 1}
+              <span className="font-label-caps text-[10px] text-zinc-400">
+                {warmUpExercises.length} ejercicios · 60s por ejercicio
               </span>
             </div>
             <svg
-              className="w-4 h-4 flex-shrink-0"
+              className="w-4 h-4 text-zinc-400 group-hover:text-primary-container group-hover:translate-x-0.5 transition-all flex-shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -200,7 +180,41 @@ export default function Dashboard() {
             >
               <path d="M9 18l6-6-6-6" />
             </svg>
-          </button>
+          </Link>
+        </motion.div>
+
+        {/* Resume Workout Banner */}
+        {activeWorkout.routine && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            onClick={() => router.push(`/workout/${activeWorkout.mode}`)}
+            className="flex-shrink-0 h-[58px] bg-primary-container text-black rounded-xl flex items-center gap-3 px-3.5 active:scale-98 transition-all shadow-[0_0_20px_rgba(204,255,0,0.3)] font-bold"
+          >
+            <div className="w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center flex-shrink-0">
+              <Play className="w-4 h-4 text-black fill-current" />
+            </div>
+            <div className="flex-1 min-w-0 text-left">
+              <span className="text-sm font-bold block truncate">
+                Continuar entrenamiento
+              </span>
+              <span className="text-[10px] font-label-caps text-black/80">
+                {activeWorkout.routine.title} · Ejercicio{" "}
+                {activeWorkout.currentExerciseIndex + 1}
+              </span>
+            </div>
+            <svg
+              className="w-4 h-4 flex-shrink-0"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </motion.button>
         )}
 
         {/* Category Filter Chips */}
@@ -218,12 +232,19 @@ export default function Dashboard() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id as CategoryFilter)}
-                className={`px-3 py-1.5 rounded-full text-xs font-label-caps whitespace-nowrap transition-all active:scale-95 ${
+                className={`relative px-3.5 py-1.5 rounded-full text-xs font-label-caps whitespace-nowrap transition-all duration-200 active:scale-95 ${
                   isSelected
-                    ? "bg-primary-container text-on-primary-container font-bold shadow-neon"
-                    : "bg-surface-container-low text-on-surface-variant border border-surface-container-highest hover:text-on-surface"
+                    ? "text-black font-bold"
+                    : "text-zinc-400 hover:text-white bg-zinc-900/80 border border-white/10"
                 }`}
               >
+                {isSelected && (
+                  <motion.div
+                    layoutId="active-category-chip"
+                    className="absolute inset-0 bg-primary-container rounded-full shadow-[0_0_12px_rgba(204,255,0,0.3)] -z-10"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
                 {cat.label}
               </button>
             );
@@ -233,31 +254,27 @@ export default function Dashboard() {
         {/* Routines List - scrollable */}
         <div className="flex-1 min-h-0 flex flex-col">
           <div className="flex items-center justify-between mb-1.5">
-            <h3 className="font-headline-sm text-sm font-bold border-l-4 border-primary-container pl-2.5">
+            <h3 className="font-headline-sm text-sm font-bold border-l-3 border-primary-container pl-2 text-white">
               Rutinas ({filteredRoutines.length})
             </h3>
             {selectedCategory !== "all" && (
               <button
                 onClick={() => setSelectedCategory("all")}
-                className="text-[11px] text-primary-container hover:underline"
+                className="text-[11px] text-primary-container hover:underline font-bold"
               >
                 Ver todas
               </button>
             )}
           </div>
 
-          <div className="flex-1 overflow-y-auto space-y-2.5 pb-[140px] pr-0.5">
+          <div className="flex-1 overflow-y-auto space-y-2.5 pb-[130px] pr-0.5">
             {filteredRoutines.map((routine, index) => (
-              <div
+              <RoutineCard
                 key={routine.day}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${Math.min(index * 40, 250)}ms` }}
-              >
-                <RoutineCard
-                  routine={routine}
-                  onClick={() => setSelectedRoutine(routine)}
-                />
-              </div>
+                routine={routine}
+                index={index}
+                onClick={() => setSelectedRoutine(routine)}
+              />
             ))}
           </div>
         </div>

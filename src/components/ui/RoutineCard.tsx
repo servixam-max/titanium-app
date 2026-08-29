@@ -1,24 +1,42 @@
 "use client";
 
-import { Clock, Layers, ChevronRight, Dumbbell, Zap } from "lucide-react";
+import { Clock, Layers, ChevronRight, Dumbbell, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import { Routine } from "@/lib/types";
 
 interface RoutineCardProps {
   routine: Routine;
   onClick?: () => void;
+  index?: number;
 }
 
-const CATEGORY_COLORS: Record<string, string> = {
-  fuerza: "bg-amber-500/15 text-amber-300 border-amber-500/30",
-  full_body: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
-  hiit: "bg-rose-500/15 text-rose-300 border-rose-500/30",
-  movilidad: "bg-cyan-500/15 text-cyan-300 border-cyan-500/30",
-  personalizado: "bg-primary-container/20 text-primary-container border-primary-container/30",
+const CATEGORY_STYLES: Record<string, { badge: string; border: string }> = {
+  fuerza: {
+    badge: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    border: "hover:border-amber-500/40",
+  },
+  full_body: {
+    badge: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+    border: "hover:border-emerald-500/40",
+  },
+  hiit: {
+    badge: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+    border: "hover:border-rose-500/40",
+  },
+  movilidad: {
+    badge: "bg-cyan-500/15 text-cyan-300 border-cyan-500/30",
+    border: "hover:border-cyan-500/40",
+  },
+  personalizado: {
+    badge: "bg-primary-container/20 text-primary-container border-primary-container/30",
+    border: "hover:border-primary-container/40",
+  },
 };
 
 export default function RoutineCard({
   routine,
   onClick,
+  index = 0,
 }: RoutineCardProps) {
   const totalSets = routine.exercises.reduce((sum, ex) => sum + ex.sets, 0);
   const isPersonalized =
@@ -27,21 +45,29 @@ export default function RoutineCard({
 
   const dayNumber = routine.day < 10 ? `0${routine.day}` : routine.day;
   const dayBadge = isPersonalized ? "EXTRA" : isHIIT ? `DÍA ${dayNumber} · HIIT` : `DÍA ${dayNumber}`;
-  const categoryClass = CATEGORY_COLORS[routine.categoryTag || "fuerza"] || CATEGORY_COLORS.fuerza;
+  const style = CATEGORY_STYLES[routine.categoryTag || "fuerza"] || CATEGORY_STYLES.fuerza;
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.3), ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ scale: 1.015, y: -2 }}
+      whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className="group relative bg-surface-container-low/90 hover:bg-surface-container/90 backdrop-blur-md rounded-2xl border border-surface-container-highest hover:border-primary-container/60 p-4 transition-all duration-200 cursor-pointer shadow-md hover:shadow-[0_4px_24px_rgba(204,255,0,0.12)] active:scale-[0.98]"
+      className={`group relative bg-[#101014]/90 hover:bg-[#15151c] backdrop-blur-xl rounded-2xl border border-white/10 ${style.border} p-4 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_10px_30px_rgba(0,0,0,0.7),0_0_20px_rgba(204,255,0,0.1)] overflow-hidden`}
     >
-      <div className="flex items-center justify-between gap-3">
+      {/* Subtle top ambient glow strip */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-container/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      <div className="flex items-center justify-between gap-3 relative z-10">
         {/* Left Info */}
         <div className="flex flex-col gap-1.5 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-xs font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-primary-container text-black shadow-sm">
+            <span className="font-mono text-xs font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-primary-container text-black shadow-[0_0_10px_rgba(204,255,0,0.3)]">
               {dayBadge}
             </span>
-            <span className={`text-[10px] font-label-caps px-2 py-0.5 rounded-full border ${categoryClass} uppercase font-bold`}>
+            <span className={`text-[10px] font-label-caps px-2 py-0.5 rounded-full border ${style.badge} uppercase font-bold tracking-wider`}>
               {routine.equipment || "MANCUERNAS"}
             </span>
           </div>
@@ -50,12 +76,12 @@ export default function RoutineCard({
             {routine.title}
           </h3>
 
-          <div className="flex items-center gap-3 text-xs text-on-surface-variant pt-0.5">
+          <div className="flex items-center gap-3 text-xs text-zinc-400 pt-0.5">
             <span className="flex items-center gap-1 font-mono text-[11px]">
               <Clock className="w-3.5 h-3.5 text-primary-container" />
               {routine.duration}
             </span>
-            <span>•</span>
+            <span className="text-zinc-600">•</span>
             <span className="flex items-center gap-1 font-mono text-[11px]">
               <Layers className="w-3.5 h-3.5 text-primary-container" />
               {routine.exercises.length} ejercicios ({totalSets} series)
@@ -65,14 +91,11 @@ export default function RoutineCard({
 
         {/* Right CTA Indicator */}
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          <span className="hidden sm:inline-block text-xs font-bold text-primary-container font-label-caps uppercase group-hover:translate-x-0.5 transition-transform">
-            Ver
-          </span>
-          <div className="w-9 h-9 rounded-full bg-surface-container-highest group-hover:bg-primary-container group-hover:text-black flex items-center justify-center text-on-surface-variant transition-all shadow-sm">
-            <ChevronRight className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 group-hover:border-primary-container/50 group-hover:bg-primary-container group-hover:text-black flex items-center justify-center text-zinc-300 transition-all duration-300 shadow-sm">
+            <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
