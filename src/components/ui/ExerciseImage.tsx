@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface ExerciseImageProps {
@@ -20,10 +20,34 @@ export default function ExerciseImage({
   fallbackIcon,
   priority = false,
 }: ExerciseImageProps) {
+  const [currentSrc, setCurrentSrc] = useState<string | undefined>(src);
+  const [hasTriedFallback, setHasTriedFallback] = useState(false);
   const [error, setError] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  const showFallback = !src || error;
+  useEffect(() => {
+    setCurrentSrc(src);
+    setHasTriedFallback(false);
+    setError(false);
+    setLoaded(false);
+  }, [src]);
+
+  const handleError = () => {
+    if (!hasTriedFallback && currentSrc) {
+      setHasTriedFallback(true);
+      if (currentSrc.endsWith(".webp")) {
+        setCurrentSrc(currentSrc.replace(".webp", ".jpg"));
+        return;
+      }
+      if (currentSrc.endsWith(".jpg")) {
+        setCurrentSrc(currentSrc.replace(".jpg", ".webp"));
+        return;
+      }
+    }
+    setError(true);
+  };
+
+  const showFallback = !currentSrc || error;
 
   return (
     <div
@@ -34,7 +58,7 @@ export default function ExerciseImage({
     >
       {!showFallback && (
         <img
-          src={src}
+          src={currentSrc}
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding={priority ? "sync" : "async"}
@@ -43,7 +67,7 @@ export default function ExerciseImage({
             loaded ? "opacity-100" : "opacity-0",
             className,
           )}
-          onError={() => setError(true)}
+          onError={handleError}
           onLoad={() => setLoaded(true)}
         />
       )}
