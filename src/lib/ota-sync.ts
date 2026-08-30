@@ -58,8 +58,9 @@ export async function checkOtaUpdate(): Promise<{
   const latestVersion = String(data.version || "").trim();
   const hasUpdate = Boolean(latestVersion && latestVersion !== APP_VERSION);
   
-  // Build download URL using the reachable server IP
-  const downloadUrl = `${serverUrl}/FORTIXAM-latest.apk`;
+  // Build download URL using version-specific APK name with timestamp to avoid browser caching
+  const apkFileName = data.apkName || `FORTIXAM-${latestVersion || "latest"}.apk`;
+  const downloadUrl = `${serverUrl}/${apkFileName}?t=${Date.now()}`;
 
   return {
     hasUpdate,
