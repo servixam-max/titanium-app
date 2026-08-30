@@ -45,10 +45,13 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
   }
 
   const isHIIT = routine.type === "hiit";
+  const hasAlternatives = Boolean(
+    routine.alternativeExercises && routine.alternativeExercises.length > 0
+  );
   const isFreeDay =
     routine.categoryTag === "personalizado" || routine.day === 11;
   const exercises =
-    isHIIT &&
+    hasAlternatives &&
     equipmentPreference === "bodyweight" &&
     routine.alternativeExercises
       ? routine.alternativeExercises
@@ -96,8 +99,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
           </h1>
         </section>
 
-        {/* Equipment Toggle for Day 3 */}
-        {isHIIT && (
+        {/* Equipment Toggle if routine has alternatives */}
+        {hasAlternatives && (
           <div className="flex flex-col gap-base">
             <h2 className="font-headline-md text-headline-md text-on-surface">
               Equipamiento
@@ -111,7 +114,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                     : "bg-surface-container-highest text-on-surface-variant"
                 }`}
               >
-                Mancuernas
+                🏋️ Mancuernas
               </button>
               <button
                 onClick={() => setEquipmentPreference("bodyweight")}
@@ -121,7 +124,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                     : "bg-surface-container-highest text-on-surface-variant"
                 }`}
               >
-                Peso Corporal
+                🤸 Peso Corporal
               </button>
             </div>
           </div>

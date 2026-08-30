@@ -35,12 +35,12 @@ export default function RoutineDetailModal({
 
   if (!routine) return null;
 
-  const isHIIT = routine.type === "hiit";
+  const hasAlternatives = Boolean(
+    routine.alternativeExercises && routine.alternativeExercises.length > 0
+  );
   const exercises =
-    isHIIT &&
-    equipmentPreference === "bodyweight" &&
-    routine.alternativeExercises
-      ? routine.alternativeExercises
+    hasAlternatives && equipmentPreference === "bodyweight"
+      ? routine.alternativeExercises!
       : routine.exercises;
 
   const totalSets = exercises.reduce((sum, ex) => sum + ex.sets, 0);
@@ -148,30 +148,30 @@ export default function RoutineDetailModal({
                 {routine.subtitle}
               </p>
 
-              {/* HIIT Equipment toggle if applicable */}
-              {isHIIT && routine.alternativeExercises && (
+              {/* Equipment toggle if applicable */}
+              {hasAlternatives && (
                 <div className="p-1 bg-zinc-900/90 border border-white/10 rounded-xl flex gap-1 shadow-inner">
                   <button
                     type="button"
                     onClick={() => setEquipmentPreference("dumbbells")}
-                    className={`flex-1 py-2 rounded-lg text-xs font-bold font-label-caps transition-all ${
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold font-label-caps transition-all flex items-center justify-center gap-1.5 ${
                       equipmentPreference === "dumbbells"
                         ? "bg-primary-container text-black shadow-sm"
                         : "text-zinc-400 hover:text-white"
                     }`}
                   >
-                    Con Mancuernas
+                    <span>🏋️</span> Con Mancuernas
                   </button>
                   <button
                     type="button"
                     onClick={() => setEquipmentPreference("bodyweight")}
-                    className={`flex-1 py-2 rounded-lg text-xs font-bold font-label-caps transition-all ${
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold font-label-caps transition-all flex items-center justify-center gap-1.5 ${
                       equipmentPreference === "bodyweight"
                         ? "bg-primary-container text-black shadow-sm"
                         : "text-zinc-400 hover:text-white"
                     }`}
                   >
-                    Peso Corporal
+                    <span>🤸</span> Peso Corporal
                   </button>
                 </div>
               )}
