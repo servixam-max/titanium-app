@@ -69,15 +69,72 @@ export default function Dashboard() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("all");
   const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
   const [streakCount, setStreakCount] = useState(0);
+  const [stats, setStats] = useState({
+    totalWorkouts: 0,
+    totalMinutes: 0,
+    weeklyDays: [false, false, false, false, false, false, false],
+    todayIndex: 0,
+  });
+
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 13) return "Buenos días";
+    if (hour >= 13 && hour < 21) return "Buenas tardes";
+    return "Buenas noches";
+  }, []);
 
   useEffect(() => {
     preloadVoices();
     setAudioMode(audioMode);
     setVoiceRate(voiceRate);
 
-    // Load streak from IndexedDB
+    // Load streak & weekly stats from IndexedDB
     getSessions().then((sessions) => {
       setStreakCount(calculateStreak(sessions));
+
+      const completed = sessions.filter((s) => s.completed && s.endTime);
+      const totalWorkouts = completed.length;
+      const totalMinutes = Math.round(
+        completed.reduce((sum, s) => {
+          const dur =
+            s.endTime && s.startTime
+              ? (new Date(s.endTime).getTime() -
+                  new Date(s.startTime).getTime()) /
+                60000
+              : 0;
+          return sum + Math.max(0, dur);
+        }, 0)
+      );
+
+      const now = new Date();
+      const currentDay = now.getDay();
+      const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay;
+      const monday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + mondayOffset
+      );
+      monday.setHours(0, 0, 0, 0);
+
+      const daysTrained = [false, false, false, false, false, false, false];
+      completed.forEach((s) => {
+        const d = new Date(s.endTime!);
+        const diffDays = Math.floor(
+          (d.getTime() - monday.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        if (diffDays >= 0 && diffDays < 7) {
+          daysTrained[diffDays] = true;
+        }
+      });
+
+      const todayIdx = currentDay === 0 ? 6 : currentDay - 1;
+
+      setStats({
+        totalWorkouts,
+        totalMinutes,
+        weeklyDays: daysTrained,
+        todayIndex: todayIdx,
+      });
     });
   }, [audioMode, voiceRate]);
 
@@ -85,7 +142,7 @@ export default function Dashboard() {
     if (!audioWarmedUp) {
       if (audioMode !== "silent") {
         import("@/lib/audio").then(({ playBeep }) =>
-          playBeep(300, 0.01, "sine", 0.01),
+          playBeep(300, 0.01, "sine", 0.01)
         );
       }
       setAudioWarmedUp(true);
@@ -109,42 +166,77 @@ export default function Dashboard() {
       <TopAppBar title="FORTIXAM" showSettings />
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-h-0 px-4 py-2 gap-3 relative z-10">
+      <main className="flex-1 flex flex-col min-h-0 px-4 py-2 gap-2.5 relative z-10">
         {/* Welcome & Streak Banner */}
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="relative flex-shrink-0 flex items-center justify-between gap-3 bg-[#111116]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 shadow-[0_10px_35px_rgba(0,0,0,0.6)] overflow-hidden group"
+          className="relative flex-shrink-0 flex flex-col gap-2.5 bg-[#111116]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-3.5 shadow-[0_10px_35px_rgba(0,0,0,0.6)] overflow-hidden group"
         >
           {/* Subtle animated border top */}
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-container/60 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-          
-          <div className="min-w-0 z-10">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
-                FORTIXAM v{APP_VERSION}
-              </span>
-              <Sparkles className="w-3.5 h-3.5 text-primary-container animate-pulse" />
+
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0 z-10">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+                  FORTIXAM v{APP_VERSION}
+                </span>
+                <Sparkles className="w-3 h-3 text-primary-container animate-pulse" />
+              </div>
+              <h2 className="font-headline-md text-lg sm:text-xl font-bold truncate text-white mt-0.5 tracking-tight">
+                ¡{greeting}, xam!
+              </h2>
             </div>
-            <h2 className="font-headline-md text-xl sm:text-2xl font-bold truncate text-white mt-0.5 tracking-tight">
-              ¡A darlo todo, xam!
-            </h2>
-            <p className="text-xs text-zinc-400 mt-0.5 truncate">
-              Tu cuerpo escucha todo lo que tu mente decide.
-            </p>
+
+            {/* Streak Counter */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/60 border border-primary-container/40 flex-shrink-0 shadow-[0_0_15px_rgba(204,255,0,0.15)] z-10">
+              <Flame className="w-4 h-4 text-primary-container fill-primary-container animate-pulse" />
+              <div className="flex flex-col">
+                <span className="font-bold text-primary-container text-base leading-none font-mono">
+                  {streakCount}
+                </span>
+                <span className="text-[8px] font-label-caps text-zinc-400 uppercase tracking-tighter font-bold">
+                  {streakCount === 1 ? "Día" : "Días"}
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col items-center justify-center px-4 py-2 rounded-xl bg-black/60 border border-primary-container/40 flex-shrink-0 shadow-[0_0_15px_rgba(204,255,0,0.15)] z-10">
+          {/* Weekly Consistency Tracker */}
+          <div className="pt-2 border-t border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <Flame className="w-4 h-4 text-primary-container fill-primary-container animate-pulse" />
-              <span className="font-bold text-primary-container text-lg leading-none font-mono">
-                {streakCount}
+              {["L", "M", "X", "J", "V", "S", "D"].map((dayName, idx) => {
+                const trained = stats.weeklyDays[idx];
+                const isToday = idx === stats.todayIndex;
+                return (
+                  <div
+                    key={dayName}
+                    className={`w-7 h-7 rounded-lg flex flex-col items-center justify-center text-[10px] font-mono font-bold transition-all ${
+                      trained
+                        ? "bg-primary-container text-black shadow-[0_0_8px_rgba(204,255,0,0.4)]"
+                        : isToday
+                          ? "border border-primary-container/80 text-primary-container bg-primary-container/10"
+                          : "bg-white/5 text-zinc-500 border border-white/5"
+                    }`}
+                    title={`${dayName}: ${trained ? "Completado" : isToday ? "Hoy" : "Pendiente"}`}
+                  >
+                    <span>{dayName}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Micro Stats */}
+            <div className="flex items-center gap-2 font-mono text-[10px] text-zinc-400 pl-2">
+              <span className="bg-white/5 px-2 py-1 rounded-md border border-white/5">
+                ⚡ <strong className="text-white">{stats.totalWorkouts}</strong>
+              </span>
+              <span className="bg-white/5 px-2 py-1 rounded-md border border-white/5">
+                ⏱️ <strong className="text-white">{stats.totalMinutes}m</strong>
               </span>
             </div>
-            <span className="text-[9px] font-label-caps text-zinc-400 uppercase tracking-tighter mt-0.5 font-bold">
-              {streakCount === 1 ? "Día" : "Días"}
-            </span>
           </div>
         </motion.div>
 

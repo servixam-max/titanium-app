@@ -15,6 +15,8 @@ import TopAppBar from "@/components/ui/TopAppBar";
 import { useAppStore } from "@/lib/store";
 import { playWorkoutComplete } from "@/lib/audio";
 
+import { motion } from "framer-motion";
+
 export default function WorkoutComplete() {
   const router = useRouter();
   const { activeWorkout, clearJustFinished, sessions } = useAppStore();
@@ -30,13 +32,13 @@ export default function WorkoutComplete() {
 
   if (!completedSession || !completedSession.completed) {
     return (
-      <div className="h-[100dvh] animate-page-in flex flex-col items-center justify-center bg-background px-6 text-center">
-        <p className="text-on-surface-variant mb-4">
+      <div className="h-[100dvh] animate-page-in flex flex-col items-center justify-center bg-[#080808] px-6 text-center text-white">
+        <p className="text-zinc-400 mb-4">
           No hay entrenamiento completado.
         </p>
         <button
           onClick={() => router.push("/")}
-          className="h-[48px] px-6 bg-primary-container text-on-primary font-bold rounded-xl flex items-center gap-2"
+          className="h-[48px] px-6 bg-primary-container text-black font-bold rounded-xl flex items-center gap-2 shadow-[0_0_15px_rgba(204,255,0,0.3)]"
         >
           <Home className="w-5 h-5" /> Volver al inicio
         </button>
@@ -97,35 +99,66 @@ export default function WorkoutComplete() {
   const pbVolume = totalVolume > (lastVolume || 0);
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden bg-background relative">
+    <div className="h-[100dvh] flex flex-col overflow-hidden bg-[#080808] text-white relative select-none">
       <Confetti />
+
+      {/* Ambient background glow */}
+      <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary-container/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary-container/10 rounded-full blur-[140px] pointer-events-none" />
 
       <TopAppBar title="RESUMEN" variant="workout" showBack backHref="/" />
 
-      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center z-10 pt-4">
-        <div className="w-20 h-20 rounded-full bg-primary-container/20 flex items-center justify-center mb-4 shadow-[0_0_24px_rgba(204,255,0,0.4)]">
-          <Trophy className="w-10 h-10 text-primary-container" />
-        </div>
+      <main className="flex-1 flex flex-col items-center justify-center px-5 text-center z-10 pt-2 pb-6 max-w-md mx-auto w-full">
+        <motion.div
+          initial={{ scale: 0, rotate: -20 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: "spring", stiffness: 350, damping: 20 }}
+          className="w-20 h-20 rounded-2xl bg-black/60 border border-primary-container/40 flex items-center justify-center mb-3 shadow-[0_0_30px_rgba(204,255,0,0.35)]"
+        >
+          <Trophy className="w-10 h-10 text-primary-container fill-primary-container/20" />
+        </motion.div>
 
-        <h2 className="font-headline-lg text-headline-lg text-primary-container mb-1">
+        <motion.h2
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="font-headline-lg text-2xl sm:text-3xl text-primary-container font-bold tracking-tight mb-0.5 drop-shadow-[0_0_15px_rgba(204,255,0,0.3)]"
+        >
           ¡Entrenamiento completado!
-        </h2>
-        <p className="text-on-surface-variant mb-6">{routineTitle}</p>
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          className="text-xs text-zinc-400 mb-4"
+        >
+          {routineTitle}
+        </motion.p>
 
         {(pbDuration || pbVolume) && (
-          <div className="flex items-center gap-2 mb-4 px-4 py-2 bg-primary-container/10 border border-primary-container/30 rounded-full">
-            <Sparkles className="w-4 h-4 text-primary-container" />
-            <span className="text-primary-container font-bold text-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="flex items-center gap-2 mb-4 px-3.5 py-1.5 bg-primary-container/15 border border-primary-container/40 rounded-full shadow-[0_0_12px_rgba(204,255,0,0.2)]"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-primary-container" />
+            <span className="text-primary-container font-bold text-xs">
               {pbVolume && pbDuration
-                ? "¡Nuevos récords!"
+                ? "¡Nuevos récords personales!"
                 : pbVolume
                   ? "¡Nuevo récord de volumen!"
                   : "¡Más rápido que la última vez!"}
             </span>
-          </div>
+          </motion.div>
         )}
 
-        <div className="grid grid-cols-2 gap-3 w-full max-w-sm mb-6">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="grid grid-cols-2 gap-2.5 w-full mb-5"
+        >
           <StatBox
             icon={Clock}
             label="Duración"
@@ -138,22 +171,27 @@ export default function WorkoutComplete() {
             value={`${Math.round(totalVolume)}kg`}
           />
           <StatBox icon={Calendar} label="Reps" value={String(totalReps)} />
-        </div>
+        </motion.div>
 
-        <div className="w-full max-w-sm space-y-2">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="w-full space-y-2"
+        >
           <button
             onClick={() => router.push("/history")}
-            className="w-full h-[52px] bg-primary-container text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
+            className="w-full h-[50px] bg-primary-container text-black font-bold rounded-xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-[0_0_20px_rgba(204,255,0,0.3)] text-sm uppercase tracking-wider"
           >
-            <Calendar className="w-5 h-5" /> Ver historial
+            <Calendar className="w-4 h-4" /> Ver historial de entrenos
           </button>
           <button
             onClick={() => router.push("/")}
-            className="w-full h-[48px] bg-surface-container-high text-on-surface font-bold rounded-xl border border-surface-container-highest flex items-center justify-center gap-2 active:scale-95"
+            className="w-full h-[46px] bg-[#111116] hover:bg-[#16161d] text-zinc-300 hover:text-white font-bold rounded-xl border border-white/10 flex items-center justify-center gap-2 active:scale-98 transition-all text-sm"
           >
-            <Home className="w-5 h-5" /> Volver al inicio
+            <Home className="w-4 h-4" /> Volver al inicio
           </button>
-        </div>
+        </motion.div>
       </main>
     </div>
   );
@@ -169,12 +207,12 @@ function StatBox({
   value: string;
 }) {
   return (
-    <div className="bg-surface-container-high border border-surface-container-highest rounded-xl p-4 flex flex-col items-center">
-      <Icon className="w-5 h-5 text-primary-container mb-1" />
-      <span className="text-on-surface-variant text-xs font-label-caps uppercase">
+    <div className="bg-[#111116]/90 border border-white/10 rounded-2xl p-3 flex flex-col items-center justify-center backdrop-blur-xl shadow-md">
+      <Icon className="w-4 h-4 text-primary-container mb-1" />
+      <span className="text-zinc-400 text-[10px] font-label-caps uppercase font-bold tracking-wider">
         {label}
       </span>
-      <span className="text-primary-container font-bold text-xl">{value}</span>
+      <span className="text-white font-mono font-bold text-lg">{value}</span>
     </div>
   );
 }
