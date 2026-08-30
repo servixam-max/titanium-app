@@ -55,9 +55,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
     equipmentPreference === "bodyweight" &&
     routine.alternativeExercises
       ? routine.alternativeExercises
-      : isFreeDay && freeExerciseId
-        ? [getExerciseById(freeExerciseId) || routine.exercises[0]]
-        : routine.exercises;
+      : routine.exercises;
 
   const handleStart = (exerciseIndex?: number) => {
     setTargetExerciseIndex(exerciseIndex ?? 0);

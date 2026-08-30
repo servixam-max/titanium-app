@@ -231,9 +231,7 @@ export default function RoutineDetailModal({
                       index={idx}
                       mode={mode}
                       onClick={() => {
-                        if (mode === "individual") {
-                          handleStartWorkoutFlow(idx);
-                        }
+                        handleStartWorkoutFlow(idx);
                       }}
                     />
                   </motion.div>
