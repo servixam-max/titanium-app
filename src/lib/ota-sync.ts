@@ -1,6 +1,6 @@
 import { logger } from "./logger";
 
-export const APP_VERSION = "5.3";
+export const APP_VERSION = "5.4";
 
 const CANDIDATE_IPS = [
   "100.126.164.101", // Tailscale VPN
@@ -40,7 +40,7 @@ export async function findWorkingServer(): Promise<string> {
   }
 
   throw new Error(
-    `No se pudo conectar con el PC en ${uniqueIps.join(" ni en ")} (puerto ${PORT}). Comprueba que Tailscale o el WiFi estén conectados.`
+    "No se pudo conectar con el servidor de actualizaciones. Comprueba tu conexión a Internet."
   );
 }
 

@@ -395,11 +395,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
                 </section>
 
-                {/* OTA Updates */}
+                {/* Updates */}
                 <section className="flex flex-col gap-stack-gap">
                   <SectionHeader
                     icon={<Download className="w-4 h-4" />}
-                    label="Actualizaciones OTA"
+                    label="Actualizaciones"
                   />
                   <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-4 flex flex-col gap-3">
                     <div className="flex items-center justify-between text-xs text-on-surface-variant pb-2 border-b border-surface-container-highest">
@@ -440,7 +440,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     {otaStatus === "checking" && (
                       <div className="w-full h-12 bg-surface-container-high border border-primary/30 rounded-xl flex items-center justify-center gap-3 text-primary-container font-bold">
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        <span className="text-sm">Conectando con PC...</span>
+                        <span className="text-sm">Buscando actualizaciones...</span>
                       </div>
                     )}
 
@@ -488,7 +488,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       <div className="bg-error/10 border border-error/30 rounded-xl p-4 flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-error font-bold text-sm">
                           <AlertTriangle className="w-5 h-5" />
-                          <span>Sin conexión con el PC</span>
+                          <span>No se pudo comprobar</span>
                         </div>
                         <p className="text-xs text-on-surface-variant">{otaError}</p>
                         <button
@@ -502,7 +502,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     <p className="text-[11px] text-on-surface-variant text-center">
-                      Funciona a través de tu red VPN Tailscale o en la misma red WiFi del PC.
+                      Actualizaciones automáticas y seguras a nivel global.
                     </p>
                   </div>
                 </section>
