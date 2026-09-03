@@ -25,10 +25,10 @@ interface TopAppBarProps {
 }
 
 const variantClasses: Record<TopAppBarVariant, string> = {
-  default: "bg-background border-surface-container-highest",
-  solid: "bg-background border-surface-container-highest",
+  default: "bg-[#090c12]/90 backdrop-blur-xl border-white/10",
+  solid: "bg-[#090c12] border-white/10",
   transparent: "bg-transparent border-transparent",
-  workout: "bg-background/80 backdrop-blur-md border-surface-container-highest",
+  workout: "bg-[#090c12]/80 backdrop-blur-xl border-white/10",
 };
 
 export const topAppBarHeightClass = "h-touch-target-min";
@@ -56,24 +56,24 @@ export default function TopAppBar({
           {showBack && (
             <Link
               href={backHref}
-              className="flex items-center justify-center w-12 h-12 text-primary-container hover:opacity-80 transition-opacity active:scale-95"
+              className="flex items-center justify-center w-12 h-12 text-zinc-300 hover:text-white transition-colors active:scale-95"
               aria-label="Volver"
             >
-              <ArrowLeft className="w-6 h-6" />
+              <ArrowLeft className="w-5 h-5" />
             </Link>
           )}
           {onClose && (
             <button
               onClick={onClose}
-              className="flex items-center justify-center w-12 h-12 text-on-surface hover:opacity-80 transition-opacity active:scale-95"
+              className="flex items-center justify-center w-12 h-12 text-zinc-300 hover:text-white transition-colors active:scale-95"
               aria-label="Cerrar"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
           )}
         </div>
 
-        <h1 className="font-headline-md text-headline-md font-bold text-primary-container uppercase tracking-wider text-center flex-1">
+        <h1 className="font-mono text-base sm:text-lg font-black tracking-widest text-white uppercase text-center flex-1 drop-shadow-[0_0_12px_rgba(0,245,155,0.4)]">
           {title}
         </h1>
 

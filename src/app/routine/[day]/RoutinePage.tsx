@@ -104,12 +104,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
 
       <main className="w-full px-container-padding pt-4 flex flex-col gap-section-gap">
         {/* Header */}
-        <section className="flex flex-col gap-base">
-          <h1 className="font-headline-lg-mobile text-headline-lg-mobile text-on-background">
+        <section className="flex flex-col gap-2">
+          <h1 className="font-mono text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
             {routine.title}
           </h1>
           {isCompletedToday && (
-            <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-xl flex items-center gap-2.5 text-emerald-400 text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+            <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-400 text-xs font-mono font-bold shadow-[0_0_15px_rgba(0,245,155,0.2)]">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               <span>¡Has completado esta rutina hoy! Puedes repetirla cuando quieras.</span>
             </div>
@@ -118,27 +118,27 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
 
         {/* Equipment Toggle if routine has alternatives */}
         {hasAlternatives && (
-          <div className="flex flex-col gap-base">
-            <h2 className="font-headline-md text-headline-md text-on-surface">
+          <div className="flex flex-col gap-2">
+            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-zinc-400">
               Equipamiento
             </h2>
-            <div className="flex p-1 bg-surface-container-low border border-surface-container-highest rounded-full w-full">
+            <div className="flex p-1 bg-[#121620] border border-white/10 rounded-2xl w-full">
               <button
                 onClick={() => setEquipmentPreference("dumbbells")}
-                className={`flex-1 py-2 px-4 rounded-full font-label-caps text-label-caps transition-all ${
+                className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${
                   equipmentPreference === "dumbbells"
-                    ? "bg-primary-container text-on-primary-container font-bold shadow-neon"
-                    : "bg-surface-container-highest text-on-surface-variant"
+                    ? "bg-primary text-black font-black shadow-neon"
+                    : "bg-transparent text-zinc-400 hover:text-white"
                 }`}
               >
                 🏋️ Mancuernas
               </button>
               <button
                 onClick={() => setEquipmentPreference("bodyweight")}
-                className={`flex-1 py-2 px-4 rounded-full font-label-caps text-label-caps transition-all ${
+                className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${
                   equipmentPreference === "bodyweight"
-                    ? "bg-primary-container text-on-primary-container font-bold shadow-neon"
-                    : "bg-surface-container-highest text-on-surface-variant"
+                    ? "bg-primary text-black font-black shadow-neon"
+                    : "bg-transparent text-zinc-400 hover:text-white"
                 }`}
               >
                 🤸 Peso Corporal
@@ -288,9 +288,9 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
           <div className="max-w-app mx-auto px-container-padding pointer-events-auto">
             <button
               onClick={() => handleStart(0)}
-              className="w-full bg-primary-container text-on-primary-container font-headline-md text-headline-md font-bold h-[60px] rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon hover:shadow-[0_0_30px_rgba(195,244,0,0.3)]"
+              className="w-full bg-primary text-black font-mono font-black text-sm uppercase tracking-wider h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon hover:shadow-[0_0_30px_rgba(0,245,155,0.6)] cursor-pointer"
             >
-              <Play className="w-6 h-6 fill-current" />
+              <Play className="w-5 h-5 fill-current" />
               <span>INICIAR MODO GUIADO</span>
             </button>
           </div>

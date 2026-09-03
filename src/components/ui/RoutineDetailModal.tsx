@@ -126,19 +126,19 @@ export default function RoutineDetailModal({
               {/* Routine Title overlay */}
               <div className="absolute bottom-3 left-4 right-4 z-10">
                 <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary-container text-black shadow-[0_0_10px_rgba(204,255,0,0.4)]">
+                  <span className="font-mono text-xs font-black px-2.5 py-0.5 rounded-full bg-primary text-black shadow-neon">
                     DÍA {routine.day < 10 ? `0${routine.day}` : routine.day}
                   </span>
-                  <span className="text-[11px] font-label-caps text-zinc-300 flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10 font-medium">
-                    <Clock className="w-3.5 h-3.5 text-primary-container" />
+                  <span className="text-[11px] font-mono text-zinc-300 flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10 font-bold">
+                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
                     {routine.duration}
                   </span>
-                  <span className="text-[11px] font-label-caps text-zinc-300 flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10 font-medium">
-                    <Layers className="w-3.5 h-3.5 text-primary-container" />
+                  <span className="text-[11px] font-mono text-zinc-300 flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10 font-bold">
+                    <Layers className="w-3.5 h-3.5 text-primary" />
                     {totalSets} series
                   </span>
                 </div>
-                <h2 className="font-headline-lg text-xl sm:text-2xl text-white font-bold tracking-wide truncate drop-shadow-md">
+                <h2 className="font-mono text-xl sm:text-2xl text-white font-black tracking-tight truncate drop-shadow-md uppercase">
                   {routine.title}
                 </h2>
               </div>
@@ -146,12 +146,12 @@ export default function RoutineDetailModal({
 
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3.5">
-              <p className="text-xs text-zinc-400 leading-relaxed">
+              <p className="text-xs text-zinc-400 leading-relaxed font-mono">
                 {routine.subtitle}
               </p>
 
               {isCompletedToday && (
-                <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-xl flex items-center gap-2.5 text-emerald-400 text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-400 text-xs font-mono font-bold shadow-[0_0_15px_rgba(0,245,155,0.2)]">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                   <span>¡Has completado esta rutina hoy! Puedes repetirla o entrenar de nuevo.</span>
                 </div>
@@ -159,13 +159,13 @@ export default function RoutineDetailModal({
 
               {/* Equipment toggle if applicable */}
               {hasAlternatives && (
-                <div className="p-1 bg-zinc-900/90 border border-white/10 rounded-xl flex gap-1 shadow-inner">
+                <div className="p-1 bg-[#121620] border border-white/10 rounded-2xl flex gap-1 shadow-inner">
                   <button
                     type="button"
                     onClick={() => setEquipmentPreference("dumbbells")}
-                    className={`flex-1 py-2 rounded-lg text-xs font-bold font-label-caps transition-all flex items-center justify-center gap-1.5 ${
+                    className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 ${
                       equipmentPreference === "dumbbells"
-                        ? "bg-primary-container text-black shadow-sm"
+                        ? "bg-primary text-black shadow-neon"
                         : "text-zinc-400 hover:text-white"
                     }`}
                   >
@@ -174,9 +174,9 @@ export default function RoutineDetailModal({
                   <button
                     type="button"
                     onClick={() => setEquipmentPreference("bodyweight")}
-                    className={`flex-1 py-2 rounded-lg text-xs font-bold font-label-caps transition-all flex items-center justify-center gap-1.5 ${
+                    className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 ${
                       equipmentPreference === "bodyweight"
-                        ? "bg-primary-container text-black shadow-sm"
+                        ? "bg-primary text-black shadow-neon"
                         : "text-zinc-400 hover:text-white"
                     }`}
                   >
@@ -187,21 +187,21 @@ export default function RoutineDetailModal({
 
               {/* Mode segmented control */}
               <div className="flex items-center justify-between pt-1">
-                <span className="text-xs font-label-caps text-zinc-300 font-bold uppercase tracking-wider">
+                <span className="text-xs font-mono text-zinc-300 font-bold uppercase tracking-wider">
                   {exercises.length} Ejercicios
                 </span>
-                <div className="relative flex bg-zinc-900/90 border border-white/10 rounded-xl p-1 text-[11px] font-bold">
+                <div className="relative flex bg-[#121620] border border-white/10 rounded-2xl p-1 text-[11px] font-mono font-bold">
                   <button
                     type="button"
                     onClick={() => setMode("guided")}
-                    className={`relative z-10 px-3.5 py-1.5 rounded-lg transition-colors duration-200 ${
+                    className={`relative z-10 px-3.5 py-1.5 rounded-xl transition-colors duration-200 ${
                       mode === "guided" ? "text-black" : "text-zinc-400 hover:text-white"
                     }`}
                   >
                     {mode === "guided" && (
                       <motion.div
                         layoutId="detail-mode-pill"
-                        className="absolute inset-0 bg-primary-container rounded-lg shadow-[0_0_10px_rgba(204,255,0,0.3)] -z-10"
+                        className="absolute inset-0 bg-primary rounded-xl shadow-neon -z-10"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -210,14 +210,14 @@ export default function RoutineDetailModal({
                   <button
                     type="button"
                     onClick={() => setMode("individual")}
-                    className={`relative z-10 px-3.5 py-1.5 rounded-lg transition-colors duration-200 ${
+                    className={`relative z-10 px-3.5 py-1.5 rounded-xl transition-colors duration-200 ${
                       mode === "individual" ? "text-black" : "text-zinc-400 hover:text-white"
                     }`}
                   >
                     {mode === "individual" && (
                       <motion.div
                         layoutId="detail-mode-pill"
-                        className="absolute inset-0 bg-primary-container rounded-lg shadow-[0_0_10px_rgba(204,255,0,0.3)] -z-10"
+                        className="absolute inset-0 bg-primary rounded-xl shadow-neon -z-10"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -249,14 +249,14 @@ export default function RoutineDetailModal({
             </div>
 
             {/* Sticky Bottom Action Bar - completely above any navbar */}
-            <div className="p-4 bg-[#0a0a0d] border-t border-white/10 flex-shrink-0 flex gap-2 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-10px_30px_rgba(0,0,0,0.8)] z-30">
-              <PrimaryButton
-                leftIcon={<Play className="w-5 h-5 fill-current" />}
+            <div className="p-4 bg-[#0a0c12] border-t border-white/10 flex-shrink-0 flex gap-2 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-10px_30px_rgba(0,0,0,0.8)] z-30">
+              <button
                 onClick={() => handleStartWorkoutFlow(0)}
-                className="w-full h-14 font-headline-md text-sm sm:text-base font-bold shadow-[0_0_20px_rgba(204,255,0,0.3)] hover:shadow-[0_0_30px_rgba(204,255,0,0.5)] transition-all"
+                className="w-full h-14 bg-primary text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon hover:shadow-[0_0_30px_rgba(0,245,155,0.6)] active:scale-95 transition-all cursor-pointer"
               >
-                {mode === "guided" ? "INICIAR ENTRENAMIENTO GUIADO" : "INICIAR MODO INDIVIDUAL"}
-              </PrimaryButton>
+                <Play className="w-5 h-5 fill-current" />
+                <span>{mode === "guided" ? "INICIAR ENTRENAMIENTO GUIADO" : "INICIAR MODO INDIVIDUAL"}</span>
+              </button>
             </div>
           </motion.div>
 

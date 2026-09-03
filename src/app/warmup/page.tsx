@@ -125,19 +125,19 @@ function WarmupContent() {
             {currentExerciseIndex + 1} de {warmUpExercises.length}
           </span>
         </div>
-        <div className="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+        <div className="w-full h-1.5 bg-[#161c28] rounded-full overflow-hidden">
           <div
-            className="h-full bg-primary-container rounded-full transition-all duration-300"
+            className="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 shadow-neon rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
       <div className="flex-shrink-0 px-4 py-2 text-center">
-        <h2 className="font-headline-md text-headline-md">
+        <h2 className="font-mono text-lg sm:text-xl font-black text-white uppercase tracking-tight">
           {currentExercise?.name}
         </h2>
-        <p className="text-on-surface-variant font-body-sm mt-1">
+        <p className="text-zinc-400 font-mono text-xs mt-1">
           {currentExercise?.description}
         </p>
       </div>
@@ -145,7 +145,7 @@ function WarmupContent() {
       <div className="flex-shrink-0 flex-1 min-h-0 px-4">
         <div
           key={currentExerciseIndex}
-          className="w-full h-full rounded-xl overflow-hidden border border-surface-container-highest relative animate-fade-in-up"
+          className="w-full h-full rounded-3xl overflow-hidden border border-white/10 relative bg-[#121620] shadow-lg animate-fade-in-up"
         >
           {currentExercise?.image ? (
             <ExerciseImage
@@ -155,9 +155,9 @@ function WarmupContent() {
               className="object-contain"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-surface-container">
+            <div className="w-full h-full flex items-center justify-center bg-[#121620]">
               <svg
-                className="w-16 h-16 text-primary-container opacity-30"
+                className="w-16 h-16 text-primary opacity-30"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -168,7 +168,7 @@ function WarmupContent() {
         </div>
       </div>
 
-      <div className="flex-shrink-0 flex items-center justify-between py-2 px-4">
+      <div className="flex-shrink-0 flex items-center justify-between py-3 px-6">
         <div
           className={`relative w-[120px] h-[120px] ${timeLeft <= 10 ? "" : "animate-breathe"}`}
         >
@@ -178,16 +178,16 @@ function WarmupContent() {
               cy="60"
               r="54"
               fill="none"
-              stroke="#1f1f1f"
-              strokeWidth="5"
+              stroke="#161c28"
+              strokeWidth="6"
             />
             <circle
               cx="60"
               cy="60"
               r="54"
               fill="none"
-              stroke={timeLeft <= 10 ? "#ffb4ab" : "#ccff00"}
-              strokeWidth="5"
+              stroke={timeLeft <= 10 ? "#ff5252" : "#00F59B"}
+              strokeWidth="6"
               strokeLinecap="round"
               strokeDasharray={`${2 * Math.PI * 54}`}
               strokeDashoffset={`${2 * Math.PI * 54 * (1 - timeLeft / 60)}`}
@@ -196,67 +196,67 @@ function WarmupContent() {
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span
-              className={`font-display-timer text-[32px] tabular-nums ${
-                timeLeft <= 10 ? "animate-urgent" : "text-primary-container"
+              className={`font-mono text-[34px] font-black tabular-nums ${
+                timeLeft <= 10 ? "text-red-400 animate-urgent" : "text-white drop-shadow-[0_0_12px_rgba(0,245,155,0.4)]"
               }`}
             >
               {timeLeft}
             </span>
-            <span className="text-on-surface-variant font-label-caps text-[9px] tracking-widest">
+            <span className="text-cyan-400 font-mono text-[9px] font-bold tracking-widest uppercase">
               SEG
             </span>
           </div>
         </div>
 
         <div className="text-right">
-          <span className="font-label-caps text-label-caps text-on-surface-variant block">
-            OBJETIVO
+          <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-wider block font-bold">
+            OBJETIVO REPS
           </span>
-          <span className="font-headline-md text-on-surface">
+          <span className="font-mono text-xl font-black text-cyan-400">
             {currentExercise?.reps}
           </span>
         </div>
       </div>
 
-      <footer className="flex-shrink-0 px-4 pb-[env(safe-area-inset-bottom,0px)] pt-2 bg-background border-t border-surface-container-highest">
-        <div className="flex gap-2">
+      <footer className="flex-shrink-0 px-4 pb-[env(safe-area-inset-bottom,0px)] pt-2 bg-[#090c12] border-t border-white/10">
+        <div className="flex gap-2.5">
           <button
             onClick={() => setShowExitConfirm(true)}
-            className="flex-1 h-[52px] bg-surface-container-high text-on-surface font-bold rounded-xl border border-surface-container-highest flex items-center justify-center gap-2 active:scale-95 transition-transform"
+            className="flex-1 h-12 bg-[#141a24] hover:bg-[#18212e] text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer"
           >
-            <SkipForward className="w-5 h-5" />
+            <SkipForward className="w-4 h-4" />
             Saltar
           </button>
           <button
             onClick={handleNext}
-            className="flex-1 h-[52px] bg-primary-container text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
+            className="flex-1 h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon active:scale-95 transition-all cursor-pointer"
           >
             {currentExerciseIndex >= warmUpExercises.length - 1
               ? "Empezar"
               : "Siguiente"}
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </footer>
 
       {showExitConfirm && (
-        <div className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">
-          <div className="w-full max-w-sm bg-surface-container-low border border-surface-container-highest rounded-2xl p-6">
-            <h2 className="font-headline-lg text-headline-lg text-center mb-2">
+        <div className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center px-6">
+          <div className="w-full max-w-sm bg-gradient-to-br from-[#121622] to-[#151b2a] border border-primary/30 rounded-3xl p-6 shadow-2xl">
+            <h2 className="font-mono text-lg font-black text-white text-center mb-2 uppercase tracking-wider">
               ¿Saltar calentamiento?
             </h2>
-            <p className="text-on-surface-variant text-center mb-6 text-sm">
-              Se recomienda completarlo para evitar lesiones.
+            <p className="text-zinc-400 text-center mb-6 text-xs font-mono">
+              Se recomienda completarlo para lubricar articulaciones y evitar lesiones.
             </p>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <button
-                className="w-full h-[52px] bg-primary-container text-on-primary font-bold rounded-xl active:scale-95 transition-transform"
+                className="w-full h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 transition-all shadow-neon cursor-pointer"
                 onClick={handleSkip}
               >
                 Ir al entreno
               </button>
               <button
-                className="w-full h-[44px] text-on-surface-variant text-sm active:scale-95"
+                className="w-full h-11 bg-[#141a24] text-zinc-300 font-mono font-bold text-xs uppercase rounded-2xl border border-white/10 active:scale-95 cursor-pointer"
                 onClick={() => setShowExitConfirm(false)}
               >
                 Continuar calentando

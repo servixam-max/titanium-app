@@ -26,15 +26,15 @@ const config: Config = {
           highest: "#353535",
         },
         primary: {
-          DEFAULT: "#ffffff",
-          container: "#ccff00",
-          fixed: "#c3f400",
-          "fixed-dim": "#abd600",
+          DEFAULT: "#00F59B",
+          container: "#00F59B",
+          fixed: "#00F0FF",
+          "fixed-dim": "#00d685",
         },
-        "on-primary": "#283500",
-        "on-primary-container": "#161e00",
-        "on-primary-fixed": "#161e00",
-        "on-primary-fixed-variant": "#3c4d00",
+        "on-primary": "#002012",
+        "on-primary-container": "#002012",
+        "on-primary-fixed": "#002012",
+        "on-primary-fixed-variant": "#005232",
         secondary: {
           DEFAULT: "#c8c6c5",
           container: "#474746",
@@ -111,8 +111,9 @@ const config: Config = {
       },
       boxShadow: {
         'rest': '0 8px 24px rgba(0,0,0,0.5)',
-        'neon': '0 0 10px rgba(204, 255, 0, 0.4)',
-        'neon-strong': '0 0 30px rgba(195, 244, 0, 0.15)',
+        'neon': '0 0 14px rgba(0, 245, 155, 0.45)',
+        'neon-strong': '0 0 30px rgba(0, 245, 155, 0.35)',
+        'cyan-neon': '0 0 14px rgba(0, 240, 255, 0.45)',
       },
       animation: {
         'pulse-a': 'pulseA 2s infinite ease-in-out',
@@ -123,12 +124,12 @@ const config: Config = {
       },
       keyframes: {
         pulseA: {
-          '0%, 100%': { opacity: '1', borderColor: '#ccff00', transform: 'scale(1.02)' },
-          '50%': { opacity: '0.4', borderColor: '#444933', transform: 'scale(1)' },
+          '0%, 100%': { opacity: '1', borderColor: '#00F59B', transform: 'scale(1.02)' },
+          '50%': { opacity: '0.4', borderColor: '#16222f', transform: 'scale(1)' },
         },
         pulseB: {
-          '0%, 100%': { opacity: '0.4', borderColor: '#444933', transform: 'scale(1)' },
-          '50%': { opacity: '1', borderColor: '#ccff00', transform: 'scale(1.02)' },
+          '0%, 100%': { opacity: '0.4', borderColor: '#16222f', transform: 'scale(1)' },
+          '50%': { opacity: '1', borderColor: '#00F0FF', transform: 'scale(1.02)' },
         },
         fadeInUp: {
           '0%': { opacity: '0', transform: 'translateY(10px)' },

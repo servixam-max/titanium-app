@@ -76,23 +76,23 @@ export default function ExerciseCard({
     <div
       onClick={onClick}
       className={`
-        group relative bg-surface-container-low border rounded-xl p-3.5
+        group relative bg-gradient-to-br from-[#121620] to-[#151b28] border rounded-2xl p-3.5
         flex items-center gap-3 min-h-touch-target-min
         transition-all duration-200 overflow-hidden cursor-pointer
-        active:scale-[0.98]
+        active:scale-[0.98] shadow-md
         ${
           isIndividual
-            ? "hover:border-primary-container hover:bg-surface-container-high border-surface-container-highest shadow-sm"
+            ? "border-white/10 hover:border-cyan-500/40 hover:bg-[#141b27]"
             : isSelected
-              ? "border-primary-container shadow-[0_0_18px_rgba(204,255,0,0.15)] bg-surface-container-high"
-              : "border-surface-container-highest hover:border-surface-variant hover:bg-surface-container-high"
+              ? "border-primary shadow-neon bg-[#161f2e]"
+              : "border-white/10 hover:border-white/20 hover:bg-[#141b27]"
         }
       `}
     >
       {/* Exercise Image/Icon */}
       <div
         className={`
-        rounded-lg bg-surface-container-highest flex-shrink-0 flex items-center justify-center overflow-hidden border border-white/5 relative
+        rounded-xl bg-black/40 flex-shrink-0 flex items-center justify-center overflow-hidden border border-white/10 relative
         ${compact ? "w-14 h-14" : "w-16 h-16"}
       `}
       >
@@ -103,14 +103,14 @@ export default function ExerciseCard({
             containerClassName="w-full h-full"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             fallbackIcon={
-              <Dumbbell className="w-7 h-7 text-primary-container/60" />
+              <Dumbbell className="w-7 h-7 text-primary/60" />
             }
           />
         ) : (
-          <Dumbbell className="w-7 h-7 text-primary-container/60" />
+          <Dumbbell className="w-7 h-7 text-primary/60" />
         )}
         {index !== undefined && !isIndividual && (
-          <span className="absolute top-1 left-1 bg-black/70 backdrop-blur-sm text-white font-mono text-[9px] font-bold px-1.5 py-0.5 rounded">
+          <span className="absolute top-1 left-1 bg-primary text-black font-mono text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
             #{index + 1}
           </span>
         )}
@@ -119,27 +119,27 @@ export default function ExerciseCard({
       {/* Exercise Info */}
       <div className="flex-1 flex flex-col gap-0.5 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <span className="font-body-md text-sm text-on-background font-bold truncate group-hover:text-primary-container transition-colors">
+          <span className="font-mono text-sm text-white font-bold tracking-tight truncate group-hover:text-primary transition-colors">
             {exercise.name}
           </span>
         </div>
 
         {/* Main meta: sets × reps */}
-        <span className="font-label-caps text-xs text-on-surface-variant font-medium">
+        <span className="font-mono text-xs text-zinc-400 font-medium">
           {exercise.sets} Series · <strong className="text-white">{exercise.reps}</strong> Reps
         </span>
 
         {/* Secondary meta: muscle badge, rest, difficulty */}
         <div className="flex flex-wrap items-center gap-1.5 mt-1">
           <span
-            className={`font-label-caps text-[9px] px-2 py-0.5 rounded-full border ${muscleColors}`}
+            className={`font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border ${muscleColors}`}
           >
             {MUSCLE_LABELS[muscleKey] || muscleKey}
           </span>
 
           {exercise.restSeconds > 0 && (
-            <span className="font-label-caps text-[9px] px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant border border-surface-container-highest flex items-center gap-1">
-              <Timer className="w-2.5 h-2.5" />
+            <span className="font-mono text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#161c28] text-zinc-300 border border-white/10 flex items-center gap-1">
+              <Timer className="w-2.5 h-2.5 text-cyan-400" />
               {formatRest(exercise.restSeconds)}
             </span>
           )}
@@ -148,12 +148,12 @@ export default function ExerciseCard({
 
       {/* Action CTA on Card */}
       {isIndividual ? (
-        <div className="flex items-center gap-1.5 bg-primary-container text-on-primary-container px-3 py-2 rounded-lg font-bold text-xs shadow-neon group-hover:scale-105 transition-transform flex-shrink-0">
+        <div className="flex items-center gap-1.5 bg-primary text-black px-3 py-1.5 rounded-xl font-mono font-black text-xs shadow-neon group-hover:scale-105 transition-transform flex-shrink-0">
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Iniciar</span>
         </div>
       ) : (
-        <div className="w-8 h-8 rounded-full bg-surface-container-highest group-hover:bg-primary-container/20 group-hover:text-primary-container flex items-center justify-center text-on-surface-variant transition-colors flex-shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 group-hover:bg-primary group-hover:text-black group-hover:border-primary flex items-center justify-center text-zinc-400 transition-colors flex-shrink-0">
           <ChevronRight className="w-4 h-4" />
         </div>
       )}

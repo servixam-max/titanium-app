@@ -61,21 +61,21 @@ body {
 }
 
 .glow-neon-box {
-  box-shadow: 0 0 25px rgba(204, 255, 0, 0.15), inset 0 0 15px rgba(204, 255, 0, 0.05);
+  box-shadow: 0 0 25px rgba(0, 245, 155, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.08);
 }
 
 .glow-card-hover:hover {
-  border-color: rgba(204, 255, 0, 0.5);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(204, 255, 0, 0.12);
+  border-color: rgba(0, 245, 155, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 245, 155, 0.2);
 }
 
 /* Custom animations */
 .neon-glow {
-  text-shadow: 0 0 10px rgba(195, 244, 0, 0.4);
+  text-shadow: 0 0 10px rgba(0, 245, 155, 0.5);
 }
 
 .neon-glow-strong {
-  text-shadow: 0 0 16px rgba(204, 255, 0, 0.6);
+  text-shadow: 0 0 16px rgba(0, 245, 155, 0.7);
 }
 
 /* Fade in slide up (entrada de tarjetas/ejercicios) */

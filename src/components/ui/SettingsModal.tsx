@@ -418,15 +418,15 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
 
                   {/* Voice Rate */}
-                  <div className="flex flex-col gap-3 bg-surface-container-low border border-surface-container-highest rounded-xl p-stack-gap">
+                  <div className="flex flex-col gap-3 bg-[#121620] border border-white/10 rounded-2xl p-stack-gap shadow-lg">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-on-surface">
-                        <Gauge className="w-4 h-4 text-primary-container" />
-                        <span className="font-body-md text-body-md font-bold">
-                          Velocidad de Voz
+                      <div className="flex items-center gap-2 text-white">
+                        <Gauge className="w-4 h-4 text-cyan-400" />
+                        <span className="font-mono text-xs font-bold uppercase tracking-wider">
+                          Velocidad de Voz IA
                         </span>
                       </div>
-                      <span className="font-label-caps text-label-caps text-primary-container font-mono font-bold">
+                      <span className="text-xs text-cyan-400 font-mono font-bold">
                         {voiceRate.toFixed(2)}x
                       </span>
                     </div>
@@ -447,10 +447,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               setVoiceRate(preset.rate);
                               speak("Velocidad ajustada", 1.0, preset.rate);
                             }}
-                            className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all border ${
+                            className={`py-2 px-2 rounded-xl text-xs font-mono font-bold transition-all border ${
                               isSelected
-                                ? "bg-primary-container text-black border-primary-container shadow-sm"
-                                : "bg-surface-container-high text-on-surface-variant border-surface-container-highest hover:text-white"
+                                ? "bg-primary text-black border-primary shadow-neon"
+                                : "bg-white/5 text-zinc-400 border-white/10 hover:text-white"
                             }`}
                           >
                             {preset.label}
@@ -466,7 +466,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       step={0.05}
                       value={voiceRate}
                       onChange={(e) => setVoiceRate(parseFloat(e.target.value))}
-                      className="w-full accent-primary-container"
+                      className="w-full accent-primary cursor-pointer"
                       disabled={
                         !audioEnabled ||
                         audioMode === "silent" ||
@@ -474,18 +474,18 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       }
                     />
 
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-on-surface-variant">0.65x (Muy pausada)</span>
+                    <div className="flex justify-between items-center text-xs font-mono">
+                      <span className="text-zinc-500">0.65x</span>
                       <button
                         type="button"
                         onClick={() =>
                           speak("Prepárate, tres, dos, uno, a entrenar", 1.0, voiceRate)
                         }
-                        className="text-primary-container font-bold underline hover:opacity-80 active:scale-95"
+                        className="text-cyan-400 font-bold underline hover:opacity-80 active:scale-95 cursor-pointer"
                       >
                         🔊 Probar Voz
                       </button>
-                      <span className="text-on-surface-variant">1.30x</span>
+                      <span className="text-zinc-500">1.30x</span>
                     </div>
                   </div>
                 </section>
@@ -494,25 +494,25 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 <section className="flex flex-col gap-stack-gap">
                   <SectionHeader
                     icon={<Briefcase className="w-4 h-4" />}
-                    label="Equipamiento por Defecto"
+                    label="Equipamiento Predeterminado"
                   />
                   <div className="flex gap-2">
                     <button
                       onClick={() => setEquipmentPreference("bodyweight")}
-                      className={`flex-1 h-touch-target-min rounded-xl border-2 font-label-caps text-label-caps transition-all active:scale-95 ${
+                      className={`flex-1 h-12 rounded-2xl border font-mono text-xs font-bold transition-all active:scale-95 ${
                         equipmentPreference === "bodyweight"
-                          ? "border-primary-container bg-primary-container/10 text-primary-container"
-                          : "border-surface-container-highest bg-surface-container-low text-secondary"
+                          ? "border-primary bg-primary/10 text-primary shadow-neon"
+                          : "border-white/10 bg-[#121620] text-zinc-400 hover:text-white"
                       }`}
                     >
                       SIN MATERIAL
                     </button>
                     <button
                       onClick={() => setEquipmentPreference("dumbbells")}
-                      className={`flex-1 h-touch-target-min rounded-xl border-2 font-label-caps text-label-caps transition-all active:scale-95 ${
+                      className={`flex-1 h-12 rounded-2xl border font-mono text-xs font-bold transition-all active:scale-95 ${
                         equipmentPreference === "dumbbells"
-                          ? "border-primary-container bg-primary-container/10 text-primary-container"
-                          : "border-surface-container-highest bg-surface-container-low text-secondary"
+                          ? "border-primary bg-primary/10 text-primary shadow-neon"
+                          : "border-white/10 bg-[#121620] text-zinc-400 hover:text-white"
                       }`}
                     >
                       MANCUERNAS
@@ -526,10 +526,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     icon={<Download className="w-4 h-4" />}
                     label="Actualizaciones"
                   />
-                  <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-4 flex flex-col gap-3">
-                    <div className="flex items-center justify-between text-xs text-on-surface-variant pb-2 border-b border-surface-container-highest">
+                  <div className="bg-[#121620] border border-white/10 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                    <div className="flex items-center justify-between text-xs text-zinc-400 pb-2 border-b border-white/10 font-mono">
                       <span>Versión instalada:</span>
-                      <span className="font-bold text-primary-container">v{APP_VERSION}</span>
+                      <span className="font-black text-cyan-400 font-mono text-sm">v{APP_VERSION}</span>
                     </div>
 
                     {otaStatus === "idle" && (
@@ -555,41 +555,41 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             setOtaError(err?.message || "No se pudo contactar con el servidor");
                           }
                         }}
-                        className="w-full h-12 bg-primary text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-neon"
+                        className="w-full h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-neon cursor-pointer"
                       >
-                        <RefreshCw className="w-5 h-5" />
+                        <RefreshCw className="w-4 h-4" />
                         Comprobar Actualizaciones
                       </button>
                     )}
 
                     {otaStatus === "checking" && (
-                      <div className="w-full h-12 bg-surface-container-high border border-primary/30 rounded-xl flex items-center justify-center gap-3 text-primary-container font-bold">
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span className="text-sm">Buscando actualizaciones...</span>
+                      <div className="w-full h-12 bg-[#161c28] border border-cyan-400/30 rounded-2xl flex items-center justify-center gap-3 text-cyan-400 font-mono font-bold text-xs uppercase">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Buscando actualizaciones...</span>
                       </div>
                     )}
 
                     {otaStatus === "update-found" && otaInfo && (
-                      <div className="bg-primary/10 border-2 border-primary rounded-xl p-4 flex flex-col gap-3">
-                        <div className="flex items-center gap-2 text-primary font-bold">
+                      <div className="bg-gradient-to-br from-[#121622] to-[#151b2a] border-2 border-primary rounded-2xl p-4 flex flex-col gap-3 shadow-neon">
+                        <div className="flex items-center gap-2 text-primary font-mono font-black text-sm uppercase">
                           <Sparkles className="w-5 h-5" />
                           <span>¡Nueva versión v{otaInfo.version} lista!</span>
                         </div>
-                        <p className="text-xs text-on-surface-variant">
-                          Detectada en <strong className="text-white">{otaInfo.serverUrl}</strong>
+                        <p className="text-xs text-zinc-400 font-mono">
+                          Servidor: <strong className="text-white">{otaInfo.serverUrl}</strong>
                         </p>
                         <button
                           onClick={() => {
                             openApkDownload(otaInfo.downloadUrl);
                           }}
-                          className="w-full h-12 bg-primary text-black font-bold rounded-xl flex items-center justify-center gap-2 shadow-neon hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                          className="w-full h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
                         >
-                          <Download className="w-5 h-5" />
+                          <Download className="w-4 h-4" />
                           Descargar e Instalar v{otaInfo.version}
                         </button>
                         <button
                           onClick={() => setOtaStatus("idle")}
-                          className="text-xs text-on-surface-variant underline text-center hover:text-white"
+                          className="text-xs text-zinc-400 underline text-center hover:text-white font-mono"
                         >
                           Volver a comprobar
                         </button>
@@ -597,12 +597,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "up-to-date" && (
-                      <div className="bg-surface-container-high border border-primary/20 rounded-xl p-4 flex flex-col items-center gap-2 text-center">
+                      <div className="bg-[#141a24] border border-primary/30 rounded-2xl p-4 flex flex-col items-center gap-2 text-center">
                         <CheckCircle2 className="w-6 h-6 text-primary" />
-                        <span className="font-bold text-white text-sm">Tu aplicación está al día (v{APP_VERSION})</span>
+                        <span className="font-mono font-bold text-white text-xs uppercase">Tu aplicación está al día (v{APP_VERSION})</span>
                         <button
                           onClick={() => setOtaStatus("idle")}
-                          className="text-xs text-primary-container underline mt-1"
+                          className="text-xs text-cyan-400 underline mt-1 font-mono"
                         >
                           Comprobar de nuevo
                         </button>
@@ -610,12 +610,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "error" && (
-                      <div className="bg-error/10 border border-error/30 rounded-xl p-4 flex flex-col gap-2">
+                      <div className="bg-error/10 border border-error/30 rounded-2xl p-4 flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-error font-bold text-sm">
                           <AlertTriangle className="w-5 h-5" />
                           <span>No se pudo comprobar</span>
                         </div>
-                        <p className="text-xs text-on-surface-variant">{otaError}</p>
+                        <p className="text-xs text-zinc-400">{otaError}</p>
                         <button
                           onClick={() => setOtaStatus("idle")}
                           className="w-full h-10 mt-1 bg-surface-container-highest text-white font-bold rounded-lg flex items-center justify-center gap-2 text-xs active:scale-95"
