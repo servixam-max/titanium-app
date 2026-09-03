@@ -20,20 +20,22 @@ import {
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
-import { getSessions, deleteSession, LocalSession } from "@/lib/db";
+import { getSessions, deleteSession, deleteExerciseFromSession, LocalSession } from "@/lib/db";
 import { routines } from "@/lib/data";
 import { useAppStore } from "@/lib/store";
 import { haptics } from "@/lib/haptics";
+import { TrainingMode } from "@/lib/types";
 
 export default function HistoryPage() {
   const router = useRouter();
   const { currentUser } = useAppStore();
   const [sessions, setSessions] = useState<LocalSession[]>([]);
-  const [filterMode, setFilterMode] = useState<"all" | "guided" | "individual">("all");
+  const [filterMode, setFilterMode] = useState<TrainingMode | "all">("all");
   const [filterPeriod, setFilterPeriod] = useState<"all" | "week" | "month">("all");
   const [search, setSearch] = useState("");
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [exerciseDeleteConfirm, setExerciseDeleteConfirm] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const load = useCallback(async () => {
@@ -142,8 +144,18 @@ export default function HistoryPage() {
   const handleDeleteSession = async (sessionId: string) => {
     haptics.tick();
     await deleteSession(sessionId);
+    useAppStore.setState({
+      sessions: useAppStore.getState().sessions.filter((s) => s.id !== sessionId),
+    });
     setDeleteConfirm(null);
-    load();
+    await load();
+  };
+
+  const handleDeleteExercise = async (sessionId: string, exerciseIndex: number) => {
+    haptics.tick();
+    await deleteExerciseFromSession(sessionId, exerciseIndex);
+    setExerciseDeleteConfirm(null);
+    await load();
   };
 
   return (
@@ -461,19 +473,46 @@ export default function HistoryPage() {
                                 </div>
                               </div>
 
-                              <div className="flex items-center gap-1">
-                                {ex.sets.map((set, sIdx) => (
-                                  <span
-                                    key={sIdx}
-                                    className={`w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-mono font-bold ${
-                                      set.completed
-                                        ? "bg-primary/20 text-primary border border-primary/40"
-                                        : "bg-white/5 text-zinc-400"
-                                    }`}
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
+                                  {ex.sets.map((set, sIdx) => (
+                                    <span
+                                      key={sIdx}
+                                      className={`w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-mono font-bold ${
+                                        set.completed
+                                          ? "bg-primary/20 text-primary border border-primary/40"
+                                          : "bg-white/5 text-zinc-400"
+                                      }`}
+                                    >
+                                      {set.reps || 10}
+                                    </span>
+                                  ))}
+                                </div>
+
+                                {exerciseDeleteConfirm === `${session.id}_${idx}` ? (
+                                  <div className="flex items-center gap-1 bg-red-500/20 border border-red-500/40 rounded-lg px-1.5 py-0.5">
+                                    <button
+                                      onClick={() => setExerciseDeleteConfirm(null)}
+                                      className="text-[10px] text-zinc-400 hover:text-white px-1"
+                                    >
+                                      No
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteExercise(session.id, idx)}
+                                      className="text-[10px] font-bold text-red-400 hover:text-red-300 px-1"
+                                    >
+                                      Borrar
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    onClick={() => setExerciseDeleteConfirm(`${session.id}_${idx}`)}
+                                    className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-500 hover:text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
+                                    title="Eliminar este ejercicio de la sesión"
                                   >
-                                    {set.reps || 10}
-                                  </span>
-                                ))}
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                )}
                               </div>
                             </div>
                           );

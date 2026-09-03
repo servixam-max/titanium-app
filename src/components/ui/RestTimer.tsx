@@ -14,6 +14,7 @@ import {
   announceRest,
   announceCountdown,
   announceStart,
+  announceTenSecondsLeft,
   stopSpeaking,
   announceThirtySecondsLeft,
   announceHalfRest,
@@ -67,11 +68,15 @@ export default function RestTimer() {
       activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex]
         ?.restSeconds || 60;
 
+    // 10s warning before set starts, announcing next exercise
+    if (timeLeft === 10 && prevTime > 10) {
+      const nextName = hasNextExercise ? nextExercise?.name : currentExercise?.name;
+      announceTenSecondsLeft(nextName);
+    }
+
     // Voice countdown: 3, 2, 1
     if (timeLeft <= 3 && timeLeft > 0 && timeLeft !== prevTime) {
       announceCountdown(timeLeft);
-      playBeep(1000, 0.12, "sine", 0.25);
-      haptics.tick();
     }
 
     // Half-rest and 30s contextual announcements
@@ -89,7 +94,6 @@ export default function RestTimer() {
     // Rest ended
     if (timeLeft === 0 && prevTime > 0) {
       playRestEndAlarm();
-      haptics.countdownEnd();
       announceStart();
     }
 

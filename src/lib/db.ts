@@ -1,6 +1,6 @@
 import Dexie, { Table } from "dexie";
 import { WorkoutSession, WeightEntry } from "./types";
-import { getActiveUserId, SEED_USER } from "./auth";
+import { getActiveUserId } from "./auth";
 
 export interface LocalSession extends WorkoutSession {
   userId?: string;
@@ -12,97 +12,6 @@ export interface LocalWeightEntry extends WeightEntry {
   userId?: string;
   synced?: boolean;
 }
-
-// Initial session history for user XAM
-const XAM_INITIAL_SESSIONS: LocalSession[] = [
-  {
-    id: "d061a9cb-817d-4ad6-aeaa-b3629d74caf1",
-    userId: "xam-seed-id",
-    routineId: 2,
-    mode: "guided",
-    startTime: new Date("2026-09-02T17:09:38.809Z"),
-    endTime: new Date("2026-09-03T09:45:52.152Z"),
-    completed: true,
-    synced: false,
-    exercises: [
-      {
-        exerciseId: "d2-1",
-        sets: [
-          { setNumber: 1, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:21:20.417Z") },
-          { setNumber: 2, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:23:28.921Z") },
-          { setNumber: 3, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:25:35.513Z") },
-        ],
-      },
-      {
-        exerciseId: "d2-2",
-        sets: [
-          { setNumber: 1, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:29:12.484Z") },
-          { setNumber: 2, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:31:45.305Z") },
-          { setNumber: 3, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:34:12.537Z") },
-        ],
-      },
-      {
-        exerciseId: "d2-3",
-        sets: [
-          { setNumber: 1, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:36:41.238Z") },
-          { setNumber: 2, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:39:29.356Z") },
-          { setNumber: 3, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:41:51.524Z") },
-        ],
-      },
-      {
-        exerciseId: "d2-4",
-        sets: [
-          { setNumber: 1, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:44:53.620Z") },
-          { setNumber: 2, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:47:30.616Z") },
-          { setNumber: 3, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:50:03.760Z") },
-        ],
-      },
-      {
-        exerciseId: "d2-5",
-        sets: [
-          { setNumber: 1, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:53:27.629Z") },
-          { setNumber: 2, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:56:00.689Z") },
-          { setNumber: 3, reps: 10, completed: true, timestamp: new Date("2026-09-02T17:58:29.001Z") },
-        ],
-      },
-      {
-        exerciseId: "d2-6",
-        sets: [
-          { setNumber: 1, reps: 10, completed: true, timestamp: new Date("2026-09-02T18:02:16.765Z") },
-          { setNumber: 2, reps: 10, completed: true, timestamp: new Date("2026-09-02T18:05:12.542Z") },
-          { setNumber: 3, reps: 10, completed: true, timestamp: new Date("2026-09-02T18:07:28.293Z") },
-        ],
-      },
-      {
-        exerciseId: "d2-7",
-        sets: [
-          { setNumber: 1, reps: 10, completed: true, timestamp: new Date("2026-09-02T18:09:48.165Z") },
-          { setNumber: 2, reps: 10, completed: true, timestamp: new Date("2026-09-03T09:45:49.605Z") },
-          { setNumber: 3, reps: 10, completed: true, timestamp: new Date("2026-09-03T09:45:52.151Z") },
-        ],
-      },
-    ],
-  },
-];
-
-const XAM_INITIAL_WEIGHTS: LocalWeightEntry[] = [
-  {
-    id: "w-xam-1",
-    userId: "xam-seed-id",
-    weight: 78.5,
-    date: "2026-08-25",
-    created_at: "2026-08-25T08:00:00.000Z",
-    synced: true,
-  },
-  {
-    id: "w-xam-2",
-    userId: "xam-seed-id",
-    weight: 78.1,
-    date: "2026-09-01",
-    created_at: "2026-09-01T08:00:00.000Z",
-    synced: true,
-  },
-];
 
 class TitaniumDatabase extends Dexie {
   sessions!: Table<LocalSession, string>;
@@ -130,21 +39,13 @@ class TitaniumDatabase extends Dexie {
 
 export const db = new TitaniumDatabase();
 
-// Ensure XAM seed data exists if user XAM is querying and DB has no sessions
-async function ensureXamSeeded(): Promise<void> {
-  try {
-    const count = await db.sessions.count();
-    if (count === 0) {
-      for (const s of XAM_INITIAL_SESSIONS) {
-        await db.sessions.put(s);
-      }
-      for (const w of XAM_INITIAL_WEIGHTS) {
-        await db.weights.put(w);
-      }
-    }
-  } catch (err) {
-    console.warn("Error seeding XAM initial data:", err);
-  }
+// Clean up any historical dummy seed entries once on load
+if (typeof window !== "undefined") {
+  setTimeout(() => {
+    db.weights.delete("w-xam-1").catch(() => {});
+    db.weights.delete("w-xam-2").catch(() => {});
+    db.sessions.delete("d061a9cb-817d-4ad6-aeaa-b3629d74caf1").catch(() => {});
+  }, 100);
 }
 
 export async function saveSession(session: WorkoutSession, targetUserId?: string): Promise<void> {
@@ -154,9 +55,6 @@ export async function saveSession(session: WorkoutSession, targetUserId?: string
 
 export async function getSessions(targetUserId?: string): Promise<LocalSession[]> {
   const userId = targetUserId || getActiveUserId() || "xam-seed-id";
-  if (userId === "xam-seed-id") {
-    await ensureXamSeeded();
-  }
   const all = await db.sessions.orderBy("startTime").reverse().toArray();
   // Filter for this user's data; if user is XAM, also include legacy records without userId
   return all.filter((s) => s.userId === userId || (!s.userId && userId === "xam-seed-id"));
@@ -164,6 +62,23 @@ export async function getSessions(targetUserId?: string): Promise<LocalSession[]
 
 export async function deleteSession(id: string): Promise<void> {
   await db.sessions.delete(id);
+}
+
+export async function deleteExerciseFromSession(
+  sessionId: string,
+  exerciseIndex: number
+): Promise<boolean> {
+  const session = await db.sessions.get(sessionId);
+  if (!session) return false;
+  if (!session.exercises || session.exercises.length <= 1) {
+    // If only 1 exercise left in session, deleting the exercise deletes the session
+    await db.sessions.delete(sessionId);
+    return true;
+  }
+  const updatedExercises = [...session.exercises];
+  updatedExercises.splice(exerciseIndex, 1);
+  await db.sessions.update(sessionId, { exercises: updatedExercises });
+  return true;
 }
 
 export async function clearAllSessions(targetUserId?: string): Promise<void> {
@@ -180,9 +95,6 @@ export async function saveWeight(entry: WeightEntry, targetUserId?: string): Pro
 
 export async function getWeights(targetUserId?: string): Promise<LocalWeightEntry[]> {
   const userId = targetUserId || getActiveUserId() || "xam-seed-id";
-  if (userId === "xam-seed-id") {
-    await ensureXamSeeded();
-  }
   const all = await db.weights.orderBy("date").reverse().toArray();
   return all.filter((w) => w.userId === userId || (!w.userId && userId === "xam-seed-id"));
 }

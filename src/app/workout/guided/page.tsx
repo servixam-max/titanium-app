@@ -24,6 +24,7 @@ import {
   announceNextExercise,
   announceExerciseStart,
   announceRest,
+  announcePrepareNext,
   announceWorkoutComplete,
   setAudioMode as setGlobalAudioMode,
   setVoiceRate as setGlobalVoiceRate,
@@ -89,14 +90,14 @@ export default function GuidedWorkout() {
     setGlobalVoiceRate(voiceRate);
   }, [audioMode, voiceRate]);
 
-  // Speak exercise start when switching exercises
+  // Speak exercise start with exercise name when switching exercises
   useEffect(() => {
     if (!routine || !currentExercise) return;
     if (audioEnabled && audioMode !== "silent") {
       unlockAudio();
       const timer = setTimeout(() => {
-        announceExerciseStart();
-      }, 600);
+        announceExerciseStart(currentExercise.name);
+      }, 500);
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -200,24 +201,17 @@ export default function GuidedWorkout() {
     if (isLastSet) {
       const nextEx = routine.exercises[currentExerciseIndex + 1];
       if (nextEx && audioEnabled) {
-        announceNextExercise(nextEx.name);
+        announcePrepareNext(nextEx.name, currentExercise.restSeconds);
+      } else if (audioEnabled) {
+        announceExerciseComplete();
       }
-    } else if (
-      audioEnabled &&
-      audioMode !== "silent" &&
-      typeof window !== "undefined" &&
-      "speechSynthesis" in window
-    ) {
-      unlockAudio();
-      try {
-        const utter = new SpeechSynthesisUtterance("Serie completada");
-        utter.lang = "es-ES";
-        utter.rate = voiceRate || 0.92;
-        window.speechSynthesis.speak(utter);
-      } catch {}
-      announceExerciseComplete();
-    } else if (audioEnabled) {
-      announceExerciseComplete();
+    } else {
+      if (audioEnabled) {
+        announceExerciseComplete();
+        setTimeout(() => {
+          if (audioEnabled) announceRest(currentExercise.restSeconds);
+        }, 1200);
+      }
     }
 
     completeSet(
@@ -226,10 +220,6 @@ export default function GuidedWorkout() {
       undefined,
       reps,
     );
-
-    if (audioEnabled) {
-      announceRest(currentExercise.restSeconds);
-    }
   };
 
   const handleRepeatLastSet = () => {

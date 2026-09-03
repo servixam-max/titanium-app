@@ -119,8 +119,8 @@ export default function IndividualWorkout() {
     if (audioEnabled && audioMode !== "silent") {
       unlockAudio();
       const timer = setTimeout(() => {
-        announceExerciseStart();
-      }, 600);
+        announceExerciseStart(currentExercise.name);
+      }, 500);
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -167,7 +167,8 @@ export default function IndividualWorkout() {
         }
         if (!tenAnnouncedRef.current && remaining === 10 && baseRest > 15) {
           tenAnnouncedRef.current = true;
-          announceTenSecondsLeft();
+          const targetName = currentExercise ? currentExercise.name : undefined;
+          announceTenSecondsLeft(targetName);
         }
         if (remaining === 3) announceCountdown(3);
         if (remaining === 2) announceCountdown(2);
@@ -300,7 +301,11 @@ export default function IndividualWorkout() {
       setRestTotal(currentExercise.restSeconds);
       setShowRest(true);
       startRest(currentExercise.restSeconds);
-      if (audioEnabled) announceRest(currentExercise.restSeconds);
+      if (audioEnabled) {
+        setTimeout(() => {
+          announceRest(currentExercise.restSeconds);
+        }, 1200);
+      }
     } else if (audioEnabled && nextExerciseObj) {
       setTimeout(
         () =>
@@ -308,7 +313,7 @@ export default function IndividualWorkout() {
             nextExerciseObj.name,
             nextExerciseObj.restSeconds,
           ),
-        600,
+        1000,
       );
     }
   };

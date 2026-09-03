@@ -1,11 +1,8 @@
 // Audio utility using Web Audio API + Speech Synthesis
-// Optimised for Capacitor WebView on Android (needs user-gesture unlock)
-// Includes pre-recorded MP3 voice fallback because WebView TTS is unreliable.
+// Optimized for iOS / Android Capacitor WebView
+// Designed with modern Apple-style acoustic chimes and bulletproof Spanish TTS.
 
 import { haptics } from "./haptics";
-
-const VOICE_BASE_PATH = "/audio/voice/";
-const voiceCache = new Map<string, AudioBuffer>();
 
 let audioCtx: AudioContext | null = null;
 let audioUnlocked = false;
@@ -18,6 +15,11 @@ let voicesLoadAttempts = 0;
 
 export type AudioMode = "full" | "beeps" | "voice" | "silent";
 let audioMode: AudioMode = "full";
+
+// Prevent V8/Chromium from garbage collecting active utterances mid-speech
+if (typeof window !== "undefined") {
+  (window as any).__titaniumUtterances = new Set<SpeechSynthesisUtterance>();
+}
 
 function getAudioContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -37,39 +39,6 @@ function getAudioContext(): AudioContext | null {
   return audioCtx;
 }
 
-async function loadVoiceFile(name: string): Promise<AudioBuffer | null> {
-  if (typeof window === "undefined") return null;
-  if (voiceCache.has(name)) return voiceCache.get(name) || null;
-  const ctx = getAudioContext();
-  if (!ctx) return null;
-  try {
-    const resp = await fetch(`${VOICE_BASE_PATH}${name}.mp3`);
-    if (!resp.ok) return null;
-    const buf = await resp.arrayBuffer();
-    const audioBuf = await ctx.decodeAudioData(buf);
-    voiceCache.set(name, audioBuf);
-    return audioBuf;
-  } catch {
-    return null;
-  }
-}
-
-async function playVoiceFile(name: string, volume: number = 1): Promise<void> {
-  if (isAudioSilent() || !isVoiceAllowed()) return;
-  const ctx = getAudioContext();
-  if (!ctx) return;
-  await resumeContext();
-  const buf = await loadVoiceFile(name);
-  if (!buf) return;
-  const source = ctx.createBufferSource();
-  source.buffer = buf;
-  const gain = ctx.createGain();
-  gain.gain.value = volume;
-  source.connect(gain);
-  gain.connect(ctx.destination);
-  source.start(0);
-}
-
 function resumeContext(): Promise<void> {
   const ctx = getAudioContext();
   if (!ctx) return Promise.resolve();
@@ -80,20 +49,18 @@ function resumeContext(): Promise<void> {
 function selectSpanishVoice(
   voices: SpeechSynthesisVoice[],
 ): SpeechSynthesisVoice | null {
-  const esVoices = voices.filter((v) => v.lang.startsWith("es"));
-  return (
-    esVoices.find((v) => /neural|premium|enhanced|natural/i.test(v.name)) ||
-    esVoices.find((v) => v.name.includes("Google")) ||
-    esVoices.find((v) => v.lang === "es-ES" && v.localService) ||
-    esVoices.find((v) => v.lang === "es-ES") ||
-    esVoices.find((v) => v.lang.startsWith("es")) ||
-    voices.find(
-      (v) => v.lang.startsWith("en") && /neural|Google/i.test(v.name),
-    ) ||
-    voices.find((v) => v.lang.startsWith("en")) ||
-    voices[0] ||
-    null
-  );
+  const esVoices = voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith("es"));
+  if (esVoices.length > 0) {
+    return (
+      esVoices.find((v) => /natural|neural|premium|enhanced/i.test(v.name)) ||
+      esVoices.find((v) => /google/i.test(v.name)) ||
+      esVoices.find((v) => /monica|jorge|paulina|helena/i.test(v.name)) ||
+      esVoices.find((v) => v.lang === "es-ES" && v.localService) ||
+      esVoices.find((v) => v.lang === "es-ES") ||
+      esVoices[0]
+    );
+  }
+  return voices[0] || null;
 }
 
 function loadVoicesNow(): boolean {
@@ -112,17 +79,15 @@ function preloadVoicesInternal(): void {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   if (voicesLoaded) return;
 
-  // Try immediately
   if (loadVoicesNow()) return;
 
-  // Some Android WebViews never fire onvoiceschanged; poll a few times
   voicesLoadAttempts = 0;
   const poll = setInterval(() => {
     voicesLoadAttempts += 1;
-    if (loadVoicesNow() || voicesLoadAttempts >= 8) {
+    if (loadVoicesNow() || voicesLoadAttempts >= 10) {
       clearInterval(poll);
     }
-  }, 350);
+  }, 250);
 
   window.speechSynthesis.onvoiceschanged = () => {
     loadVoicesNow();
@@ -130,31 +95,26 @@ function preloadVoicesInternal(): void {
   };
 }
 
-// Unlock AudioContext on first user interaction (required by Android WebView)
+// Unlock AudioContext and TTS engine on first user interaction
 export function unlockAudio() {
   if (audioUnlocked) return;
   audioUnlocked = true;
 
   resumeContext().catch(() => {});
 
-  // Warm up speech synthesis with a real but tiny utterance inside the user gesture.
-  // WebView allows subsequent speaks from timers once the engine has been primed.
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     try {
       preloadVoicesInternal();
       if (window.speechSynthesis.paused) window.speechSynthesis.resume();
-      const utter = new SpeechSynthesisUtterance("ok");
+      const utter = new SpeechSynthesisUtterance("");
       utter.volume = 0.01;
-      utter.rate = 1.8;
-      if (preferredVoice) utter.voice = preferredVoice;
-      utter.lang = preferredVoice?.lang || "es-ES";
-      // No cancel — cancel often deadlocks WebView TTS.
+      utter.rate = 2.0;
+      utter.lang = "es-ES";
       window.speechSynthesis.speak(utter);
     } catch {}
   }
 }
 
-// Attach listeners once
 if (typeof window !== "undefined") {
   const events = ["touchstart", "touchend", "click", "pointerdown"];
   events.forEach((ev) => {
@@ -169,7 +129,6 @@ if (typeof window !== "undefined") {
 
 export function setAudioMode(mode: AudioMode): void {
   audioMode = mode;
-  // Sync the legacy muted flag for consumers that still read getMuted()
   isMuted = mode === "silent";
 }
 
@@ -178,7 +137,7 @@ export function getAudioMode(): AudioMode {
 }
 
 export function setVoiceRate(rate: number): void {
-  voiceRate = Math.max(0.5, Math.min(2, rate));
+  voiceRate = Math.max(0.5, Math.min(1.6, rate));
 }
 
 export function getVoiceRate(): number {
@@ -217,249 +176,299 @@ function isAudioSilent(): boolean {
   return audioMode === "silent" || isMuted;
 }
 
-// ── Rich Web Audio Tones ──
+// ─────────────────────────────────────────────────────────────
+// ── Modern Acoustic Sound Design (Estilo Apple / Glass Chimes) ──
+// ─────────────────────────────────────────────────────────────
 
-function envelope(
-  ctx: AudioContext,
-  gain: GainNode,
-  attack: number,
-  sustain: number,
-  release: number,
-  peak: number,
-) {
-  const now = ctx.currentTime;
-  gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(peak, now + attack);
-  gain.gain.setValueAtTime(peak, now + attack + sustain);
-  gain.gain.exponentialRampToValueAtTime(
-    0.001,
-    now + attack + sustain + release,
-  );
-}
-
-export function playTone(
-  frequency: number = 880,
-  duration: number = 0.2,
-  type: OscillatorType = "sine",
+/**
+ * Creates an elegant, modern harmonic chime with acoustic resonance
+ * instead of harsh 8-bit oscillator beeps.
+ */
+function playHarmonicChime(
+  freq: number,
+  duration: number = 0.4,
   volume: number = 0.25,
-  harmonic?: number,
-): void {
-  if (isAudioSilent() || !isBeepAllowed()) return;
-  try {
-    resumeContext().then(() => {
-      const ctx = getAudioContext();
-      if (!ctx) return;
-
-      const master = ctx.createGain();
-      master.gain.setValueAtTime(volume, ctx.currentTime);
-      master.connect(ctx.destination);
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(frequency, ctx.currentTime);
-      envelope(ctx, gain, 0.01, duration * 0.6, duration * 0.35, 1);
-      osc.connect(gain);
-      gain.connect(master);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + duration + 0.05);
-
-      if (harmonic) {
-        const osc2 = ctx.createOscillator();
-        const gain2 = ctx.createGain();
-        osc2.type = "triangle";
-        osc2.frequency.setValueAtTime(frequency * harmonic, ctx.currentTime);
-        envelope(ctx, gain2, 0.02, duration * 0.4, duration * 0.5, 0.5);
-        osc2.connect(gain2);
-        gain2.connect(master);
-        osc2.start(ctx.currentTime);
-        osc2.stop(ctx.currentTime + duration + 0.05);
-      }
-    });
-  } catch {}
-}
-
-export function playBeep(
-  frequency: number = 880,
-  duration: number = 0.15,
-  type: OscillatorType = "sine",
-  volume: number = 0.3,
-): void {
-  playTone(frequency, duration, type, volume);
-}
-
-export function playDoubleBeep(): void {
-  playTone(880, 0.12, "sine", 0.2, 1.5);
-  setTimeout(() => playTone(1100, 0.12, "sine", 0.22, 1.5), 130);
-}
-
-export function playTripleBeep(): void {
-  playTone(880, 0.08, "sine", 0.25, 2);
-  setTimeout(() => playTone(1100, 0.08, "sine", 0.25, 2), 100);
-  setTimeout(() => playTone(1320, 0.15, "sine", 0.25, 2), 200);
-}
-
-export function playCompletionTone(): void {
-  playTone(523, 0.18, "sine", 0.2, 2);
-  setTimeout(() => playTone(659, 0.18, "sine", 0.2, 2), 180);
-  setTimeout(() => playTone(784, 0.18, "sine", 0.2, 2), 360);
-  setTimeout(() => playTone(1047, 0.35, "sine", 0.25, 2), 540);
-  haptics.success();
-}
-
-export function playBoxingBell(volume: number = 0.3): void {
+  overtoneMultiplier: number = 1.5,
+) {
   if (isAudioSilent() || !isBeepAllowed()) return;
   try {
     resumeContext().then(() => {
       const ctx = getAudioContext();
       if (!ctx) return;
       const now = ctx.currentTime;
-      // Synthesized metallic boxing bell harmonics: fundamental (587Hz / D5), octave, 3rd, and strike tone
-      const freqs = [587, 1174, 1761, 293];
-      const gains = [volume * 0.7, volume * 0.4, volume * 0.2, volume * 0.8];
-      
-      freqs.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = idx === 3 ? "triangle" : "sine";
-        osc.frequency.setValueAtTime(freq, now);
-        
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(gains[idx], now + 0.006);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
-        
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        
-        osc.start(now);
-        osc.stop(now + 0.9);
-      });
+
+      // Lowpass filter to ensure sound is warm and smooth, never harsh
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(3200, now);
+      filter.connect(ctx.destination);
+
+      // Primary tone
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = "sine";
+      osc1.frequency.setValueAtTime(freq, now);
+
+      gain1.gain.setValueAtTime(0, now);
+      gain1.gain.linearRampToValueAtTime(volume, now + 0.005);
+      gain1.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      osc1.connect(gain1);
+      gain1.connect(filter);
+      osc1.start(now);
+      osc1.stop(now + duration + 0.05);
+
+      // Harmonic overtone for natural glass/marimba acoustic warmth
+      if (overtoneMultiplier > 1) {
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(freq * overtoneMultiplier, now);
+
+        gain2.gain.setValueAtTime(0, now);
+        gain2.gain.linearRampToValueAtTime(volume * 0.35, now + 0.005);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + duration * 0.7);
+
+        osc2.connect(gain2);
+        gain2.connect(filter);
+        osc2.start(now);
+        osc2.stop(now + duration * 0.75);
+      }
     });
   } catch {}
 }
 
+/**
+ * Modern iOS-style acoustic woodblock/droplet tick for countdowns
+ */
+function playSoftTick(freq: number = 600, volume: number = 0.18) {
+  if (isAudioSilent() || !isBeepAllowed()) return;
+  try {
+    resumeContext().then(() => {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, now);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.6, now + 0.04);
+
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(volume, now + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.06);
+    });
+  } catch {}
+}
+
+// Backward-compatible alias
+export function playTone(
+  frequency: number = 880,
+  duration: number = 0.2,
+  _type: OscillatorType = "sine",
+  volume: number = 0.25,
+): void {
+  playHarmonicChime(frequency, duration, volume);
+}
+
+export function playBeep(
+  frequency: number = 880,
+  duration: number = 0.15,
+  _type: OscillatorType = "sine",
+  volume: number = 0.25,
+): void {
+  playHarmonicChime(frequency, duration, volume);
+}
+
+/**
+ * Modern iOS Dual Chime
+ */
+export function playDoubleBeep(): void {
+  playHarmonicChime(987.77, 0.25, 0.22, 1.5); // B5
+  setTimeout(() => playHarmonicChime(1318.51, 0.35, 0.25, 1.5), 110); // E6
+}
+
+export function playTripleBeep(): void {
+  playHarmonicChime(880, 0.2, 0.2);
+  setTimeout(() => playHarmonicChime(1100, 0.2, 0.2), 90);
+  setTimeout(() => playHarmonicChime(1320, 0.35, 0.25), 180);
+}
+
+/**
+ * Apple Watch style rest-end double glass chime
+ */
 export function playRestEndAlarm(): void {
-  playBoxingBell(0.35);
-  setTimeout(() => playBoxingBell(0.38), 280);
+  playHarmonicChime(1174.66, 0.45, 0.28, 2); // D6
+  setTimeout(() => playHarmonicChime(1760.0, 0.55, 0.32, 1.5), 160); // A6
   haptics.countdownEnd();
 }
 
+/**
+ * Exercise start chime
+ */
 export function playExerciseStart(): void {
-  playTone(880, 0.12, "sine", 0.25, 2);
-  setTimeout(() => playTone(1175, 0.18, "sine", 0.3, 2), 120);
+  playHarmonicChime(880, 0.25, 0.22, 1.5);
+  setTimeout(() => playHarmonicChime(1318.51, 0.4, 0.26, 1.5), 100);
   haptics.light();
 }
 
+/**
+ * Calming rest start chime
+ */
 export function playRestStart(): void {
-  playTone(440, 0.25, "triangle", 0.2, 1.5);
-  setTimeout(() => playTone(330, 0.35, "sine", 0.18), 100);
+  playHarmonicChime(784.0, 0.35, 0.2, 1.5); // G5
+  setTimeout(() => playHarmonicChime(587.33, 0.45, 0.18, 1.5), 120); // D5
   haptics.restStart();
 }
 
+/**
+ * Non-annoying, organic countdown tick (3, 2, 1)
+ */
 export function playCountdown(secondsLeft: number): void {
-  const freq = 700 + (3 - secondsLeft) * 220;
-  playTone(freq, 0.12, "sine", 0.28);
+  const pitch = 550 + (3 - secondsLeft) * 120;
+  playSoftTick(pitch, 0.16);
   haptics.tick();
 }
 
+/**
+ * Uplifting Apple-achievement style acoustic arpeggio
+ */
 export function playWorkoutComplete(): void {
-  playTone(523, 0.15, "sine", 0.2, 2);
-  setTimeout(() => playTone(659, 0.15, "sine", 0.2, 2), 150);
-  setTimeout(() => playTone(784, 0.15, "sine", 0.2, 2), 300);
-  setTimeout(() => playTone(1047, 0.45, "sine", 0.25, 2), 450);
+  const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+  notes.forEach((freq, idx) => {
+    setTimeout(() => {
+      playHarmonicChime(freq, 0.55, 0.24, 1.5);
+    }, idx * 130);
+  });
   haptics.complete();
 }
 
+export function playCompletionTone(): void {
+  playHarmonicChime(784.0, 0.25, 0.2, 1.5);
+  setTimeout(() => playHarmonicChime(1046.5, 0.45, 0.25, 1.5), 130);
+  haptics.success();
+}
+
 export function playSetFlash(): void {
-  playTone(1320, 0.08, "sine", 0.15, 2);
+  playSoftTick(880, 0.15);
   haptics.tick();
 }
 
-// ── Speech Synthesis (WebView-safe) ──
+export function playBoxingBell(): void {
+  playRestEndAlarm();
+}
 
-function doSpeak(text: string, pitch: number, rate: number): void {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  if (isAudioSilent() || !isVoiceAllowed()) return;
+// ─────────────────────────────────────────────────────────────
+// ── Robust Speech Synthesis Engine for Android / iOS WebView ──
+// ─────────────────────────────────────────────────────────────
 
-  // Load voices and unlock audio context
-  if (!voicesLoaded) {
-    loadVoicesNow();
-    preloadVoicesInternal();
+let speechQueue: { text: string; pitch: number; rate: number; onEnd?: () => void }[] = [];
+let isSpeakingNow = false;
+
+function processQueue() {
+  if (speechQueue.length === 0) {
+    isSpeakingNow = false;
+    return;
   }
-  unlockAudio();
-  resumeContext().then(() => {
-    try {
-      // Android WebView TTS works better when we do NOT cancel first.
-      // Cancelling often kills the engine state and the next utterance is dropped.
-      const utter = new SpeechSynthesisUtterance(text);
-      if (preferredVoice) utter.voice = preferredVoice;
-      utter.lang = preferredVoice?.lang || "es-ES";
-      utter.pitch = pitch;
-      utter.rate = rate;
-      utter.volume = 1;
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  if (isAudioSilent() || !isVoiceAllowed()) {
+    speechQueue = [];
+    isSpeakingNow = false;
+    return;
+  }
 
-      // Force resume (required for Chrome/WebView)
-      if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+  isSpeakingNow = true;
+  const item = speechQueue.shift();
+  if (!item) return;
 
-      window.speechSynthesis.speak(utter);
-    } catch {
-      // WebView TTS is unreliable; silently fail and rely on MP3 fallback
+  try {
+    if (!voicesLoaded) {
+      loadVoicesNow();
+      preloadVoicesInternal();
     }
-  });
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+
+    const utter = new SpeechSynthesisUtterance(item.text);
+    if (preferredVoice) {
+      utter.voice = preferredVoice;
+    }
+    utter.lang = preferredVoice?.lang || "es-ES";
+    utter.pitch = item.pitch;
+    utter.rate = item.rate;
+    utter.volume = 1.0;
+
+    // Retain in global Set to prevent Chromium V8 garbage collection
+    const globalSet = (window as any).__titaniumUtterances as Set<SpeechSynthesisUtterance>;
+    if (globalSet) globalSet.add(utter);
+
+    let finished = false;
+    const finishUtterance = () => {
+      if (finished) return;
+      finished = true;
+      if (globalSet) globalSet.delete(utter);
+      if (item.onEnd) item.onEnd();
+      setTimeout(processQueue, 140);
+    };
+
+    utter.onend = finishUtterance;
+    utter.onerror = () => finishUtterance();
+
+    // Safety timeout: if TTS engine hangs, unblock after 6s
+    setTimeout(() => {
+      if (!finished) finishUtterance();
+    }, 6000);
+
+    window.speechSynthesis.speak(utter);
+  } catch (err) {
+    console.warn("TTS error:", err);
+    setTimeout(processQueue, 100);
+  }
 }
 
 export function speak(
   text: string,
   pitch: number = voicePitch,
   rate: number = voiceRate,
+  clearQueueFirst = false,
 ): void {
-  // Prefer pre-recorded MP3 voice files — WebView TTS is too unreliable.
-  if (typeof window === "undefined") return;
-  const map: Record<string, string> = {
-    "Serie completada": "serie_completada",
-    "Última serie, dalo todo": "ultima_serie",
-    "Quedan 2 series": "quedan_dos",
-    "Entrenamiento completado. Buen trabajo.": "entrenamiento_completado",
-    "Calentamiento completado.": "calentamiento_completado",
-    Prepárate: "preparate",
-    tres: "tres",
-    dos: "dos",
-    uno: "uno",
-    "Siguiente ejercicio": "siguiente_ejercicio",
-    "A entrenar.": "a_entrenar",
-    "Diez segundos": "diez_segundos",
-    "Faltan 30 segundos": "faltan_30",
-    "Vas por la mitad del entrenamiento. Sigue así.": "vas_por_la_mitad",
-    "¡Trabajo!": "trabajo",
-    "¡Tiempo!": "tiempo",
-    "Circuito uno": "circuito_uno",
-    "Circuito dos": "circuito_dos",
-    "Circuito tres": "circuito_tres",
-    "Último circuito. ¡Dalo todo!": "ultimo_circuito",
-  };
-  const key = map[text.trim()];
-  if (key) {
-    playVoiceFile(key).catch(() => doSpeak(text, pitch, rate));
-    return;
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  if (isAudioSilent() || !isVoiceAllowed()) return;
+  if (!text || !text.trim()) return;
+
+  unlockAudio();
+
+  if (clearQueueFirst) {
+    speechQueue = [];
+    try {
+      window.speechSynthesis.cancel();
+    } catch {}
+    isSpeakingNow = false;
   }
-  // For dynamic text (names, reps, weights) fall back to TTS
-  doSpeak(text, pitch, rate);
+
+  speechQueue.push({ text: text.trim(), pitch, rate });
+  if (!isSpeakingNow) {
+    processQueue();
+  }
 }
 
 export function speakWithQueue(
   text: string,
   priority: "normal" | "high" = "normal",
 ): void {
-  if (isAudioSilent() || !isVoiceAllowed()) return;
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-
-  if (priority === "high") {
-    stopSpeaking();
-  }
-  speak(text);
+  speak(text, voicePitch, voiceRate, priority === "high");
 }
 
 export function stopSpeaking(): void {
+  speechQueue = [];
+  isSpeakingNow = false;
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     try {
       window.speechSynthesis.cancel();
@@ -467,51 +476,53 @@ export function stopSpeaking(): void {
   }
 }
 
-// ── Announcements (voice + beep + vibration) ──
+// ─────────────────────────────────────────────────────────────
+// ── Contextual Announcements (Voice + Chime Separation) ──────
+// ─────────────────────────────────────────────────────────────
 
-const MOTIVATION_COMPLETE_CALLS = [
+const MOTIVATION_CALLS = [
   "¡Buena serie! Tómate tu descanso.",
-  "¡Serie completada, gran esfuerzo!",
+  "¡Serie lista! Respira hondo.",
   "¡Excelente trabajo! Recupérate.",
-  "¡Serie lista, a por la siguiente!",
+  "¡Bien hecho! Vamos a por la siguiente.",
 ];
 
 export function announceExerciseComplete(): void {
   playCompletionTone();
-  const phrase =
-    MOTIVATION_COMPLETE_CALLS[
-      Math.floor(Math.random() * MOTIVATION_COMPLETE_CALLS.length)
-    ];
-  speak(phrase, voicePitch, 0.94);
+  if (isVoiceAllowed() && !isAudioSilent()) {
+    const phrase = MOTIVATION_CALLS[Math.floor(Math.random() * MOTIVATION_CALLS.length)];
+    setTimeout(() => speak(phrase, voicePitch, 0.94), 220);
+  }
 }
 
-export function announceExerciseStart(): void {
+export function announceExerciseStart(exerciseName?: string): void {
   if (isAudioSilent()) return;
   playExerciseStart();
+  if (isVoiceAllowed() && exerciseName) {
+    setTimeout(() => speak(`A por ${exerciseName}`, voicePitch, 0.92), 220);
+  }
 }
 
 export function announceNextExercise(name?: string): void {
   if (isAudioSilent()) return;
   playDoubleBeep();
   haptics.doubleTick();
-  if (isVoiceAllowed()) {
-    if (name) {
-      speak(`Siguiente: ${name}`, voicePitch, 0.92);
-    } else {
-      playVoiceFile("siguiente_ejercicio");
-    }
+  if (isVoiceAllowed() && name) {
+    setTimeout(() => speak(`Siguiente ejercicio: ${name}`, voicePitch, 0.92), 220);
   }
 }
 
 export function announceWorkoutComplete(): void {
   playWorkoutComplete();
-  speak("Entrenamiento completado. Buen trabajo.", voicePitch, 0.90);
+  if (isVoiceAllowed() && !isAudioSilent()) {
+    setTimeout(() => speak("Entrenamiento completado. ¡Gran esfuerzo!", voicePitch, 0.90), 350);
+  }
 }
 
 export function announceRest(seconds?: number): void {
   playRestStart();
   if (seconds && seconds > 0 && isVoiceAllowed()) {
-    speak(`Descansa ${seconds} segundos`, voicePitch, 0.92);
+    setTimeout(() => speak(`Descansa ${seconds} segundos`, voicePitch, 0.92), 200);
   }
 }
 
@@ -519,89 +530,80 @@ export function announceCountdown(seconds: number): void {
   playCountdown(seconds);
   if (seconds <= 3 && seconds > 0 && isVoiceAllowed()) {
     const words: Record<number, string> = { 3: "tres", 2: "dos", 1: "uno" };
-    speak(words[seconds] || String(seconds), voicePitch, 0.92);
+    speak(words[seconds] || String(seconds), voicePitch, 1.0, true);
   }
 }
 
-// Aviso hablado a los 10 segundos restantes (solo voz, sin tono invasivo)
-export function announceTenSecondsLeft(): void {
+export function announceTenSecondsLeft(nextExerciseName?: string): void {
   if (isAudioSilent()) return;
   haptics.tick();
-  speak("Diez segundos", voicePitch, 0.92);
+  if (isVoiceAllowed()) {
+    const msg = nextExerciseName
+      ? `Diez segundos. Prepárate para ${nextExerciseName}`
+      : "Diez segundos";
+    speak(msg, voicePitch, 0.94);
+  }
 }
 
-// Aviso a mitad del descanso largo (>= 60s)
 export function announceHalfRest(secondsLeft: number): void {
   if (isAudioSilent() || !isVoiceAllowed()) return;
-  speak(`Quedan ${secondsLeft} segundos de descanso`, voicePitch, 0.92);
+  speak(`Quedan ${secondsLeft} segundos`, voicePitch, 0.92);
 }
 
-// Aviso de preparación al final del calentamiento
 export function announceGetReady(name?: string): void {
   if (isAudioSilent()) return;
   playTripleBeep();
-  if (isVoiceAllowed())
-    speak(name ? `Prepárate. ${name}` : "Prepárate", voicePitch, 0.92);
+  if (isVoiceAllowed()) {
+    speak(name ? `Prepárate para ${name}` : "Prepárate", voicePitch, 0.92);
+  }
 }
 
 export function announceStart(): void {
   if (isAudioSilent()) return;
   playExerciseStart();
-  speak("A entrenar.", voicePitch, 0.92);
+  if (isVoiceAllowed()) {
+    setTimeout(() => speak("¡A entrenar!", voicePitch, 0.96), 180);
+  }
 }
 
 export function announceWarmupComplete(): void {
   playCompletionTone();
-  speak("Calentamiento completado.", voicePitch, 0.92);
+  if (isVoiceAllowed()) {
+    setTimeout(() => speak("Calentamiento completado.", voicePitch, 0.92), 200);
+  }
 }
 
 export function announceSetFlash(): void {
   playSetFlash();
 }
 
-// ── HIIT work-interval cues ──
-
-/** "¡Trabajo!" — plays at the start of a timed work interval */
 export function announceWorkStart(): void {
   if (isAudioSilent()) return;
   playExerciseStart();
-  if (isVoiceAllowed())
-    playVoiceFile("trabajo").catch(() => doSpeak("¡Trabajo!", voicePitch, 0.92));
+  if (isVoiceAllowed()) {
+    setTimeout(() => speak("¡Trabajo!", voicePitch, 0.94), 150);
+  }
 }
 
-/** "¡Tiempo!" — plays when a timed work interval ends */
 export function announceWorkEnd(): void {
   if (isAudioSilent()) return;
   playRestStart();
-  if (isVoiceAllowed())
-    playVoiceFile("tiempo").catch(() => doSpeak("¡Tiempo!", voicePitch, 0.92));
+  if (isVoiceAllowed()) {
+    setTimeout(() => speak("¡Tiempo!", voicePitch, 0.94), 150);
+  }
 }
 
-/** Circuit cue for HIIT: "Circuito uno/dos/tres", last one says "¡Dalo todo!" */
 export function announceCircuit(
   circuitNumber: number,
   totalCircuits: number,
 ): void {
   if (isAudioSilent() || !isVoiceAllowed()) return;
-  const keys: Record<number, string> = {
-    1: "circuito_uno",
-    2: "circuito_dos",
-    3: "circuito_tres",
-  };
-  const fallback = `Circuito ${circuitNumber}`;
   if (circuitNumber === totalCircuits && circuitNumber > 1) {
-    playVoiceFile("ultimo_circuito").catch(() =>
-      doSpeak("Último circuito. ¡Dalo todo!", voicePitch, 0.92),
-    );
-    return;
+    speak("Último circuito. ¡Dalo todo!", voicePitch, 0.92);
+  } else {
+    speak(`Circuito ${circuitNumber} de ${totalCircuits}`, voicePitch, 0.92);
   }
-  const key = keys[circuitNumber];
-  if (key) playVoiceFile(key).catch(() => doSpeak(fallback, voicePitch, 0.92));
-  else
-    doSpeak(`Circuito ${circuitNumber} de ${totalCircuits}`, voicePitch, 0.92);
 }
-
-// ── Contextual workout announcements (Task B2) ──
 
 export function announceSetsRemaining(remaining: number): void {
   if (isAudioSilent() || !isVoiceAllowed()) return;
@@ -618,13 +620,15 @@ export function announcePrepareNext(
   haptics.doubleTick();
   if (!isVoiceAllowed()) return;
   const restText = restSeconds ? `Descanso de ${restSeconds} segundos. ` : "";
-  speak(`${restText}Prepara ${nextName}`, voicePitch, 0.92);
+  speak(`${restText}Siguiente ejercicio: ${nextName}`, voicePitch, 0.92);
 }
 
 export function announceThirtySecondsLeft(): void {
   if (isAudioSilent()) return;
   haptics.tick();
-  speak("Faltan 30 segundos", voicePitch, 0.92);
+  if (isVoiceAllowed()) {
+    speak("Faltan 30 segundos", voicePitch, 0.92);
+  }
 }
 
 export function announceHalfwayWorkout(): void {

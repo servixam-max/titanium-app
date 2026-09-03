@@ -52,7 +52,7 @@ function WarmupContent() {
   // Announce warmup start and first exercise
   useEffect(() => {
     if (audioEnabled && warmUpExercises.length > 0) {
-      announceExerciseStart();
+      announceExerciseStart(warmUpExercises[0]?.name);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -63,7 +63,7 @@ function WarmupContent() {
       const ex = warmUpExercises[currentExerciseIndex];
       if (ex) {
         setTimeout(() => {
-          announceNextExercise();
+          announceNextExercise(ex.name);
         }, 300);
       }
     }
