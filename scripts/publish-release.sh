@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# Read version from ota_server/version.json
 VERSION=$(node -e "console.log(require('./ota_server/version.json').version)")
 APK="FORTIXAM-${VERSION}.apk"
 
@@ -10,10 +9,15 @@ if [ ! -f "$APK" ]; then
   exit 1
 fi
 
-echo "Publicando release v${VERSION} en GitHub..."
-gh release create "v${VERSION}" "$APK" \
-  --title "FORTIXAM v${VERSION}" \
-  --notes "Actualización global de FORTIXAM v${VERSION}." \
-  --clobber
+echo "Verificando release v${VERSION} en GitHub..."
+if gh release view "v${VERSION}" >/dev/null 2>&1; then
+  echo "Release v${VERSION} ya existe. Actualizando archivo APK..."
+  gh release upload "v${VERSION}" "$APK" --clobber
+else
+  echo "Creando nuevo release v${VERSION} en GitHub..."
+  gh release create "v${VERSION}" "$APK" \
+    --title "FORTIXAM v${VERSION}" \
+    --notes "Actualización global de FORTIXAM v${VERSION}."
+fi
 
-echo "¡Release v${VERSION} publicado con éxito en GitHub!"
+echo "¡Release v${VERSION} disponible públicamente en GitHub!"

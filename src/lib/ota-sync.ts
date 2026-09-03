@@ -44,7 +44,9 @@ export async function findWorkingServer(): Promise<string> {
   );
 }
 
-const GITHUB_OTA_URL =
+const GITHUB_API_RELEASE_URL =
+  "https://api.github.com/repos/servixam-max/titanium-app/releases/latest";
+const GITHUB_RAW_VERSION_URL =
   "https://raw.githubusercontent.com/servixam-max/titanium-app/main/ota_server/version.json";
 
 export async function checkOtaUpdate(): Promise<{
@@ -53,11 +55,42 @@ export async function checkOtaUpdate(): Promise<{
   downloadUrl: string;
   serverUrl: string;
 }> {
-  // 1. Primary: Global GitHub Cloud OTA (available anywhere in the world)
+  // 1. Primary: GitHub Releases API (instantaneous, global, zero cache delay)
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch(`${GITHUB_OTA_URL}?t=${Date.now()}`, {
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
+    const res = await fetch(GITHUB_API_RELEASE_URL, {
+      signal: controller.signal,
+      headers: { Accept: "application/vnd.github.v3+json" },
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      const tagName = String(data.tag_name || "").replace(/^v/, "").trim();
+      const apkAsset = data.assets?.find((a: any) =>
+        a.name?.toLowerCase().endsWith(".apk")
+      );
+      const downloadUrl = apkAsset?.browser_download_url || "";
+
+      if (tagName && downloadUrl) {
+        return {
+          hasUpdate: tagName !== APP_VERSION,
+          latestVersion: tagName,
+          downloadUrl,
+          serverUrl: "GitHub Cloud (Global)",
+        };
+      }
+    }
+  } catch (err) {
+    logger.warn("GitHub Releases API check failed, trying raw fallback:", err);
+  }
+
+  // 2. Secondary: Global GitHub Raw version.json
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch(`${GITHUB_RAW_VERSION_URL}?t=${Date.now()}`, {
       signal: controller.signal,
       cache: "no-store",
     });
@@ -79,10 +112,10 @@ export async function checkOtaUpdate(): Promise<{
       };
     }
   } catch (err) {
-    logger.warn("GitHub OTA check failed, trying local server fallback:", err);
+    logger.warn("GitHub Raw check failed, trying local server fallback:", err);
   }
 
-  // 2. Fallback: Local PC server (Tailscale / WiFi)
+  // 3. Fallback: Local PC server (Tailscale / WiFi)
   const serverUrl = await findWorkingServer();
   const res = await fetch(`${serverUrl}/version.json?t=${Date.now()}`, { cache: "no-store" });
   if (!res.ok) throw new Error("Error al leer version.json del servidor");
