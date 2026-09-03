@@ -1,6 +1,6 @@
 import { logger } from "./logger";
 
-export const APP_VERSION = "5.5";
+export const APP_VERSION = "5.6";
 
 const CANDIDATE_IPS = [
   "100.126.164.101", // Tailscale VPN

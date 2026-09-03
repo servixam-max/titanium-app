@@ -26,6 +26,10 @@ import {
   Loader2,
   Sparkles,
   Server,
+  LogOut,
+  Upload,
+  Save,
+  User,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { AudioMode } from "@/lib/types";
@@ -37,10 +41,9 @@ import {
 import {
   APP_VERSION,
   checkOtaUpdate,
-  syncToServer,
-  syncFromServer,
   openApkDownload,
 } from "@/lib/ota-sync";
+import { getSessions, saveSession, getWeights, saveWeight } from "@/lib/db";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -60,6 +63,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     equipmentPreference,
     clearSessions,
     loadSessions,
+    currentUser,
+    logout,
   } = useAppStore();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -69,9 +74,93 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [otaInfo, setOtaInfo] = useState<{ version: string; downloadUrl: string; serverUrl: string } | null>(null);
   const [otaError, setOtaError] = useState("");
 
-  // Sync state
+  // Sync / Backup state
   const [syncStatus, setSyncStatus] = useState<"idle" | "syncing" | "success" | "error">("idle");
   const [syncMsg, setSyncMsg] = useState("");
+
+  const handleExportBackup = async () => {
+    try {
+      setSyncStatus("syncing");
+      setSyncMsg("Generando copia de seguridad...");
+      const userSessions = await getSessions(currentUser?.id);
+      const userWeights = await getWeights(currentUser?.id);
+      const backupData = {
+        app: "FORTIXAM",
+        version: APP_VERSION,
+        exportedAt: new Date().toISOString(),
+        user: {
+          id: currentUser?.id,
+          username: currentUser?.username,
+          email: currentUser?.email,
+        },
+        sessions: userSessions,
+        weights: userWeights,
+        lastExerciseWeights: useAppStore.getState().lastExerciseWeights,
+      };
+
+      const jsonStr = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const usernameClean = (currentUser?.username || "usuario").toLowerCase().replace(/[^a-z0-9]/g, "_");
+      a.download = `fortixam-backup-${usernameClean}-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setSyncStatus("success");
+      setSyncMsg("¡Copia de seguridad guardada en tu dispositivo!");
+      setTimeout(() => setSyncStatus("idle"), 4000);
+    } catch {
+      setSyncStatus("error");
+      setSyncMsg("Error al generar copia de seguridad.");
+    }
+  };
+
+  const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSyncStatus("syncing");
+    setSyncMsg("Restaurando datos...");
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const text = event.target?.result as string;
+        const data = JSON.parse(text);
+        if (!data || (!data.sessions && !data.weights)) {
+          throw new Error("Formato inválido");
+        }
+
+        const targetUserId = currentUser?.id || "xam-seed-id";
+        let sessionCount = 0;
+        let weightCount = 0;
+
+        if (Array.isArray(data.sessions)) {
+          for (const s of data.sessions) {
+            await saveSession(s, targetUserId);
+            sessionCount++;
+          }
+        }
+        if (Array.isArray(data.weights)) {
+          for (const w of data.weights) {
+            await saveWeight(w, targetUserId);
+            weightCount++;
+          }
+        }
+
+        await loadSessions();
+        setSyncStatus("success");
+        setSyncMsg(`¡Datos restaurados! (${sessionCount} sesiones, ${weightCount} pesos)`);
+        setTimeout(() => setSyncStatus("idle"), 4000);
+      } catch {
+        setSyncStatus("error");
+        setSyncMsg("Error: El archivo seleccionado no es válido.");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   // Sync audio engine with store when modal opens / settings change
   useEffect(() => {
@@ -216,6 +305,42 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             {/* Content */}
             <div className="p-container-padding flex-1 overflow-y-auto pb-[10vh]">
               <div className="flex flex-col gap-section-gap">
+                {/* User Profile Card */}
+                <section className="bg-gradient-to-r from-[#121722] to-[#161e2b] border border-white/10 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
+                  <div className="flex items-center gap-3.5 relative z-10">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center text-black font-black font-mono text-xl shadow-neon"
+                      style={{ backgroundColor: currentUser?.avatarColor || "#00F59B" }}
+                    >
+                      {(currentUser?.username || "X").slice(0, 1).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-base font-mono">
+                          {currentUser?.username || "XAM"}
+                        </span>
+                        <span className="text-[10px] font-mono font-bold bg-primary/20 text-primary px-2 py-0.5 rounded-full">
+                          CONECTADO
+                        </span>
+                      </div>
+                      <span className="text-xs text-zinc-400 block mt-0.5">
+                        {currentUser?.email || "xam@fortixam.com"}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      logout();
+                      onClose();
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-red-500/20 text-zinc-300 hover:text-red-400 border border-white/10 rounded-xl text-xs font-bold transition-all active:scale-95"
+                    title="Cerrar sesión"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Cerrar Sesión</span>
+                  </button>
+                </section>
+
                 {/* Audio */}
                 <section className="flex flex-col gap-stack-gap">
                   <SectionHeader
@@ -507,68 +632,41 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
                 </section>
 
-                {/* Data Management */}
+                {/* Local Backup and Restore */}
                 <section className="flex flex-col gap-stack-gap">
                   <SectionHeader
                     icon={<Database className="w-4 h-4" />}
-                    label="Datos y Copias de Seguridad"
+                    label="Copias de Seguridad Locales"
                   />
                   <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-4 flex flex-col gap-3">
-                    <button
-                      disabled={syncStatus === "syncing"}
-                      onClick={async () => {
-                        setSyncStatus("syncing");
-                        setSyncMsg("");
-                        try {
-                          const ok = await syncToServer({
-                            sessions,
-                            lastExerciseWeights: useAppStore.getState().lastExerciseWeights,
-                            exportDate: new Date().toISOString()
-                          });
-                          if (ok) {
-                            setSyncStatus("success");
-                            setSyncMsg("¡Copia guardada con éxito en sync.json!");
-                            setTimeout(() => setSyncStatus("idle"), 4000);
-                          } else {
-                            setSyncStatus("error");
-                            setSyncMsg("Error al guardar copia. ¿Está encendido el servidor?");
-                          }
-                        } catch {
-                          setSyncStatus("error");
-                          setSyncMsg("Error de red.");
-                        }
-                      }}
-                      className="w-full h-12 bg-surface-container-high border border-primary/20 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-primary-container"
-                    >
-                      <Server className="w-5 h-5" />
-                      <span className="font-bold">
-                        {syncStatus === "syncing" ? "Sincronizando..." : "Guardar copia en PC"}
-                      </span>
-                    </button>
+                    <p className="text-xs text-zinc-400">
+                      Guarda o restaura tus entrenamientos y pesos directamente en un archivo <strong className="text-white">.json</strong> en tu móvil.
+                    </p>
 
                     <button
                       disabled={syncStatus === "syncing"}
-                      onClick={async () => {
-                        setSyncStatus("syncing");
-                        setSyncMsg("");
-                        try {
-                          await loadSessions();
-                          setSyncStatus("success");
-                          setSyncMsg("¡Datos e historial restaurados desde el PC!");
-                          setTimeout(() => setSyncStatus("idle"), 4000);
-                        } catch {
-                          setSyncStatus("error");
-                          setSyncMsg("Error al restaurar desde el PC.");
-                        }
-                      }}
-                      className="w-full h-12 bg-surface-container border border-surface-container-highest rounded-lg flex items-center justify-center gap-2 text-on-surface hover:text-white active:scale-95 transition-all"
+                      onClick={handleExportBackup}
+                      className="w-full h-12 bg-surface-container-high border border-primary/20 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-primary"
                     >
-                      <Download className="w-4 h-4" />
-                      <span className="text-sm font-semibold">Restaurar datos desde PC</span>
+                      <Download className="w-5 h-5" />
+                      <span className="font-bold text-sm">
+                        {syncStatus === "syncing" ? "Generando copia..." : "Exportar Copia de Seguridad (JSON)"}
+                      </span>
                     </button>
+
+                    <label className="w-full h-12 bg-surface-container border border-surface-container-highest rounded-xl flex items-center justify-center gap-2 text-on-surface hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
+                      <Upload className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-semibold">Restaurar Copia de Seguridad</span>
+                      <input
+                        type="file"
+                        accept=".json"
+                        onChange={handleImportBackup}
+                        className="hidden"
+                      />
+                    </label>
                     
                     {syncMsg && (
-                      <p className={`text-xs text-center font-bold ${syncStatus === "error" ? "text-error" : "text-primary-container"}`}>
+                      <p className={`text-xs text-center font-bold ${syncStatus === "error" ? "text-error" : "text-primary"}`}>
                         {syncMsg}
                       </p>
                     )}

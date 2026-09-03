@@ -12,8 +12,15 @@ import { apiUrl, isApiEnabled } from "@/lib/api-config";
 import { saveSession, getSessions, clearAllSessions } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { syncToServer, syncFromServer } from "@/lib/ota-sync";
+import { UserAccount, getActiveUser, logoutUser } from "./auth";
 
 interface AppState {
+  // Authentication & Profile
+  currentUser: UserAccount | null;
+  setCurrentUser: (user: UserAccount | null) => void;
+  loadUserData: (user: UserAccount | null) => Promise<void>;
+  logout: () => void;
+
   // Navigation
   currentRoute: string;
   setCurrentRoute: (route: string) => void;
@@ -114,6 +121,43 @@ function generateId(): string {
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
+      // Authentication & Profile
+      currentUser: null,
+
+      setCurrentUser: (user) => {
+        set({ currentUser: user });
+        if (user) {
+          get().loadUserData(user);
+        } else {
+          set({ sessions: [], activeWorkout: initialActiveWorkout });
+        }
+      },
+
+      loadUserData: async (user) => {
+        if (!user) {
+          set({ sessions: [], currentUser: null });
+          return;
+        }
+        set({ isLoading: true });
+        try {
+          const userSessions = await getSessions(user.id);
+          set({ sessions: userSessions, currentUser: user });
+        } catch (err) {
+          logger.error("Error loading user data:", err);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      logout: () => {
+        logoutUser();
+        set({
+          currentUser: null,
+          sessions: [],
+          activeWorkout: initialActiveWorkout,
+        });
+      },
+
       // Navigation
       currentRoute: "/",
       setCurrentRoute: (route) => set({ currentRoute: route }),
@@ -608,9 +652,10 @@ export const useAppStore = create<AppState>()(
           completed: true,
         };
 
-        // Save to IndexedDB first (offline-first)
-        await saveSession(completedSession);
-        const localSessions = await getSessions();
+        // Save to IndexedDB first (offline-first) scoped to current user
+        const currentUserId = get().currentUser?.id;
+        await saveSession(completedSession, currentUserId);
+        const localSessions = await getSessions(currentUserId);
 
         // Update lastExerciseWeights from this session
         const updatedLastWeights = { ...get().lastExerciseWeights };
@@ -621,13 +666,6 @@ export const useAppStore = create<AppState>()(
             }
           });
         });
-
-        // Autoguardado en el PC vía Tailscale/WiFi
-        syncToServer({
-          sessions: localSessions,
-          lastExerciseWeights: updatedLastWeights,
-          exportDate: new Date().toISOString(),
-        }).catch((e) => logger.warn("Auto-sync background error:", e));
 
         set({
           sessions: localSessions,
@@ -852,53 +890,17 @@ export const useAppStore = create<AppState>()(
       dbError: null,
 
       addSession: async (session) => {
-        await saveSession(session);
-        const localSessions = await getSessions();
+        const userId = get().currentUser?.id;
+        await saveSession(session, userId);
+        const localSessions = await getSessions(userId);
         set({ sessions: localSessions });
       },
 
       loadSessions: async () => {
         set({ isLoading: true, dbError: null });
         try {
-          let localSessions = await getSessions();
-
-          // Sincronizar desde PC si está disponible
-          try {
-            const data = await syncFromServer();
-            if (data && data.sessions && Array.isArray(data.sessions)) {
-              // Restaurar pesos
-              if (data.lastExerciseWeights) {
-                set({ lastExerciseWeights: { ...get().lastExerciseWeights, ...data.lastExerciseWeights } });
-              }
-              
-              // Parse date strings back to Date objects
-              const serverSessions = data.sessions.map((s: any) => ({
-                ...s,
-                startTime: new Date(s.startTime),
-                endTime: s.endTime ? new Date(s.endTime) : undefined,
-                exercises: (s.exercises || []).map((ex: any) => ({
-                  ...ex,
-                  sets: (ex.sets || []).map((set: any) => ({
-                    ...set,
-                    timestamp: set.timestamp ? new Date(set.timestamp) : undefined
-                  }))
-                }))
-              }));
-
-              const localIds = new Set(localSessions.map((s) => s.id));
-              const newServerSessions = serverSessions.filter((s: any) => !localIds.has(s.id));
-              
-              if (newServerSessions.length > 0) {
-                for (const s of newServerSessions) {
-                  await saveSession(s); // Save to local IndexedDB
-                }
-                localSessions = await getSessions(); // Reload from DB
-              }
-            }
-          } catch (serverErr) {
-            logger.warn("Sync no disponible:", serverErr);
-          }
-
+          const userId = get().currentUser?.id;
+          const localSessions = await getSessions(userId);
           set({ sessions: localSessions });
         } catch (error) {
           logger.error("Error loading sessions:", error);
@@ -957,6 +959,15 @@ export const useAppStore = create<AppState>()(
           state.activeWorkout.isWorking = false;
           state.activeWorkout.workTimeRemaining = 0;
           state.activeWorkout.justFinished = false;
+        }
+        // Hydrate active user and load user data
+        const activeUser = getActiveUser();
+        if (activeUser) {
+          state.currentUser = activeUser;
+          state.loadUserData(activeUser);
+        } else {
+          state.currentUser = null;
+          state.sessions = [];
         }
       },
     },

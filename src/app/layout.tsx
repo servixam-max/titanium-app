@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import UpdateChecker from "@/components/ui/UpdateChecker";
+import AuthModal from "@/components/auth/AuthModal";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -74,6 +75,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
       >
+        <AuthModal />
         <UpdateChecker />
         {children}
       </body>

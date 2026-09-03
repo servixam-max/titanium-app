@@ -44,7 +44,7 @@ export default function TopAppBar({
   withSpacer = true,
   className = "",
 }: TopAppBarProps) {
-  const { audioEnabled, toggleAudio } = useAppStore();
+  const { audioEnabled, toggleAudio, currentUser } = useAppStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
@@ -77,7 +77,17 @@ export default function TopAppBar({
           {title}
         </h1>
 
-        <div className="w-16 flex justify-end">
+        <div className="w-20 flex items-center justify-end gap-1">
+          {currentUser && (
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-black font-black text-xs font-mono shadow-sm active:scale-90 transition-all"
+              style={{ backgroundColor: currentUser.avatarColor || "#00F59B" }}
+              title={`Perfil de ${currentUser.username}`}
+            >
+              {currentUser.username.slice(0, 1).toUpperCase()}
+            </button>
+          )}
           {showVolume && (
             <button
               onClick={toggleAudio}
@@ -94,7 +104,7 @@ export default function TopAppBar({
           {showSettings && (
             <button
               onClick={() => setSettingsOpen(true)}
-              className="flex items-center justify-center w-12 h-12 text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95"
+              className="flex items-center justify-center w-8 h-12 text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95"
               aria-label="Ajustes"
             >
               <Settings className="w-6 h-6" />
