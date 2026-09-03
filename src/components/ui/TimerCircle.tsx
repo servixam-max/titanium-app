@@ -44,12 +44,23 @@ export default function TimerCircle({
         viewBox={`0 0 ${size} ${size}`}
         className="transform -rotate-90"
       >
+        <defs>
+          <linearGradient id="timerNeonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#00F0FF" />
+            <stop offset="50%" stopColor="#00F59B" />
+            <stop offset="100%" stopColor="#CCFF00" />
+          </linearGradient>
+          <linearGradient id="timerUrgentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FF2A55" />
+            <stop offset="100%" stopColor="#FF708F" />
+          </linearGradient>
+        </defs>
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#1c1c1c"
+          stroke="#14181f"
           strokeWidth={strokeWidth}
         />
         <circle
@@ -57,12 +68,17 @@ export default function TimerCircle({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={urgent ? "#ffb4ab" : "#ccff00"}
+          stroke={urgent ? "url(#timerUrgentGrad)" : "url(#timerNeonGrad)"}
           strokeDasharray={circumference}
           strokeDashoffset={dashOffset}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
-          className="transition-all duration-1000 ease-linear"
+          className={cn(
+            "transition-all duration-1000 ease-linear",
+            urgent
+              ? "drop-shadow-[0_0_16px_rgba(255,42,85,0.6)]"
+              : "drop-shadow-[0_0_16px_rgba(0,245,155,0.5)]"
+          )}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -70,8 +86,8 @@ export default function TimerCircle({
           <>
             <span
               className={cn(
-                "font-display-timer text-[56px] leading-none tabular-nums",
-                urgent ? "animate-urgent" : "text-primary-container neon-glow",
+                "font-mono font-black text-6xl leading-none tabular-nums tracking-tight",
+                urgent ? "text-error animate-pulse drop-shadow-[0_0_12px_rgba(255,42,85,0.8)]" : "text-primary drop-shadow-[0_0_16px_rgba(0,245,155,0.6)]",
               )}
             >
               {seconds}

@@ -307,21 +307,52 @@ export function playCompletionTone(): void {
   haptics.success();
 }
 
+export function playBoxingBell(volume: number = 0.3): void {
+  if (isAudioSilent() || !isBeepAllowed()) return;
+  try {
+    resumeContext().then(() => {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      // Synthesized metallic boxing bell harmonics: fundamental (587Hz / D5), octave, 3rd, and strike tone
+      const freqs = [587, 1174, 1761, 293];
+      const gains = [volume * 0.7, volume * 0.4, volume * 0.2, volume * 0.8];
+      
+      freqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = idx === 3 ? "triangle" : "sine";
+        osc.frequency.setValueAtTime(freq, now);
+        
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(gains[idx], now + 0.006);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(now);
+        osc.stop(now + 0.9);
+      });
+    });
+  } catch {}
+}
+
 export function playRestEndAlarm(): void {
-  playTone(800, 0.2, "square", 0.15);
-  setTimeout(() => playTone(800, 0.2, "square", 0.15), 250);
-  setTimeout(() => playTone(1000, 0.3, "sine", 0.2, 1.5), 500);
+  playBoxingBell(0.35);
+  setTimeout(() => playBoxingBell(0.38), 280);
   haptics.countdownEnd();
 }
 
 export function playExerciseStart(): void {
-  playTone(880, 0.1, "sine", 0.2, 2);
-  setTimeout(() => playTone(1100, 0.14, "sine", 0.25, 2), 100);
+  playTone(880, 0.12, "sine", 0.25, 2);
+  setTimeout(() => playTone(1175, 0.18, "sine", 0.3, 2), 120);
   haptics.light();
 }
 
 export function playRestStart(): void {
-  playTone(500, 0.35, "sine", 0.15);
+  playTone(440, 0.25, "triangle", 0.2, 1.5);
+  setTimeout(() => playTone(330, 0.35, "sine", 0.18), 100);
   haptics.restStart();
 }
 
@@ -438,9 +469,20 @@ export function stopSpeaking(): void {
 
 // ── Announcements (voice + beep + vibration) ──
 
+const MOTIVATION_COMPLETE_CALLS = [
+  "¡Buena serie! Tómate tu descanso.",
+  "¡Serie completada, gran esfuerzo!",
+  "¡Excelente trabajo! Recupérate.",
+  "¡Serie lista, a por la siguiente!",
+];
+
 export function announceExerciseComplete(): void {
   playCompletionTone();
-  speak("Serie completada", voicePitch, 0.92);
+  const phrase =
+    MOTIVATION_COMPLETE_CALLS[
+      Math.floor(Math.random() * MOTIVATION_COMPLETE_CALLS.length)
+    ];
+  speak(phrase, voicePitch, 0.94);
 }
 
 export function announceExerciseStart(): void {

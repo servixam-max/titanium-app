@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle,
@@ -149,6 +149,24 @@ export default function GuidedWorkout() {
 
   const totalExercises = routine.exercises.length;
 
+  const totalSetsInRoutine = useMemo(() => {
+    return routine.exercises.reduce((sum, ex) => sum + (ex.sets || 3), 0);
+  }, [routine]);
+
+  const completedSetsCount = useMemo(() => {
+    let count = 0;
+    for (let i = 0; i < currentExerciseIndex; i++) {
+      count += routine.exercises[i]?.sets || 3;
+    }
+    count += Math.max(0, currentSet - 1);
+    return count;
+  }, [currentExerciseIndex, currentSet, routine]);
+
+  const workoutPercent = Math.min(
+    100,
+    Math.round((completedSetsCount / Math.max(1, totalSetsInRoutine)) * 100)
+  );
+
   const triggerFeedback = () => {
     setFlashKey((k) => k + 1);
     haptics.tick();
@@ -173,18 +191,18 @@ export default function GuidedWorkout() {
       if (audioEnabled) {
         announceWorkoutComplete();
       }
-      haptics.complete();
-      completeSet(
-        currentExerciseIndex,
-        currentSet,
-        undefined,
-        reps,
-      );
-      router.push("/workout/complete");
+      setTimeout(() => {
+        router.push("/workout/complete");
+      }, 500);
       return;
     }
 
-    if (
+    if (isLastSet) {
+      const nextEx = routine.exercises[currentExerciseIndex + 1];
+      if (nextEx && audioEnabled) {
+        announceNextExercise(nextEx.name);
+      }
+    } else if (
       audioEnabled &&
       audioMode !== "silent" &&
       typeof window !== "undefined" &&
@@ -271,14 +289,23 @@ export default function GuidedWorkout() {
         </button>
       </header>
 
+      {/* Dynamic Top Progress Bar */}
+      <div className="w-full bg-[#10141a] h-1.5 relative overflow-hidden flex-shrink-0">
+        <div
+          className="h-full bg-gradient-to-r from-cyan-400 via-emerald-400 to-lime-400 transition-all duration-500 shadow-[0_0_12px_rgba(0,245,155,0.7)]"
+          style={{ width: `${workoutPercent}%` }}
+        />
+      </div>
+
       <main className="flex-1 flex flex-col px-4 py-3 overflow-hidden min-h-0">
         <div className="flex-shrink-0 mb-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-primary-container font-label-caps uppercase tracking-widest text-[11px]">
-              MODO GUIADO
+            <span className="text-primary font-mono font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              {workoutPercent}% COMPLETADO
             </span>
-            <span className="text-on-surface-variant font-label-caps uppercase tracking-widest text-[11px]">
-              {currentExerciseIndex + 1}/{totalExercises}
+            <span className="text-zinc-400 font-mono font-bold uppercase tracking-wider text-[11px]">
+              SERIE {completedSetsCount}/{totalSetsInRoutine}
             </span>
           </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle,
@@ -204,6 +204,25 @@ export default function IndividualWorkout() {
       ? routine.exercises[currentExerciseIndex + 1]
       : null;
 
+  const totalSetsInRoutine = useMemo(() => {
+    return routine?.exercises?.reduce((sum, ex) => sum + (ex.sets || 3), 0) || 1;
+  }, [routine]);
+
+  const completedSetsCount = useMemo(() => {
+    if (!routine?.exercises) return 0;
+    let count = 0;
+    for (let i = 0; i < currentExerciseIndex; i++) {
+      count += routine.exercises[i]?.sets || 3;
+    }
+    count += Math.max(0, currentSet - 1);
+    return count;
+  }, [currentExerciseIndex, currentSet, routine]);
+
+  const workoutPercent = Math.min(
+    100,
+    Math.round((completedSetsCount / Math.max(1, totalSetsInRoutine)) * 100)
+  );
+
   const triggerFeedback = () => {
     setFlashKey((k) => k + 1);
     haptics.tick();
@@ -393,8 +412,25 @@ export default function IndividualWorkout() {
         </button>
       </header>
 
+      {/* Dynamic Top Progress Bar */}
+      <div className="w-full bg-[#10141a] h-1.5 relative overflow-hidden flex-shrink-0">
+        <div
+          className="h-full bg-gradient-to-r from-cyan-400 via-emerald-400 to-lime-400 transition-all duration-500 shadow-[0_0_12px_rgba(0,245,155,0.7)]"
+          style={{ width: `${workoutPercent}%` }}
+        />
+      </div>
+
       <main className="flex-1 flex flex-col min-h-0 px-4 py-2 gap-2">
         <div className="flex-shrink-0">
+          <div className="flex items-center justify-between mb-1.5 px-1">
+            <span className="text-primary font-mono font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              {workoutPercent}% COMPLETADO
+            </span>
+            <span className="text-zinc-400 font-mono font-bold uppercase tracking-wider text-[11px]">
+              SERIE {completedSetsCount}/{totalSetsInRoutine}
+            </span>
+          </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
             {routine.exercises.map((ex, idx) => {
               const state =

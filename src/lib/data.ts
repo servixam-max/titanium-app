@@ -44,6 +44,20 @@ export const routines: Routine[] = [
         image: getImg("dumbbell_flat_bench"),
       },
       {
+        id: "d1-1b",
+        name: "Press Inclinado con Mancuernas",
+        sets: 3,
+        reps: "10-12",
+        restSeconds: 75,
+        equipment: "dumbbells",
+        description:
+          "Press en banco inclinado a 30-45 grados. Máxima activación de la porción superior del pectoral y deltoides.",
+        tempo: "2 - 0 - 2 - 0",
+        category: "chest",
+        difficulty: "Intermedio",
+        image: getImg("incline_dumbbell_press"),
+      },
+      {
         id: "d1-2",
         name: "Press Militar Sentado",
         sets: 3,
@@ -1834,6 +1848,20 @@ export const routines: Routine[] = [
         category: "full_body",
         difficulty: "Avanzado",
         image: getImg("farmers_walk"),
+      },
+      {
+        id: "d11-db-26",
+        name: "Press Inclinado con Mancuernas",
+        sets: 3,
+        reps: "10-12",
+        restSeconds: 75,
+        equipment: "dumbbells",
+        description:
+          "Press en banco inclinado a 30-45 grados. Máxima activación de la porción superior del pectoral y deltoides.",
+        tempo: "2 - 0 - 2 - 0",
+        category: "chest",
+        difficulty: "Intermedio",
+        image: getImg("incline_dumbbell_press"),
       },
     ],
     alternativeExercises: [
