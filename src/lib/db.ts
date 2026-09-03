@@ -55,9 +55,19 @@ export async function saveSession(session: WorkoutSession, targetUserId?: string
 
 export async function getSessions(targetUserId?: string): Promise<LocalSession[]> {
   const userId = targetUserId || getActiveUserId() || "xam-seed-id";
-  const all = await db.sessions.orderBy("startTime").reverse().toArray();
-  // Filter for this user's data; if user is XAM, also include legacy records without userId
-  return all.filter((s) => s.userId === userId || (!s.userId && userId === "xam-seed-id"));
+  try {
+    const all = await db.sessions.toArray();
+    all.sort((a, b) => {
+      const timeA = a.startTime ? new Date(a.startTime).getTime() : 0;
+      const timeB = b.startTime ? new Date(b.startTime).getTime() : 0;
+      return timeB - timeA;
+    });
+    // Filter for this user's data; if user is XAM, also include legacy records without userId
+    return all.filter((s) => s.userId === userId || (!s.userId && userId === "xam-seed-id"));
+  } catch (err) {
+    console.error("Error getting sessions from db:", err);
+    return [];
+  }
 }
 
 export async function deleteSession(id: string): Promise<void> {
@@ -95,8 +105,18 @@ export async function saveWeight(entry: WeightEntry, targetUserId?: string): Pro
 
 export async function getWeights(targetUserId?: string): Promise<LocalWeightEntry[]> {
   const userId = targetUserId || getActiveUserId() || "xam-seed-id";
-  const all = await db.weights.orderBy("date").reverse().toArray();
-  return all.filter((w) => w.userId === userId || (!w.userId && userId === "xam-seed-id"));
+  try {
+    const all = await db.weights.toArray();
+    all.sort((a, b) => {
+      const timeA = a.date ? new Date(a.date).getTime() : 0;
+      const timeB = b.date ? new Date(b.date).getTime() : 0;
+      return timeB - timeA;
+    });
+    return all.filter((w) => w.userId === userId || (!w.userId && userId === "xam-seed-id"));
+  } catch (err) {
+    console.error("Error getting weights from db:", err);
+    return [];
+  }
 }
 
 export async function deleteWeight(id: string): Promise<void> {

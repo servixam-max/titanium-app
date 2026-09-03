@@ -32,6 +32,7 @@ export default function WorkTimer() {
     skipWork,
     completeSet,
     cancelWorkout,
+    finishWorkout,
     audioEnabled,
     toggleAudio,
   } = useAppStore();
@@ -150,13 +151,17 @@ export default function WorkTimer() {
     );
   };
 
-  const handleExit = (save: boolean) => {
+  const handleExit = async (save: boolean) => {
     stopSpeaking();
-    if (!save) {
+    if (save) {
+      await finishWorkout();
+      setShowExitConfirm(false);
+      router.push("/workout/complete");
+    } else {
       cancelWorkout();
+      setShowExitConfirm(false);
+      router.push("/");
     }
-    setShowExitConfirm(false);
-    router.push("/");
   };
 
   return (

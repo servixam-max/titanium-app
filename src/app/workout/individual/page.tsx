@@ -229,7 +229,7 @@ export default function IndividualWorkout() {
     haptics.tick();
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     const targetMatch = currentExercise.reps.match(/\d+/g);
     const targetReps = targetMatch ? parseInt(targetMatch[targetMatch.length - 1], 10) : 10;
     const reps =
@@ -265,14 +265,15 @@ export default function IndividualWorkout() {
     const isWorkoutFinishing = isLastSet && isLastExercise;
 
     if (isWorkoutFinishing) {
-      if (audioEnabled) announceWorkoutComplete();
-      haptics.complete();
       completeSet(
         currentExerciseIndex,
         currentSet,
         undefined,
         reps,
       );
+      if (audioEnabled) announceWorkoutComplete();
+      haptics.complete();
+      await finishWorkout();
       router.push("/workout/complete");
       return;
     }

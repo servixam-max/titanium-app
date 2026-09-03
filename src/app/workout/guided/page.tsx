@@ -173,7 +173,7 @@ export default function GuidedWorkout() {
     haptics.tick();
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (activeWorkout.isWorking) skipWork();
 
     const targetMatch = currentExercise.reps.match(/\d+/g);
@@ -189,12 +189,17 @@ export default function GuidedWorkout() {
     const isWorkoutFinishing = isLastSet && isLastExercise;
 
     if (isWorkoutFinishing) {
+      completeSet(
+        currentExerciseIndex,
+        currentSet,
+        undefined,
+        reps,
+      );
       if (audioEnabled) {
         announceWorkoutComplete();
       }
-      setTimeout(() => {
-        router.push("/workout/complete");
-      }, 500);
+      await finishWorkout();
+      router.push("/workout/complete");
       return;
     }
 

@@ -12,7 +12,7 @@ import { apiUrl, isApiEnabled } from "@/lib/api-config";
 import { saveSession, getSessions, clearAllSessions } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { syncToServer, syncFromServer } from "@/lib/ota-sync";
-import { UserAccount, getActiveUser, logoutUser } from "./auth";
+import { UserAccount, getActiveUser, getActiveUserId, logoutUser } from "./auth";
 
 interface AppState {
   // Authentication & Profile
@@ -642,18 +642,26 @@ export const useAppStore = create<AppState>()(
 
       finishWorkout: async () => {
         const { activeWorkout } = get();
-        if (!activeWorkout.session) return;
+        if (!activeWorkout.session) {
+          const latest = get().sessions.find((s) => s.completed);
+          return latest ? { sessionId: latest.id, completedSession: latest } : undefined;
+        }
+
+        // If already completed and saved, return immediately
+        if (activeWorkout.session.completed && activeWorkout.justFinished) {
+          return { sessionId: activeWorkout.session.id, completedSession: activeWorkout.session };
+        }
 
         const currentRoutine = activeWorkout.routine;
 
         const completedSession: WorkoutSession = {
           ...activeWorkout.session,
-          endTime: new Date(),
+          endTime: activeWorkout.session.endTime || new Date(),
           completed: true,
         };
 
         // Save to IndexedDB first (offline-first) scoped to current user
-        const currentUserId = get().currentUser?.id;
+        const currentUserId = get().currentUser?.id || getActiveUserId() || "xam-seed-id";
         await saveSession(completedSession, currentUserId);
         const localSessions = await getSessions(currentUserId);
 

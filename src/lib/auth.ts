@@ -68,16 +68,23 @@ export function saveAllAccounts(accounts: UserAccount[]): void {
 }
 
 export function getActiveUserId(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(ACTIVE_USER_ID_KEY);
+  if (typeof window === "undefined") return "xam-seed-id";
+  const stored = localStorage.getItem(ACTIVE_USER_ID_KEY);
+  if (!stored) {
+    localStorage.setItem(ACTIVE_USER_ID_KEY, SEED_USER.id);
+    return SEED_USER.id;
+  }
+  return stored;
 }
 
 export function getActiveUser(): UserAccount | null {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined") return SEED_USER;
   const activeId = getActiveUserId();
-  if (!activeId) return null;
   const accounts = getAllAccounts();
-  return accounts.find((a) => a.id === activeId) || null;
+  const found = accounts.find((a) => a.id === activeId);
+  if (found) return found;
+  setActiveUser(SEED_USER);
+  return SEED_USER;
 }
 
 export function setActiveUser(user: UserAccount | null): void {

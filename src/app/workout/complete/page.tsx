@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Trophy,
@@ -14,6 +14,8 @@ import {
 import TopAppBar from "@/components/ui/TopAppBar";
 import { useAppStore } from "@/lib/store";
 import { playWorkoutComplete } from "@/lib/audio";
+import { getSessions } from "@/lib/db";
+import { WorkoutSession } from "@/lib/types";
 
 import { motion } from "framer-motion";
 import { routines } from "@/lib/data";
@@ -21,9 +23,14 @@ import { routines } from "@/lib/data";
 export default function WorkoutComplete() {
   const router = useRouter();
   const { activeWorkout, clearJustFinished, sessions } = useAppStore();
-  const completedSession =
+  const [dbFallbackSession, setDbFallbackSession] = useState<WorkoutSession | null>(null);
+  const [isChecking, setIsChecking] = useState(true);
+
+  const initialSession =
     (activeWorkout.session?.completed ? activeWorkout.session : null) ||
     sessions.find((s) => s.completed);
+
+  const completedSession = initialSession || dbFallbackSession;
 
   useEffect(() => {
     if (activeWorkout.justFinished) {
@@ -32,6 +39,33 @@ export default function WorkoutComplete() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    async function loadFallback() {
+      if (!initialSession) {
+        try {
+          const all = await getSessions();
+          const found = all.find((s) => s.completed);
+          if (found) {
+            setDbFallbackSession(found);
+          }
+        } catch (err) {
+          console.error("Error loading session fallback:", err);
+        }
+      }
+      setIsChecking(false);
+    }
+    loadFallback();
+  }, [initialSession]);
+
+  if (isChecking && !completedSession) {
+    return (
+      <div className="h-[100dvh] flex flex-col items-center justify-center bg-[#080808] px-6 text-center text-white">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-3" />
+        <p className="text-zinc-400 text-xs font-mono">Guardando y cargando resumen...</p>
+      </div>
+    );
+  }
 
   if (!completedSession || !completedSession.completed) {
     return (
