@@ -113,7 +113,7 @@ export default function RestTimer() {
 
   const currentExercise =
     activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
-  const totalTime = currentExercise?.restSeconds || 60;
+  const totalTime = currentExercise?.restSeconds || 75;
   const timeLeft = activeWorkout.restTimeRemaining;
   const restUrgent = timeLeft <= 10;
 

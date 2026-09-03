@@ -157,8 +157,10 @@ export default function GuidedWorkout() {
   const handleComplete = () => {
     if (activeWorkout.isWorking) skipWork();
 
+    const targetMatch = currentExercise.reps.match(/\d+/g);
+    const targetReps = targetMatch ? parseInt(targetMatch[targetMatch.length - 1], 10) : 10;
     const reps =
-      Number(repsInput) || activeWorkout.exerciseReps[currentExercise.id] || 0;
+      activeWorkout.exerciseReps[currentExercise.id] || targetReps;
     setExerciseReps(currentExercise.id, reps);
 
     triggerFeedback();
@@ -325,10 +327,10 @@ export default function GuidedWorkout() {
           />
         </div>
 
-        {/* Large Illuminated Exercise HUD */}
-        <div className="flex-shrink-0 mb-3 flex flex-col gap-2.5">
+        {/* Large High-Impact Illuminated Exercise HUD */}
+        <div className="flex-shrink-0 mb-4 flex flex-col gap-3">
           {/* Exercise Name */}
-          <div className="text-center">
+          <div className="text-center px-2">
             <h2 className="font-headline-lg text-2xl sm:text-3xl font-extrabold text-white tracking-tight drop-shadow-[0_0_15px_rgba(204,255,0,0.25)]">
               {currentExercise.name}
             </h2>
@@ -340,45 +342,45 @@ export default function GuidedWorkout() {
             )}
           </div>
 
-          {/* High-Visibility Illuminated 3-Card Metrics Row */}
-          <div className="grid grid-cols-3 gap-2 w-full">
+          {/* Expanded 3-Card High-Visibility Metrics Grid */}
+          <div className="grid grid-cols-3 gap-2.5 w-full">
             {/* 1. Target Reps / Time Card (Glowing Neon Lime) */}
-            <div className="bg-[#111116] border-2 border-primary-container/70 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-[0_0_18px_rgba(204,255,0,0.25)]">
-              <span className="text-[10px] font-label-caps text-primary-container uppercase font-bold tracking-wider mb-0.5 flex items-center gap-1">
-                <Zap className="w-3 h-3 text-primary-container animate-pulse" />
-                OBJETIVO
+            <div className="bg-[#121218]/95 border-2 border-primary-container/80 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-[0_0_22px_rgba(204,255,0,0.28)]">
+              <span className="text-xs font-label-caps text-primary-container uppercase font-bold tracking-wider flex items-center gap-1">
+                <Zap className="w-3.5 h-3.5 text-primary-container animate-pulse" />
+                {isTimedSet ? "TIEMPO" : "REPETICIONES"}
               </span>
-              <span className="font-mono font-black text-xl sm:text-2xl text-primary-container drop-shadow-[0_0_10px_rgba(204,255,0,0.6)]">
+              <span className="font-mono font-black text-3xl sm:text-4xl text-primary-container drop-shadow-[0_0_15px_rgba(204,255,0,0.6)] my-1">
                 {isTimedSet ? `${timedSeconds}s` : currentExercise.reps}
               </span>
-              <span className="text-[9px] font-label-caps text-zinc-400 font-bold uppercase">
-                {isTimedSet ? "segundos" : "reps"}
+              <span className="text-[10px] font-label-caps text-zinc-400 font-bold uppercase">
+                {isTimedSet ? "segundos de trabajo" : "repeticiones"}
               </span>
             </div>
 
             {/* 2. Current Set Card */}
-            <div className="bg-[#111116] border border-white/15 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-md">
-              <span className="text-[10px] font-label-caps text-zinc-400 uppercase font-bold tracking-wider mb-0.5">
+            <div className="bg-[#121218]/95 border border-white/20 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-lg">
+              <span className="text-xs font-label-caps text-zinc-300 uppercase font-bold tracking-wider">
                 SERIE
               </span>
-              <div className="flex items-baseline gap-1">
-                <span className="font-mono font-black text-xl sm:text-2xl text-white">
+              <div className="flex items-baseline gap-1 my-1">
+                <span className="font-mono font-black text-3xl sm:text-4xl text-white">
                   {currentSet}
                 </span>
-                <span className="font-mono font-bold text-sm text-zinc-400">
-                  / {currentExercise.sets}
+                <span className="font-mono font-bold text-lg text-zinc-500">
+                  /{currentExercise.sets}
                 </span>
               </div>
-              <div className="flex items-center gap-1 mt-1">
+              <div className="flex items-center gap-1.5">
                 {Array.from({ length: currentExercise.sets }).map((_, i) => (
                   <div
                     key={i}
                     className={`rounded-full transition-all duration-300 ${
                       i < currentSet - 1
-                        ? "w-2 h-2 bg-primary-container shadow-[0_0_6px_rgba(204,255,0,0.8)]"
+                        ? "w-2.5 h-2.5 bg-primary-container shadow-[0_0_8px_rgba(204,255,0,0.9)]"
                         : i === currentSet - 1
-                          ? "w-3 h-2 bg-primary-container shadow-[0_0_8px_rgba(204,255,0,1)]"
-                          : "w-2 h-2 bg-white/10"
+                          ? "w-4 h-2.5 bg-primary-container shadow-[0_0_10px_rgba(204,255,0,1)]"
+                          : "w-2.5 h-2.5 bg-white/15"
                     }`}
                   />
                 ))}
@@ -386,42 +388,20 @@ export default function GuidedWorkout() {
             </div>
 
             {/* 3. Rest Duration Card */}
-            <div className="bg-[#111116] border border-white/15 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-md">
-              <span className="text-[10px] font-label-caps text-cyan-400 uppercase font-bold tracking-wider mb-0.5 flex items-center gap-1">
-                <Clock className="w-3 h-3 text-cyan-400" />
+            <div className="bg-[#121218]/95 border border-cyan-400/40 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-lg">
+              <span className="text-xs font-label-caps text-cyan-400 uppercase font-bold tracking-wider flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-cyan-400" />
                 DESCANSO
               </span>
-              <span className="font-mono font-black text-xl sm:text-2xl text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
+              <span className="font-mono font-black text-3xl sm:text-4xl text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)] my-1">
                 {currentExercise.restSeconds}s
               </span>
-              <span className="text-[9px] font-label-caps text-zinc-400 font-bold uppercase">
+              <span className="text-[10px] font-label-caps text-zinc-400 font-bold uppercase">
                 recuperación
               </span>
             </div>
           </div>
         </div>
-
-        {!isTimedSet && (
-          <div className="flex-shrink-0 flex items-stretch gap-2 mb-3">
-            <div className="flex-1 flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-4 py-2.5">
-              <div className="flex items-center gap-2 mb-1">
-                <Hash className="w-5 h-5 text-primary-container" />
-                <span className="text-on-surface-variant font-label-caps text-[11px]">
-                  REPETICIONES COMPLETADAS
-                </span>
-              </div>
-              <input
-                id="reps-input"
-                type="number"
-                inputMode="numeric"
-                className="w-full bg-transparent font-bold text-on-surface text-2xl outline-none"
-                value={repsInput}
-                onChange={(e) => setRepsInput(e.target.value)}
-                aria-label="Repeticiones completadas"
-              />
-            </div>
-          </div>
-        )}
       </main>
 
       <footer className="flex-shrink-0 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-2 bg-background border-t border-surface-container-highest z-50">

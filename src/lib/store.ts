@@ -318,7 +318,7 @@ export const useAppStore = create<AppState>()(
         const isLastExercise =
           exerciseIndex >= (activeWorkout.routine?.exercises.length || 1) - 1;
         const isWorkoutFinishing = isLastSet && isLastExercise;
-        const nextRestSeconds = currentExercise.restSeconds || 60;
+        const nextRestSeconds = currentExercise.restSeconds || 75;
 
         const nextActiveWorkout: ActiveWorkoutState = {
           ...activeWorkout,

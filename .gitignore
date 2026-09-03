@@ -38,6 +38,8 @@ next-env.d.ts
 dist/
 
 *.apk
+ota_server/*.apk
+ota_server/sync.json
 nextcloud/
 nextcloud-docker-compose.yml
 

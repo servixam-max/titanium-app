@@ -62,7 +62,7 @@ export const routines: Routine[] = [
         name: "Extensión de Tríceps sobre Cabeza",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Sujeta la mancuerna con ambas manos y extiende verticalmente. Controla la bajada.",
@@ -76,7 +76,7 @@ export const routines: Routine[] = [
         name: "Aperturas en Banco",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Aperturas con codos ligeramente flexionados. Siente el estiramiento pectoral.",
@@ -90,7 +90,7 @@ export const routines: Routine[] = [
         name: "Elevaciones Laterales",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Eleva los brazos lateralmente hasta la altura de los hombros. Controla la bajada.",
@@ -104,7 +104,7 @@ export const routines: Routine[] = [
         name: "Patada de Tríceps",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Torso inclinado, codo pegado al costado y extiende hacia atrás hasta el bloqueo.",
@@ -118,7 +118,7 @@ export const routines: Routine[] = [
         name: "Flexiones al Fallo",
         sets: 3,
         reps: "Al fallo",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Remate final de pecho y tríceps con flexiones estrictas. Mantén el cuerpo en bloque.",
@@ -163,7 +163,7 @@ export const routines: Routine[] = [
         name: "Curl de Bíceps Clásico",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Curl con palmas en supinación. Control estricto, sin balanceo de cadera.",
@@ -205,7 +205,7 @@ export const routines: Routine[] = [
         name: "Curl Martillo",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Palmas enfrentadas (agarre neutro). Enfoque en braquial anterior y antebrazos.",
@@ -219,7 +219,7 @@ export const routines: Routine[] = [
         name: "Zancadas Caminando",
         sets: 3,
         reps: "10-12 por pierna",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Pasos largos alternados, torso recto y rodilla trasera casi tocando el suelo.",
@@ -335,7 +335,7 @@ export const routines: Routine[] = [
         name: "Curl de Bíceps Clásico",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Aislamiento de bíceps con giro de muñeca arriba para máxima contracción.",
@@ -349,7 +349,7 @@ export const routines: Routine[] = [
         name: "Extensión de Tríceps sobre Cabeza",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Extensión vertical a dos manos. Codos estables y recorrido amplio.",
@@ -363,7 +363,7 @@ export const routines: Routine[] = [
         name: "Elevaciones Laterales",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Aislamiento del deltoides lateral. Eleva con codos ligeramente flexionados.",
@@ -377,7 +377,7 @@ export const routines: Routine[] = [
         name: "Zancadas Caminando",
         sets: 3,
         reps: "10-12 por pierna",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Zancadas dinámicas para terminar de fatigar piernas y glúteos.",
@@ -706,7 +706,7 @@ export const routines: Routine[] = [
         name: "Aperturas en Banco",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Aperturas profundas para aislar y estirar las fibras pectorales.",
@@ -720,7 +720,7 @@ export const routines: Routine[] = [
         name: "Elevaciones Laterales",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Deltoides lateral para amplitud de torso. Descenso en 2 segundos.",
@@ -734,7 +734,7 @@ export const routines: Routine[] = [
         name: "Curl Martillo",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Bíceps y braquiorradial. Codos pegados y tensión continua.",
@@ -748,7 +748,7 @@ export const routines: Routine[] = [
         name: "Fondos en Banco",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Fondos apoyado en banco para tríceps y porción anterior del deltoides.",
@@ -762,7 +762,7 @@ export const routines: Routine[] = [
         name: "Plancha Activa",
         sets: 3,
         reps: "45s",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Bloqueo de core frontal y glúteos para estabilidad espinal.",
@@ -836,7 +836,7 @@ export const routines: Routine[] = [
         name: "Hip Thrust en Banco",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Mancuerna sobre la cadera, eleva contrayendo glúteos 1 segundo arriba.",
@@ -850,7 +850,7 @@ export const routines: Routine[] = [
         name: "Zancadas Caminando con Mancuerna",
         sets: 3,
         reps: "12 por pierna",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Zancadas con mancuernas en mano para resistencia y equilibrio dinámico.",
@@ -864,7 +864,7 @@ export const routines: Routine[] = [
         name: "Abdominales Bicicleta",
         sets: 3,
         reps: "25",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Giro de torso coordinado codo-rodilla contralateral para oblicuos y recto abdominal.",
@@ -896,7 +896,7 @@ export const routines: Routine[] = [
         name: "Curl de Bíceps Clásico",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Supinación completa al subir. Codos estables y recorrido amplio.",
@@ -910,7 +910,7 @@ export const routines: Routine[] = [
         name: "Extensión de Tríceps sobre Cabeza",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Extensión vertical a dos manos estirando la cabeza larga del tríceps.",
@@ -924,7 +924,7 @@ export const routines: Routine[] = [
         name: "Curl Martillo",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Agarre neutro para enfatizar braquial y grosor de brazo.",
@@ -938,7 +938,7 @@ export const routines: Routine[] = [
         name: "Patada de Tríceps",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Extensión hacia atrás con parada isométrica de 1 segundo en el bloqueo.",
@@ -952,7 +952,7 @@ export const routines: Routine[] = [
         name: "Elevaciones Laterales",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Elevaciones estrictas sin impulso. Cabeza lateral del deltoides.",
@@ -966,7 +966,7 @@ export const routines: Routine[] = [
         name: "Pájaro / Deltoides Posterior",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Torso inclinado, eleva los brazos lateralmente para deltoides posterior y trapecio.",
@@ -980,7 +980,7 @@ export const routines: Routine[] = [
         name: "Fondos en Banco",
         sets: 3,
         reps: "Al fallo",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Remate de tríceps con el peso corporal hasta agotar las fibras.",
@@ -1012,7 +1012,7 @@ export const routines: Routine[] = [
         name: "Dumbbell Thrusters",
         sets: 3,
         reps: "12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Sentadilla y press de hombros fluido en un solo movimiento coordinado.",
@@ -1026,7 +1026,7 @@ export const routines: Routine[] = [
         name: "Remo a una Mano",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description: "Remo unilateral con mancuerna para espalda media y dorsales.",
         tempo: "2 - 1 - 2 - 0",
@@ -1039,7 +1039,7 @@ export const routines: Routine[] = [
         name: "Sentadilla Goblet",
         sets: 3,
         reps: "12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Sentadilla profunda con mancuerna al pecho. Piernas y glúteos.",
@@ -1053,7 +1053,7 @@ export const routines: Routine[] = [
         name: "Press de Banca Plano",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Empuje de pecho con mancuernas para fuerza de torso.",
@@ -1067,7 +1067,7 @@ export const routines: Routine[] = [
         name: "Peso Muerto con Mancuernas",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description: "Cadena posterior y zona lumbar con mancuernas.",
         tempo: "3 - 1 - 2 - 0",
@@ -1080,7 +1080,7 @@ export const routines: Routine[] = [
         name: "Curl de Bíceps",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description: "Aislamiento de brazos y bíceps con mancuernas.",
         tempo: "2 - 0 - 2 - 0",
@@ -1095,7 +1095,7 @@ export const routines: Routine[] = [
         name: "Flexiones Clásicas",
         sets: 3,
         reps: "15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description: "Empuje pectoral estricto con el propio peso corporal.",
         tempo: "2 - 0 - 2 - 0",
@@ -1108,7 +1108,7 @@ export const routines: Routine[] = [
         name: "Sentadillas Libres con Salto",
         sets: 3,
         reps: "15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description: "Sentadillas profundas y dinámicas para cuádriceps y glúteos.",
         tempo: "Explosivo",
@@ -1121,7 +1121,7 @@ export const routines: Routine[] = [
         name: "Zancadas Caminando",
         sets: 3,
         reps: "12 por pierna",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description: "Pasos largos y control unilateral de piernas.",
         tempo: "2 - 0 - 2 - 0",
@@ -1134,7 +1134,7 @@ export const routines: Routine[] = [
         name: "Flexiones Inclinadas en Banco",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description: "Apoyo en banco o superficie para remate pectoral y tríceps.",
         tempo: "2 - 0 - 2 - 0",
@@ -1147,7 +1147,7 @@ export const routines: Routine[] = [
         name: "Mountain Climbers",
         sets: 3,
         reps: "45s",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description: "Escaladores dinámicos para core y resistencia metabólica.",
         tempo: "Rápido",
@@ -1160,7 +1160,7 @@ export const routines: Routine[] = [
         name: "Plancha Isométrica",
         sets: 3,
         reps: "45s",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description: "Bloqueo total de abdomen y lumbares sobre antebrazos.",
         tempo: "Estático",
@@ -1490,7 +1490,7 @@ export const routines: Routine[] = [
         name: "Press de Banca Plano",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Empuje horizontal con mancuernas. Mantén los codos a 45 grados y núcleo estable.",
@@ -1504,7 +1504,7 @@ export const routines: Routine[] = [
         name: "Aperturas en Banco",
         sets: 3,
         reps: "12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Aperturas con mancuernas manteniendo una ligera flexión de codos para aislar el pectoral.",
@@ -1518,7 +1518,7 @@ export const routines: Routine[] = [
         name: "Dumbbell Floor Press",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Press en el suelo con mancuernas. Pausa de 1 segundo al tocar el suelo con los tríceps.",
@@ -1532,7 +1532,7 @@ export const routines: Routine[] = [
         name: "Remo a una Mano",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Tracción unilateral apoyado en banco. Lleva la mancuerna hacia la cadera apretando el dorsal.",
@@ -1560,7 +1560,7 @@ export const routines: Routine[] = [
         name: "Renegade Row con Mancuernas",
         sets: 3,
         reps: "10 por lado",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "En posición de plancha sobre mancuernas, rema alternando brazos sin rotar la cadera.",
@@ -1574,7 +1574,7 @@ export const routines: Routine[] = [
         name: "Press Militar Sentado",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Press de hombros vertical con mancuernas. Codos ligeramente adelantados.",
@@ -1588,7 +1588,7 @@ export const routines: Routine[] = [
         name: "Elevaciones Laterales",
         sets: 3,
         reps: "12-15",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Abducción de hombros con mancuernas. Eleva hasta la horizontal con control.",
@@ -1602,7 +1602,7 @@ export const routines: Routine[] = [
         name: "Pájaro / Deltoides Posterior",
         sets: 3,
         reps: "12-15",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Inclinado hacia adelante, eleva mancuernas hacia los lados focalizando deltoides posterior.",
@@ -1616,7 +1616,7 @@ export const routines: Routine[] = [
         name: "Curl de Bíceps Clásico",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Flexión de codos con supinación. Mantén los codos pegados al torso.",
@@ -1630,7 +1630,7 @@ export const routines: Routine[] = [
         name: "Curl Martillo",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Agarre neutro (palmas enfrentadas) para incidir en el braquial y antebrazo.",
@@ -1644,7 +1644,7 @@ export const routines: Routine[] = [
         name: "Extensión de Tríceps sobre Cabeza",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Extensión vertical de tríceps. Codos cerrados apuntando al techo.",
@@ -1658,7 +1658,7 @@ export const routines: Routine[] = [
         name: "Patada de Tríceps",
         sets: 3,
         reps: "12",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Torso inclinado, extiende el codo hacia atrás apretando el tríceps arriba.",
@@ -1672,7 +1672,7 @@ export const routines: Routine[] = [
         name: "Sentadilla Goblet",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Mancuerna pegada al pecho, desciende profundo con el torso vertical y rodillas hacia fuera.",
@@ -1686,7 +1686,7 @@ export const routines: Routine[] = [
         name: "Sentadilla Búlgara con Mancuernas",
         sets: 3,
         reps: "10 por pierna",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Pie trasero elevado en banco, desciende con control focalizando cuádriceps y glúteo.",
@@ -1700,7 +1700,7 @@ export const routines: Routine[] = [
         name: "Zancadas con Mancuernas",
         sets: 3,
         reps: "10 por pierna",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Pasos controlados con mancuernas a los lados manteniendo el torso erguido.",
@@ -1714,7 +1714,7 @@ export const routines: Routine[] = [
         name: "Hip Thrust con Mancuerna",
         sets: 3,
         reps: "12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Espalda alta en banco y mancuerna en la pelvis. Extensión completa de cadera con bloqueo arriba.",
@@ -1728,7 +1728,7 @@ export const routines: Routine[] = [
         name: "Subidas a Cajón con Mancuernas",
         sets: 3,
         reps: "10 por pierna",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Sube al banco empujando fuerte con la pierna de apoyo sin impulsarte con la trasera.",
@@ -1742,7 +1742,7 @@ export const routines: Routine[] = [
         name: "Dumbbell Thrusters",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "dumbbells",
         description:
           "Sentadilla frontal encadenada en un solo movimiento explosivo con press de hombros.",
@@ -1772,7 +1772,7 @@ export const routines: Routine[] = [
         name: "Flexiones Clásicas",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Flexiones en suelo con pecho rozando el suelo y núcleo completamente compacto.",
@@ -1786,7 +1786,7 @@ export const routines: Routine[] = [
         name: "Flexiones Explosivas",
         sets: 3,
         reps: "10",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Empuje con máxima aceleración concéntrica para desarrollar potencia pectoral.",
@@ -1800,7 +1800,7 @@ export const routines: Routine[] = [
         name: "Flexiones Inclinadas en Banco",
         sets: 3,
         reps: "15",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Manos apoyadas en banco o pared para mayor volumen y congestión pectoral.",
@@ -1814,7 +1814,7 @@ export const routines: Routine[] = [
         name: "Fondos en Banco para Tríceps",
         sets: 3,
         reps: "12-15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Manos al borde del banco y piernas extendidas, flexiona codos a 90 grados y empuja.",
@@ -1828,7 +1828,7 @@ export const routines: Routine[] = [
         name: "Sentadillas Libres",
         sets: 3,
         reps: "20",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Sentadillas de peso corporal profundas manteniendo espalda recta y ritmo constante.",
@@ -1842,7 +1842,7 @@ export const routines: Routine[] = [
         name: "Sentadillas con Salto",
         sets: 3,
         reps: "15",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Sentadilla profunda terminando con salto vertical explosivo y recepción suave.",
@@ -1856,7 +1856,7 @@ export const routines: Routine[] = [
         name: "Zancadas Caminando",
         sets: 3,
         reps: "12 por pierna",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Zancadas dinámicas avanzando con paso firme, rodilla trasera rozando el suelo.",
@@ -1870,7 +1870,7 @@ export const routines: Routine[] = [
         name: "Zancadas con Salto",
         sets: 3,
         reps: "10 por pierna",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Zancadas alternadas en el aire con potencia pliométrica de piernas.",
@@ -1884,7 +1884,7 @@ export const routines: Routine[] = [
         name: "Wall Sit Isométrico",
         sets: 3,
         reps: "45s",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Espalda apoyada en la pared con rodillas flexionadas a 90 grados. Trabajo estático.",
@@ -1898,7 +1898,7 @@ export const routines: Routine[] = [
         name: "Puente de Glúteo en Suelo",
         sets: 3,
         reps: "15-20",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Tumbado boca arriba, eleva la pelvis contrayendo glúteos al máximo arriba durante 1 segundo.",
@@ -1912,7 +1912,7 @@ export const routines: Routine[] = [
         name: "Burpees Clásicos",
         sets: 3,
         reps: "10-12",
-        restSeconds: 60,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Cuerpo a tierra completo, recogida rápida de pies y salto con palmada sobre cabeza.",
@@ -1926,7 +1926,7 @@ export const routines: Routine[] = [
         name: "Mountain Climbers",
         sets: 3,
         reps: "40s",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "En plancha alta, lleva rodillas al pecho alternadamente a máxima velocidad.",
@@ -1940,7 +1940,7 @@ export const routines: Routine[] = [
         name: "Plank Jacks en Suelo",
         sets: 3,
         reps: "40s",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Desde posición de plancha, abre y cierra pies de forma dinámica sin subir la cadera.",
@@ -1954,7 +1954,7 @@ export const routines: Routine[] = [
         name: "Plancha Isométrica de Antebrazos",
         sets: 3,
         reps: "45s",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Apoyo sobre antebrazos, cuerpo alineado de cabeza a talones con abdomen y glúteos tensos.",
@@ -1968,7 +1968,7 @@ export const routines: Routine[] = [
         name: "Elevaciones de Piernas para Abdomen",
         sets: 3,
         reps: "12-15",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Tumbado boca arriba, sube las piernas juntas a 90 grados y baja despacio sin tocar el suelo.",
@@ -1982,7 +1982,7 @@ export const routines: Routine[] = [
         name: "Abdominales Bicicleta / Crunch",
         sets: 3,
         reps: "20 totales",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Lleva el codo hacia la rodilla contraria alternando giros con contracción oblicua.",
@@ -2010,7 +2010,7 @@ export const routines: Routine[] = [
         name: "High Knees",
         sets: 3,
         reps: "30s",
-        restSeconds: 45,
+        restSeconds: 75,
         equipment: "bodyweight",
         description:
           "Carrera en el sitio elevando rodillas a la altura de la cintura con braceo potente.",
@@ -2096,7 +2096,7 @@ export const warmUpExercises = [
     name: "Plancha Jack",
     sets: 1,
     reps: "30s",
-    restSeconds: 60,
+    restSeconds: 75,
     equipment: "bodyweight" as const,
     description: "Core activado, pies abren y cierran sin mover los hombros.",
     image: getImg("plank_jack"),
@@ -2106,7 +2106,7 @@ export const warmUpExercises = [
     name: "Sentadillas libres",
     sets: 1,
     reps: "15",
-    restSeconds: 60,
+    restSeconds: 75,
     equipment: "bodyweight" as const,
     description: "Calentamiento dinámico de tren inferior y apertura de cadera.",
     image: getImg("bodyweight_squats"),
@@ -2116,7 +2116,7 @@ export const warmUpExercises = [
     name: "Flexiones (pared/banco)",
     sets: 1,
     reps: "10",
-    restSeconds: 60,
+    restSeconds: 75,
     equipment: "bodyweight" as const,
     description: "Activación suave de pecho, hombros y tríceps.",
     image: getImg("wall_bench_push"),
@@ -2126,7 +2126,7 @@ export const warmUpExercises = [
     name: "Jumping Jacks",
     sets: 1,
     reps: "30s",
-    restSeconds: 60,
+    restSeconds: 75,
     equipment: "bodyweight" as const,
     description: "Elevación progresiva del ritmo cardíaco.",
     image: getImg("jumping_jacks"),
