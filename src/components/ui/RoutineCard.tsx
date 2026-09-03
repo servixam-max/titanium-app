@@ -60,17 +60,17 @@ export default function RoutineCard({
       onClick={onClick}
       className={`group relative ${
         isCompletedToday
-          ? "bg-[#0c1410]/90 border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
-          : `bg-[#101014]/90 hover:bg-[#15151c] border-white/10 ${style.border}`
+          ? "bg-[#0b1512]/95 border-emerald-500/50 shadow-[0_0_20px_rgba(0,245,155,0.15)]"
+          : `bg-gradient-to-br from-[#121620] to-[#151b28] hover:border-primary/40 border-white/10 ${style.border}`
       } backdrop-blur-xl rounded-2xl border p-3.5 transition-all duration-300 cursor-pointer shadow-lg overflow-hidden`}
     >
       {/* Subtle top ambient glow strip */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-container/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       <div className="flex items-center gap-3 relative z-10">
         {/* Cover Thumbnail */}
         {routine.coverImage && (
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0 relative group-hover:border-primary-container/40 transition-colors">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0 relative group-hover:border-primary/50 transition-colors">
             <ExerciseImage
               src={routine.coverImage}
               alt={routine.title}
@@ -84,10 +84,10 @@ export default function RoutineCard({
         {/* Center Info */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-primary-container text-black shadow-[0_0_8px_rgba(204,255,0,0.3)]">
+            <span className="font-mono text-[10px] font-black tracking-wider px-2 py-0.5 rounded-full bg-primary text-black shadow-neon">
               {dayBadge}
             </span>
-            <span className={`text-[9px] font-label-caps px-2 py-0.5 rounded-full border ${style.badge} uppercase font-bold tracking-wider`}>
+            <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full border ${style.badge} uppercase font-bold tracking-wider`}>
               {routine.equipment || "MANCUERNAS"}
             </span>
             {isCompletedToday && (
@@ -98,18 +98,18 @@ export default function RoutineCard({
             )}
           </div>
 
-          <h3 className="font-headline-sm text-sm sm:text-base text-white font-bold tracking-wide truncate group-hover:text-primary-container transition-colors">
+          <h3 className="font-mono text-sm sm:text-base text-white font-bold tracking-tight truncate group-hover:text-primary transition-colors">
             {routine.title}
           </h3>
 
           <div className="flex items-center gap-2.5 text-xs text-zinc-400">
             <span className="flex items-center gap-1 font-mono text-[11px]">
-              <Clock className="w-3 h-3 text-primary-container" />
+              <Clock className="w-3 h-3 text-cyan-400" />
               {routine.duration}
             </span>
             <span className="text-zinc-600">•</span>
             <span className="flex items-center gap-1 font-mono text-[11px]">
-              <Layers className="w-3 h-3 text-primary-container" />
+              <Layers className="w-3 h-3 text-primary" />
               {routine.exercises.length} ej ({totalSets}s)
             </span>
           </div>

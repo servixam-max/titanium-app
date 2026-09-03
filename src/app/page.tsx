@@ -64,7 +64,7 @@ function calculateStreak(sessions: WorkoutSession[]) {
 
 export default function Dashboard() {
   const router = useRouter();
-  const { activeWorkout, audioMode, voiceRate, sessions: storeSessions } = useAppStore();
+  const { activeWorkout, audioMode, voiceRate, sessions: storeSessions, currentUser } = useAppStore();
   const [audioWarmedUp, setAudioWarmedUp] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("all");
   const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
@@ -89,8 +89,8 @@ export default function Dashboard() {
     setAudioMode(audioMode);
     setVoiceRate(voiceRate);
 
-    // Load streak & weekly stats from IndexedDB or store
-    getSessions().then((sessions) => {
+    // Load streak & weekly stats from IndexedDB scoped to user
+    getSessions(currentUser?.id).then((sessions) => {
       const allSessions = sessions && sessions.length > 0 ? sessions : storeSessions;
       setSessionsList(allSessions);
       setStreakCount(calculateStreak(allSessions));
@@ -185,10 +185,10 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="relative flex-shrink-0 flex flex-col gap-2.5 bg-[#111116]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-3.5 shadow-[0_10px_35px_rgba(0,0,0,0.6)] overflow-hidden group"
+          className="relative flex-shrink-0 flex flex-col gap-2.5 bg-gradient-to-br from-[#121622] to-[#151b2a] backdrop-blur-2xl border border-primary/30 rounded-3xl p-4 shadow-2xl overflow-hidden group"
         >
           {/* Subtle animated border top */}
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-container/60 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
 
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0 z-10">
@@ -196,21 +196,21 @@ export default function Dashboard() {
                 <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
                   FORTIXAM v{APP_VERSION}
                 </span>
-                <Sparkles className="w-3 h-3 text-primary-container animate-pulse" />
+                <Sparkles className="w-3 h-3 text-primary animate-pulse" />
               </div>
-              <h2 className="font-headline-md text-lg sm:text-xl font-bold truncate text-white mt-0.5 tracking-tight">
-                ¡{greeting}, xam!
+              <h2 className="font-mono text-lg sm:text-xl font-black truncate text-white mt-0.5 tracking-tight capitalize">
+                ¡{greeting}, {currentUser?.username || "Atleta"}!
               </h2>
             </div>
 
             {/* Streak Counter */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/60 border border-primary-container/40 flex-shrink-0 shadow-[0_0_15px_rgba(204,255,0,0.15)] z-10">
-              <Flame className="w-4 h-4 text-primary-container fill-primary-container animate-pulse" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-black/60 border border-primary/40 flex-shrink-0 shadow-[0_0_15px_rgba(0,245,155,0.2)] z-10">
+              <Flame className="w-4 h-4 text-primary fill-primary animate-pulse" />
               <div className="flex flex-col">
-                <span className="font-bold text-primary-container text-base leading-none font-mono">
+                <span className="font-black text-primary text-base leading-none font-mono">
                   {streakCount}
                 </span>
-                <span className="text-[8px] font-label-caps text-zinc-400 uppercase tracking-tighter font-bold">
+                <span className="text-[8px] font-mono text-zinc-400 uppercase tracking-tighter font-bold">
                   {streakCount === 1 ? "Día" : "Días"}
                 </span>
               </div>
@@ -218,7 +218,7 @@ export default function Dashboard() {
           </div>
 
           {/* Weekly Consistency Tracker */}
-          <div className="pt-2 border-t border-white/5 flex items-center justify-between">
+          <div className="pt-2.5 border-t border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               {["L", "M", "X", "J", "V", "S", "D"].map((dayName, idx) => {
                 const trained = stats.weeklyDays[idx];
@@ -226,11 +226,11 @@ export default function Dashboard() {
                 return (
                   <div
                     key={dayName}
-                    className={`w-7 h-7 rounded-lg flex flex-col items-center justify-center text-[10px] font-mono font-bold transition-all ${
+                    className={`w-7 h-7 rounded-xl flex flex-col items-center justify-center text-[10px] font-mono font-bold transition-all ${
                       trained
-                        ? "bg-primary-container text-black shadow-[0_0_8px_rgba(204,255,0,0.4)]"
+                        ? "bg-primary text-black shadow-neon"
                         : isToday
-                          ? "border border-primary-container/80 text-primary-container bg-primary-container/10"
+                          ? "border border-primary/80 text-primary bg-primary/10"
                           : "bg-white/5 text-zinc-500 border border-white/5"
                     }`}
                     title={`${dayName}: ${trained ? "Completado" : isToday ? "Hoy" : "Pendiente"}`}
@@ -243,10 +243,10 @@ export default function Dashboard() {
 
             {/* Micro Stats */}
             <div className="flex items-center gap-2 font-mono text-[10px] text-zinc-400 pl-2">
-              <span className="bg-white/5 px-2 py-1 rounded-md border border-white/5">
+              <span className="bg-white/5 px-2 py-1 rounded-lg border border-white/5">
                 ⚡ <strong className="text-white">{stats.totalWorkouts}</strong>
               </span>
-              <span className="bg-white/5 px-2 py-1 rounded-md border border-white/5">
+              <span className="bg-white/5 px-2 py-1 rounded-lg border border-white/5">
                 ⏱️ <strong className="text-white">{stats.totalMinutes}m</strong>
               </span>
             </div>
@@ -261,16 +261,16 @@ export default function Dashboard() {
         >
           <Link
             href="/warmup"
-            className="flex-shrink-0 h-[52px] bg-[#111116]/80 hover:bg-[#16161d] border border-primary-container/30 hover:border-primary-container/60 rounded-xl flex items-center gap-3 px-3.5 active:scale-98 transition-all shadow-md group"
+            className="flex-shrink-0 h-[52px] bg-[#121622] hover:bg-[#161c28] border border-white/10 hover:border-cyan-500/40 rounded-2xl flex items-center gap-3 px-3.5 active:scale-98 transition-all shadow-md group"
           >
-            <div className="w-8 h-8 rounded-lg bg-primary-container/15 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-container group-hover:text-black transition-colors">
-              <Zap className="w-4 h-4 text-primary-container group-hover:text-black transition-colors" />
+            <div className="w-8 h-8 rounded-xl bg-cyan-500/15 flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-400 group-hover:text-black transition-colors">
+              <Zap className="w-4 h-4 text-cyan-400 group-hover:text-black transition-colors" />
             </div>
             <div className="flex-1 min-w-0">
-              <span className="font-body-md text-sm font-bold text-white group-hover:text-primary-container block truncate transition-colors">
-                Calentamiento Rápido
+              <span className="font-mono text-xs font-bold text-white group-hover:text-cyan-400 block truncate transition-colors">
+                Calentamiento y Movilidad Articular
               </span>
-              <span className="font-label-caps text-[10px] text-zinc-400">
+              <span className="font-mono text-[10px] text-zinc-400">
                 {warmUpExercises.length} ejercicios · 60s por ejercicio
               </span>
             </div>
@@ -337,16 +337,16 @@ export default function Dashboard() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id as CategoryFilter)}
-                className={`relative px-3.5 py-1.5 rounded-full text-xs font-label-caps whitespace-nowrap transition-all duration-200 active:scale-95 ${
+                className={`relative px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 active:scale-95 ${
                   isSelected
                     ? "text-black font-bold"
-                    : "text-zinc-400 hover:text-white bg-zinc-900/80 border border-white/10"
+                    : "text-zinc-400 hover:text-white bg-[#121620] border border-white/10"
                 }`}
               >
                 {isSelected && (
                   <motion.div
                     layoutId="active-category-chip"
-                    className="absolute inset-0 bg-primary-container rounded-full shadow-[0_0_12px_rgba(204,255,0,0.3)] -z-10"
+                    className="absolute inset-0 bg-primary rounded-xl shadow-neon -z-10"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -358,9 +358,9 @@ export default function Dashboard() {
 
         {/* Routines List - scrollable */}
         <div className="flex-1 min-h-0 flex flex-col">
-          <div className="flex items-center justify-between mb-1.5">
-            <h3 className="font-headline-sm text-sm font-bold border-l-3 border-primary-container pl-2 text-white">
-              Rutinas ({filteredRoutines.length})
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-mono text-xs font-bold uppercase tracking-wider border-l-2 border-primary pl-2 text-white">
+              Rutinas Disponibles ({filteredRoutines.length})
             </h3>
             {selectedCategory !== "all" && (
               <button

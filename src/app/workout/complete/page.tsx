@@ -128,15 +128,15 @@ export default function WorkoutComplete() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="font-headline-lg text-2xl sm:text-3xl text-primary-container font-bold tracking-tight mb-0.5 drop-shadow-[0_0_15px_rgba(204,255,0,0.3)]"
+          className="font-mono text-2xl sm:text-3xl text-white font-black tracking-tight mb-0.5 drop-shadow-[0_0_15px_rgba(0,245,155,0.4)] uppercase"
         >
-          ¡Entrenamiento completado!
+          ¡SESIÓN COMPLETADA!
         </motion.h2>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15 }}
-          className="text-xs text-zinc-400 mb-4"
+          className="text-xs font-mono text-primary mb-4 uppercase tracking-wider"
         >
           {routineTitle}
         </motion.p>
@@ -146,10 +146,10 @@ export default function WorkoutComplete() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="flex items-center gap-2 mb-4 px-3.5 py-1.5 bg-primary-container/15 border border-primary-container/40 rounded-full shadow-[0_0_12px_rgba(204,255,0,0.2)]"
+            className="flex items-center gap-2 mb-4 px-3.5 py-1.5 bg-primary/15 border border-primary/40 rounded-full shadow-[0_0_12px_rgba(0,245,155,0.2)]"
           >
-            <Sparkles className="w-3.5 h-3.5 text-primary-container" />
-            <span className="text-primary-container font-bold text-xs">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            <span className="text-primary font-mono font-bold text-xs uppercase">
               {pbVolume && pbDuration
                 ? "¡Nuevos récords personales!"
                 : pbVolume
@@ -169,33 +169,35 @@ export default function WorkoutComplete() {
             icon={Clock}
             label="Duración"
             value={`${minutes}:${seconds.toString().padStart(2, "0")}`}
+            color="text-cyan-400"
           />
-          <StatBox icon={Hash} label="Series" value={String(totalSets)} />
+          <StatBox icon={Hash} label="Series" value={String(totalSets)} color="text-primary" />
           <StatBox
             icon={Dumbbell}
             label="Volumen"
-            value={`${Math.round(totalVolume)}kg`}
+            value={`${Math.round(totalVolume)} kg`}
+            color="text-cyan-400"
           />
-          <StatBox icon={Calendar} label="Reps" value={String(totalReps)} />
+          <StatBox icon={Calendar} label="Reps" value={String(totalReps)} color="text-primary" />
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="w-full space-y-2"
+          className="w-full space-y-2.5"
         >
           <button
             onClick={() => router.push("/history")}
-            className="w-full h-[50px] bg-primary-container text-black font-bold rounded-xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-[0_0_20px_rgba(204,255,0,0.3)] text-sm uppercase tracking-wider"
+            className="w-full h-12 bg-primary text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-neon cursor-pointer"
           >
-            <Calendar className="w-4 h-4" /> Ver historial de entrenos
+            <Calendar className="w-4 h-4" /> Ver Historial Completo
           </button>
           <button
             onClick={() => router.push("/")}
-            className="w-full h-[46px] bg-[#111116] hover:bg-[#16161d] text-zinc-300 hover:text-white font-bold rounded-xl border border-white/10 flex items-center justify-center gap-2 active:scale-98 transition-all text-sm"
+            className="w-full h-11 bg-[#121622] hover:bg-[#161c28] text-zinc-300 hover:text-white font-mono font-bold rounded-2xl border border-white/10 flex items-center justify-center gap-2 active:scale-98 transition-all text-xs uppercase tracking-wider cursor-pointer"
           >
-            <Home className="w-4 h-4" /> Volver al inicio
+            <Home className="w-4 h-4" /> Volver al Inicio
           </button>
         </motion.div>
       </main>
@@ -207,18 +209,22 @@ function StatBox({
   icon: Icon,
   label,
   value,
+  color = "text-primary",
 }: {
   icon: React.ElementType;
   label: string;
   value: string;
+  color?: string;
 }) {
   return (
-    <div className="bg-[#111116]/90 border border-white/10 rounded-2xl p-3 flex flex-col items-center justify-center backdrop-blur-xl shadow-md">
-      <Icon className="w-4 h-4 text-primary-container mb-1" />
-      <span className="text-zinc-400 text-[10px] font-label-caps uppercase font-bold tracking-wider">
+    <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-white/10 rounded-2xl p-3 flex flex-col items-center justify-center shadow-lg">
+      <Icon className={`w-4 h-4 ${color} mb-1`} />
+      <span className="text-zinc-400 text-[10px] font-mono uppercase font-bold tracking-wider">
         {label}
       </span>
-      <span className="text-white font-mono font-bold text-lg">{value}</span>
+      <span className="text-lg font-black font-mono text-white mt-0.5">
+        {value}
+      </span>
     </div>
   );
 }

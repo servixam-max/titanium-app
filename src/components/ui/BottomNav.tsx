@@ -19,7 +19,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 w-full z-30 bg-[#0c0c0e]/95 backdrop-blur-2xl border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.8)] max-w-app left-1/2 -translate-x-1/2 pb-[env(safe-area-inset-bottom,0px)]">
+    <nav className="fixed bottom-0 w-full z-30 bg-[#090c12]/95 backdrop-blur-2xl border-t border-white/10 shadow-[0_-10px_35px_rgba(0,0,0,0.8)] max-w-app left-1/2 -translate-x-1/2 pb-[env(safe-area-inset-bottom,0px)]">
       <div className="flex justify-around items-center h-[70px] px-3 relative">
         {navItems.map((item) => {
           const isActive =
@@ -34,14 +34,14 @@ export default function BottomNav() {
               href={item.href}
               className={`relative flex flex-col items-center justify-center h-12 w-16 gap-1 transition-colors duration-200 ${
                 isActive
-                  ? "text-primary-container font-bold"
+                  ? "text-primary font-bold"
                   : "text-zinc-400 hover:text-zinc-200"
               }`}
             >
               {isActive && (
                 <motion.div
                   layoutId="active-nav-indicator"
-                  className="absolute -top-1 w-8 h-1 bg-primary-container rounded-full shadow-[0_0_8px_#ccff00]"
+                  className="absolute -top-1 w-9 h-1 bg-gradient-to-r from-cyan-400 via-emerald-400 to-primary rounded-full shadow-[0_0_12px_rgba(0,245,155,0.8)]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}

@@ -277,25 +277,25 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               damping: 30,
               duration: isMobile ? undefined : 0.25,
             }}
-            className="relative w-full h-full md:h-auto md:max-w-app bg-surface md:rounded-2xl shadow-2xl md:max-h-[85vh] flex flex-col overflow-hidden"
+            className="relative w-full h-full md:h-auto md:max-w-app bg-[#0b0e14] md:rounded-3xl border border-white/10 shadow-2xl md:max-h-[85vh] flex flex-col overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="settings-title"
           >
             {/* Header */}
-            <div className="sticky top-0 bg-surface border-b border-surface-container-highest p-container-padding flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-[#0e121a]/95 backdrop-blur-md border-b border-white/10 p-container-padding flex items-center justify-between z-10">
               <div className="flex items-center gap-3">
-                <Settings className="w-5 h-5 text-primary-container hidden md:block" />
+                <Settings className="w-5 h-5 text-primary hidden md:block" />
                 <h2
                   id="settings-title"
-                  className="font-headline-md text-headline-md text-primary-container"
+                  className="font-mono text-base font-black text-white uppercase tracking-wider"
                 >
-                  AJUSTES
+                  AJUSTES DEL SISTEMA
                 </h2>
               </div>
               <button
                 onClick={onClose}
-                className="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface hover:bg-surface-container-highest active:scale-95 transition-all"
+                className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
                 aria-label="Cerrar ajustes"
               >
                 <X className="w-5 h-5" />
@@ -345,37 +345,37 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 <section className="flex flex-col gap-stack-gap">
                   <SectionHeader
                     icon={<Music className="w-4 h-4" />}
-                    label="Audio"
+                    label="Audio y Sonidos"
                   />
                   <button
                     onClick={toggleAudio}
-                    className={`w-full h-touch-target-min rounded-xl border-2 flex items-center justify-between px-4 transition-all active:scale-95 ${
+                    className={`w-full h-touch-target-min rounded-2xl border flex items-center justify-between px-4 transition-all active:scale-95 ${
                       audioEnabled
-                        ? "border-primary-container bg-primary-container/10"
-                        : "border-surface-container-highest bg-surface-container-low"
+                        ? "border-primary/40 bg-primary/10 shadow-[0_0_15px_rgba(0,245,155,0.15)]"
+                        : "border-white/10 bg-[#121620]"
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       {audioEnabled ? (
-                        <Volume2 className="w-6 h-6 text-primary-container" />
+                        <Volume2 className="w-6 h-6 text-primary" />
                       ) : (
-                        <VolumeX className="w-6 h-6 text-on-surface-variant" />
+                        <VolumeX className="w-6 h-6 text-zinc-400" />
                       )}
-                      <span className="font-body-md text-body-md font-bold">
+                      <span className="font-mono text-sm font-bold text-white">
                         {audioEnabled
-                          ? "Sonidos Activados"
-                          : "Sonidos Desactivados"}
+                          ? "Efectos y Voz Activados"
+                          : "Efectos y Voz Desactivados"}
                       </span>
                     </div>
                     <div
                       className={`w-12 h-7 rounded-full p-1 transition-colors ${
                         audioEnabled
-                          ? "bg-primary-container"
-                          : "bg-surface-container-highest"
+                          ? "bg-primary shadow-neon"
+                          : "bg-white/10"
                       }`}
                     >
                       <div
-                        className={`w-5 h-5 rounded-full bg-background transition-transform ${
+                        className={`w-5 h-5 rounded-full bg-black transition-transform ${
                           audioEnabled ? "translate-x-5" : "translate-x-0"
                         }`}
                       />
@@ -695,25 +695,25 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 <section className="flex flex-col gap-stack-gap">
                   <SectionHeader
                     icon={<BarChart3 className="w-4 h-4" />}
-                    label="Estadísticas"
+                    label="Información y Estadísticas"
                   />
-                  <div className="grid grid-cols-2 gap-stack-gap">
-                    <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-stack-gap text-center">
-                      <Dumbbell className="w-6 h-6 text-primary-container mx-auto mb-2" />
-                      <span className="font-headline-lg text-headline-lg text-primary-container">
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-cyan-500/20 rounded-2xl p-4 text-center shadow-lg">
+                      <Dumbbell className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
+                      <span className="font-mono text-2xl font-black text-white block">
                         {sessions.length}
                       </span>
-                      <p className="font-label-caps text-label-caps text-on-surface-variant mt-1">
+                      <p className="font-mono text-[10px] font-bold text-cyan-400 uppercase tracking-wider mt-1">
                         ENTRENAMIENTOS
                       </p>
                     </div>
-                    <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-stack-gap text-center">
-                      <Info className="w-6 h-6 text-primary-container mx-auto mb-2" />
-                      <span className="font-headline-lg text-headline-lg text-primary-container">
-                        v2.0
+                    <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-primary/20 rounded-2xl p-4 text-center shadow-lg">
+                      <Sparkles className="w-6 h-6 text-primary mx-auto mb-2" />
+                      <span className="font-mono text-2xl font-black text-white block">
+                        v{APP_VERSION}
                       </span>
-                      <p className="font-label-caps text-label-caps text-on-surface-variant mt-1">
-                        VERSIÓN
+                      <p className="font-mono text-[10px] font-bold text-primary uppercase tracking-wider mt-1">
+                        VERSIÓN ACTUAL
                       </p>
                     </div>
                   </div>
@@ -735,9 +735,9 @@ function SectionHeader({
   label: string;
 }) {
   return (
-    <div className="flex items-center gap-2 text-on-surface-variant">
-      <span className="text-primary-container">{icon}</span>
-      <h3 className="font-headline-md text-headline-md text-on-surface">
+    <div className="flex items-center gap-2 text-zinc-400 mb-1">
+      <span className="text-primary">{icon}</span>
+      <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-white">
         {label}
       </h3>
     </div>
