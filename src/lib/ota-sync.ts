@@ -44,23 +44,57 @@ export async function findWorkingServer(): Promise<string> {
   );
 }
 
+const GITHUB_OTA_URL =
+  "https://raw.githubusercontent.com/servixam-max/titanium-app/main/ota_server/version.json";
+
 export async function checkOtaUpdate(): Promise<{
   hasUpdate: boolean;
   latestVersion: string;
   downloadUrl: string;
   serverUrl: string;
 }> {
+  // 1. Primary: Global GitHub Cloud OTA (available anywhere in the world)
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(`${GITHUB_OTA_URL}?t=${Date.now()}`, {
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      const latestVersion = String(data.version || "").trim();
+      const hasUpdate = Boolean(latestVersion && latestVersion !== APP_VERSION);
+      const downloadUrl =
+        data.url ||
+        `https://github.com/servixam-max/titanium-app/releases/download/v${latestVersion}/${data.apkName || `FORTIXAM-${latestVersion}.apk`}`;
+
+      return {
+        hasUpdate,
+        latestVersion,
+        downloadUrl,
+        serverUrl: "GitHub Cloud (Global)",
+      };
+    }
+  } catch (err) {
+    logger.warn("GitHub OTA check failed, trying local server fallback:", err);
+  }
+
+  // 2. Fallback: Local PC server (Tailscale / WiFi)
   const serverUrl = await findWorkingServer();
-  const res = await fetch(`${serverUrl}/version.json`, { cache: "no-store" });
+  const res = await fetch(`${serverUrl}/version.json?t=${Date.now()}`, { cache: "no-store" });
   if (!res.ok) throw new Error("Error al leer version.json del servidor");
   const data = await res.json();
 
   const latestVersion = String(data.version || "").trim();
   const hasUpdate = Boolean(latestVersion && latestVersion !== APP_VERSION);
   
-  // Build download URL using version-specific APK name with timestamp to avoid browser caching
   const apkFileName = data.apkName || `FORTIXAM-${latestVersion || "latest"}.apk`;
-  const downloadUrl = `${serverUrl}/${apkFileName}?t=${Date.now()}`;
+  const downloadUrl = data.url?.startsWith("http")
+    ? data.url
+    : `${serverUrl}/${apkFileName}?t=${Date.now()}`;
 
   return {
     hasUpdate,
