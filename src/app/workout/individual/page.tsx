@@ -15,6 +15,7 @@ import {
   SkipForward,
   Clock,
   RotateCcw,
+  Zap,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import ExerciseImage from "@/components/ui/ExerciseImage";
@@ -75,14 +76,18 @@ export default function IndividualWorkout() {
   const currentSet = activeWorkout.currentSet;
   const currentExercise = routine?.exercises[currentExerciseIndex];
 
-  // Load start exercise index from URL or store
+  // Redirect if workout just finished or no routine
   useEffect(() => {
+    if (activeWorkout.justFinished && activeWorkout.session?.completed) {
+      router.push("/workout/complete");
+      return;
+    }
     if (!routine) {
       router.push("/");
       return;
     }
 
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && !startIndexLoaded) {
       const params = new URLSearchParams(window.location.search);
       const startIndex =
         Number(params.get("exercise")) ||
@@ -92,7 +97,7 @@ export default function IndividualWorkout() {
       setStartIndexLoaded(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routine, router]);
+  }, [routine, activeWorkout.justFinished, activeWorkout.session?.completed, router]);
 
   // Sync local rest display from store
   useEffect(() => {
@@ -234,20 +239,28 @@ export default function IndividualWorkout() {
       }
     }
 
+    const isLastExercise = currentExerciseIndex >= totalExercises - 1;
+    const isWorkoutFinishing = isLastSet && isLastExercise;
+
+    if (isWorkoutFinishing) {
+      if (audioEnabled) announceWorkoutComplete();
+      haptics.complete();
+      completeSet(
+        currentExerciseIndex,
+        currentSet,
+        undefined,
+        reps,
+      );
+      router.push("/workout/complete");
+      return;
+    }
+
     completeSet(
       currentExerciseIndex,
       currentSet,
       undefined,
       reps,
     );
-
-    if (isLastSet && currentExerciseIndex >= totalExercises - 1) {
-      if (audioEnabled) announceWorkoutComplete();
-      haptics.complete();
-      finishWorkout();
-      router.push("/workout/complete");
-      return;
-    }
 
     // Halfway workout announcement
     const halfwayIndex = Math.floor(totalExercises / 2);
@@ -279,6 +292,13 @@ export default function IndividualWorkout() {
     }
   };
 
+  const handleManualFinish = async () => {
+    if (audioEnabled) announceWorkoutComplete();
+    haptics.complete();
+    await finishWorkout();
+    router.push("/workout/complete");
+  };
+
   const handleRepeatLastSet = () => {
     const targetSet = Math.max(1, currentSet - 1);
     useAppStore.getState().setWorkoutSet(targetSet);
@@ -300,12 +320,16 @@ export default function IndividualWorkout() {
     setShowExitConfirm(true);
   };
 
-  const handleExit = (save: boolean) => {
-    if (!save) {
+  const handleExit = async (save: boolean) => {
+    if (save) {
+      await finishWorkout();
+      setShowExitConfirm(false);
+      router.push("/workout/complete");
+    } else {
       cancelWorkout();
+      setShowExitConfirm(false);
+      router.push("/");
     }
-    setShowExitConfirm(false);
-    router.push("/");
   };
 
   const skipRestNow = () => {
@@ -415,15 +439,76 @@ export default function IndividualWorkout() {
           />
         </div>
 
-        <div className="flex-shrink-0 flex items-stretch justify-between gap-2">
-          <div className="flex-1 flex flex-col bg-surface-container-high border border-surface-container-highest rounded-xl px-4 py-2.5">
-            <span className="text-on-surface-variant font-label-caps text-[11px] mb-0.5">
-              {currentExercise.sets} series · {currentExercise.reps} reps ·{" "}
-              {currentExercise.restSeconds}s descanso
-            </span>
-            <span className="font-headline-sm text-headline-sm text-primary-container truncate">
+        {/* Large Illuminated Exercise HUD */}
+        <div className="flex-shrink-0 flex flex-col gap-2">
+          {/* Exercise Name */}
+          <div className="bg-[#111116] border border-white/10 rounded-2xl px-4 py-2.5 flex items-center justify-between">
+            <span className="font-headline-sm text-base sm:text-lg font-bold text-white truncate drop-shadow-[0_0_10px_rgba(204,255,0,0.25)]">
               {currentExercise.name}
             </span>
+            <span className="text-[11px] font-mono font-bold text-primary-container bg-primary-container/10 px-2 py-0.5 rounded-full border border-primary-container/30">
+              {currentExerciseIndex + 1}/{totalExercises}
+            </span>
+          </div>
+
+          {/* High-Visibility Illuminated 3-Card Metrics Row */}
+          <div className="grid grid-cols-3 gap-2 w-full">
+            {/* 1. Target Reps Card (Glowing Neon Lime) */}
+            <div className="bg-[#111116] border-2 border-primary-container/70 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-[0_0_18px_rgba(204,255,0,0.25)]">
+              <span className="text-[10px] font-label-caps text-primary-container uppercase font-bold tracking-wider mb-0.5 flex items-center gap-1">
+                <Zap className="w-3 h-3 text-primary-container animate-pulse" />
+                OBJETIVO
+              </span>
+              <span className="font-mono font-black text-xl sm:text-2xl text-primary-container drop-shadow-[0_0_10px_rgba(204,255,0,0.6)]">
+                {currentExercise.reps}
+              </span>
+              <span className="text-[9px] font-label-caps text-zinc-400 font-bold uppercase">
+                repeticiones
+              </span>
+            </div>
+
+            {/* 2. Current Set Card */}
+            <div className="bg-[#111116] border border-white/15 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-md">
+              <span className="text-[10px] font-label-caps text-zinc-400 uppercase font-bold tracking-wider mb-0.5">
+                SERIE
+              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="font-mono font-black text-xl sm:text-2xl text-white">
+                  {currentSet}
+                </span>
+                <span className="font-mono font-bold text-sm text-zinc-400">
+                  / {currentExercise.sets}
+                </span>
+              </div>
+              <div className="flex items-center gap-1 mt-1">
+                {Array.from({ length: currentExercise.sets }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`rounded-full transition-all duration-300 ${
+                      i < currentSet - 1
+                        ? "w-2 h-2 bg-primary-container shadow-[0_0_6px_rgba(204,255,0,0.8)]"
+                        : i === currentSet - 1
+                          ? "w-3 h-2 bg-primary-container shadow-[0_0_8px_rgba(204,255,0,1)]"
+                          : "w-2 h-2 bg-white/10"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* 3. Rest Duration Card */}
+            <div className="bg-[#111116] border border-white/15 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-md">
+              <span className="text-[10px] font-label-caps text-cyan-400 uppercase font-bold tracking-wider mb-0.5 flex items-center gap-1">
+                <Clock className="w-3 h-3 text-cyan-400" />
+                DESCANSO
+              </span>
+              <span className="font-mono font-black text-xl sm:text-2xl text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
+                {currentExercise.restSeconds}s
+              </span>
+              <span className="text-[9px] font-label-caps text-zinc-400 font-bold uppercase">
+                recuperación
+              </span>
+            </div>
           </div>
         </div>
 
@@ -524,20 +609,24 @@ export default function IndividualWorkout() {
         )}
 
         <PrimaryButton
-          leftIcon={<Timer className="w-6 h-6" />}
+          leftIcon={<CheckCircle className="w-6 h-6" />}
           rightIcon={
-            currentSet >= currentExercise.sets ? (
+            currentSet >= currentExercise.sets &&
+            currentExerciseIndex < totalExercises - 1 ? (
               <ArrowRight className="w-5 h-5" />
             ) : undefined
           }
           onClick={handleComplete}
         >
-          {currentSet >= currentExercise.sets
-            ? "SIGUIENTE EJERCICIO"
-            : "COMPLETAR SERIE"}
+          {currentSet >= currentExercise.sets &&
+          currentExerciseIndex >= totalExercises - 1
+            ? "FINALIZAR ENTRENAMIENTO"
+            : currentSet >= currentExercise.sets
+              ? "SIGUIENTE EJERCICIO"
+              : "COMPLETAR SERIE"}
         </PrimaryButton>
 
-        <div className="flex gap-2 mt-2">
+        <div className="flex items-center gap-2 mt-2">
           {currentExerciseIndex > 0 && (
             <PrimaryButton
               variant="secondary"
@@ -560,6 +649,15 @@ export default function IndividualWorkout() {
               SIG
             </PrimaryButton>
           )}
+          <button
+            type="button"
+            onClick={handleManualFinish}
+            className="px-3.5 py-2.5 rounded-xl border border-primary-container/40 bg-primary-container/10 text-primary-container font-label-caps text-xs font-bold uppercase tracking-wider active:scale-95 transition-all flex items-center justify-center gap-1.5"
+            title="Guardar progreso y finalizar entrenamiento"
+          >
+            <CheckCircle className="w-4 h-4" />
+            <span>Finalizar día</span>
+          </button>
         </div>
       </footer>
 

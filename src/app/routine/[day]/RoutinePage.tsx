@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Play } from "lucide-react";
+import { Play, CheckCircle2 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
 import ModeSelector from "@/components/ui/ModeSelector";
@@ -32,7 +32,20 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
     recentExerciseIds,
     addFavoriteExercise,
     removeFavoriteExercise,
+    sessions,
   } = useAppStore();
+
+  const isCompletedToday = useMemo(() => {
+    if (!routine) return false;
+    const today = new Date().toDateString();
+    return sessions.some(
+      (s) =>
+        s.completed &&
+        s.endTime &&
+        Number(s.routineId) === routine.day &&
+        new Date(s.endTime).toDateString() === today,
+    );
+  }, [sessions, routine]);
 
   if (!routine) {
     return (
@@ -95,6 +108,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
           <h1 className="font-headline-lg-mobile text-headline-lg-mobile text-on-background">
             {routine.title}
           </h1>
+          {isCompletedToday && (
+            <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-xl flex items-center gap-2.5 text-emerald-400 text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              <span>¡Has completado esta rutina hoy! Puedes repetirla cuando quieras.</span>
+            </div>
+          )}
         </section>
 
         {/* Equipment Toggle if routine has alternatives */}

@@ -10,6 +10,8 @@ import {
   VolumeX,
   RotateCcw,
   ArrowLeft,
+  Zap,
+  Clock,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import RestTimer from "@/components/ui/RestTimer";
@@ -22,6 +24,7 @@ import {
   announceNextExercise,
   announceExerciseStart,
   announceRest,
+  announceWorkoutComplete,
   setAudioMode as setGlobalAudioMode,
   setVoiceRate as setGlobalVoiceRate,
   unlockAudio,
@@ -33,6 +36,7 @@ export default function GuidedWorkout() {
   const {
     activeWorkout,
     completeSet,
+    finishWorkout,
     cancelWorkout,
     setExerciseReps,
     goToExercise,
@@ -62,14 +66,15 @@ export default function GuidedWorkout() {
     })();
   const isTimedSet = timedSeconds > 0;
 
-  // Redirect if no routine or workout just finished
+  // Redirect if workout just finished or no routine
   useEffect(() => {
+    if (activeWorkout.justFinished && activeWorkout.session?.completed) {
+      router.push("/workout/complete");
+      return;
+    }
     if (!routine) {
       router.push("/");
       return;
-    }
-    if (activeWorkout.justFinished && activeWorkout.session?.completed) {
-      router.push("/workout/complete");
     }
   }, [
     routine,
@@ -150,8 +155,6 @@ export default function GuidedWorkout() {
   };
 
   const handleComplete = () => {
-    // If a work timer is still running (shouldn't happen — WorkTimer overlay
-    // covers the screen — but be safe), stop it before progressing.
     if (activeWorkout.isWorking) skipWork();
 
     const reps =
@@ -159,7 +162,26 @@ export default function GuidedWorkout() {
     setExerciseReps(currentExercise.id, reps);
 
     triggerFeedback();
-    // Speak directly within the user gesture to satisfy WebView audio policies
+
+    const isLastSet = currentSet >= currentExercise.sets;
+    const isLastExercise = currentExerciseIndex >= totalExercises - 1;
+    const isWorkoutFinishing = isLastSet && isLastExercise;
+
+    if (isWorkoutFinishing) {
+      if (audioEnabled) {
+        announceWorkoutComplete();
+      }
+      haptics.complete();
+      completeSet(
+        currentExerciseIndex,
+        currentSet,
+        undefined,
+        reps,
+      );
+      router.push("/workout/complete");
+      return;
+    }
+
     if (
       audioEnabled &&
       audioMode !== "silent" &&
@@ -185,13 +207,9 @@ export default function GuidedWorkout() {
       reps,
     );
 
-    const isLastSet = currentSet >= currentExercise.sets;
     if (audioEnabled) {
       announceRest(currentExercise.restSeconds);
     }
-
-    // completeSet() already starts the rest and advances the set/exercise.
-    // We must NOT call startRest again to avoid double countdowns.
   };
 
   const handleRepeatLastSet = () => {
@@ -202,10 +220,16 @@ export default function GuidedWorkout() {
 
   const handleBack = () => setShowExitConfirm(true);
 
-  const handleExit = (save: boolean) => {
-    if (!save) cancelWorkout();
-    setShowExitConfirm(false);
-    router.push("/");
+  const handleExit = async (save: boolean) => {
+    if (save) {
+      await finishWorkout();
+      setShowExitConfirm(false);
+      router.push("/workout/complete");
+    } else {
+      cancelWorkout();
+      setShowExitConfirm(false);
+      router.push("/");
+    }
   };
 
   return (
@@ -301,39 +325,79 @@ export default function GuidedWorkout() {
           />
         </div>
 
-        <div className="flex-shrink-0 mb-3 text-center">
-          <h2 className="font-headline-lg text-headline-lg text-primary-container neon-glow">
-            {currentExercise.name}
-          </h2>
-          <p className="text-on-surface-variant font-body-md mt-1">
-            Serie {currentSet} de {currentExercise.sets} ·{" "}
-            {isTimedSet
-              ? `${timedSeconds} segundos`
-              : `${currentExercise.reps} reps`}
-          </p>
-          {isHIIT && (
-            <p className="text-primary-container font-label-caps tracking-[0.2em] text-[11px] uppercase mt-1">
-              Circuito {Math.floor(currentExerciseIndex / 3) + 1} de{" "}
-              {Math.ceil(totalExercises / 3)}
-            </p>
-          )}
-          <div className="flex items-center justify-center gap-1.5 mt-2">
-            {Array.from({ length: currentExercise.sets }).map((_, i) => {
-              const done = i < currentSet - 1;
-              const active = i === currentSet - 1;
-              return (
-                <div
-                  key={i}
-                  className={`rounded-full transition-all duration-300 ${
-                    done
-                      ? "w-2 h-2 bg-primary-container"
-                      : active
-                        ? "w-4 h-2 bg-primary-container shadow-neon"
-                        : "w-2 h-2 bg-surface-container-highest"
-                  }`}
-                />
-              );
-            })}
+        {/* Large Illuminated Exercise HUD */}
+        <div className="flex-shrink-0 mb-3 flex flex-col gap-2.5">
+          {/* Exercise Name */}
+          <div className="text-center">
+            <h2 className="font-headline-lg text-2xl sm:text-3xl font-extrabold text-white tracking-tight drop-shadow-[0_0_15px_rgba(204,255,0,0.25)]">
+              {currentExercise.name}
+            </h2>
+            {isHIIT && (
+              <p className="text-primary-container font-label-caps tracking-[0.2em] text-xs uppercase mt-0.5 font-bold">
+                Circuito {Math.floor(currentExerciseIndex / 3) + 1} de{" "}
+                {Math.ceil(totalExercises / 3)}
+              </p>
+            )}
+          </div>
+
+          {/* High-Visibility Illuminated 3-Card Metrics Row */}
+          <div className="grid grid-cols-3 gap-2 w-full">
+            {/* 1. Target Reps / Time Card (Glowing Neon Lime) */}
+            <div className="bg-[#111116] border-2 border-primary-container/70 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-[0_0_18px_rgba(204,255,0,0.25)]">
+              <span className="text-[10px] font-label-caps text-primary-container uppercase font-bold tracking-wider mb-0.5 flex items-center gap-1">
+                <Zap className="w-3 h-3 text-primary-container animate-pulse" />
+                OBJETIVO
+              </span>
+              <span className="font-mono font-black text-xl sm:text-2xl text-primary-container drop-shadow-[0_0_10px_rgba(204,255,0,0.6)]">
+                {isTimedSet ? `${timedSeconds}s` : currentExercise.reps}
+              </span>
+              <span className="text-[9px] font-label-caps text-zinc-400 font-bold uppercase">
+                {isTimedSet ? "segundos" : "reps"}
+              </span>
+            </div>
+
+            {/* 2. Current Set Card */}
+            <div className="bg-[#111116] border border-white/15 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-md">
+              <span className="text-[10px] font-label-caps text-zinc-400 uppercase font-bold tracking-wider mb-0.5">
+                SERIE
+              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="font-mono font-black text-xl sm:text-2xl text-white">
+                  {currentSet}
+                </span>
+                <span className="font-mono font-bold text-sm text-zinc-400">
+                  / {currentExercise.sets}
+                </span>
+              </div>
+              <div className="flex items-center gap-1 mt-1">
+                {Array.from({ length: currentExercise.sets }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`rounded-full transition-all duration-300 ${
+                      i < currentSet - 1
+                        ? "w-2 h-2 bg-primary-container shadow-[0_0_6px_rgba(204,255,0,0.8)]"
+                        : i === currentSet - 1
+                          ? "w-3 h-2 bg-primary-container shadow-[0_0_8px_rgba(204,255,0,1)]"
+                          : "w-2 h-2 bg-white/10"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* 3. Rest Duration Card */}
+            <div className="bg-[#111116] border border-white/15 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-md">
+              <span className="text-[10px] font-label-caps text-cyan-400 uppercase font-bold tracking-wider mb-0.5 flex items-center gap-1">
+                <Clock className="w-3 h-3 text-cyan-400" />
+                DESCANSO
+              </span>
+              <span className="font-mono font-black text-xl sm:text-2xl text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
+                {currentExercise.restSeconds}s
+              </span>
+              <span className="text-[9px] font-label-caps text-zinc-400 font-bold uppercase">
+                recuperación
+              </span>
+            </div>
           </div>
         </div>
 

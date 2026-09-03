@@ -286,19 +286,30 @@ export const useAppStore = create<AppState>()(
           weight ?? activeWorkout.exerciseWeights[currentExercise.id];
         const setReps = reps ?? activeWorkout.exerciseReps[currentExercise.id];
 
-        // Avoid duplicate set completions for the same set number
-        if (exerciseLog.sets.some((s) => s.setNumber === setNumber)) {
-          return;
-        }
+        // If this set was already recorded, update it instead of rejecting
+        const existingSetIndex = exerciseLog.sets.findIndex(
+          (s) => s.setNumber === setNumber,
+        );
 
-        exerciseLog.sets.push({
-          setNumber,
-          weight: setWeight,
-          reps: setReps,
-          duration,
-          completed: true,
-          timestamp: new Date(),
-        });
+        if (existingSetIndex >= 0) {
+          exerciseLog.sets[existingSetIndex] = {
+            setNumber,
+            weight: setWeight,
+            reps: setReps,
+            duration,
+            completed: true,
+            timestamp: new Date(),
+          };
+        } else {
+          exerciseLog.sets.push({
+            setNumber,
+            weight: setWeight,
+            reps: setReps,
+            duration,
+            completed: true,
+            timestamp: new Date(),
+          });
+        }
 
         // Mark exercise as recent when any set is completed
         get().markExerciseRecent(currentExercise.id);
@@ -306,6 +317,7 @@ export const useAppStore = create<AppState>()(
         const isLastSet = setNumber >= currentExercise.sets;
         const isLastExercise =
           exerciseIndex >= (activeWorkout.routine?.exercises.length || 1) - 1;
+        const isWorkoutFinishing = isLastSet && isLastExercise;
         const nextRestSeconds = currentExercise.restSeconds || 60;
 
         const nextActiveWorkout: ActiveWorkoutState = {
@@ -316,8 +328,8 @@ export const useAppStore = create<AppState>()(
           },
           isWorking: false,
           workTimeRemaining: 0,
-          isResting: true,
-          restTimeRemaining: nextRestSeconds,
+          isResting: !isWorkoutFinishing, // NEVER rest if finishing workout
+          restTimeRemaining: isWorkoutFinishing ? 0 : nextRestSeconds,
         };
 
         if (isLastSet) {
@@ -326,15 +338,14 @@ export const useAppStore = create<AppState>()(
             nextActiveWorkout.currentExerciseIndex = nextIndex;
             nextActiveWorkout.currentSet = 1;
           }
-          // If it is the last exercise, the workout is finished right after saving the last set
         } else {
           nextActiveWorkout.currentSet = setNumber + 1;
         }
 
         set({ activeWorkout: nextActiveWorkout });
 
-        // Finish workout immediately after the very last set is logged (no extra tap needed)
-        if (isLastSet && isLastExercise) {
+        // Finish workout immediately after the very last set is logged
+        if (isWorkoutFinishing) {
           get().finishWorkout();
         }
       },
@@ -589,6 +600,8 @@ export const useAppStore = create<AppState>()(
         const { activeWorkout } = get();
         if (!activeWorkout.session) return;
 
+        const currentRoutine = activeWorkout.routine;
+
         const completedSession: WorkoutSession = {
           ...activeWorkout.session,
           endTime: new Date(),
@@ -620,6 +633,7 @@ export const useAppStore = create<AppState>()(
           sessions: localSessions,
           activeWorkout: {
             ...initialActiveWorkout,
+            routine: currentRoutine, // KEEP ROUTINE SO COMPONENTS DON'T REDIRECT TO HOME PREMATURELY
             justFinished: true,
             session: completedSession,
           },

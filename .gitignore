@@ -38,6 +38,8 @@ next-env.d.ts
 dist/
 
 *.apk
+nextcloud/
+nextcloud-docker-compose.yml
 
 # Android signing / keystores
 *.keystore

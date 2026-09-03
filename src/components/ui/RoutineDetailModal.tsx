@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X, Play, Clock, Layers, Dumbbell, Sparkles, ChevronRight, Zap } from "lucide-react";
+import { X, Play, Clock, Layers, Dumbbell, Sparkles, ChevronRight, Zap, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Routine, TrainingMode } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
@@ -15,12 +15,14 @@ interface RoutineDetailModalProps {
   routine: Routine | null;
   isOpen: boolean;
   onClose: () => void;
+  isCompletedToday?: boolean;
 }
 
 export default function RoutineDetailModal({
   routine,
   isOpen,
   onClose,
+  isCompletedToday = false,
 }: RoutineDetailModalProps) {
   const router = useRouter();
   const [mode, setMode] = useState<TrainingMode>("guided");
@@ -147,6 +149,13 @@ export default function RoutineDetailModal({
               <p className="text-xs text-zinc-400 leading-relaxed">
                 {routine.subtitle}
               </p>
+
+              {isCompletedToday && (
+                <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-xl flex items-center gap-2.5 text-emerald-400 text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>¡Has completado esta rutina hoy! Puedes repetirla o entrenar de nuevo.</span>
+                </div>
+              )}
 
               {/* Equipment toggle if applicable */}
               {hasAlternatives && (

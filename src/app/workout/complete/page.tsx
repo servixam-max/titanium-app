@@ -16,11 +16,14 @@ import { useAppStore } from "@/lib/store";
 import { playWorkoutComplete } from "@/lib/audio";
 
 import { motion } from "framer-motion";
+import { routines } from "@/lib/data";
 
 export default function WorkoutComplete() {
   const router = useRouter();
   const { activeWorkout, clearJustFinished, sessions } = useAppStore();
-  const completedSession = activeWorkout.session;
+  const completedSession =
+    (activeWorkout.session?.completed ? activeWorkout.session : null) ||
+    sessions.find((s) => s.completed);
 
   useEffect(() => {
     if (activeWorkout.justFinished) {
@@ -46,11 +49,14 @@ export default function WorkoutComplete() {
     );
   }
 
-  const routineTitle = activeWorkout.routine?.title || "Entrenamiento";
+  const routineTitle =
+    activeWorkout.routine?.title ||
+    routines.find((r) => r.day === completedSession.routineId)?.title ||
+    "Entrenamiento";
   const durationSeconds = completedSession.endTime
     ? Math.round(
-        (completedSession.endTime.getTime() -
-          completedSession.startTime.getTime()) /
+        (new Date(completedSession.endTime).getTime() -
+          new Date(completedSession.startTime).getTime()) /
           1000,
       )
     : 0;

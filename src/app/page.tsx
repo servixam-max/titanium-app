@@ -64,11 +64,12 @@ function calculateStreak(sessions: WorkoutSession[]) {
 
 export default function Dashboard() {
   const router = useRouter();
-  const { activeWorkout, audioMode, voiceRate } = useAppStore();
+  const { activeWorkout, audioMode, voiceRate, sessions: storeSessions } = useAppStore();
   const [audioWarmedUp, setAudioWarmedUp] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("all");
   const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
   const [streakCount, setStreakCount] = useState(0);
+  const [sessionsList, setSessionsList] = useState<WorkoutSession[]>([]);
   const [stats, setStats] = useState({
     totalWorkouts: 0,
     totalMinutes: 0,
@@ -88,11 +89,13 @@ export default function Dashboard() {
     setAudioMode(audioMode);
     setVoiceRate(voiceRate);
 
-    // Load streak & weekly stats from IndexedDB
+    // Load streak & weekly stats from IndexedDB or store
     getSessions().then((sessions) => {
-      setStreakCount(calculateStreak(sessions));
+      const allSessions = sessions && sessions.length > 0 ? sessions : storeSessions;
+      setSessionsList(allSessions);
+      setStreakCount(calculateStreak(allSessions));
 
-      const completed = sessions.filter((s) => s.completed && s.endTime);
+      const completed = allSessions.filter((s) => s.completed && s.endTime);
       const totalWorkouts = completed.length;
       const totalMinutes = Math.round(
         completed.reduce((sum, s) => {
@@ -136,7 +139,17 @@ export default function Dashboard() {
         todayIndex: todayIdx,
       });
     });
-  }, [audioMode, voiceRate]);
+  }, [audioMode, voiceRate, storeSessions]);
+
+  const completedTodayRoutineIds = useMemo(() => {
+    const today = new Date();
+    const set = new Set<number>();
+    const list = sessionsList.length > 0 ? sessionsList : storeSessions;
+    list
+      .filter((s) => s.completed && s.endTime && sameDay(new Date(s.endTime), today))
+      .forEach((s) => set.add(Number(s.routineId)));
+    return set;
+  }, [sessionsList, storeSessions]);
 
   const handleFirstInteraction = () => {
     if (!audioWarmedUp) {
@@ -365,6 +378,7 @@ export default function Dashboard() {
                 key={routine.day}
                 routine={routine}
                 index={index}
+                isCompletedToday={completedTodayRoutineIds.has(routine.day)}
                 onClick={() => setSelectedRoutine(routine)}
               />
             ))}
@@ -375,6 +389,7 @@ export default function Dashboard() {
       <RoutineDetailModal
         routine={selectedRoutine}
         isOpen={Boolean(selectedRoutine)}
+        isCompletedToday={selectedRoutine ? completedTodayRoutineIds.has(selectedRoutine.day) : false}
         onClose={() => setSelectedRoutine(null)}
       />
 

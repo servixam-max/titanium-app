@@ -122,13 +122,17 @@ export default function RestTimer() {
     activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex + 1];
   const hasNextExercise = isLastSet && !!nextExercise;
 
-  const handleExit = (save: boolean) => {
+  const handleExit = async (save: boolean) => {
     stopSpeaking();
-    if (!save) {
+    if (save) {
+      await useAppStore.getState().finishWorkout();
+      setShowExitConfirm(false);
+      router.push("/workout/complete");
+    } else {
       cancelWorkout();
+      setShowExitConfirm(false);
+      router.push("/");
     }
-    setShowExitConfirm(false);
-    router.push("/");
   };
 
   return (

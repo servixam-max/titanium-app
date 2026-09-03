@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, Layers, ChevronRight, Dumbbell, Sparkles } from "lucide-react";
+import { Clock, Layers, ChevronRight, Dumbbell, Sparkles, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Routine } from "@/lib/types";
 import ExerciseImage from "@/components/ui/ExerciseImage";
@@ -9,6 +9,7 @@ interface RoutineCardProps {
   routine: Routine;
   onClick?: () => void;
   index?: number;
+  isCompletedToday?: boolean;
 }
 
 const CATEGORY_STYLES: Record<string, { badge: string; border: string }> = {
@@ -38,6 +39,7 @@ export default function RoutineCard({
   routine,
   onClick,
   index = 0,
+  isCompletedToday = false,
 }: RoutineCardProps) {
   const totalSets = routine.exercises.reduce((sum, ex) => sum + ex.sets, 0);
   const isPersonalized =
@@ -56,7 +58,11 @@ export default function RoutineCard({
       whileHover={{ scale: 1.012, y: -2 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className={`group relative bg-[#101014]/90 hover:bg-[#15151c] backdrop-blur-xl rounded-2xl border border-white/10 ${style.border} p-3.5 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_10px_30px_rgba(0,0,0,0.7),0_0_20px_rgba(204,255,0,0.1)] overflow-hidden`}
+      className={`group relative ${
+        isCompletedToday
+          ? "bg-[#0c1410]/90 border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+          : `bg-[#101014]/90 hover:bg-[#15151c] border-white/10 ${style.border}`
+      } backdrop-blur-xl rounded-2xl border p-3.5 transition-all duration-300 cursor-pointer shadow-lg overflow-hidden`}
     >
       {/* Subtle top ambient glow strip */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-container/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -84,6 +90,12 @@ export default function RoutineCard({
             <span className={`text-[9px] font-label-caps px-2 py-0.5 rounded-full border ${style.badge} uppercase font-bold tracking-wider`}>
               {routine.equipment || "MANCUERNAS"}
             </span>
+            {isCompletedToday && (
+              <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-400 text-black shadow-[0_0_10px_rgba(52,211,153,0.5)] flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                COMPLETADO HOY
+              </span>
+            )}
           </div>
 
           <h3 className="font-headline-sm text-sm sm:text-base text-white font-bold tracking-wide truncate group-hover:text-primary-container transition-colors">
@@ -105,8 +117,12 @@ export default function RoutineCard({
 
         {/* Right CTA Indicator */}
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 group-hover:border-primary-container/50 group-hover:bg-primary-container group-hover:text-black flex items-center justify-center text-zinc-300 transition-all duration-300 shadow-sm">
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          <div className={`w-9 h-9 rounded-xl ${isCompletedToday ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400" : "bg-white/5 border-white/10 group-hover:border-primary-container/50 group-hover:bg-primary-container group-hover:text-black text-zinc-300"} border flex items-center justify-center transition-all duration-300 shadow-sm`}>
+            {isCompletedToday ? (
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            ) : (
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            )}
           </div>
         </div>
       </div>
