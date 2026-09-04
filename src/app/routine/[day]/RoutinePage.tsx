@@ -288,20 +288,18 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         </section>
       </main>
 
-      {/* Bottom CTA for Guided Mode */}
-      {mode === "guided" && (
-        <div className="fixed bottom-[72px] w-full z-40 bg-gradient-to-t from-background via-background/90 to-transparent pb-stack-gap pt-8 pointer-events-none">
-          <div className="max-w-app mx-auto px-container-padding pointer-events-auto">
-            <button
-              onClick={() => handleStart(0)}
-              className="w-full bg-primary text-black font-mono font-black text-sm uppercase tracking-wider h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon hover:shadow-[0_0_30px_rgba(0,245,155,0.6)] cursor-pointer"
-            >
-              <Play className="w-5 h-5 fill-current" />
-              <span>INICIAR MODO GUIADO</span>
-            </button>
-          </div>
+      {/* Bottom CTA for Guided and Individual Mode */}
+      <div className="fixed bottom-[72px] w-full z-40 bg-gradient-to-t from-background via-background/90 to-transparent pb-stack-gap pt-8 pointer-events-none">
+        <div className="max-w-app mx-auto px-container-padding pointer-events-auto">
+          <button
+            onClick={() => handleStart(0)}
+            className="w-full bg-primary text-black font-mono font-black text-sm uppercase tracking-wider h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon hover:shadow-[0_0_30px_rgba(0,245,155,0.6)] cursor-pointer"
+          >
+            <Play className="w-5 h-5 fill-current" />
+            <span>{mode === "guided" ? "INICIAR MODO GUIADO" : "INICIAR MODO INDIVIDUAL"}</span>
+          </button>
         </div>
-      )}
+      </div>
 
       <WarmupModal
         isOpen={showWarmupModal}

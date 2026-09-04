@@ -146,15 +146,13 @@ export default function GuidedWorkout() {
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [onBeforeUnload]);
 
-  if (!routine || !currentExercise) return null;
-
-  const totalExercises = routine.exercises.length;
-
+  // Calculate sets and progress unconditionally before any return
   const totalSetsInRoutine = useMemo(() => {
-    return routine.exercises.reduce((sum, ex) => sum + (ex.sets || 3), 0);
+    return routine?.exercises?.reduce((sum, ex) => sum + (ex.sets || 3), 0) || 1;
   }, [routine]);
 
   const completedSetsCount = useMemo(() => {
+    if (!routine?.exercises) return 0;
     let count = 0;
     for (let i = 0; i < currentExerciseIndex; i++) {
       count += routine.exercises[i]?.sets || 3;
@@ -162,6 +160,10 @@ export default function GuidedWorkout() {
     count += Math.max(0, currentSet - 1);
     return count;
   }, [currentExerciseIndex, currentSet, routine]);
+
+  if (!routine || !currentExercise) return null;
+
+  const totalExercises = routine.exercises.length;
 
   const workoutPercent = Math.min(
     100,

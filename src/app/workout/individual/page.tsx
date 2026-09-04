@@ -59,7 +59,6 @@ export default function IndividualWorkout() {
     toggleAudio,
   } = useAppStore();
 
-  const [startIndexLoaded, setStartIndexLoaded] = useState(false);
   const [showRest, setShowRest] = useState(false);
   const [restTime, setRestTime] = useState(0);
   const [repsInput, setRepsInput] = useState("");
@@ -76,6 +75,20 @@ export default function IndividualWorkout() {
   const currentSet = activeWorkout.currentSet;
   const currentExercise = routine?.exercises[currentExerciseIndex];
 
+  const totalSetsInRoutine = useMemo(() => {
+    return routine?.exercises?.reduce((sum, ex) => sum + (ex.sets || 3), 0) || 1;
+  }, [routine]);
+
+  const completedSetsCount = useMemo(() => {
+    if (!routine?.exercises) return 0;
+    let count = 0;
+    for (let i = 0; i < currentExerciseIndex; i++) {
+      count += routine.exercises[i]?.sets || 3;
+    }
+    count += Math.max(0, currentSet - 1);
+    return count;
+  }, [currentExerciseIndex, currentSet, routine]);
+
   // Redirect if workout just finished or no routine
   useEffect(() => {
     if (activeWorkout.justFinished && activeWorkout.session?.completed) {
@@ -86,18 +99,22 @@ export default function IndividualWorkout() {
       router.push("/");
       return;
     }
+  }, [routine, activeWorkout.justFinished, activeWorkout.session?.completed, router]);
 
-    if (typeof window !== "undefined" && !startIndexLoaded) {
+  // Read exercise query param once if provided
+  useEffect(() => {
+    if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      const startIndex =
-        Number(params.get("exercise")) ||
-        activeWorkout.currentExerciseIndex ||
-        0;
-      goToExercise(startIndex);
-      setStartIndexLoaded(true);
+      const exParam = params.get("exercise");
+      if (exParam !== null) {
+        const idx = Number(exParam);
+        if (!isNaN(idx) && routine && idx >= 0 && idx < routine.exercises.length) {
+          goToExercise(idx);
+        }
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routine, activeWorkout.justFinished, activeWorkout.session?.completed, router]);
+  }, []);
 
   // Sync local rest display from store
   useEffect(() => {
@@ -193,9 +210,7 @@ export default function IndividualWorkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showRest, audioEnabled, restTotal]);
 
-  if (!routine) return null;
-  if (!startIndexLoaded) return null;
-  if (!currentExercise) return null;
+  if (!routine || !currentExercise) return null;
 
   const totalExercises = routine.exercises.length;
   const storeSets =
@@ -204,20 +219,6 @@ export default function IndividualWorkout() {
     currentExerciseIndex < totalExercises - 1
       ? routine.exercises[currentExerciseIndex + 1]
       : null;
-
-  const totalSetsInRoutine = useMemo(() => {
-    return routine?.exercises?.reduce((sum, ex) => sum + (ex.sets || 3), 0) || 1;
-  }, [routine]);
-
-  const completedSetsCount = useMemo(() => {
-    if (!routine?.exercises) return 0;
-    let count = 0;
-    for (let i = 0; i < currentExerciseIndex; i++) {
-      count += routine.exercises[i]?.sets || 3;
-    }
-    count += Math.max(0, currentSet - 1);
-    return count;
-  }, [currentExerciseIndex, currentSet, routine]);
 
   const workoutPercent = Math.min(
     100,

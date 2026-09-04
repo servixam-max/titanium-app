@@ -51,12 +51,12 @@ export default function RoutineDetailModal({
     const targetIdx = exerciseIndex ?? 0;
     // Individual mode: user only wants to do this exercise, skip warmup entirely
     if (mode === "individual") {
-      onClose();
       const workoutRoutine = {
         ...routine,
         exercises,
       };
       startWorkout(workoutRoutine, "individual", targetIdx);
+      onClose();
       router.push("/workout/individual");
       return;
     }
@@ -67,7 +67,6 @@ export default function RoutineDetailModal({
 
   const handleWarmupConfirm = (wantWarmup: boolean) => {
     setShowWarmupModal(false);
-    onClose();
 
     const workoutRoutine = {
       ...routine,
@@ -76,6 +75,7 @@ export default function RoutineDetailModal({
 
     const targetIdx = selectedExerciseIdx ?? 0;
     startWorkout(workoutRoutine, "guided", targetIdx);
+    onClose();
 
     if (wantWarmup) {
       router.push("/warmup?redirect=/workout/guided");
