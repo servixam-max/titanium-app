@@ -604,10 +604,40 @@ export function announceStart(): void {
   }
 }
 
-export function announceWarmupComplete(): void {
-  playCompletionTone();
+export function announceWarmupPrep(exerciseName?: string): void {
+  if (isAudioSilent()) return;
+  playExerciseStart();
   if (isVoiceAllowed()) {
-    setTimeout(() => speak("Calentamiento completado.", voicePitch, 0.92), 200);
+    const text = exerciseName
+      ? `Prepárate para calentar. Primer ejercicio: ${exerciseName}`
+      : "Prepárate para comenzar el calentamiento";
+    setTimeout(() => speak(text, voicePitch, 0.96), 180);
+  }
+}
+
+export function announceWarmupTransition(nextExerciseName: string): void {
+  if (isAudioSilent()) return;
+  playRestStart();
+  if (isVoiceAllowed()) {
+    setTimeout(
+      () => speak(`Descanso. Siguiente ejercicio: ${nextExerciseName}`, voicePitch, 0.96),
+      180
+    );
+  }
+}
+
+export function announceWarmupComplete(): void {
+  playWorkoutComplete();
+  if (isVoiceAllowed()) {
+    setTimeout(
+      () =>
+        speak(
+          "¡Calentamiento completado! Tómate un respiro antes de empezar el entrenamiento.",
+          voicePitch,
+          0.96
+        ),
+      250
+    );
   }
 }
 
