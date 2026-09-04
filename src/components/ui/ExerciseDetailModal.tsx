@@ -85,7 +85,7 @@ export default function ExerciseDetailModal({
 
               {/* Tags overlay */}
               <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between pointer-events-none">
-                <span className="px-3 py-1 rounded-xl bg-primary text-black font-mono font-black text-xs uppercase tracking-wider shadow-neon">
+                <span className="px-3 py-1 rounded-xl bg-emerald-600 text-white font-mono font-bold text-xs uppercase tracking-wider border border-emerald-400/30 shadow-md">
                   {muscle}
                 </span>
                 <span
@@ -164,7 +164,7 @@ export default function ExerciseDetailModal({
                   haptics.impact();
                   onStartExercise(exercise);
                 }}
-                className="w-full h-14 bg-primary text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon hover:bg-emerald-400 active:scale-98 transition-all cursor-pointer"
+                className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-black/50 border border-emerald-400/30 active:scale-98 transition-all cursor-pointer"
               >
                 <Play className="w-4 h-4 fill-current" />
                 <span>Entrenar este ejercicio ahora</span>

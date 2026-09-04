@@ -22,7 +22,7 @@ export const SEED_USER: UserAccount = {
   passwordHash: hashPassword("MUSHROOM"),
   createdAt: "2026-05-01T00:00:00.000Z",
   lastLogin: new Date().toISOString(),
-  avatarColor: "#00D27F",
+  avatarColor: "#10B981",
 };
 
 function hashPassword(password: string): string {

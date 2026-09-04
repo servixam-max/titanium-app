@@ -58,16 +58,16 @@ export default function DayCarouselSelector({
               }}
               className={`relative flex-shrink-0 min-w-[74px] h-[64px] rounded-2xl flex flex-col items-center justify-center p-2 transition-all duration-200 cursor-pointer active:scale-95 select-none ${
                 isSelected
-                  ? "bg-primary text-black shadow-[0_0_14px_rgba(0,210,127,0.30)] border-2 border-primary font-black scale-[1.03]"
+                  ? "bg-emerald-600 text-white shadow-lg shadow-black/50 border-2 border-emerald-400/60 font-black scale-[1.02]"
                   : isCompleted
-                  ? "bg-[#0c1815] text-emerald-400 border border-emerald-500/40"
+                  ? "bg-[#0c1815] text-emerald-400 border border-emerald-500/30"
                   : "bg-[#111622]/90 hover:bg-[#151c2c] text-zinc-400 border border-white/10"
               }`}
             >
               {/* Day header tag */}
               <span
                 className={`font-mono text-[9px] font-black uppercase tracking-wider ${
-                  isSelected ? "text-black/80" : isCompleted ? "text-emerald-400" : "text-zinc-500"
+                  isSelected ? "text-emerald-100" : isCompleted ? "text-emerald-400" : "text-zinc-500"
                 }`}
               >
                 {isExtra ? "LIBRE" : "DÍA"}
@@ -76,9 +76,7 @@ export default function DayCarouselSelector({
               {/* Day number / icon */}
               <div className="flex items-center gap-1 mt-0.5">
                 <span
-                  className={`font-mono text-lg font-black leading-none ${
-                    isSelected ? "text-black" : "text-white"
-                  }`}
+                  className="font-mono text-lg font-black leading-none text-white"
                 >
                   {isExtra ? "13" : day < 10 ? `0${day}` : day}
                 </span>

@@ -329,10 +329,10 @@ export default function Dashboard() {
             </div>
 
             {/* Streak Counter Pill */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-black/60 border border-primary/40 flex-shrink-0 shadow-[0_0_15px_rgba(0,210,127,0.2)]">
-              <Flame className="w-4 h-4 text-primary fill-primary animate-pulse" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[#111622] border border-white/10 flex-shrink-0 shadow-md">
+              <Flame className="w-4 h-4 text-emerald-400 fill-emerald-400/30 animate-pulse" />
               <div className="flex flex-col text-right">
-                <span className="font-black text-primary text-base leading-none font-mono">
+                <span className="font-black text-emerald-400 text-base leading-none font-mono">
                   {streakCount}
                 </span>
                 <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold tracking-tighter">
@@ -353,9 +353,9 @@ export default function Dashboard() {
                     key={dayName}
                     className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-[10px] sm:text-xs font-mono font-black transition-all ${
                       trained
-                        ? "bg-primary text-black shadow-neon"
+                        ? "bg-emerald-600 text-white shadow-sm"
                         : isToday
-                        ? "border-2 border-primary/90 text-primary bg-primary/10 shadow-[0_0_8px_rgba(0,210,127,0.25)]"
+                        ? "border-2 border-emerald-500/80 text-emerald-400 bg-emerald-500/10"
                         : "bg-white/5 text-zinc-500 border border-white/5"
                     }`}
                   >
@@ -372,7 +372,7 @@ export default function Dashboard() {
                 <strong className="text-white">{stats.totalWorkouts}</strong>
               </span>
               <span className="bg-white/5 px-2.5 py-1 rounded-xl border border-white/5 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-primary" />
+                <Clock className="w-3.5 h-3.5 text-emerald-400" />
                 <strong className="text-white">{stats.totalMinutes}m</strong>
               </span>
             </div>
@@ -385,20 +385,20 @@ export default function Dashboard() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={() => router.push(`/workout/${activeWorkout.mode}`)}
-            className="h-[62px] bg-gradient-to-r from-primary to-emerald-400 text-black rounded-2xl flex items-center gap-3 px-4 active:scale-98 transition-all shadow-[0_0_20px_rgba(0,210,127,0.25)] font-mono font-black cursor-pointer"
+            className="h-[62px] bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-2xl flex items-center gap-3 px-4 active:scale-98 transition-all shadow-lg shadow-black/40 border border-emerald-400/30 font-mono font-bold cursor-pointer"
           >
-            <div className="w-9 h-9 rounded-xl bg-black/20 flex items-center justify-center flex-shrink-0">
-              <Play className="w-5 h-5 text-black fill-current" />
+            <div className="w-9 h-9 rounded-xl bg-black/25 flex items-center justify-center flex-shrink-0">
+              <Play className="w-5 h-5 text-white fill-current" />
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <span className="text-xs font-black uppercase tracking-wider block truncate">
+              <span className="text-xs font-bold uppercase tracking-wider block truncate text-white">
                 Continuar entrenamiento en curso
               </span>
-              <span className="text-[11px] font-bold text-black/80 truncate block">
+              <span className="text-[11px] font-medium text-emerald-100 truncate block">
                 {activeWorkout.routine.title} · Ejercicio {activeWorkout.currentExerciseIndex + 1}
               </span>
             </div>
-            <ArrowRight className="w-5 h-5 flex-shrink-0" />
+            <ArrowRight className="w-5 h-5 flex-shrink-0 text-white" />
           </motion.button>
         )}
 
@@ -409,9 +409,9 @@ export default function Dashboard() {
               haptics.selection();
               setActiveTab("routines");
             }}
-            className={`flex-1 h-11 px-2.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer min-w-0 ${
+            className={`flex-1 h-11 px-2.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer min-w-0 ${
               activeTab === "routines"
-                ? "bg-primary text-black shadow-neon"
+                ? "bg-emerald-600 text-white shadow-md shadow-black/40 border border-emerald-400/30"
                 : "text-zinc-400 hover:text-white hover:bg-white/5"
             }`}
           >
@@ -423,9 +423,9 @@ export default function Dashboard() {
               haptics.selection();
               setActiveTab("catalog");
             }}
-            className={`flex-1 h-11 px-2.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer min-w-0 ${
+            className={`flex-1 h-11 px-2.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer min-w-0 ${
               activeTab === "catalog"
-                ? "bg-primary text-black shadow-neon"
+                ? "bg-emerald-600 text-white shadow-md shadow-black/40 border border-emerald-400/30"
                 : "text-zinc-400 hover:text-white hover:bg-white/5"
             }`}
           >
@@ -443,12 +443,12 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.05 }}
-                className="bg-gradient-to-br from-[#131a2b] via-[#161f33] to-[#101524] border-2 border-primary/40 rounded-3xl p-4 shadow-[0_4px_25px_rgba(0,210,127,0.10)] relative overflow-hidden group"
+                className="bg-gradient-to-br from-[#121824] via-[#141d2c] to-[#101420] border border-emerald-500/30 rounded-3xl p-4 shadow-xl relative overflow-hidden group"
               >
                 <div className="flex items-center justify-between gap-2 mb-2.5">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
-                    <span className="font-mono text-xs font-black uppercase tracking-wider text-primary">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
                       Siguiente sesión recomendada
                     </span>
                   </div>
@@ -460,7 +460,7 @@ export default function Dashboard() {
 
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-mono text-lg font-black text-white truncate group-hover:text-primary transition-colors">
+                    <h3 className="font-mono text-lg font-black text-white truncate group-hover:text-emerald-400 transition-colors">
                       Día {recommendedRoutine.day} · {recommendedRoutine.title}
                     </h3>
                     <div className="flex items-center gap-2.5 mt-1 text-xs font-mono text-zinc-400">
@@ -480,7 +480,7 @@ export default function Dashboard() {
                       haptics.impact();
                       setSelectedRoutine(recommendedRoutine);
                     }}
-                    className="h-11 px-5 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center gap-1.5 shadow-neon hover:scale-105 active:scale-95 transition-all flex-shrink-0 cursor-pointer"
+                    className="h-11 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center gap-1.5 shadow-md shadow-black/40 border border-emerald-400/30 hover:scale-105 active:scale-95 transition-all flex-shrink-0 cursor-pointer"
                   >
                     <span>Empezar</span>
                     <ChevronRight className="w-4 h-4" />
@@ -515,7 +515,7 @@ export default function Dashboard() {
                 <span className="font-mono text-xs font-black uppercase tracking-wider text-zinc-400">
                   Seleccionar Día (1 al 13)
                 </span>
-                <span className="font-mono text-[11px] text-primary font-bold">
+                <span className="font-mono text-[11px] text-emerald-400 font-bold">
                   Día activo: {selectedDay === 13 ? "Libre (Extra)" : `Día ${selectedDay}`}
                 </span>
               </div>
@@ -551,7 +551,7 @@ export default function Dashboard() {
                     }}
                     className={`relative px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 active:scale-95 cursor-pointer ${
                       isSelected
-                        ? "text-black font-black bg-primary shadow-neon"
+                        ? "text-white font-bold bg-emerald-600 border border-emerald-400/40 shadow-sm"
                         : "text-zinc-400 hover:text-white bg-[#111622] border border-white/10"
                     }`}
                   >

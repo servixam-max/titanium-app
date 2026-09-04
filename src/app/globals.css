@@ -61,21 +61,22 @@ body {
 }
 
 .glow-neon-box {
-  box-shadow: 0 0 22px rgba(0, 210, 127, 0.18), inset 0 0 14px rgba(0, 240, 255, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(16, 185, 129, 0.25);
 }
 
 .glow-card-hover:hover {
-  border-color: rgba(0, 210, 127, 0.45);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 18px rgba(0, 210, 127, 0.18);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 /* Custom animations */
 .neon-glow {
-  text-shadow: 0 0 8px rgba(0, 210, 127, 0.45);
+  text-shadow: none;
 }
 
 .neon-glow-strong {
-  text-shadow: 0 0 14px rgba(0, 210, 127, 0.55);
+  text-shadow: none;
 }
 
 /* Fade in slide up (entrada de tarjetas/ejercicios) */
@@ -256,7 +257,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #ccff00;
+  outline: 2px solid #10b981;
   outline-offset: 2px;
 }
 

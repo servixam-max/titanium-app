@@ -26,10 +26,10 @@ const config: Config = {
           highest: "#353535",
         },
         primary: {
-          DEFAULT: "#00D27F",
-          container: "#00D27F",
-          fixed: "#00E58F",
-          "fixed-dim": "#00b86e",
+          DEFAULT: "#10B981",
+          container: "#059669",
+          fixed: "#34D399",
+          "fixed-dim": "#047857",
         },
         "on-primary": "#002012",
         "on-primary-container": "#002012",
@@ -111,9 +111,9 @@ const config: Config = {
       },
       boxShadow: {
         'rest': '0 8px 24px rgba(0,0,0,0.5)',
-        'neon': '0 0 12px rgba(0, 210, 127, 0.32)',
-        'neon-strong': '0 0 24px rgba(0, 210, 127, 0.22)',
-        'cyan-neon': '0 0 14px rgba(0, 240, 255, 0.40)',
+        'neon': '0 4px 14px rgba(0, 0, 0, 0.35)',
+        'neon-strong': '0 6px 20px rgba(0, 0, 0, 0.5)',
+        'cyan-neon': '0 4px 14px rgba(0, 0, 0, 0.35)',
       },
       animation: {
         'pulse-a': 'pulseA 2s infinite ease-in-out',

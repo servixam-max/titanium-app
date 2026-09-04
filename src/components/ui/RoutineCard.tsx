@@ -96,7 +96,7 @@ export default function RoutineCard({
         {/* Center Info */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] font-black tracking-wider px-2.5 py-0.5 rounded-full bg-primary text-black shadow-neon">
+            <span className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-600 text-white border border-emerald-400/30">
               {dayBadge}
             </span>
             <span
@@ -105,7 +105,7 @@ export default function RoutineCard({
               {routine.equipment || "MANCUERNAS"}
             </span>
             {isCompletedToday && (
-              <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-400 text-black shadow-[0_0_10px_rgba(52,211,153,0.5)] flex items-center gap-1">
+              <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" />
                 HECHO HOY
               </span>
@@ -176,7 +176,7 @@ export default function RoutineCard({
             haptics.impact();
             onClick?.();
           }}
-          className="h-9 px-4 rounded-xl bg-primary text-black font-mono font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-neon hover:bg-emerald-400 active:scale-95 transition-all cursor-pointer"
+          className="h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-black/40 border border-emerald-400/30 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Comenzar</span>

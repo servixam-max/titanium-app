@@ -570,7 +570,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             setOtaError(msg);
                           }
                         }}
-                        className="w-full h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-neon cursor-pointer"
+                        className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shadow-black/40 border border-emerald-400/30 cursor-pointer"
                       >
                         <RefreshCw className="w-4 h-4" />
                         Comprobar Actualizaciones
@@ -585,8 +585,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "update-found" && otaInfo && (
-                      <div className="bg-gradient-to-br from-[#121622] to-[#151b2a] border-2 border-primary rounded-2xl p-4 flex flex-col gap-3 shadow-neon">
-                        <div className="flex items-center gap-2 text-primary font-mono font-black text-sm uppercase">
+                      <div className="bg-gradient-to-br from-[#121622] to-[#151b2a] border border-emerald-500/40 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                        <div className="flex items-center gap-2 text-emerald-400 font-mono font-black text-sm uppercase">
                           <Sparkles className="w-5 h-5" />
                           <span>¡Nueva versión v{otaInfo.version} lista!</span>
                         </div>
@@ -643,7 +643,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               setOtaError(result.error || "Fallo en la descarga interna. Puedes descargar desde el navegador.");
                             }
                           }}
-                          className="w-full h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                          className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-black/40 border border-emerald-400/30 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
                         >
                           <Download className="w-4 h-4" />
                           Descargar e Instalar v{otaInfo.version}

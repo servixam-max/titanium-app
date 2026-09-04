@@ -34,14 +34,14 @@ export default function BottomNav() {
               href={item.href}
               className={`relative flex flex-col items-center justify-center h-12 w-16 gap-1 transition-colors duration-200 ${
                 isActive
-                  ? "text-primary font-bold"
+                  ? "text-emerald-400 font-bold"
                   : "text-zinc-400 hover:text-zinc-200"
               }`}
             >
               {isActive && (
                 <motion.div
                   layoutId="active-nav-indicator"
-                  className="absolute -top-1 w-9 h-1 bg-gradient-to-r from-cyan-400 via-emerald-400 to-primary rounded-full shadow-[0_0_12px_rgba(0,245,155,0.8)]"
+                  className="absolute -top-1 w-7 h-1 bg-emerald-500 rounded-full shadow-sm"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
