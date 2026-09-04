@@ -4,7 +4,21 @@ import RoutineCard from "@/components/ui/RoutineCard";
 import RoutineDetailModal from "@/components/ui/RoutineDetailModal";
 import TopAppBar from "@/components/ui/TopAppBar";
 import { routines, warmUpExercises } from "@/lib/data";
-import { Flame, Play, Sparkles, Zap } from "lucide-react";
+import {
+  Flame,
+  Play,
+  Sparkles,
+  Zap,
+  ChevronRight,
+  Clock,
+  Dumbbell,
+  ArrowRight,
+  Sun,
+  Moon,
+  Sunset,
+  Sunrise,
+  Layers,
+} from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
@@ -16,7 +30,8 @@ import { useAppStore } from "@/lib/store";
 import { getSessions } from "@/lib/db";
 import { Routine, WorkoutSession } from "@/lib/types";
 import { APP_VERSION } from "@/lib/ota-sync";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { haptics } from "@/lib/haptics";
 
 const InstallPrompt = dynamic(() => import("@/components/ui/InstallPrompt"), {
   ssr: false,
@@ -75,13 +90,18 @@ export default function Dashboard() {
     totalMinutes: 0,
     weeklyDays: [false, false, false, false, false, false, false],
     todayIndex: 0,
+    weeklyCount: 0,
   });
 
-  const greeting = useMemo(() => {
+  const { greetingText, GreetingIcon } = useMemo(() => {
     const hour = new Date().getHours();
-    if (hour >= 6 && hour < 13) return "Buenos días";
-    if (hour >= 13 && hour < 21) return "Buenas tardes";
-    return "Buenas noches";
+    if (hour >= 6 && hour < 13) {
+      return { greetingText: "Buenos días", GreetingIcon: Sunrise };
+    }
+    if (hour >= 13 && hour < 20) {
+      return { greetingText: "Buenas tardes", GreetingIcon: Sun };
+    }
+    return { greetingText: "Buenas noches", GreetingIcon: Moon };
   }, []);
 
   useEffect(() => {
@@ -89,7 +109,6 @@ export default function Dashboard() {
     setAudioMode(audioMode);
     setVoiceRate(voiceRate);
 
-    // Load streak & weekly stats from IndexedDB scoped to user
     getSessions(currentUser?.id).then((sessions) => {
       const allSessions = sessions && sessions.length > 0 ? sessions : storeSessions;
       setSessionsList(allSessions);
@@ -120,13 +139,17 @@ export default function Dashboard() {
       monday.setHours(0, 0, 0, 0);
 
       const daysTrained = [false, false, false, false, false, false, false];
+      let weekCount = 0;
       completed.forEach((s) => {
         const d = new Date(s.endTime!);
         const diffDays = Math.floor(
           (d.getTime() - monday.getTime()) / (1000 * 60 * 60 * 24)
         );
         if (diffDays >= 0 && diffDays < 7) {
-          daysTrained[diffDays] = true;
+          if (!daysTrained[diffDays]) {
+            daysTrained[diffDays] = true;
+            weekCount++;
+          }
         }
       });
 
@@ -137,9 +160,10 @@ export default function Dashboard() {
         totalMinutes,
         weeklyDays: daysTrained,
         todayIndex: todayIdx,
+        weeklyCount: weekCount,
       });
     });
-  }, [audioMode, voiceRate, storeSessions]);
+  }, [audioMode, voiceRate, storeSessions, currentUser]);
 
   const completedTodayRoutineIds = useMemo(() => {
     const today = new Date();
@@ -150,6 +174,18 @@ export default function Dashboard() {
       .forEach((s) => set.add(Number(s.routineId)));
     return set;
   }, [sessionsList, storeSessions]);
+
+  // Next recommended workout based on user's recent training history
+  const recommendedRoutine = useMemo(() => {
+    const completed = sessionsList.filter((s) => s.completed && s.routineId);
+    if (completed.length === 0) return routines[0];
+    const lastRoutineId = Number(completed[0].routineId);
+    if (isNaN(lastRoutineId) || lastRoutineId < 1 || lastRoutineId > 10) {
+      return routines[0];
+    }
+    const nextDay = (lastRoutineId % 10) + 1;
+    return routines.find((r) => r.day === nextDay) || routines[0];
+  }, [sessionsList]);
 
   const handleFirstInteraction = () => {
     if (!audioWarmedUp) {
@@ -169,56 +205,53 @@ export default function Dashboard() {
 
   return (
     <div
-      className="h-[100dvh] flex flex-col overflow-hidden bg-[#080808] text-white select-none"
+      className="h-[100dvh] flex flex-col overflow-hidden bg-[#080B10] text-white select-none"
       onClick={handleFirstInteraction}
     >
       {/* Background Cyber Ambient Mesh Glows */}
-      <div className="fixed top-[-15%] left-[-15%] w-[55%] h-[55%] bg-primary-container/10 rounded-full blur-[140px] pointer-events-none animate-pulse-slow" />
-      <div className="fixed bottom-[-15%] right-[-15%] w-[55%] h-[55%] bg-primary-container/5 rounded-full blur-[140px] pointer-events-none animate-pulse-slow" />
+      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
 
       <TopAppBar title="FORTIXAM" showSettings />
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-h-0 px-4 py-2 gap-2.5 relative z-10">
-        {/* Welcome & Streak Banner */}
+      <main className="flex-1 flex flex-col min-h-0 px-4 py-2 gap-3 relative z-10 overflow-hidden">
+        {/* Welcome & Consistency Dashboard */}
         <motion.div
-          initial={{ opacity: 0, y: -12 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="relative flex-shrink-0 flex flex-col gap-2.5 bg-gradient-to-br from-[#121622] to-[#151b2a] backdrop-blur-2xl border border-primary/30 rounded-3xl p-4 shadow-2xl overflow-hidden group"
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="flex-shrink-0 bg-gradient-to-br from-[#111622]/90 to-[#141B2A]/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-4 shadow-xl relative overflow-hidden"
         >
-          {/* Subtle animated border top */}
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
           <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0 z-10">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
-                  FORTIXAM v{APP_VERSION}
-                </span>
-                <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 text-zinc-400 font-mono text-[10px] font-bold uppercase tracking-wider">
+                <GreetingIcon className="w-3.5 h-3.5 text-primary" />
+                <span>{greetingText}</span>
               </div>
-              <h2 className="font-mono text-lg sm:text-xl font-black truncate text-white mt-0.5 tracking-tight capitalize">
-                ¡{greeting}, {currentUser?.username || "Atleta"}!
+              <h2 className="font-mono text-xl sm:text-2xl font-black text-white truncate tracking-tight mt-0.5">
+                {currentUser?.username || "Atleta"}
               </h2>
             </div>
 
-            {/* Streak Counter */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-black/60 border border-primary/40 flex-shrink-0 shadow-[0_0_15px_rgba(0,245,155,0.2)] z-10">
+            {/* Streak Counter Pill */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-black/50 border border-primary/40 flex-shrink-0 shadow-[0_0_15px_rgba(0,245,155,0.2)]">
               <Flame className="w-4 h-4 text-primary fill-primary animate-pulse" />
-              <div className="flex flex-col">
+              <div className="flex flex-col text-right">
                 <span className="font-black text-primary text-base leading-none font-mono">
                   {streakCount}
                 </span>
-                <span className="text-[8px] font-mono text-zinc-400 uppercase tracking-tighter font-bold">
-                  {streakCount === 1 ? "Día" : "Días"}
+                <span className="text-[8px] font-mono text-zinc-400 uppercase font-bold tracking-tighter">
+                  {streakCount === 1 ? "Día racha" : "Días racha"}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Weekly Consistency Tracker */}
-          <div className="pt-2.5 border-t border-white/5 flex items-center justify-between">
+          {/* Weekly Consistency Bar */}
+          <div className="pt-3 mt-3 border-t border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               {["L", "M", "X", "J", "V", "S", "D"].map((dayName, idx) => {
                 const trained = stats.weeklyDays[idx];
@@ -226,14 +259,13 @@ export default function Dashboard() {
                 return (
                   <div
                     key={dayName}
-                    className={`w-7 h-7 rounded-xl flex flex-col items-center justify-center text-[10px] font-mono font-bold transition-all ${
+                    className={`w-7 h-7 rounded-xl flex items-center justify-center text-[10px] font-mono font-black transition-all ${
                       trained
                         ? "bg-primary text-black shadow-neon"
                         : isToday
-                          ? "border border-primary/80 text-primary bg-primary/10"
+                          ? "border-2 border-primary/90 text-primary bg-primary/10 shadow-[0_0_8px_rgba(0,245,155,0.3)]"
                           : "bg-white/5 text-zinc-500 border border-white/5"
                     }`}
-                    title={`${dayName}: ${trained ? "Completado" : isToday ? "Hoy" : "Pendiente"}`}
                   >
                     <span>{dayName}</span>
                   </div>
@@ -243,84 +275,118 @@ export default function Dashboard() {
 
             {/* Micro Stats */}
             <div className="flex items-center gap-2 font-mono text-[10px] text-zinc-400 pl-2">
-              <span className="bg-white/5 px-2 py-1 rounded-lg border border-white/5">
-                ⚡ <strong className="text-white">{stats.totalWorkouts}</strong>
+              <span className="bg-white/5 px-2 py-1 rounded-xl border border-white/5 flex items-center gap-1">
+                <Zap className="w-3 h-3 text-cyan-400" />
+                <strong className="text-white">{stats.totalWorkouts}</strong>
               </span>
-              <span className="bg-white/5 px-2 py-1 rounded-lg border border-white/5">
-                ⏱️ <strong className="text-white">{stats.totalMinutes}m</strong>
+              <span className="bg-white/5 px-2 py-1 rounded-xl border border-white/5 flex items-center gap-1">
+                <Clock className="w-3 h-3 text-primary" />
+                <strong className="text-white">{stats.totalMinutes}m</strong>
               </span>
             </div>
           </div>
         </motion.div>
 
-        {/* Quick Warmup */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.05 }}
-        >
-          <Link
-            href="/warmup"
-            className="flex-shrink-0 h-[52px] bg-[#121622] hover:bg-[#161c28] border border-white/10 hover:border-cyan-500/40 rounded-2xl flex items-center gap-3 px-3.5 active:scale-98 transition-all shadow-md group"
-          >
-            <div className="w-8 h-8 rounded-xl bg-cyan-500/15 flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-400 group-hover:text-black transition-colors">
-              <Zap className="w-4 h-4 text-cyan-400 group-hover:text-black transition-colors" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <span className="font-mono text-xs font-bold text-white group-hover:text-cyan-400 block truncate transition-colors">
-                Calentamiento y Movilidad Articular
-              </span>
-              <span className="font-mono text-[10px] text-zinc-400">
-                {warmUpExercises.length} ejercicios · 60s por ejercicio
-              </span>
-            </div>
-            <svg
-              className="w-4 h-4 text-zinc-400 group-hover:text-primary-container group-hover:translate-x-0.5 transition-all flex-shrink-0"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </Link>
-        </motion.div>
-
-        {/* Resume Workout Banner */}
+        {/* Active Workout Resumption (If any) */}
         {activeWorkout.routine && (
           <motion.button
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={() => router.push(`/workout/${activeWorkout.mode}`)}
-            className="flex-shrink-0 h-[58px] bg-primary-container text-black rounded-xl flex items-center gap-3 px-3.5 active:scale-98 transition-all shadow-[0_0_20px_rgba(204,255,0,0.3)] font-bold"
+            className="flex-shrink-0 h-[58px] bg-gradient-to-r from-primary to-emerald-400 text-black rounded-2xl flex items-center gap-3 px-4 active:scale-98 transition-all shadow-[0_0_20px_rgba(0,245,155,0.3)] font-mono font-black cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-black/20 flex items-center justify-center flex-shrink-0">
               <Play className="w-4 h-4 text-black fill-current" />
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <span className="text-sm font-bold block truncate">
+              <span className="text-xs font-black uppercase tracking-wider block truncate">
                 Continuar entrenamiento
               </span>
-              <span className="text-[10px] font-label-caps text-black/80">
-                {activeWorkout.routine.title} · Ejercicio{" "}
-                {activeWorkout.currentExerciseIndex + 1}
+              <span className="text-[10px] font-bold text-black/80 truncate block">
+                {activeWorkout.routine.title} · Ejercicio {activeWorkout.currentExerciseIndex + 1}
               </span>
             </div>
-            <svg
-              className="w-4 h-4 flex-shrink-0"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
+            <ArrowRight className="w-4 h-4 flex-shrink-0" />
           </motion.button>
         )}
+
+        {/* Hero Card: Recommended Today's Workout */}
+        {!activeWorkout.routine && recommendedRoutine && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.05 }}
+            className="flex-shrink-0 bg-gradient-to-br from-[#131a2b] via-[#161f33] to-[#101524] border-2 border-primary/40 rounded-3xl p-4 shadow-[0_4px_25px_rgba(0,245,155,0.12)] relative overflow-hidden group"
+          >
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="font-mono text-[10px] font-black uppercase tracking-wider text-primary">
+                  Siguiente en tu plan
+                </span>
+              </div>
+              <span className="font-mono text-[10px] font-bold text-zinc-400 bg-black/40 px-2 py-0.5 rounded-full border border-white/10 flex items-center gap-1">
+                <Clock className="w-3 h-3 text-cyan-400" />
+                {recommendedRoutine.duration}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <h3 className="font-mono text-base font-black text-white truncate group-hover:text-primary transition-colors">
+                  Día {recommendedRoutine.day} · {recommendedRoutine.title}
+                </h3>
+                <div className="flex items-center gap-2 mt-1 text-[11px] font-mono text-zinc-400">
+                  <span className="flex items-center gap-1">
+                    <Layers className="w-3 h-3 text-cyan-400" />
+                    {recommendedRoutine.exercises.length} ejercicios
+                  </span>
+                  <span>•</span>
+                  <span className="text-zinc-300 font-bold uppercase">
+                    {recommendedRoutine.equipment || "Mancuernas"}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  haptics.light();
+                  setSelectedRoutine(recommendedRoutine);
+                }}
+                className="h-10 px-4 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-xl flex items-center gap-1.5 shadow-neon hover:scale-105 active:scale-95 transition-all flex-shrink-0 cursor-pointer"
+              >
+                <span>Empezar</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Quick Warmup Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.08 }}
+        >
+          <Link
+            href="/warmup"
+            onClick={() => haptics.selection()}
+            className="flex-shrink-0 h-[48px] bg-[#111622]/80 hover:bg-[#141b2a] border border-white/10 hover:border-cyan-400/40 rounded-2xl flex items-center gap-3 px-3.5 active:scale-98 transition-all shadow-md group"
+          >
+            <div className="w-7 h-7 rounded-xl bg-cyan-400/15 flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-400 group-hover:text-black transition-colors">
+              <Zap className="w-3.5 h-3.5 text-cyan-400 group-hover:text-black transition-colors" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="font-mono text-xs font-bold text-white group-hover:text-cyan-400 block truncate transition-colors">
+                Calentamiento y Movilidad Articular
+              </span>
+            </div>
+            <span className="font-mono text-[10px] text-zinc-400 group-hover:text-white transition-colors">
+              {warmUpExercises.length} ej (60s)
+            </span>
+            <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-white transition-all flex-shrink-0" />
+          </Link>
+        </motion.div>
 
         {/* Category Filter Chips */}
         <div className="flex-shrink-0 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
@@ -336,11 +402,14 @@ export default function Dashboard() {
             return (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.id as CategoryFilter)}
-                className={`relative px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 active:scale-95 ${
+                onClick={() => {
+                  haptics.selection();
+                  setSelectedCategory(cat.id as CategoryFilter);
+                }}
+                className={`relative px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 active:scale-95 cursor-pointer ${
                   isSelected
-                    ? "text-black font-bold"
-                    : "text-zinc-400 hover:text-white bg-[#121620] border border-white/10"
+                    ? "text-black font-black"
+                    : "text-zinc-400 hover:text-white bg-[#111622] border border-white/10"
                 }`}
               >
                 {isSelected && (
@@ -356,30 +425,33 @@ export default function Dashboard() {
           })}
         </div>
 
-        {/* Routines List - scrollable */}
+        {/* Routines List - Scrollable */}
         <div className="flex-1 min-h-0 flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-mono text-xs font-bold uppercase tracking-wider border-l-2 border-primary pl-2 text-white">
-              Rutinas Disponibles ({filteredRoutines.length})
+              Catálogo de Rutinas ({filteredRoutines.length})
             </h3>
             {selectedCategory !== "all" && (
               <button
                 onClick={() => setSelectedCategory("all")}
-                className="text-[11px] text-primary-container hover:underline font-bold"
+                className="text-[11px] text-cyan-400 hover:underline font-mono font-bold cursor-pointer"
               >
                 Ver todas
               </button>
             )}
           </div>
 
-          <div className="flex-1 overflow-y-auto space-y-2.5 pb-[130px] pr-0.5">
+          <div className="flex-1 overflow-y-auto space-y-2.5 pb-[110px] pr-0.5">
             {filteredRoutines.map((routine, index) => (
               <RoutineCard
                 key={routine.day}
                 routine={routine}
                 index={index}
                 isCompletedToday={completedTodayRoutineIds.has(routine.day)}
-                onClick={() => setSelectedRoutine(routine)}
+                onClick={() => {
+                  haptics.light();
+                  setSelectedRoutine(routine);
+                }}
               />
             ))}
           </div>

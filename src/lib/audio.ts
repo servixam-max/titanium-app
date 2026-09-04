@@ -3,11 +3,20 @@
 // Designed with modern Apple-style acoustic chimes and bulletproof Spanish TTS.
 
 import { haptics } from "./haptics";
+import { registerPlugin, Capacitor } from "@capacitor/core";
+
+export interface NativeTTSPluginInterface {
+  speak(options: { text: string; rate?: number; pitch?: number; flush?: boolean }): Promise<{ success: boolean; id: string }>;
+  stop(): Promise<void>;
+  isAvailable(): Promise<{ available: boolean }>;
+}
+
+export const NativeTTS = registerPlugin<NativeTTSPluginInterface>("NativeTTS");
 
 let audioCtx: AudioContext | null = null;
 let audioUnlocked = false;
 let isMuted = false;
-let voiceRate = 0.92;
+let voiceRate = 0.98;
 let voicePitch = 1.0;
 let preferredVoice: SpeechSynthesisVoice | null = null;
 let voicesLoaded = false;
@@ -376,7 +385,6 @@ function processQueue() {
     isSpeakingNow = false;
     return;
   }
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   if (isAudioSilent() || !isVoiceAllowed()) {
     speechQueue = [];
     isSpeakingNow = false;
@@ -386,6 +394,29 @@ function processQueue() {
   isSpeakingNow = true;
   const item = speechQueue.shift();
   if (!item) return;
+
+  // 1. Android Native TTS Engine (Google Neural Spanish with Navigation Guidance Focus)
+  if (Capacitor.isNativePlatform()) {
+    NativeTTS.speak({
+      text: item.text,
+      rate: item.rate,
+      pitch: item.pitch,
+      flush: false,
+    })
+      .then(() => {
+        if (item.onEnd) item.onEnd();
+      })
+      .catch((err) => {
+        console.warn("NativeTTS error:", err);
+      })
+      .finally(() => {
+        setTimeout(processQueue, 160);
+      });
+    return;
+  }
+
+  // 2. Web Speech API Fallback (Desktop / Browser dev)
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
   try {
     if (!voicesLoaded) {
@@ -439,7 +470,6 @@ export function speak(
   rate: number = voiceRate,
   clearQueueFirst = false,
 ): void {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   if (isAudioSilent() || !isVoiceAllowed()) return;
   if (!text || !text.trim()) return;
 
@@ -447,9 +477,14 @@ export function speak(
 
   if (clearQueueFirst) {
     speechQueue = [];
-    try {
-      window.speechSynthesis.cancel();
-    } catch {}
+    if (Capacitor.isNativePlatform()) {
+      NativeTTS.stop().catch(() => {});
+    }
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {}
+    }
     isSpeakingNow = false;
   }
 
@@ -469,6 +504,9 @@ export function speakWithQueue(
 export function stopSpeaking(): void {
   speechQueue = [];
   isSpeakingNow = false;
+  if (Capacitor.isNativePlatform()) {
+    NativeTTS.stop().catch(() => {});
+  }
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     try {
       window.speechSynthesis.cancel();

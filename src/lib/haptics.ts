@@ -43,6 +43,7 @@ export const haptics = {
   countdownEnd: () => haptic("countdown"),
   complete: () => haptic("complete"),
   light: () => haptic("light"),
+  selection: () => haptic("tick"),
   doubleTick: () => haptic("doubleTick"),
   restStart: () => haptic("restStart"),
 };
