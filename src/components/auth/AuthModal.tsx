@@ -54,7 +54,6 @@ export default function AuthModal() {
   const [forgotStep, setForgotStep] = useState<"email" | "code" | "new_password">("email");
   const [forgotEmail, setForgotEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
-  const [localDevCode, setLocalDevCode] = useState<string | null>(null);
   const [forgotNewPassword, setForgotNewPassword] = useState("");
   const [forgotConfirmPassword, setForgotConfirmPassword] = useState("");
 
@@ -150,12 +149,7 @@ export default function AuthModal() {
 
       if (res.success) {
         haptics.success();
-        if (res.devCodeShown) {
-          setLocalDevCode(code);
-        } else {
-          setLocalDevCode(null);
-        }
-        setSuccessMsg(`Código de 6 dígitos enviado a ${cleanEmail}.`);
+        setSuccessMsg(`Código de 6 dígitos enviado a tu correo.`);
         setForgotStep("code");
       } else {
         haptics.error();
@@ -230,7 +224,6 @@ export default function AuthModal() {
           setVerificationCode("");
           setForgotNewPassword("");
           setForgotConfirmPassword("");
-          setLocalDevCode(null);
           setSuccessMsg("");
         }, 1500);
       } else {
@@ -498,7 +491,7 @@ export default function AuthModal() {
                       required
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      placeholder="servixam@gmail.com"
+                      placeholder="tu@correo.com"
                       className="w-full h-11 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-sans"
                     />
                   </div>
@@ -571,25 +564,6 @@ export default function AuthModal() {
                     className="w-full h-14 bg-[#141a24] border border-emerald-500/40 rounded-xl text-center text-2xl font-mono font-black tracking-[0.4em] text-emerald-400 focus:outline-none focus:border-emerald-400 transition-all placeholder:tracking-normal placeholder:text-zinc-600"
                   />
                 </div>
-
-                {localDevCode && (
-                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3 text-xs text-emerald-300 flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] uppercase font-mono block text-emerald-400/70">Código de seguridad</span>
-                      <span className="font-mono font-bold text-sm tracking-wider">{localDevCode}</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setVerificationCode(localDevCode);
-                        haptics.selection();
-                      }}
-                      className="text-[10px] uppercase font-bold font-mono bg-emerald-500/20 px-2.5 py-1.5 rounded-lg text-emerald-300 hover:bg-emerald-500/30 border border-emerald-400/20 active:scale-95 transition-all"
-                    >
-                      Autocompletar
-                    </button>
-                  </div>
-                )}
 
                 <button
                   type="submit"
