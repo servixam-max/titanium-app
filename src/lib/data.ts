@@ -2783,6 +2783,31 @@ routines.forEach((r) => {
   r.alternativeExercises?.forEach(addExercise);
 });
 
+export function getCompleteExerciseCatalog(): Exercise[] {
+  const map = new Map<string, Exercise>();
+  const day13 = routines.find((r) => r.day === 13);
+  if (day13) {
+    day13.exercises.forEach((ex) => map.set(ex.image || ex.name, ex));
+    day13.alternativeExercises?.forEach((ex) => {
+      const key = ex.image || ex.name;
+      if (!map.has(key)) {
+        map.set(key, ex);
+      }
+    });
+  }
+  routines.forEach((r) => {
+    r.exercises.forEach((ex) => {
+      const key = ex.image || ex.name;
+      if (!map.has(key)) map.set(key, ex);
+    });
+    r.alternativeExercises?.forEach((ex) => {
+      const key = ex.image || ex.name;
+      if (!map.has(key)) map.set(key, ex);
+    });
+  });
+  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export const plans: Plan[] = [
   {
     id: "strength-3",

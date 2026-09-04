@@ -46,6 +46,7 @@ export const haptics = {
   selection: () => haptic("tick"),
   doubleTick: () => haptic("doubleTick"),
   restStart: () => haptic("restStart"),
+  impact: () => haptic("light"),
 };
 
 export default haptics;
