@@ -1,6 +1,8 @@
 // Multi-user authentication and profile management for FORTIXAM
 // Offline-first architecture with local encrypted/hashed storage
 
+import { verifyOtpCode, clearOtpSession } from "./email-service";
+
 export interface UserAccount {
   id: string;
   username: string;
@@ -18,7 +20,7 @@ const ACTIVE_USER_ID_KEY = "fortixam_active_user_id";
 export const SEED_USER: UserAccount = {
   id: "xam-seed-id",
   username: "XAM",
-  email: "xam@fortixam.com",
+  email: "servixam@gmail.com",
   passwordHash: hashPassword("MUSHROOM"),
   createdAt: "2026-05-01T00:00:00.000Z",
   lastLogin: new Date().toISOString(),
@@ -47,10 +49,13 @@ export function getAllAccounts(): UserAccount[] {
       return [SEED_USER];
     }
     const accounts: UserAccount[] = JSON.parse(data);
-    // Ensure SEED_USER always exists and has valid password
-    const hasSeed = accounts.some((a) => a.username.toUpperCase() === "XAM");
-    if (!hasSeed) {
+    // Ensure SEED_USER always exists and has verified email
+    const xamAccount = accounts.find((a) => a.username.toUpperCase() === "XAM");
+    if (!xamAccount) {
       accounts.push(SEED_USER);
+      saveAllAccounts(accounts);
+    } else if (xamAccount.email !== "servixam@gmail.com") {
+      xamAccount.email = "servixam@gmail.com";
       saveAllAccounts(accounts);
     }
     return accounts;
@@ -192,7 +197,8 @@ export function registerUser(
 
 export function resetUserPassword(
   email: string,
-  newPasswordPlain: string
+  newPasswordPlain: string,
+  verificationCode: string
 ): { success: boolean; error?: string } {
   const cleanEmail = email.trim().toLowerCase();
   const accounts = getAllAccounts();
@@ -205,6 +211,19 @@ export function resetUserPassword(
     };
   }
 
+  // Validate verification code strictly (Option B)
+  if (!verificationCode || verificationCode.trim().length !== 6) {
+    return {
+      success: false,
+      error: "Debes ingresar el código de verificación de 6 dígitos.",
+    };
+  }
+
+  const otpCheck = verifyOtpCode(cleanEmail, verificationCode);
+  if (!otpCheck.valid) {
+    return { success: false, error: otpCheck.error || "Código de verificación incorrecto o expirado." };
+  }
+
   if (newPasswordPlain.length < 4) {
     return {
       success: false,
@@ -214,6 +233,7 @@ export function resetUserPassword(
 
   accounts[idx].passwordHash = hashPassword(newPasswordPlain);
   saveAllAccounts(accounts);
+  clearOtpSession();
   return { success: true };
 }
 
