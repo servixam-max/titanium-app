@@ -322,21 +322,21 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   <div className="flex items-center gap-3.5 relative z-10">
                     <div
                       className="w-12 h-12 rounded-xl flex items-center justify-center text-black font-black font-mono text-xl shadow-neon"
-                      style={{ backgroundColor: currentUser?.avatarColor || "#00F59B" }}
+                      style={{ backgroundColor: currentUser?.avatarColor || "#10B981" }}
                     >
-                      {(currentUser?.username || "X").slice(0, 1).toUpperCase()}
+                      {(currentUser?.username || "A").slice(0, 1).toUpperCase()}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-white text-base font-mono">
-                          {currentUser?.username || "XAM"}
+                          {currentUser?.username || "Atleta"}
                         </span>
-                        <span className="text-[10px] font-mono font-bold bg-primary/20 text-primary px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">
                           CONECTADO
                         </span>
                       </div>
                       <span className="text-xs text-zinc-400 block mt-0.5">
-                        {currentUser?.email || "xam@fortixam.com"}
+                        {currentUser?.email || "atleta@fortixam.com"}
                       </span>
                     </div>
                   </div>

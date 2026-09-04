@@ -177,10 +177,10 @@ export default function HistoryPage() {
           <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#141a24] border border-white/10 rounded-full">
             <span
               className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: currentUser?.avatarColor || "#00F59B" }}
+              style={{ backgroundColor: currentUser?.avatarColor || "#10B981" }}
             />
             <span className="text-[11px] font-mono font-bold text-white uppercase">
-              {currentUser?.username || "XAM"}
+              {currentUser?.username || "Atleta"}
             </span>
           </div>
         </div>
