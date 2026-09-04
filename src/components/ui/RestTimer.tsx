@@ -68,10 +68,9 @@ export default function RestTimer() {
       activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex]
         ?.restSeconds || 60;
 
-    // 10s warning before set starts, announcing next exercise
+    // 10s warning before set starts, announcing upcoming exercise
     if (timeLeft === 10 && prevTime > 10) {
-      const nextName = hasNextExercise ? nextExercise?.name : currentExercise?.name;
-      announceTenSecondsLeft(nextName);
+      announceTenSecondsLeft(currentExercise?.name);
     }
 
     // Voice countdown: 3, 2, 1
@@ -121,10 +120,14 @@ export default function RestTimer() {
   const timeLeft = activeWorkout.restTimeRemaining;
   const restUrgent = timeLeft <= 10;
 
-  const isLastSet = activeWorkout.currentSet >= (currentExercise?.sets || 1);
-  const nextExercise =
-    activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex + 1];
-  const hasNextExercise = isLastSet && !!nextExercise;
+  // completeSet() in store.ts ALREADY advances currentSet and currentExerciseIndex
+  // If currentSet === 1, we just transitioned to a brand new exercise
+  // If currentSet > 1, we are resting before the next set of the same exercise
+  const isNewExercise = activeWorkout.currentSet === 1;
+  const upcomingSet = activeWorkout.currentSet;
+  const totalSets = currentExercise?.sets || 1;
+  const remainingSets = Math.max(1, totalSets - upcomingSet + 1);
+  const isLastSetOfExercise = upcomingSet === totalSets;
 
   const handleExit = async (save: boolean) => {
     stopSpeaking();
@@ -145,18 +148,18 @@ export default function RestTimer() {
       <header className="flex-shrink-0 h-[56px] flex items-center justify-between px-2 w-full z-20">
         <button
           onClick={() => setShowExitConfirm(true)}
-          className="flex items-center gap-1 h-10 px-2 text-on-surface hover:text-primary-container active:scale-95 transition-all"
+          className="flex items-center gap-1 h-10 px-2 text-on-surface hover:text-primary-container active:scale-95 transition-all cursor-pointer"
           aria-label="Volver atrás o cancelar"
         >
           <ArrowLeft className="w-6 h-6" />
           <span className="text-xs font-bold font-label-caps uppercase">Salir</span>
         </button>
         <span className="text-primary-container font-label-caps tracking-[0.2em] text-xs uppercase font-bold">
-          DESCANSO
+          Descanso
         </span>
         <button
           onClick={toggleAudio}
-          className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-on-surface active:scale-95"
+          className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-on-surface active:scale-95 cursor-pointer"
           title={audioEnabled ? "Desactivar audio" : "Activar audio"}
         >
           {audioEnabled ? (
@@ -167,15 +170,20 @@ export default function RestTimer() {
         </button>
       </header>
 
-      {/* Pulsing neon halo background */}
+      {/* Pulsing neon halo */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
-          className={`w-[520px] h-[520px] rounded-full blur-[120px] animate-ambient ${restUrgent ? "bg-error/15" : "bg-primary-container/12"}`}
+          className={`w-[520px] h-[520px] rounded-full blur-[120px] animate-ambient ${
+            restUrgent ? "bg-error/15" : "bg-primary-container/10"
+          }`}
         />
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto my-auto">
         <div className="flex flex-col items-center mb-4">
+          <span className="text-primary-container font-label-caps tracking-[0.25em] text-xs uppercase mb-1">
+            Intervalo de Recuperación
+          </span>
           <h2 className="font-headline-lg text-headline-lg text-on-surface uppercase">
             Recupera
           </h2>
@@ -191,43 +199,42 @@ export default function RestTimer() {
           className="mb-6"
         />
 
-        {/* Next Exercise Preview Card */}
+        {/* Upcoming Exercise Preview Card */}
         <div className="w-full mb-6">
           <p className="text-on-surface-variant font-label-caps tracking-[0.2em] text-[11px] uppercase mb-2 text-center">
-            {hasNextExercise ? "A continuación" : "Continúas con"}
+            {isNewExercise ? "A continuación:" : "Continúas con:"}
           </p>
-          <div className="w-full bg-surface-container-high border border-surface-container-highest rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up">
+          <div className="w-full bg-surface-container-high border border-surface-container-highest rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
             <div className="w-14 h-14 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 border border-surface-container-highest">
               <ExerciseImage
-                src={
-                  (hasNextExercise
-                    ? nextExercise?.image
-                    : currentExercise?.image) || ""
-                }
-                alt={
-                  (hasNextExercise
-                    ? nextExercise?.name
-                    : currentExercise?.name) || "Ejercicio"
-                }
+                src={currentExercise?.image || ""}
+                alt={currentExercise?.name || "Ejercicio"}
                 containerClassName="w-full h-full"
               />
             </div>
             <div className="flex-1 min-w-0 text-left">
               <p className="text-on-surface font-headline-md text-headline-md truncate">
-                {hasNextExercise ? nextExercise?.name : currentExercise?.name}
+                {currentExercise?.name}
               </p>
-              <div className="flex items-center gap-3 mt-1 text-on-surface-variant text-xs">
-                <span className="flex items-center gap-1">
+              <div className="flex items-center gap-2 mt-1 text-on-surface-variant text-xs flex-wrap">
+                <span className="flex items-center gap-1 font-bold text-white">
                   <Dumbbell className="w-3.5 h-3.5 text-primary-container" />
-                  {hasNextExercise
-                    ? `${nextExercise?.sets || 0} series`
-                    : `Serie ${activeWorkout.currentSet + 1} de ${currentExercise?.sets || 0}`}
+                  Serie {upcomingSet} de {totalSets}
                 </span>
+                <span className="text-zinc-600">·</span>
                 <span className="flex items-center gap-1">
                   <Hash className="w-3.5 h-3.5 text-primary-container" />
-                  {hasNextExercise
-                    ? nextExercise?.reps
+                  {currentExercise?.reps?.endsWith("s")
+                    ? currentExercise.reps
                     : `${currentExercise?.reps} reps`}
+                </span>
+                <span className="text-zinc-600">·</span>
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border font-bold ${
+                  isLastSetOfExercise
+                    ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                    : "bg-primary-container/15 text-primary-container border-primary-container/30"
+                }`}>
+                  {isLastSetOfExercise ? "¡Última serie!" : `Quedan ${remainingSets} series`}
                 </span>
               </div>
             </div>

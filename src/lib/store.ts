@@ -579,6 +579,10 @@ export const useAppStore = create<AppState>()(
               workTimeRemaining: 0,
             },
           });
+          if (get().audioEnabled) {
+            import("./audio").then(({ announceWorkEnd }) => announceWorkEnd());
+            import("./haptics").then(({ haptics }) => haptics.countdownEnd());
+          }
           // Auto-complete the current set: logs it (with real elapsed duration), advances, and starts rest.
           get().completeSet(
             activeWorkout.currentExerciseIndex,

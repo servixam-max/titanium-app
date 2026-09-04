@@ -180,10 +180,10 @@ export default function Dashboard() {
     const completed = sessionsList.filter((s) => s.completed && s.routineId);
     if (completed.length === 0) return routines[0];
     const lastRoutineId = Number(completed[0].routineId);
-    if (isNaN(lastRoutineId) || lastRoutineId < 1 || lastRoutineId > 10) {
+    if (isNaN(lastRoutineId) || lastRoutineId < 1 || lastRoutineId > 12) {
       return routines[0];
     }
-    const nextDay = (lastRoutineId % 10) + 1;
+    const nextDay = (lastRoutineId % 12) + 1;
     return routines.find((r) => r.day === nextDay) || routines[0];
   }, [sessionsList]);
 

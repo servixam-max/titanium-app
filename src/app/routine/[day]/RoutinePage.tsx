@@ -62,7 +62,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
     routine.alternativeExercises && routine.alternativeExercises.length > 0
   );
   const isFreeDay =
-    routine.categoryTag === "personalizado" || routine.day === 11;
+    routine.categoryTag === "personalizado" || routine.day === 13;
   const exercises =
     hasAlternatives &&
     equipmentPreference === "bodyweight" &&
@@ -71,7 +71,19 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
       : routine.exercises;
 
   const handleStart = (exerciseIndex?: number) => {
-    setTargetExerciseIndex(exerciseIndex ?? 0);
+    const targetIdx = exerciseIndex ?? 0;
+    // Individual mode: skip warmup prompt completely
+    if (mode === "individual") {
+      const workoutRoutine = {
+        ...routine,
+        exercises,
+      };
+      startWorkout(workoutRoutine, "individual", targetIdx);
+      router.push("/workout/individual");
+      return;
+    }
+
+    setTargetExerciseIndex(targetIdx);
     setShowWarmupModal(true);
   };
 
@@ -83,18 +95,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
     };
 
     const idx = targetExerciseIndex;
-    startWorkout(workoutRoutine, mode, idx);
+    startWorkout(workoutRoutine, "guided", idx);
 
     if (wantWarmup) {
-      router.push(
-        `/warmup?redirect=/workout/${mode}${mode === "individual" ? `?exercise=${idx}` : ""}`
-      );
+      router.push("/warmup?redirect=/workout/guided");
     } else {
-      if (mode === "guided") {
-        router.push("/workout/guided");
-      } else {
-        router.push(`/workout/individual?exercise=${idx}`);
-      }
+      router.push("/workout/guided");
     }
   };
 

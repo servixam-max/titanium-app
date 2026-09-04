@@ -48,7 +48,20 @@ export default function RoutineDetailModal({
   const totalSets = exercises.reduce((sum, ex) => sum + ex.sets, 0);
 
   const handleStartWorkoutFlow = (exerciseIndex?: number) => {
-    setSelectedExerciseIdx(exerciseIndex);
+    const targetIdx = exerciseIndex ?? 0;
+    // Individual mode: user only wants to do this exercise, skip warmup entirely
+    if (mode === "individual") {
+      onClose();
+      const workoutRoutine = {
+        ...routine,
+        exercises,
+      };
+      startWorkout(workoutRoutine, "individual", targetIdx);
+      router.push("/workout/individual");
+      return;
+    }
+
+    setSelectedExerciseIdx(targetIdx);
     setShowWarmupModal(true);
   };
 
@@ -62,18 +75,12 @@ export default function RoutineDetailModal({
     };
 
     const targetIdx = selectedExerciseIdx ?? 0;
-    startWorkout(workoutRoutine, mode, targetIdx);
+    startWorkout(workoutRoutine, "guided", targetIdx);
 
     if (wantWarmup) {
-      router.push(
-        `/warmup?redirect=/workout/${mode}${mode === "individual" ? `?exercise=${targetIdx}` : ""}`
-      );
+      router.push("/warmup?redirect=/workout/guided");
     } else {
-      if (mode === "guided") {
-        router.push("/workout/guided");
-      } else {
-        router.push(`/workout/individual?exercise=${targetIdx}`);
-      }
+      router.push("/workout/guided");
     }
   };
 

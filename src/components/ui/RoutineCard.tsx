@@ -43,7 +43,7 @@ export default function RoutineCard({
 }: RoutineCardProps) {
   const totalSets = routine.exercises.reduce((sum, ex) => sum + ex.sets, 0);
   const isPersonalized =
-    routine.categoryTag === "personalizado" || routine.day === 11;
+    routine.categoryTag === "personalizado" || routine.day === 13;
   const isHIIT = routine.type === "hiit";
 
   const dayNumber = routine.day < 10 ? `0${routine.day}` : routine.day;
