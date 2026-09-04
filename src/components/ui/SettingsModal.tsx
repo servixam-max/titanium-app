@@ -43,6 +43,11 @@ import {
   checkOtaUpdate,
   openApkDownload,
 } from "@/lib/ota-sync";
+import {
+  canInstallUnknownApps,
+  requestInstallPermission,
+  startInAppUpdate,
+} from "@/lib/app-updater";
 import { getSessions, saveSession, getWeights, saveWeight } from "@/lib/db";
 
 interface SettingsModalProps {
@@ -70,9 +75,17 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [isMobile, setIsMobile] = useState(false);
 
   // OTA state
-  const [otaStatus, setOtaStatus] = useState<"idle" | "checking" | "update-found" | "up-to-date" | "error">("idle");
+  const [otaStatus, setOtaStatus] = useState<
+    "idle" | "checking" | "update-found" | "downloading" | "up-to-date" | "error"
+  >("idle");
   const [otaInfo, setOtaInfo] = useState<{ version: string; downloadUrl: string; serverUrl: string } | null>(null);
   const [otaError, setOtaError] = useState("");
+  const [downloadProgress, setDownloadProgress] = useState<number>(0);
+  const [downloadStats, setDownloadStats] = useState<{ current: string; total: string }>({
+    current: "0 MB",
+    total: "0 MB",
+  });
+  const [hasInstallPermission, setHasInstallPermission] = useState<boolean>(true);
 
   // Sync / Backup state
   const [syncStatus, setSyncStatus] = useState<"idle" | "syncing" | "success" | "error">("idle");
@@ -541,6 +554,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           try {
                             const result = await checkOtaUpdate();
                             if (result.hasUpdate) {
+                              const canInst = await canInstallUnknownApps();
+                              setHasInstallPermission(canInst);
                               setOtaStatus("update-found");
                               setOtaInfo({
                                 version: result.latestVersion,
@@ -578,21 +593,102 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <p className="text-xs text-zinc-400 font-mono">
                           Servidor: <strong className="text-white">{otaInfo.serverUrl}</strong>
                         </p>
+
+                        {!hasInstallPermission && (
+                          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 flex flex-col gap-2">
+                            <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold">
+                              <AlertTriangle className="w-4 h-4" />
+                              <span>Permiso para autoinstalar</span>
+                            </div>
+                            <p className="text-[11px] text-zinc-300 font-mono">
+                              Para instalar sin salir al navegador, activa el permiso de &ldquo;Instalar apps desconocidas&rdquo; para FORTIXAM (solo se hace una vez).
+                            </p>
+                            <button
+                              onClick={async () => {
+                                await requestInstallPermission();
+                                setTimeout(async () => {
+                                  const ok = await canInstallUnknownApps();
+                                  setHasInstallPermission(ok);
+                                }, 1500);
+                              }}
+                              className="h-8 bg-amber-500 text-black font-mono font-bold text-xs uppercase tracking-wider rounded-lg flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
+                            >
+                              <span>Conceder permiso en Ajustes</span>
+                            </button>
+                          </div>
+                        )}
+
                         <button
-                          onClick={() => {
-                            openApkDownload(otaInfo.downloadUrl);
+                          onClick={async () => {
+                            setOtaStatus("downloading");
+                            setDownloadProgress(0);
+                            setDownloadStats({ current: "0 MB", total: "..." });
+
+                            const formatMb = (bytes: number) => `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+
+                            const result = await startInAppUpdate(otaInfo.downloadUrl, (progress) => {
+                              if (progress.percent >= 0) {
+                                setDownloadProgress(progress.percent);
+                              }
+                              if (progress.totalBytes > 0) {
+                                setDownloadStats({
+                                  current: formatMb(progress.bytesDownloaded),
+                                  total: formatMb(progress.totalBytes),
+                                });
+                              }
+                            });
+
+                            if (!result.success) {
+                              setOtaStatus("error");
+                              setOtaError(result.error || "Fallo en la descarga interna. Puedes descargar desde el navegador.");
+                            }
                           }}
                           className="w-full h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
                         >
                           <Download className="w-4 h-4" />
                           Descargar e Instalar v{otaInfo.version}
                         </button>
-                        <button
-                          onClick={() => setOtaStatus("idle")}
-                          className="text-xs text-zinc-400 underline text-center hover:text-white font-mono"
-                        >
-                          Volver a comprobar
-                        </button>
+
+                        <div className="flex items-center justify-between pt-1">
+                          <button
+                            onClick={() => openApkDownload(otaInfo.downloadUrl)}
+                            className="text-[11px] text-cyan-400 underline hover:text-white font-mono"
+                          >
+                            Descarga clásica (navegador)
+                          </button>
+                          <button
+                            onClick={() => setOtaStatus("idle")}
+                            className="text-[11px] text-zinc-400 underline hover:text-white font-mono"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {otaStatus === "downloading" && otaInfo && (
+                      <div className="bg-gradient-to-br from-[#121622] to-[#151b2a] border-2 border-primary rounded-2xl p-4 flex flex-col gap-3.5 shadow-neon">
+                        <div className="flex items-center justify-between text-white font-mono text-xs font-bold">
+                          <span className="flex items-center gap-2 text-primary">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            {downloadProgress >= 100
+                              ? "¡Descargado! Abriendo instalador..."
+                              : `Descargando v${otaInfo.version}...`}
+                          </span>
+                          <span className="text-cyan-400">{downloadProgress}%</span>
+                        </div>
+
+                        <div className="w-full bg-black/50 rounded-full h-3.5 border border-white/10 overflow-hidden p-0.5">
+                          <div
+                            className="bg-gradient-to-r from-cyan-400 to-primary h-full rounded-full transition-all duration-200 shadow-neon"
+                            style={{ width: `${Math.max(5, Math.min(100, downloadProgress))}%` }}
+                          />
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-zinc-400 font-mono">
+                          <span>{downloadStats.current} / {downloadStats.total}</span>
+                          <span className="text-zinc-500">No cierres la app</span>
+                        </div>
                       </div>
                     )}
 
