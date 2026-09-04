@@ -26,10 +26,10 @@ const config: Config = {
           highest: "#353535",
         },
         primary: {
-          DEFAULT: "#00F59B",
-          container: "#00F59B",
-          fixed: "#00F0FF",
-          "fixed-dim": "#00d685",
+          DEFAULT: "#00D27F",
+          container: "#00D27F",
+          fixed: "#00E58F",
+          "fixed-dim": "#00b86e",
         },
         "on-primary": "#002012",
         "on-primary-container": "#002012",
@@ -111,9 +111,9 @@ const config: Config = {
       },
       boxShadow: {
         'rest': '0 8px 24px rgba(0,0,0,0.5)',
-        'neon': '0 0 14px rgba(0, 245, 155, 0.45)',
-        'neon-strong': '0 0 30px rgba(0, 245, 155, 0.35)',
-        'cyan-neon': '0 0 14px rgba(0, 240, 255, 0.45)',
+        'neon': '0 0 12px rgba(0, 210, 127, 0.32)',
+        'neon-strong': '0 0 24px rgba(0, 210, 127, 0.22)',
+        'cyan-neon': '0 0 14px rgba(0, 240, 255, 0.40)',
       },
       animation: {
         'pulse-a': 'pulseA 2s infinite ease-in-out',
@@ -124,7 +124,7 @@ const config: Config = {
       },
       keyframes: {
         pulseA: {
-          '0%, 100%': { opacity: '1', borderColor: '#00F59B', transform: 'scale(1.02)' },
+          '0%, 100%': { opacity: '1', borderColor: '#00D27F', transform: 'scale(1.02)' },
           '50%': { opacity: '0.4', borderColor: '#16222f', transform: 'scale(1)' },
         },
         pulseB: {

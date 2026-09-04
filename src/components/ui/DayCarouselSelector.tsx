@@ -58,7 +58,7 @@ export default function DayCarouselSelector({
               }}
               className={`relative flex-shrink-0 min-w-[74px] h-[64px] rounded-2xl flex flex-col items-center justify-center p-2 transition-all duration-200 cursor-pointer active:scale-95 select-none ${
                 isSelected
-                  ? "bg-primary text-black shadow-[0_0_18px_rgba(0,245,155,0.45)] border-2 border-primary font-black scale-[1.03]"
+                  ? "bg-primary text-black shadow-[0_0_14px_rgba(0,210,127,0.30)] border-2 border-primary font-black scale-[1.03]"
                   : isCompleted
                   ? "bg-[#0c1815] text-emerald-400 border border-emerald-500/40"
                   : "bg-[#111622]/90 hover:bg-[#151c2c] text-zinc-400 border border-white/10"

@@ -22,7 +22,7 @@ export const SEED_USER: UserAccount = {
   passwordHash: hashPassword("MUSHROOM"),
   createdAt: "2026-05-01T00:00:00.000Z",
   lastLogin: new Date().toISOString(),
-  avatarColor: "#00F59B",
+  avatarColor: "#00D27F",
 };
 
 function hashPassword(password: string): string {
@@ -41,8 +41,9 @@ export function getAllAccounts(): UserAccount[] {
   try {
     const data = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
     if (!data) {
-      // Initialize with default SEED_USER
+      // Initialize with default SEED_USER and make it active on initial launch
       saveAllAccounts([SEED_USER]);
+      localStorage.setItem(ACTIVE_USER_ID_KEY, SEED_USER.id);
       return [SEED_USER];
     }
     const accounts: UserAccount[] = JSON.parse(data);
@@ -68,23 +69,17 @@ export function saveAllAccounts(accounts: UserAccount[]): void {
 }
 
 export function getActiveUserId(): string | null {
-  if (typeof window === "undefined") return "xam-seed-id";
-  const stored = localStorage.getItem(ACTIVE_USER_ID_KEY);
-  if (!stored) {
-    localStorage.setItem(ACTIVE_USER_ID_KEY, SEED_USER.id);
-    return SEED_USER.id;
-  }
-  return stored;
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(ACTIVE_USER_ID_KEY);
 }
 
 export function getActiveUser(): UserAccount | null {
-  if (typeof window === "undefined") return SEED_USER;
+  if (typeof window === "undefined") return null;
   const activeId = getActiveUserId();
+  if (!activeId) return null;
   const accounts = getAllAccounts();
   const found = accounts.find((a) => a.id === activeId);
-  if (found) return found;
-  setActiveUser(SEED_USER);
-  return SEED_USER;
+  return found || null;
 }
 
 export function setActiveUser(user: UserAccount | null): void {

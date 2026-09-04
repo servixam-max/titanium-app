@@ -73,7 +73,7 @@ export default function TopAppBar({
           )}
         </div>
 
-        <h1 className="font-mono text-base sm:text-lg font-black tracking-widest text-white uppercase text-center flex-1 drop-shadow-[0_0_12px_rgba(0,245,155,0.4)]">
+        <h1 className="font-mono text-base sm:text-lg font-black tracking-widest text-white uppercase text-center flex-1 drop-shadow-[0_0_10px_rgba(0,210,127,0.3)]">
           {title}
         </h1>
 
@@ -82,7 +82,7 @@ export default function TopAppBar({
             <button
               onClick={() => setSettingsOpen(true)}
               className="w-7 h-7 rounded-lg flex items-center justify-center text-black font-black text-xs font-mono shadow-sm active:scale-90 transition-all"
-              style={{ backgroundColor: currentUser.avatarColor || "#00F59B" }}
+              style={{ backgroundColor: currentUser.avatarColor || "#00D27F" }}
               title={`Perfil de ${currentUser.username}`}
             >
               {currentUser.username.slice(0, 1).toUpperCase()}

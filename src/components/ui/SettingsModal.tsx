@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -10,7 +11,6 @@ import {
   Download,
   RefreshCw,
   Dumbbell,
-  Info,
   Music,
   Briefcase,
   Database,
@@ -25,11 +25,8 @@ import {
   AlertTriangle,
   Loader2,
   Sparkles,
-  Server,
   LogOut,
   Upload,
-  Save,
-  User,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { AudioMode } from "@/lib/types";
@@ -73,6 +70,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   } = useAppStore();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // OTA state
   const [otaStatus, setOtaStatus] = useState<
@@ -209,11 +211,6 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
 
 
-  const handleResetAll = () => {
-    localStorage.clear();
-    window.location.reload();
-  };
-
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -254,10 +251,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     },
   ];
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -565,9 +564,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             } else {
                               setOtaStatus("up-to-date");
                             }
-                          } catch (err: any) {
+                          } catch (err: unknown) {
                             setOtaStatus("error");
-                            setOtaError(err?.message || "No se pudo contactar con el servidor");
+                            const msg = err instanceof Error ? err.message : "No se pudo contactar con el servidor";
+                            setOtaError(msg);
                           }
                         }}
                         className="w-full h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-neon cursor-pointer"
@@ -819,7 +819,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 

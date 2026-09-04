@@ -304,9 +304,7 @@ export default function Dashboard() {
       <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Top App Bar */}
-      <div className="sticky top-0 z-50 backdrop-blur-xl bg-[#080B10]/85 border-b border-white/5">
-        <TopAppBar title="FORTIXAM" showSettings />
-      </div>
+      <TopAppBar title="FORTIXAM" showSettings />
 
       {/* Main Content - Native Smooth Mobile Scroll */}
       <main className="flex-1 flex flex-col px-4 py-3 gap-4 relative z-10">
@@ -331,7 +329,7 @@ export default function Dashboard() {
             </div>
 
             {/* Streak Counter Pill */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-black/60 border border-primary/40 flex-shrink-0 shadow-[0_0_15px_rgba(0,245,155,0.2)]">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-black/60 border border-primary/40 flex-shrink-0 shadow-[0_0_15px_rgba(0,210,127,0.2)]">
               <Flame className="w-4 h-4 text-primary fill-primary animate-pulse" />
               <div className="flex flex-col text-right">
                 <span className="font-black text-primary text-base leading-none font-mono">
@@ -357,7 +355,7 @@ export default function Dashboard() {
                       trained
                         ? "bg-primary text-black shadow-neon"
                         : isToday
-                        ? "border-2 border-primary/90 text-primary bg-primary/10 shadow-[0_0_8px_rgba(0,245,155,0.3)]"
+                        ? "border-2 border-primary/90 text-primary bg-primary/10 shadow-[0_0_8px_rgba(0,210,127,0.25)]"
                         : "bg-white/5 text-zinc-500 border border-white/5"
                     }`}
                   >
@@ -387,7 +385,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={() => router.push(`/workout/${activeWorkout.mode}`)}
-            className="h-[62px] bg-gradient-to-r from-primary to-emerald-400 text-black rounded-2xl flex items-center gap-3 px-4 active:scale-98 transition-all shadow-[0_0_20px_rgba(0,245,155,0.3)] font-mono font-black cursor-pointer"
+            className="h-[62px] bg-gradient-to-r from-primary to-emerald-400 text-black rounded-2xl flex items-center gap-3 px-4 active:scale-98 transition-all shadow-[0_0_20px_rgba(0,210,127,0.25)] font-mono font-black cursor-pointer"
           >
             <div className="w-9 h-9 rounded-xl bg-black/20 flex items-center justify-center flex-shrink-0">
               <Play className="w-5 h-5 text-black fill-current" />
@@ -405,34 +403,34 @@ export default function Dashboard() {
         )}
 
         {/* Modern Segmented View Switcher: Rutinas vs Catálogo */}
-        <div className="bg-[#111622] p-1 rounded-2xl border border-white/10 flex items-center shadow-lg">
+        <div className="bg-[#111622] p-1.5 rounded-2xl border border-white/10 flex items-center gap-2 shadow-lg">
           <button
             onClick={() => {
               haptics.selection();
               setActiveTab("routines");
             }}
-            className={`flex-1 h-11 rounded-xl font-mono text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 h-11 px-2.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer min-w-0 ${
               activeTab === "routines"
                 ? "bg-primary text-black shadow-neon"
-                : "text-zinc-400 hover:text-white"
+                : "text-zinc-400 hover:text-white hover:bg-white/5"
             }`}
           >
-            <Calendar className="w-4 h-4" />
-            <span>Plan por Días (13)</span>
+            <Calendar className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">Por Días (13)</span>
           </button>
           <button
             onClick={() => {
               haptics.selection();
               setActiveTab("catalog");
             }}
-            className={`flex-1 h-11 rounded-xl font-mono text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 h-11 px-2.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer min-w-0 ${
               activeTab === "catalog"
                 ? "bg-primary text-black shadow-neon"
-                : "text-zinc-400 hover:text-white"
+                : "text-zinc-400 hover:text-white hover:bg-white/5"
             }`}
           >
-            <Grid className="w-4 h-4" />
-            <span>Catálogo Ejercicios (56)</span>
+            <Grid className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">Catálogo (56)</span>
           </button>
         </div>
 
@@ -445,7 +443,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.05 }}
-                className="bg-gradient-to-br from-[#131a2b] via-[#161f33] to-[#101524] border-2 border-primary/40 rounded-3xl p-4 shadow-[0_4px_25px_rgba(0,245,155,0.12)] relative overflow-hidden group"
+                className="bg-gradient-to-br from-[#131a2b] via-[#161f33] to-[#101524] border-2 border-primary/40 rounded-3xl p-4 shadow-[0_4px_25px_rgba(0,210,127,0.10)] relative overflow-hidden group"
               >
                 <div className="flex items-center justify-between gap-2 mb-2.5">
                   <div className="flex items-center gap-2">
