@@ -58,6 +58,9 @@ export function clearOtpSession(): void {
   localStorage.removeItem(OTP_KEY);
 }
 
+const DEFAULT_EMAIL_WEBHOOK_URL =
+  "https://script.google.com/macros/s/AKfycbwzjsZGhjXc_dIx773xCLhyPYrlL37o10FYnGEGWdxBnDFH1lUyKBpBSbDey-gCkKXJ/exec";
+
 // Function to send the verification email with the 6-digit code
 export async function sendPasswordResetEmail(
   email: string,
@@ -65,17 +68,18 @@ export async function sendPasswordResetEmail(
 ): Promise<{ success: boolean; error?: string }> {
   const cleanEmail = email.trim().toLowerCase();
 
-  // 1. Try custom webhook if configured (e.g. Google Apps Script Web App / serverless relay)
+  // 1. Try custom or default Google Apps Script Webhook
   const webhookUrl =
-    typeof window !== "undefined"
+    (typeof window !== "undefined"
       ? localStorage.getItem("fortixam_email_webhook")
-      : null;
+      : null) || DEFAULT_EMAIL_WEBHOOK_URL;
 
   if (webhookUrl) {
     try {
       const res = await fetch(webhookUrl.trim(), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        redirect: "follow",
         body: JSON.stringify({
           to: cleanEmail,
           email: cleanEmail,
