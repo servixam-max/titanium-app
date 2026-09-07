@@ -48,7 +48,7 @@ export default function UpdateChecker() {
   if (upToDateMsg) {
     return (
       <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] bg-surface-container border border-primary/20 text-white px-4 py-2 rounded-full shadow-lg text-sm animate-fade-in-up">
-        FORTIXAM está actualizado (v{APP_VERSION})
+        FORTIXAM está actualizado (v{APP_VERSION.version})
       </div>
     );
   }

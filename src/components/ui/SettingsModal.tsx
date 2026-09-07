@@ -101,7 +101,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       const userWeights = await getWeights(currentUser?.id);
       const backupData = {
         app: "FORTIXAM",
-        version: APP_VERSION,
+        version: APP_VERSION.version,
         exportedAt: new Date().toISOString(),
         user: {
           id: currentUser?.id,
@@ -541,7 +541,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   <div className="bg-[#121620] border border-white/10 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
                     <div className="flex items-center justify-between text-xs text-zinc-400 pb-2 border-b border-white/10 font-mono">
                       <span>Versión instalada:</span>
-                      <span className="font-black text-cyan-400 font-mono text-sm">v{APP_VERSION}</span>
+                      <span className="font-black text-cyan-400 font-mono text-sm">v{APP_VERSION.version}</span>
                     </div>
 
                     {otaStatus === "idle" && (
@@ -695,7 +695,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     {otaStatus === "up-to-date" && (
                       <div className="bg-[#141a24] border border-primary/30 rounded-2xl p-4 flex flex-col items-center gap-2 text-center">
                         <CheckCircle2 className="w-6 h-6 text-primary" />
-                        <span className="font-mono font-bold text-white text-xs uppercase">Tu aplicación está al día (v{APP_VERSION})</span>
+                        <span className="font-mono font-bold text-white text-xs uppercase">Tu aplicación está al día (v{APP_VERSION.version})</span>
                         <button
                           onClick={() => setOtaStatus("idle")}
                           className="text-xs text-cyan-400 underline mt-1 font-mono"
@@ -806,7 +806,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-primary/20 rounded-2xl p-4 text-center shadow-lg">
                       <Sparkles className="w-6 h-6 text-primary mx-auto mb-2" />
                       <span className="font-mono text-2xl font-black text-white block">
-                        v{APP_VERSION}
+                        v{APP_VERSION.version}
                       </span>
                       <p className="font-mono text-[10px] font-bold text-primary uppercase tracking-wider mt-1">
                         VERSIÓN ACTUAL
