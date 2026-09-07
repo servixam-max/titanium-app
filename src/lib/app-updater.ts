@@ -66,7 +66,7 @@ export async function startInAppUpdate(
       await progressListener.remove();
     }
     return { success: result.success };
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (progressListener) {
       try {
         await progressListener.remove();
@@ -75,7 +75,7 @@ export async function startInAppUpdate(
     console.error("In-app update error:", err);
     return {
       success: false,
-      error: err?.message || "Error al descargar o instalar la actualización",
+      error: err instanceof Error ? err.message : "Error al descargar o instalar la actualización",
     };
   }
 }

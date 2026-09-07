@@ -1,6 +1,7 @@
 "use client";
 
 import RoutineCard from "@/components/ui/RoutineCard";
+import Card3D from "@/components/ui/Card3D";
 import RoutineDetailModal from "@/components/ui/RoutineDetailModal";
 import ExerciseDetailModal from "@/components/ui/ExerciseDetailModal";
 import DayCarouselSelector from "@/components/ui/DayCarouselSelector";
@@ -443,49 +444,56 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.05 }}
-                className="bg-gradient-to-br from-[#121824] via-[#141d2c] to-[#101420] border border-emerald-500/30 rounded-3xl p-4 shadow-xl relative overflow-hidden group"
               >
-                <div className="flex items-center justify-between gap-2 mb-2.5">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
-                      Siguiente sesión recomendada
-                    </span>
-                  </div>
-                  <span className="font-mono text-[11px] font-bold text-zinc-300 bg-black/40 px-2.5 py-0.5 rounded-full border border-white/10 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
-                    {recommendedRoutine.duration}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-mono text-lg font-black text-white truncate group-hover:text-emerald-400 transition-colors">
-                      Día {recommendedRoutine.day} · {recommendedRoutine.title}
-                    </h3>
-                    <div className="flex items-center gap-2.5 mt-1 text-xs font-mono text-zinc-400">
-                      <span className="flex items-center gap-1 text-zinc-300">
-                        <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                        {recommendedRoutine.exercises.length} ejercicios
-                      </span>
-                      <span>•</span>
-                      <span className="text-zinc-300 font-bold uppercase">
-                        {recommendedRoutine.equipment || "Mancuernas"}
+                <Card3D className="rounded-3xl shadow-xl" activeOffset={22} highlight={true}>
+                  <div className="bg-gradient-to-br from-[#121824] via-[#141d2c] to-[#101420] border border-emerald-500/30 rounded-3xl p-4 shadow-xl relative overflow-hidden group">
+                    <div
+                      data-atropos-offset="2"
+                      className="flex items-center justify-between gap-2 mb-2.5"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
+                          Siguiente sesión recomendada
+                        </span>
+                      </div>
+                      <span className="font-mono text-[11px] font-bold text-zinc-300 bg-black/40 px-2.5 py-0.5 rounded-full border border-white/10 flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                        {recommendedRoutine.duration}
                       </span>
                     </div>
-                  </div>
 
-                  <button
-                    onClick={() => {
-                      haptics.impact();
-                      setSelectedRoutine(recommendedRoutine);
-                    }}
-                    className="h-11 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center gap-1.5 shadow-md shadow-black/40 border border-emerald-400/30 hover:scale-105 active:scale-95 transition-all flex-shrink-0 cursor-pointer"
-                  >
-                    <span>Empezar</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0 flex-1" data-atropos-offset="3">
+                        <h3 className="font-mono text-lg font-black text-white truncate group-hover:text-emerald-400 transition-colors">
+                          Día {recommendedRoutine.day} · {recommendedRoutine.title}
+                        </h3>
+                        <div className="flex items-center gap-2.5 mt-1 text-xs font-mono text-zinc-400">
+                          <span className="flex items-center gap-1 text-zinc-300">
+                            <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                            {recommendedRoutine.exercises.length} ejercicios
+                          </span>
+                          <span>•</span>
+                          <span className="text-zinc-300 font-bold uppercase">
+                            {recommendedRoutine.equipment || "Mancuernas"}
+                          </span>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          haptics.impact();
+                          setSelectedRoutine(recommendedRoutine);
+                        }}
+                        data-atropos-offset="5"
+                        className="h-11 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center gap-1.5 shadow-md shadow-black/40 border border-emerald-400/30 hover:scale-105 active:scale-95 transition-all flex-shrink-0 cursor-pointer"
+                      >
+                        <span>Empezar</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </Card3D>
               </motion.div>
             )}
 

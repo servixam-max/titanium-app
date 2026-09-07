@@ -27,7 +27,7 @@ let audioMode: AudioMode = "full";
 
 // Prevent V8/Chromium from garbage collecting active utterances mid-speech
 if (typeof window !== "undefined") {
-  (window as any).__titaniumUtterances = new Set<SpeechSynthesisUtterance>();
+  (window as unknown as { __titaniumUtterances?: Set<SpeechSynthesisUtterance> }).__titaniumUtterances = new Set<SpeechSynthesisUtterance>();
 }
 
 function getAudioContext(): AudioContext | null {
@@ -437,7 +437,7 @@ function processQueue() {
     utter.volume = 1.0;
 
     // Retain in global Set to prevent Chromium V8 garbage collection
-    const globalSet = (window as any).__titaniumUtterances as Set<SpeechSynthesisUtterance>;
+    const globalSet = (window as unknown as { __titaniumUtterances?: Set<SpeechSynthesisUtterance> }).__titaniumUtterances;
     if (globalSet) globalSet.add(utter);
 
     let finished = false;

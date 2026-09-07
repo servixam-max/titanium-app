@@ -5,13 +5,10 @@ import { useRouter } from "next/navigation";
 import {
   CheckCircle,
   Circle,
-  Timer,
   ArrowLeft,
   ArrowRight,
-  Weight,
   Volume2,
   VolumeX,
-  Hash,
   SkipForward,
   Clock,
   RotateCcw,
@@ -61,7 +58,6 @@ export default function IndividualWorkout() {
 
   const [showRest, setShowRest] = useState(false);
   const [restTime, setRestTime] = useState(0);
-  const [repsInput, setRepsInput] = useState("");
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
   const [restTotal, setRestTotal] = useState(0);
@@ -121,14 +117,6 @@ export default function IndividualWorkout() {
     setRestTime(activeWorkout.restTimeRemaining);
     setShowRest(activeWorkout.isResting);
   }, [activeWorkout.restTimeRemaining, activeWorkout.isResting]);
-
-  useEffect(() => {
-    if (currentExercise) {
-      setRepsInput(
-        String(activeWorkout.exerciseReps[currentExercise.id] ?? ""),
-      );
-    }
-  }, [currentExercise, activeWorkout.exerciseReps]);
 
   // Announce exercise start
   useEffect(() => {
@@ -339,9 +327,6 @@ export default function IndividualWorkout() {
       Math.min(totalExercises - 1, currentExerciseIndex + delta),
     );
     goToExercise(newIndex);
-    setRepsInput(
-      String(activeWorkout.exerciseReps[routine.exercises[newIndex].id] ?? ""),
-    );
   };
 
   const handleBack = () => {

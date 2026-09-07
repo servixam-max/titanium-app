@@ -54,7 +54,9 @@ function WarmupContent() {
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   const phaseRef = useRef(phase);
-  phaseRef.current = phase;
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
 
   const currentExercise = warmUpExercises[currentExerciseIndex];
   const nextExercise =

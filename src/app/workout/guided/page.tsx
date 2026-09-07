@@ -49,7 +49,6 @@ export default function GuidedWorkout() {
     toggleAudio,
   } = useAppStore();
 
-  const [repsInput, setRepsInput] = useState("");
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
 
@@ -102,15 +101,6 @@ export default function GuidedWorkout() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExerciseIndex, audioEnabled]);
-
-  // Reps input sync
-  useEffect(() => {
-    if (currentExercise) {
-      setRepsInput(
-        String(activeWorkout.exerciseReps[currentExercise.id] ?? ""),
-      );
-    }
-  }, [currentExercise, activeWorkout.exerciseReps]);
 
   // Auto-start the work timer for time-based (HIIT) sets
   useEffect(() => {

@@ -94,7 +94,7 @@ export default function StatsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentUser?.id]);
+  }, [currentUser]);
 
   useEffect(() => {
     loadStats();

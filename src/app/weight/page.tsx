@@ -62,7 +62,7 @@ export default function WeightPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentUser?.id]);
+  }, [currentUser]);
 
   useEffect(() => {
     loadWeights();

@@ -19,6 +19,7 @@ import { WorkoutSession } from "@/lib/types";
 
 import { motion } from "framer-motion";
 import { routines } from "@/lib/data";
+import confetti from "canvas-confetti";
 
 export default function WorkoutComplete() {
   const router = useRouter();
@@ -37,6 +38,36 @@ export default function WorkoutComplete() {
       playWorkoutComplete();
       clearJustFinished();
     }
+
+    const colors = ["#10B981", "#059669", "#34D399", "#F59E0B", "#FFFFFF", "#00F59B"];
+    confetti({
+      particleCount: 85,
+      spread: 75,
+      origin: { y: 0.6 },
+      colors,
+      zIndex: 9999,
+    });
+
+    const timer = setTimeout(() => {
+      confetti({
+        particleCount: 45,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.65 },
+        colors,
+        zIndex: 9999,
+      });
+      confetti({
+        particleCount: 45,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.65 },
+        colors,
+        zIndex: 9999,
+      });
+    }, 280);
+
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -140,8 +171,6 @@ export default function WorkoutComplete() {
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-[#080808] text-white relative select-none">
-      <Confetti />
-
       {/* Ambient background glow */}
       <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary-container/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary-container/10 rounded-full blur-[140px] pointer-events-none" />
@@ -259,39 +288,6 @@ function StatBox({
       <span className="text-lg font-black font-mono text-white mt-0.5">
         {value}
       </span>
-    </div>
-  );
-}
-
-function Confetti() {
-  const pieces = Array.from({ length: 40 }).map((_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    delay: `${Math.random() * 1.5}s`,
-    duration: `${1.5 + Math.random() * 2}s`,
-    size: 6 + Math.random() * 8,
-    color: ["#ccff00", "#ffffff", "#88cc00", "#aaff00"][
-      Math.floor(Math.random() * 4)
-    ],
-  }));
-
-  return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {pieces.map((p) => (
-        <div
-          key={p.id}
-          className="absolute top-[-20px] animate-confetti"
-          style={{
-            left: p.left,
-            width: p.size,
-            height: p.size,
-            backgroundColor: p.color,
-            borderRadius: "2px",
-            animationDelay: p.delay,
-            animationDuration: p.duration,
-          }}
-        />
-      ))}
     </div>
   );
 }

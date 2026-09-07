@@ -48,7 +48,7 @@ export default function HistoryPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentUser?.id]);
+  }, [currentUser]);
 
   useEffect(() => {
     load();

@@ -84,7 +84,7 @@ export default function DayCarouselSelector({
                 {isCompleted && (
                   <CheckCircle2
                     className={`w-3.5 h-3.5 ${
-                      isSelected ? "text-black" : "text-emerald-400"
+                      isSelected ? "text-white" : "text-emerald-400"
                     }`}
                   />
                 )}
@@ -94,7 +94,7 @@ export default function DayCarouselSelector({
               <span
                 className={`text-[8px] font-mono mt-0.5 uppercase tracking-tighter ${
                   isSelected
-                    ? "text-black font-extrabold"
+                    ? "text-white font-extrabold"
                     : isCompleted
                     ? "text-emerald-400 font-bold"
                     : "text-zinc-500"

@@ -9,7 +9,6 @@ import ExerciseImage from "@/components/ui/ExerciseImage";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SectionTitle from "@/components/ui/SectionTitle";
 import {
-  playBeep,
   playRestEndAlarm,
   announceRest,
   announceCountdown,
@@ -19,7 +18,6 @@ import {
   announceThirtySecondsLeft,
   announceHalfRest,
 } from "@/lib/audio";
-import { haptics } from "@/lib/haptics";
 
 export default function RestTimer() {
   const router = useRouter();
@@ -35,6 +33,9 @@ export default function RestTimer() {
   const prevTimeRef = useRef(activeWorkout.restTimeRemaining);
   const hasAnnouncedRef = useRef(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+  const currentExercise =
+    activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
 
   useEffect(() => {
     if (!activeWorkout.isResting) return;
@@ -64,9 +65,7 @@ export default function RestTimer() {
 
     const timeLeft = activeWorkout.restTimeRemaining;
     const prevTime = prevTimeRef.current;
-    const totalTime =
-      activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex]
-        ?.restSeconds || 60;
+    const totalTime = currentExercise?.restSeconds || 60;
 
     // 10s warning before set starts, announcing upcoming exercise
     if (timeLeft === 10 && prevTime > 10) {
@@ -103,6 +102,8 @@ export default function RestTimer() {
     audioEnabled,
     activeWorkout.routine,
     activeWorkout.currentExerciseIndex,
+    currentExercise?.name,
+    currentExercise?.restSeconds,
   ]);
 
   // Reset on close
@@ -114,8 +115,6 @@ export default function RestTimer() {
 
   if (!activeWorkout.isResting) return null;
 
-  const currentExercise =
-    activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
   const totalTime = currentExercise?.restSeconds || 75;
   const timeLeft = activeWorkout.restTimeRemaining;
   const restUrgent = timeLeft <= 10;

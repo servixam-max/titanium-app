@@ -1,6 +1,6 @@
 import { logger } from "./logger";
 
-export const APP_VERSION = "6.14";
+export const APP_VERSION = "6.15";
 
 const CANDIDATE_IPS = [
   "100.126.164.101", // Tailscale VPN
@@ -68,8 +68,9 @@ export async function checkOtaUpdate(): Promise<{
     if (res.ok) {
       const data = await res.json();
       const tagName = String(data.tag_name || "").replace(/^v/, "").trim();
-      const apkAsset = data.assets?.find((a: any) =>
-        a.name?.toLowerCase().endsWith(".apk")
+      const apkAsset = data.assets?.find(
+        (a: { name?: string; browser_download_url?: string }) =>
+          a.name?.toLowerCase().endsWith(".apk")
       );
       const downloadUrl = apkAsset?.browser_download_url || "";
 
@@ -137,7 +138,7 @@ export async function checkOtaUpdate(): Promise<{
   };
 }
 
-export async function syncToServer(data: any): Promise<boolean> {
+export async function syncToServer(data: unknown): Promise<boolean> {
   try {
     const serverUrl = await findWorkingServer();
     const res = await fetch(`${serverUrl}/sync`, {
@@ -152,7 +153,7 @@ export async function syncToServer(data: any): Promise<boolean> {
   }
 }
 
-export async function syncFromServer(): Promise<any | null> {
+export async function syncFromServer(): Promise<unknown> {
   try {
     const serverUrl = await findWorkingServer();
     const res = await fetch(`${serverUrl}/sync.json`, { cache: "no-store" });
