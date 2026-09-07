@@ -445,12 +445,16 @@ export default function Dashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.05 }}
               >
-                <Card3D className="rounded-3xl shadow-xl" activeOffset={22} highlight={true}>
-                  <div className="bg-gradient-to-br from-[#121824] via-[#141d2c] to-[#101420] border border-emerald-500/30 rounded-3xl p-4 shadow-xl relative overflow-hidden group">
-                    <div
-                      data-atropos-offset="2"
-                      className="flex items-center justify-between gap-2 mb-2.5"
-                    >
+                <Card3D
+                  className="rounded-3xl shadow-xl"
+                  onClick={() => {
+                    haptics.selection();
+                    setSelectedRoutine(recommendedRoutine);
+                  }}
+                  highlight={true}
+                >
+                  <div className="bg-gradient-to-br from-[#121824] via-[#141d2c] to-[#101420] border border-emerald-500/30 rounded-3xl p-4 shadow-xl relative overflow-hidden group cursor-pointer active:scale-[0.99] transition-transform">
+                    <div className="flex items-center justify-between gap-2 mb-2.5">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                         <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
@@ -464,7 +468,7 @@ export default function Dashboard() {
                     </div>
 
                     <div className="flex items-center justify-between gap-3">
-                      <div className="min-w-0 flex-1" data-atropos-offset="3">
+                      <div className="min-w-0 flex-1">
                         <h3 className="font-mono text-lg font-black text-white truncate group-hover:text-emerald-400 transition-colors">
                           Día {recommendedRoutine.day} · {recommendedRoutine.title}
                         </h3>
@@ -481,12 +485,13 @@ export default function Dashboard() {
                       </div>
 
                       <button
-                        onClick={() => {
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           haptics.impact();
                           setSelectedRoutine(recommendedRoutine);
                         }}
-                        data-atropos-offset="5"
-                        className="h-11 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center gap-1.5 shadow-md shadow-black/40 border border-emerald-400/30 hover:scale-105 active:scale-95 transition-all flex-shrink-0 cursor-pointer"
+                        className="h-11 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center gap-1.5 shadow-md shadow-black/40 border border-emerald-400/30 hover:scale-105 active:scale-95 transition-all flex-shrink-0 cursor-pointer z-10"
                       >
                         <span>Empezar</span>
                         <ChevronRight className="w-4 h-4" />
@@ -512,7 +517,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <span className="font-mono text-[11px] text-zinc-400 group-hover:text-white transition-colors">
-                {warmUpExercises.length} ej (60s)
+                {warmUpExercises.length} ej (30s)
               </span>
               <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-white transition-all flex-shrink-0" />
             </Link>

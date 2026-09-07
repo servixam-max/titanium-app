@@ -36,10 +36,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type WarmupPhase = "prep" | "exercise" | "transition" | "post_rest";
 
-const PREP_SECONDS = 10;
-const EXERCISE_SECONDS = 60;
-const TRANSITION_SECONDS = 10;
-const POST_REST_SECONDS = 60;
+const PREP_SECONDS = 5;
+const EXERCISE_SECONDS = 30;
+const TRANSITION_SECONDS = 5;
+const POST_REST_SECONDS = 20;
 
 function WarmupContent() {
   const router = useRouter();
@@ -386,7 +386,7 @@ function WarmupContent() {
                   stroke={
                     phase === "transition"
                       ? "#fbbf24"
-                      : timeLeft <= 10
+                      : timeLeft <= 5
                       ? "#ff5252"
                       : "#00F59B"
                   }
@@ -404,7 +404,7 @@ function WarmupContent() {
                   className={`font-mono text-3xl font-black tabular-nums ${
                     phase === "transition"
                       ? "text-amber-400"
-                      : timeLeft <= 10
+                      : timeLeft <= 5
                       ? "text-red-400 animate-pulse"
                       : "text-white drop-shadow-[0_0_12px_rgba(0,245,155,0.4)]"
                   }`}
