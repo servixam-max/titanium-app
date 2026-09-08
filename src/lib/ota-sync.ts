@@ -1,10 +1,19 @@
 import { logger } from "./logger";
 
-export const APP_VERSION = "6.16";
+export interface AppVersion {
+  version: string; // display version, e.g. "6.16"
+  versionCode: number; // numeric version, monotonic
+}
+
+// canonical current version: bump versionCode when releasing a new APK
+export const APP_VERSION: AppVersion = {
+  version: "6.16",
+  versionCode: 616,
+};
 
 const CANDIDATE_IPS = [
   "100.126.164.101", // Tailscale VPN
-  "192.168.2.107",   // WiFi Local
+  "192.168.2.107", // WiFi Local
 ];
 
 const PORT = "8082";
@@ -29,7 +38,10 @@ export async function findWorkingServer(): Promise<string> {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000);
-      const res = await fetch(url, { signal: controller.signal, cache: "no-store" });
+      const res = await fetch(url, {
+        signal: controller.signal,
+        cache: "no-store",
+      });
       clearTimeout(timeoutId);
       if (res.ok) {
         return `http://${ip}:${PORT}`;
@@ -40,7 +52,7 @@ export async function findWorkingServer(): Promise<string> {
   }
 
   throw new Error(
-    "No se pudo conectar con el servidor de actualizaciones. Comprueba tu conexión a Internet."
+    "No se pudo conectar con el servidor de actualizaciones. Comprueba tu conexión a Internet.",
   );
 }
 
@@ -48,6 +60,51 @@ const GITHUB_API_RELEASE_URL =
   "https://api.github.com/repos/servixam-max/titanium-app/releases/latest";
 const GITHUB_RAW_VERSION_URL =
   "https://raw.githubusercontent.com/servixam-max/titanium-app/main/ota_server/version.json";
+
+interface RemoteVersion {
+  version: string;
+  versionCode?: number;
+  apkName?: string;
+  url?: string;
+}
+
+function parseVersionCode(value: unknown): number | null {
+  if (value == null) return null;
+  const n = Number(value);
+  if (Number.isFinite(n) && n >= 0) return Math.floor(n);
+  return null;
+}
+
+function parseSemver(version: string): [number, number, number] {
+  const clean = String(version || "0").replace(/^[vV]/, "");
+  const parts = clean.split(".").map((p) => parseInt(p, 10));
+  return [
+    Number.isFinite(parts[0]) ? parts[0] : 0,
+    Number.isFinite(parts[1]) ? parts[1] : 0,
+    Number.isFinite(parts[2]) ? parts[2] : 0,
+  ];
+}
+
+/**
+ * Compare two version objects. Returns true if remote is newer than current.
+ * Prefer numeric versionCode when available; fall back to semver comparison.
+ */
+export function isRemoteNewer(
+  current: AppVersion,
+  remote: RemoteVersion,
+): boolean {
+  const remoteVersionCode = parseVersionCode(remote.versionCode);
+  if (current.versionCode != null && remoteVersionCode != null) {
+    return remoteVersionCode > current.versionCode;
+  }
+
+  const [rMajor, rMinor, rPatch] = parseSemver(remote.version);
+  const [cMajor, cMinor, cPatch] = parseSemver(current.version);
+
+  if (rMajor !== cMajor) return rMajor > cMajor;
+  if (rMinor !== cMinor) return rMinor > cMinor;
+  return rPatch > cPatch;
+}
 
 export async function checkOtaUpdate(): Promise<{
   hasUpdate: boolean;
@@ -68,15 +125,20 @@ export async function checkOtaUpdate(): Promise<{
     if (res.ok) {
       const data = await res.json();
       const tagName = String(data.tag_name || "").replace(/^v/, "").trim();
+      const remoteVersionCode = parseVersionCode(data.versionCode);
       const apkAsset = data.assets?.find(
         (a: { name?: string; browser_download_url?: string }) =>
-          a.name?.toLowerCase().endsWith(".apk")
+          a.name?.toLowerCase().endsWith(".apk"),
       );
       const downloadUrl = apkAsset?.browser_download_url || "";
 
       if (tagName && downloadUrl) {
+        const remote: RemoteVersion = {
+          version: tagName,
+          versionCode: remoteVersionCode ?? undefined,
+        };
         return {
-          hasUpdate: tagName !== APP_VERSION,
+          hasUpdate: isRemoteNewer(APP_VERSION, remote),
           latestVersion: tagName,
           downloadUrl,
           serverUrl: "GitHub Cloud (Global)",
@@ -98,9 +160,12 @@ export async function checkOtaUpdate(): Promise<{
     clearTimeout(timeoutId);
 
     if (res.ok) {
-      const data = await res.json();
+      const data = (await res.json()) as RemoteVersion;
       const latestVersion = String(data.version || "").trim();
-      const hasUpdate = Boolean(latestVersion && latestVersion !== APP_VERSION);
+      const hasUpdate = isRemoteNewer(APP_VERSION, {
+        version: latestVersion,
+        versionCode: parseVersionCode(data.versionCode) ?? undefined,
+      });
       const downloadUrl =
         data.url ||
         `https://github.com/servixam-max/titanium-app/releases/download/v${latestVersion}/${data.apkName || `FORTIXAM-${latestVersion}.apk`}`;
@@ -118,14 +183,20 @@ export async function checkOtaUpdate(): Promise<{
 
   // 3. Fallback: Local PC server (Tailscale / WiFi)
   const serverUrl = await findWorkingServer();
-  const res = await fetch(`${serverUrl}/version.json?t=${Date.now()}`, { cache: "no-store" });
+  const res = await fetch(`${serverUrl}/version.json?t=${Date.now()}`, {
+    cache: "no-store",
+  });
   if (!res.ok) throw new Error("Error al leer version.json del servidor");
-  const data = await res.json();
+  const data = (await res.json()) as RemoteVersion;
 
   const latestVersion = String(data.version || "").trim();
-  const hasUpdate = Boolean(latestVersion && latestVersion !== APP_VERSION);
-  
-  const apkFileName = data.apkName || `FORTIXAM-${latestVersion || "latest"}.apk`;
+  const hasUpdate = isRemoteNewer(APP_VERSION, {
+    version: latestVersion,
+    versionCode: parseVersionCode(data.versionCode) ?? undefined,
+  });
+
+  const apkFileName =
+    data.apkName || `FORTIXAM-${latestVersion || "latest"}.apk`;
   const downloadUrl = data.url?.startsWith("http")
     ? data.url
     : `${serverUrl}/${apkFileName}?t=${Date.now()}`;
