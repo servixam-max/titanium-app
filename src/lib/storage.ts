@@ -1,6 +1,7 @@
 // Custom Zustand storage with Date revival so active-workout sessions survive
 // page reloads / static HTML navigation in exported builds.
 import { StateStorage, createJSONStorage } from "zustand/middleware";
+import { logger } from "./logger";
 
 const ISO_DATE_RE =
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?(Z|[+-]\d{2}:?\d{2})?$/;
@@ -38,8 +39,7 @@ export const localStorageWithDates: StateStorage = {
         JSON.stringify(parsed, serializeDates),
       );
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error("[storage] failed to write", name, err);
+      logger?.error?.("[storage] failed to write", name, err);
     }
   },
   removeItem: (name: string): void | Promise<void> => {
