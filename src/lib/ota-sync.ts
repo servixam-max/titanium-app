@@ -3,14 +3,15 @@ import { logger } from "./logger";
 export interface AppVersion {
   version: string; // display version, e.g. "6.16"
   versionCode: number; // numeric version, monotonic
+  buildType?: "debug" | "release"; // optional build channel
 }
 
 // canonical current version: bump versionCode when releasing a new APK
 export const APP_VERSION: AppVersion = {
-  version: "7.0.0-alpha.2",
-  versionCode: 763,
+  version: "7.0.0-alpha.3",
+  versionCode: 764,
+  buildType: "debug",
 };
-
 const CANDIDATE_IPS = [
   "100.126.164.101", // Tailscale VPN
   "192.168.2.107", // WiFi Local

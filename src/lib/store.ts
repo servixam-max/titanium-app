@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { localStorageWithDates } from "./storage";
 import {
   Routine,
   TrainingMode,
@@ -934,7 +935,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "titanium-storage",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => localStorageWithDates),
       partialize: (state) => {
         // Persist active workout data, but never transient timer/animation state
         const persistedActiveWorkout: ActiveWorkoutState = state.activeWorkout
