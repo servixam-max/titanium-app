@@ -8,12 +8,8 @@ import {
   Play,
   Pause,
   Sparkles,
-  Zap,
   Clock,
   Dumbbell,
-  CheckCircle2,
-  ChevronRight,
-  Flame,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import { useAppStore } from "@/lib/store";
@@ -22,17 +18,14 @@ import {
   announceWarmupPrep,
   announceWarmupTransition,
   announceWarmupComplete,
-  announceExerciseStart,
-  speak,
   playExerciseStart,
-  playRestStart,
   playCountdown,
   setAudioMode,
   setVoiceRate,
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
 import ExerciseImage from "@/components/ui/ExerciseImage";
-import { motion, AnimatePresence } from "framer-motion";
+import { ExitConfirmModal } from "@/components/workout";
 
 type WarmupPhase = "prep" | "exercise" | "transition" | "post_rest";
 
@@ -500,32 +493,12 @@ function WarmupContent() {
       )}
 
       {/* Exit confirmation modal */}
-      {showExitConfirm && (
-        <div className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center px-6">
-          <div className="w-full max-w-sm bg-gradient-to-br from-[#121622] to-[#151b2a] border border-primary/30 rounded-3xl p-6 shadow-2xl">
-            <h2 className="font-mono text-lg font-black text-white text-center mb-2 uppercase tracking-wider">
-              ¿Saltar calentamiento?
-            </h2>
-            <p className="text-zinc-400 text-center mb-6 text-xs font-mono">
-              Se recomienda completarlo para lubricar articulaciones y evitar lesiones.
-            </p>
-            <div className="space-y-2.5">
-              <button
-                className="w-full h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl active:scale-95 transition-all shadow-neon cursor-pointer"
-                onClick={handleSkipToWorkout}
-              >
-                Ir directo al entreno
-              </button>
-              <button
-                className="w-full h-11 bg-[#141a24] text-zinc-300 font-mono font-bold text-xs uppercase rounded-2xl border border-white/10 active:scale-95 cursor-pointer"
-                onClick={() => setShowExitConfirm(false)}
-              >
-                Continuar calentando
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ExitConfirmModal
+        open={showExitConfirm}
+        onSave={handleSkipToWorkout}
+        onCancel={handleSkipToWorkout}
+        onContinue={() => setShowExitConfirm(false)}
+      />
     </div>
   );
 }
