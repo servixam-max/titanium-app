@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X, Play, Clock, Layers, Dumbbell, Sparkles, ChevronRight, Zap, CheckCircle2 } from "lucide-react";
+import { X, Play, Clock, Layers, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Routine, TrainingMode } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
 import ExerciseImage from "@/components/ui/ExerciseImage";
 import ExerciseCard from "@/components/ui/ExerciseCard";
-import PrimaryButton from "@/components/ui/PrimaryButton";
 import WarmupModal from "@/components/ui/WarmupModal";
 
 interface RoutineDetailModalProps {

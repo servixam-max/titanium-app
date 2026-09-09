@@ -8,11 +8,7 @@ import {
   TrendingUp,
   Calendar,
   Award,
-  Activity,
-  Zap,
   BarChart3,
-  Layers,
-  Sparkles,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
@@ -82,7 +78,7 @@ function calculateStreak(sessions: LocalSession[]) {
 export default function StatsPage() {
   const { currentUser } = useAppStore();
   const [sessions, setSessions] = useState<LocalSession[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   const loadStats = useCallback(async () => {
     setIsLoading(true);
@@ -155,25 +151,21 @@ export default function StatsPage() {
 
   const streak = useMemo(() => calculateStreak(sessions), [sessions]);
 
-  // Weekly & Monthly calculations
-  const now = new Date();
-  const startOfWeek = new Date(now);
-  const day = startOfWeek.getDay();
-  const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
-  startOfWeek.setDate(diff);
-  startOfWeek.setHours(0, 0, 0, 0);
+  const { thisWeek, thisMonth } = useMemo(() => {
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    const day = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
+    startOfWeek.setDate(diff);
+    startOfWeek.setHours(0, 0, 0, 0);
 
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  const thisWeek = useMemo(
-    () => completed.filter((s) => new Date(s.endTime!) >= startOfWeek).length,
-    [completed, startOfWeek]
-  );
-
-  const thisMonth = useMemo(
-    () => completed.filter((s) => new Date(s.endTime!) >= startOfMonth).length,
-    [completed, startOfMonth]
-  );
+    return {
+      thisWeek: completed.filter((s) => new Date(s.endTime!) >= startOfWeek).length,
+      thisMonth: completed.filter((s) => new Date(s.endTime!) >= startOfMonth).length,
+    };
+  }, [completed]);
 
   const avgDuration = total > 0 ? Math.round(totalDuration / total) : 0;
   const avgReps = total > 0 ? Math.round(totalReps / total) : 0;

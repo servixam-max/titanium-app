@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Sunrise, Sun, Moon, Flame, Zap, Clock } from "lucide-react";
 import { UserAccount } from "@/lib/auth";

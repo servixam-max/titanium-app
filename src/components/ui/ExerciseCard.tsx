@@ -1,7 +1,5 @@
 import {
-  GripVertical,
   Timer,
-  Activity,
   Dumbbell,
   Play,
   ChevronRight,
@@ -12,7 +10,6 @@ import ExerciseImage from "@/components/ui/ExerciseImage";
 interface ExerciseCardProps {
   exercise: Exercise;
   index?: number;
-  selectable?: boolean;
   isSelected?: boolean;
   onClick?: () => void;
   compact?: boolean;
@@ -42,12 +39,6 @@ const MUSCLE_COLORS: Record<string, string> = {
     "bg-primary-container/20 text-primary-container border-primary-container/30",
 };
 
-const DIFFICULTY_COLORS: Record<string, string> = {
-  Principiante: "text-emerald-300",
-  Intermedio: "text-amber-300",
-  Avanzado: "text-rose-300",
-};
-
 const formatRest = (seconds: number) => {
   if (seconds < 60) return `${seconds}s`;
   const mins = Math.floor(seconds / 60);
@@ -58,7 +49,6 @@ const formatRest = (seconds: number) => {
 export default function ExerciseCard({
   exercise,
   index,
-  selectable = false,
   isSelected = false,
   onClick,
   compact = false,
@@ -66,9 +56,6 @@ export default function ExerciseCard({
 }: ExerciseCardProps) {
   const muscleKey = exercise.category || "full_body";
   const muscleColors = MUSCLE_COLORS[muscleKey] || MUSCLE_COLORS.full_body;
-  const difficultyColor = exercise.difficulty
-    ? DIFFICULTY_COLORS[exercise.difficulty] || "text-on-surface-variant"
-    : "text-on-surface-variant";
 
   const isIndividual = mode === "individual";
 

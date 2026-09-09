@@ -9,12 +9,9 @@ import {
   ChevronUp,
   Clock,
   Dumbbell,
-  TrendingUp,
-  Calendar,
   Trash2,
   Search,
   Zap,
-  Filter,
   Layers,
   ArrowRight,
 } from "lucide-react";

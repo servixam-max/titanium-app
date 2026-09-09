@@ -203,6 +203,15 @@ body {
   min-width: 48px;
 }
 
+/* Safe area helpers */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* Timer circle animation */
 .timer-circle {
   transition: stroke-dashoffset 1s linear;

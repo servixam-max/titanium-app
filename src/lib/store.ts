@@ -11,7 +11,7 @@ import {
 import { apiUrl, isApiEnabled } from "@/lib/api-config";
 import { saveSession, getSessions, clearAllSessions } from "@/lib/db";
 import { logger } from "@/lib/logger";
-import { syncToServer, syncFromServer } from "@/lib/ota-sync";
+import {} from "@/lib/ota-sync";
 import { UserAccount, getActiveUser, getActiveUserId, logoutUser } from "./auth";
 
 interface AppState {

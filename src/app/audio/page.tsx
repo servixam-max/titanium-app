@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Volume2, VolumeX, Sparkles, CheckCircle2, ArrowRight, Bell, Mic } from "lucide-react";
+import { Volume2, VolumeX, CheckCircle2, ArrowRight, Bell, Mic } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import { playRestEndAlarm, playExerciseStart, playWorkoutComplete, playCountdown, speak, setAudioMode, setVoiceRate, preloadVoices } from "@/lib/audio";
+import { playRestEndAlarm, playExerciseStart, playCountdown, speak, setAudioMode, setVoiceRate, preloadVoices } from "@/lib/audio";
 import TopAppBar from "@/components/ui/TopAppBar";
 
 export default function AudioTestPage() {
@@ -14,8 +14,6 @@ export default function AudioTestPage() {
     audioMode,
     voiceRate,
     toggleAudio,
-    setAudioMode: storeSetAudioMode,
-    setVoiceRate: storeSetVoiceRate,
   } = useAppStore();
   const [testResult, setTestResult] = useState<
     "idle" | "testing" | "ok" | "partial" | "error"

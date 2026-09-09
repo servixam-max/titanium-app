@@ -5,18 +5,12 @@ import {
   Plus,
   TrendingDown,
   TrendingUp,
-  Calendar,
-  Weight,
   Trash2,
-  Activity,
   Minus,
-  BarChart3,
   Scale,
   Sparkles,
   CheckCircle2,
-  AlertCircle,
-  Clock,
-  ArrowRight,
+  Activity,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
@@ -121,7 +115,7 @@ export default function WeightPage() {
       color = "#FF8000";
     }
     return { value: value.toFixed(1), category, color };
-  }, [stats?.current]);
+  }, [stats]);
 
   // SVG Trend Points
   const trendPoints = useMemo(() => {

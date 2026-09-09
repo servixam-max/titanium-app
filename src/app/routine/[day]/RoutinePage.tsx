@@ -18,9 +18,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
   const routine = routines.find((r) => r.day === day);
 
   const [mode, setMode] = useState<TrainingMode>("guided");
-  const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<
-    number | null
-  >(null);
+
   const [showWarmupModal, setShowWarmupModal] = useState(false);
   const [targetExerciseIndex, setTargetExerciseIndex] = useState<number>(0);
   const [freeExerciseId, setFreeExerciseId] = useState<string | null>(null);
@@ -56,8 +54,6 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
       </div>
     );
   }
-
-  const isHIIT = routine.type === "hiit";
   const hasAlternatives = Boolean(
     routine.alternativeExercises && routine.alternativeExercises.length > 0
   );

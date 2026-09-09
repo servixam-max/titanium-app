@@ -140,7 +140,7 @@ export async function sendPasswordResetEmail(
         success: false,
         error: (errData as { message?: string }).message || "Error al enviar el correo con Resend.",
       };
-    } catch (err) {
+    } catch {
       return { success: false, error: "Error de red al contactar con el servicio de correo." };
     }
   }
