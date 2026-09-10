@@ -2,7 +2,12 @@
 set -e
 
 VERSION=$(node -e "console.log(require('./ota_server/version.json').version)")
-APK="FORTIXAM-${VERSION}.apk"
+APK=$(node -e "console.log(require('./ota_server/version.json').apkName)")
+URL=$(node -e "console.log(require('./ota_server/version.json').url || '')")
+
+if [ -z "$APK" ]; then
+  APK="FORTIXAM-${VERSION}.apk"
+fi
 
 if [ ! -f "$APK" ]; then
   echo "El archivo $APK no existe. Compila el APK primero."
