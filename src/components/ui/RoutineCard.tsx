@@ -86,7 +86,7 @@ export default function RoutineCard({
             <ExerciseImage
               src={routine.coverImage}
               alt={routine.title}
-              containerClassName="w-full h-full"
+              size="sm" containerClassName="w-full h-full"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
@@ -214,7 +214,7 @@ export default function RoutineCard({
                       <ExerciseImage
                         src={ex.image}
                         alt={ex.name}
-                        containerClassName="w-full h-full"
+                        size="sm" containerClassName="w-full h-full"
                         className="object-cover"
                       />
                     ) : (

@@ -10,6 +10,7 @@ interface ExerciseImageProps {
   containerClassName?: string;
   fallbackIcon?: React.ReactNode;
   priority?: boolean;
+  size?: "sm" | "default";
 }
 
 export default function ExerciseImage({
@@ -19,6 +20,7 @@ export default function ExerciseImage({
   containerClassName,
   fallbackIcon,
   priority = false,
+  size = "default",
 }: ExerciseImageProps) {
   const [currentSrc, setCurrentSrc] = useState<string | undefined>(src);
   const [hasTriedFallback, setHasTriedFallback] = useState(false);
@@ -62,7 +64,8 @@ export default function ExerciseImage({
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
-          className={cn("w-full h-full object-contain block", className)}
+          className={cn("w-full h-full object-contain block will-change-transform", className)}
+          srcSet={size === "sm" && currentSrc?.includes("/images/exercises/") ? `${currentSrc.replace("/screen.", "/screen-sm.")} 1x, ${currentSrc} 2x` : undefined}
           onError={handleError}
         />
       ) : (

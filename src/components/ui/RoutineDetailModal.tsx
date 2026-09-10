@@ -114,7 +114,7 @@ export default function RoutineDetailModal({
                 <ExerciseImage
                   src={routine.coverImage}
                   alt={routine.title}
-                  containerClassName="w-full h-full"
+                  size="sm" containerClassName="w-full h-full"
                   className="object-cover opacity-60 scale-105"
                 />
               )}

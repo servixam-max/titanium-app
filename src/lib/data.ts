@@ -1,7 +1,7 @@
 import { Plan, Routine, Exercise } from "./types";
 
 // Helper to get image path - folder names are normalized (no trailing dots)
-const getImg = (name: string, ext = "jpg") => `/images/exercises/${name}/screen.${ext}`;
+const getImg = (name: string, ext = "webp", size?: "sm") => `/images/exercises/${name}/screen${size === "sm" ? "-sm" : ""}.${ext}`;
 
 // Unique exercise catalog built from all routines (including alternatives)
 const allExerciseMap = new Map<string, Exercise>();
@@ -417,8 +417,8 @@ export const routines: Routine[] = [
     equipment: "MANCUERNAS / PESO CORPORAL",
     categoryTag: "hiit",
     rounds: 4,
-    coverImage: getImg("dumbbell_thrusters", "jpg"),
-    coverImageBodyweight: getImg("burpees", "jpg"),
+    coverImage: getImg("dumbbell_thrusters", "webp"),
+    coverImageBodyweight: getImg("burpees", "webp"),
     exercises: [
       {
         id: "d4-a-1",
@@ -444,7 +444,7 @@ export const routines: Routine[] = [
         tempo: "Controlado",
         category: "chest",
         difficulty: "Intermedio",
-        image: getImg("dumbbell_floor_press", "jpg"),
+        image: getImg("dumbbell_floor_press", "webp"),
       },
       {
         id: "d4-a-3",
@@ -457,7 +457,7 @@ export const routines: Routine[] = [
         tempo: "Potente",
         category: "full_body",
         difficulty: "Avanzado",
-        image: getImg("devil_press", "jpg"),
+        image: getImg("devil_press", "webp"),
       },
       {
         id: "d4-a-4",
@@ -470,7 +470,7 @@ export const routines: Routine[] = [
         tempo: "Fluido",
         category: "back",
         difficulty: "Intermedio",
-        image: getImg("single_arm_row", "jpg"),
+        image: getImg("single_arm_row", "webp"),
       },
       {
         id: "d4-a-5",
@@ -496,7 +496,7 @@ export const routines: Routine[] = [
         tempo: "Potente",
         category: "full_body",
         difficulty: "Avanzado",
-        image: getImg("dumbbell_thrusters", "jpg"),
+        image: getImg("dumbbell_thrusters", "webp"),
       },
       {
         id: "d4-a-7",
@@ -535,7 +535,7 @@ export const routines: Routine[] = [
         tempo: "Controlado",
         category: "full_body",
         difficulty: "Avanzado",
-        image: getImg("renegade_row", "jpg"),
+        image: getImg("renegade_row", "webp"),
       },
     ],
     alternativeExercises: [
@@ -576,7 +576,7 @@ export const routines: Routine[] = [
         tempo: "Rápido",
         category: "full_body",
         difficulty: "Intermedio",
-        image: getImg("mountain_climbers", "jpg"),
+        image: getImg("mountain_climbers", "webp"),
       },
       {
         id: "d4-b-4",
@@ -615,7 +615,7 @@ export const routines: Routine[] = [
         tempo: "Potente",
         category: "full_body",
         difficulty: "Avanzado",
-        image: getImg("burpees", "jpg"),
+        image: getImg("burpees", "webp"),
       },
       {
         id: "d4-b-7",
@@ -641,7 +641,7 @@ export const routines: Routine[] = [
         tempo: "Explosivo",
         category: "legs",
         difficulty: "Avanzado",
-        image: getImg("jumping_lunges", "jpg"),
+        image: getImg("jumping_lunges", "webp"),
       },
       {
         id: "d4-b-9",
@@ -654,7 +654,7 @@ export const routines: Routine[] = [
         tempo: "Rápido",
         category: "full_body",
         difficulty: "Principiante",
-        image: getImg("high_knees", "jpg"),
+        image: getImg("high_knees", "webp"),
       },
     ],
   },
@@ -788,7 +788,7 @@ export const routines: Routine[] = [
     difficulty: "Intermedio",
     equipment: "MANCUERNAS",
     categoryTag: "fuerza",
-    coverImage: getImg("bulgarian_split", "jpg"),
+    coverImage: getImg("bulgarian_split", "webp"),
     exercises: [
       {
         id: "d6-1",
@@ -802,7 +802,7 @@ export const routines: Routine[] = [
         tempo: "3 - 0 - 2 - 0",
         category: "legs",
         difficulty: "Avanzado",
-        image: getImg("bulgarian_split", "jpg"),
+        image: getImg("bulgarian_split", "webp"),
       },
       {
         id: "d6-2",
@@ -872,7 +872,7 @@ export const routines: Routine[] = [
         tempo: "2 - 0 - 2 - 0",
         category: "core",
         difficulty: "Intermedio",
-        image: getImg("abdominal_crunch", "jpg"),
+        image: getImg("abdominal_crunch", "webp"),
       },
     ],
   },
@@ -1154,7 +1154,7 @@ export const routines: Routine[] = [
         tempo: "Rápido",
         category: "core",
         difficulty: "Principiante",
-        image: getImg("mountain_climbers", "jpg"),
+        image: getImg("mountain_climbers", "webp"),
       },
       {
         id: "d8-b-6",
@@ -1186,8 +1186,8 @@ export const routines: Routine[] = [
     equipment: "MANCUERNAS / PESO CORPORAL",
     categoryTag: "hiit",
     rounds: 4,
-    coverImage: getImg("devil_press", "jpg"),
-    coverImageBodyweight: getImg("burpees", "jpg"),
+    coverImage: getImg("devil_press", "webp"),
+    coverImageBodyweight: getImg("burpees", "webp"),
     exercises: [
       {
         id: "d9-1",
@@ -1201,7 +1201,7 @@ export const routines: Routine[] = [
         tempo: "Potente",
         category: "full_body",
         difficulty: "Avanzado",
-        image: getImg("devil_press", "jpg"),
+        image: getImg("devil_press", "webp"),
       },
       {
         id: "d9-2",
@@ -1215,7 +1215,7 @@ export const routines: Routine[] = [
         tempo: "Controlado",
         category: "full_body",
         difficulty: "Avanzado",
-        image: getImg("renegade_row", "jpg"),
+        image: getImg("renegade_row", "webp"),
       },
       {
         id: "d9-3",
@@ -1229,7 +1229,7 @@ export const routines: Routine[] = [
         tempo: "Explosivo",
         category: "full_body",
         difficulty: "Avanzado",
-        image: getImg("dumbbell_thrusters", "jpg"),
+        image: getImg("dumbbell_thrusters", "webp"),
       },
       {
         id: "d9-4",
@@ -1243,7 +1243,7 @@ export const routines: Routine[] = [
         tempo: "Controlado",
         category: "chest",
         difficulty: "Intermedio",
-        image: getImg("dumbbell_floor_press", "jpg"),
+        image: getImg("dumbbell_floor_press", "webp"),
       },
       {
         id: "d9-5",
@@ -1286,7 +1286,7 @@ export const routines: Routine[] = [
         tempo: "Rápido",
         category: "full_body",
         difficulty: "Avanzado",
-        image: getImg("burpees", "jpg"),
+        image: getImg("burpees", "webp"),
       },
       {
         id: "d9-b-2",
@@ -1299,7 +1299,7 @@ export const routines: Routine[] = [
         tempo: "Rápido",
         category: "full_body",
         difficulty: "Intermedio",
-        image: getImg("mountain_climbers", "jpg"),
+        image: getImg("mountain_climbers", "webp"),
       },
       {
         id: "d9-b-3",
@@ -1325,7 +1325,7 @@ export const routines: Routine[] = [
         tempo: "Rápido",
         category: "full_body",
         difficulty: "Intermedio",
-        image: getImg("high_knees", "jpg"),
+        image: getImg("high_knees", "webp"),
       },
       {
         id: "d9-b-5",
@@ -1397,7 +1397,7 @@ export const routines: Routine[] = [
         tempo: "Lento",
         category: "legs",
         difficulty: "Principiante",
-        image: getImg("bodyweight_squats", "jpg"),
+        image: getImg("bodyweight_squats", "webp"),
       },
       {
         id: "d10-3",

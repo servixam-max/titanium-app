@@ -54,7 +54,7 @@ export default function ExerciseGridCard({
           <ExerciseImage
             src={exercise.image}
             alt={exercise.name}
-            containerClassName="w-full h-full"
+            size="sm" containerClassName="w-full h-full"
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
