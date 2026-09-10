@@ -14,7 +14,7 @@ interface ViewSwitcherProps {
 
 export default function ViewSwitcher({ value, onChange, routinesCount, catalogCount }: ViewSwitcherProps) {
   return (
-    <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-surface-container-low p-1.5 shadow-lg">
+    <div className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-gradient-to-br from-[#121620] to-[#151b28] p-1.5 shadow-lg">
       <button
         onClick={() => {
           haptics.selection();
@@ -22,8 +22,8 @@ export default function ViewSwitcher({ value, onChange, routinesCount, catalogCo
         }}
         className={`flex h-11 flex-1 items-center justify-center gap-2 rounded-xl px-2.5 text-xs font-bold uppercase tracking-wider transition-all min-w-0 ${
           value === "routines"
-            ? "border border-primary/30 bg-primary text-on-primary shadow-md shadow-black/40"
-            : "text-on-surface-variant hover:bg-white/5 hover:text-on-surface"
+            ? "border border-primary/30 bg-primary text-black shadow-neon"
+            : "text-zinc-400 hover:bg-white/5 hover:text-white"
         }`}
       >
         <Calendar className="h-4 w-4 flex-shrink-0" />
@@ -36,8 +36,8 @@ export default function ViewSwitcher({ value, onChange, routinesCount, catalogCo
         }}
         className={`flex h-11 flex-1 items-center justify-center gap-2 rounded-xl px-2.5 text-xs font-bold uppercase tracking-wider transition-all min-w-0 ${
           value === "catalog"
-            ? "border border-primary/30 bg-primary text-on-primary shadow-md shadow-black/40"
-            : "text-on-surface-variant hover:bg-white/5 hover:text-on-surface"
+            ? "border border-primary/30 bg-primary text-black shadow-neon"
+            : "text-zinc-400 hover:bg-white/5 hover:text-white"
         }`}
       >
         <Grid className="h-4 w-4 flex-shrink-0" />

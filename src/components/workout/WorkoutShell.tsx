@@ -35,11 +35,11 @@ export default function WorkoutShell({
         className,
       )}
     >
-      <header className="flex-shrink-0 h-[56px] border-b border-surface-container-highest flex items-center justify-between px-4 bg-background/80 backdrop-blur-md z-50">
+      <header className="flex-shrink-0 h-[56px] border-b border-white/10 flex items-center justify-between px-4 bg-background/80 backdrop-blur-md z-50">
         {showBack ? (
           <button
             onClick={onBack}
-            className="flex items-center gap-1 h-10 px-2 text-on-surface hover:opacity-80 active:scale-95"
+            className="flex items-center gap-1 h-10 px-2 text-white hover:opacity-80 active:scale-95"
             aria-label="Volver atrás"
           >
             <ArrowLeft className="w-6 h-6" />
@@ -56,7 +56,7 @@ export default function WorkoutShell({
         {onToggleAudio ? (
           <button
             onClick={onToggleAudio}
-            className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-on-surface active:scale-95"
+            className="flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-white active:scale-95"
             title={audioEnabled ? "Desactivar audio" : "Activar audio"}
           >
             {audioEnabled ? (
@@ -84,7 +84,7 @@ export default function WorkoutShell({
       </main>
 
       {footer && (
-        <footer className="flex-shrink-0 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-2 bg-background border-t border-surface-container-highest z-50">
+        <footer className="flex-shrink-0 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-2 bg-background border-t border-white/10 z-50">
           {footer}
         </footer>
       )}

@@ -71,14 +71,14 @@ export default function InstallPrompt() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-[80px] left-4 right-4 z-50 bg-surface-container-high border border-primary-container/30 rounded-xl p-4 shadow-lg animate-in slide-in-from-bottom-4">
+    <div className="fixed bottom-[80px] left-4 right-4 z-50 bg-[#161e2e] border border-primary/30 rounded-xl p-4 shadow-lg animate-in slide-in-from-bottom-4">
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center flex-shrink-0">
-          <Download className="w-5 h-5 text-primary-container" />
+        <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+          <Download className="w-5 h-5 text-primary" />
         </div>
 
         <div className="flex-1">
-          <h4 className="font-body-md text-body-md font-bold text-on-surface">
+          <h4 className="font-body-md text-body-md font-bold text-white">
             Instalar FORTIXAM
           </h4>
 
@@ -94,7 +94,7 @@ export default function InstallPrompt() {
                 </li>
                 <li>
                   Selecciona{" "}
-                  <strong className="text-primary-container">
+                  <strong className="text-primary">
                     Añadir a pantalla de inicio
                   </strong>
                 </li>
@@ -121,7 +121,7 @@ export default function InstallPrompt() {
             {platform === "ios" && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 h-[40px] bg-surface-container-low text-on-surface font-bold rounded-lg text-sm border border-surface-container-highest active:scale-95 transition-transform"
+                className="flex-1 h-[40px] bg-[#121620]-low text-white font-bold rounded-lg text-sm border border-white/10 active:scale-95 transition-transform"
               >
                 Entendido
               </button>
@@ -138,7 +138,7 @@ export default function InstallPrompt() {
 
             <button
               onClick={handleDismiss}
-              className="h-[40px] px-3 text-on-surface-variant hover:text-on-surface active:scale-95"
+              className="h-[40px] px-3 text-zinc-400 hover:text-white active:scale-95"
             >
               <X className="w-5 h-5" />
             </button>

@@ -32,8 +32,8 @@ export default function CategoryFilter({ value, onChange }: CategoryFilterProps)
             }}
             className={`relative whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all duration-200 active:scale-95 ${
               selected
-                ? "border border-primary/40 bg-primary text-on-primary shadow-sm"
-                : "border border-white/10 bg-surface-container text-on-surface-variant hover:text-on-surface"
+                ? "border border-primary/40 bg-primary text-black shadow-neon"
+                : "border border-white/10 bg-[#121620] text-zinc-400 hover:text-white hover:bg-[#161e2e]"
             }`}
           >
             {cat.label}

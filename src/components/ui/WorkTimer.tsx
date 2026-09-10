@@ -162,18 +162,18 @@ export default function WorkTimer() {
       <header className="flex-shrink-0 h-[56px] flex items-center justify-between px-2 w-full z-20">
         <button
           onClick={() => setShowExitConfirm(true)}
-          className="flex items-center gap-1 h-10 px-2 text-on-surface hover:text-primary-container active:scale-95 transition-all"
+          className="flex items-center gap-1 h-10 px-2 text-white hover:text-primary active:scale-95 transition-all"
           aria-label="Volver atrás o cancelar"
         >
           <ArrowLeft className="w-6 h-6" />
           <span className="text-xs font-bold font-label-caps uppercase">Salir</span>
         </button>
-        <span className="text-primary-container font-label-caps tracking-[0.2em] text-xs uppercase font-bold">
+        <span className="text-primary font-label-caps tracking-[0.2em] text-xs uppercase font-bold">
           {isHIIT ? `CIRCUITO ${circuitNumber}/${totalCircuits}` : "TRABAJO"}
         </span>
         <button
           onClick={toggleAudio}
-          className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-on-surface active:scale-95"
+          className="flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-white active:scale-95"
           title={audioEnabled ? "Desactivar audio" : "Activar audio"}
         >
           {audioEnabled ? (
@@ -188,17 +188,17 @@ export default function WorkTimer() {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
           className={`w-[520px] h-[520px] rounded-full blur-[120px] animate-ambient ${
-            workUrgent ? "bg-error/15" : "bg-primary-container/12"
+            workUrgent ? "bg-red-500/15" : "bg-primary/10"
           }`}
         />
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto my-auto">
         <div className="flex flex-col items-center mb-4">
-          <h2 className="font-headline-lg text-headline-lg text-on-surface uppercase text-center">
+          <h2 className="font-headline-lg text-headline-lg text-white uppercase text-center">
             {currentExercise?.name}
           </h2>
-          <p className="text-on-surface-variant text-sm mt-1">
+          <p className="text-zinc-400 text-sm mt-1">
             Serie {activeWorkout.currentSet} de {currentExercise?.sets}
           </p>
         </div>
@@ -214,15 +214,15 @@ export default function WorkTimer() {
         />
 
         <div className="w-full mb-6">
-          <div className="w-full bg-surface-container-high border border-surface-container-highest rounded-2xl p-3 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 border border-surface-container-highest">
+          <div className="w-full bg-[#161e2e] border border-white/10 rounded-2xl p-3 flex items-center gap-4">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#121620] flex-shrink-0 border border-white/10">
               <ExerciseImage
                 src={currentExercise?.image || ""}
                 alt={currentExercise?.name || "Ejercicio"}
                 containerClassName="w-full h-full"
               />
             </div>
-            <p className="text-on-surface-variant text-sm flex-1 line-clamp-2">
+            <p className="text-zinc-400 text-sm flex-1 line-clamp-2">
               {currentExercise?.description}
             </p>
           </div>
@@ -231,7 +231,7 @@ export default function WorkTimer() {
         <PrimaryButton
           variant="secondary"
           size="md"
-          rightIcon={<FastForward className="w-5 h-5 text-primary-container" />}
+          rightIcon={<FastForward className="w-5 h-5 text-primary" />}
           onClick={handleFinishNow}
           className="max-w-[300px]"
         >
@@ -241,11 +241,11 @@ export default function WorkTimer() {
 
       {showExitConfirm && (
         <div className="fixed inset-0 z-[70] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">
-          <div className="w-full max-w-sm bg-surface-container-low border border-surface-container-highest rounded-2xl p-6 shadow-2xl">
+          <div className="w-full max-w-sm bg-[#121620]-low border border-white/10 rounded-2xl p-6 shadow-2xl">
             <SectionTitle align="center" className="mb-2">
               ¿Salir del entreno?
             </SectionTitle>
-            <p className="text-on-surface-variant text-center mb-6 text-sm">
+            <p className="text-zinc-400 text-center mb-6 text-sm">
               Puedes guardar el progreso realizado o cancelar el entrenamiento.
             </p>
             <div className="space-y-2.5">
@@ -258,7 +258,7 @@ export default function WorkTimer() {
               <button
                 type="button"
                 onClick={() => setShowExitConfirm(false)}
-                className="w-full py-3 text-center text-sm font-bold text-on-surface-variant hover:text-white"
+                className="w-full py-3 text-center text-sm font-bold text-zinc-400 hover:text-white"
               >
                 Continuar entrenando
               </button>

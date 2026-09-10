@@ -268,7 +268,7 @@ export default function AuthModal() {
             }}
             className={`py-2 text-xs font-bold font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 ${
               activeTab === "login"
-                ? "bg-emerald-600 text-white shadow-md border border-emerald-400/30"
+                ? "bg-gradient-to-r from-primary to-emerald-400 text-white shadow-md border border-primary/40"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
@@ -284,7 +284,7 @@ export default function AuthModal() {
             }}
             className={`py-2 text-xs font-bold font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 ${
               activeTab === "register"
-                ? "bg-emerald-600 text-white shadow-md border border-emerald-400/30"
+                ? "bg-gradient-to-r from-primary to-emerald-400 text-white shadow-md border border-primary/40"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
@@ -354,7 +354,7 @@ export default function AuthModal() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-400/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+              className="w-full h-12 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
               Iniciar Sesión
@@ -452,7 +452,7 @@ export default function AuthModal() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-11 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-400/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
+              className="w-full h-11 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
             >
               <UserPlus className="w-4 h-4" />
               Crear Cuenta Nueva
@@ -500,7 +500,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-400/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                  className="w-full h-12 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   {isSubmitting ? "Enviando..." : "Enviar Código de Seguridad"}
@@ -568,7 +568,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting || verificationCode.trim().length !== 6}
-                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-400/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
+                  className="w-full h-12 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   Verificar Código
@@ -655,7 +655,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-400/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                  className="w-full h-12 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
                 >
                   <KeyRound className="w-4 h-4" />
                   {isSubmitting ? "Actualizando..." : "Guardar Nueva Contraseña"}

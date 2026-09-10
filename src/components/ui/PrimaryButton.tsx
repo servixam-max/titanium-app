@@ -22,13 +22,13 @@ export default function PrimaryButton({
 }: PrimaryButtonProps) {
   const variants = {
     primary:
-      "bg-primary-container text-on-primary border-primary-container shadow-neon hover:shadow-neon-strong",
+      "bg-gradient-to-r from-primary to-emerald-400 text-black border-primary shadow-neon hover:brightness-110",
     secondary:
-      "bg-surface-container-high text-on-surface border-surface-container-highest hover:border-surface-variant",
+      "bg-gradient-to-br from-[#121620] to-[#151b28] text-white border-white/10 hover:border-primary/30 shadow-md",
     danger:
-      "bg-surface-container-high text-error border-surface-container-highest",
+      "bg-gradient-to-br from-[#2a1515] to-[#1a1010] text-red-400 border-red-500/20 shadow-md",
     ghost:
-      "bg-transparent text-on-surface-variant border-transparent hover:text-on-surface",
+      "bg-transparent text-zinc-400 border-transparent hover:text-white hover:bg-white/5",
   };
 
   const sizes = {
@@ -40,7 +40,7 @@ export default function PrimaryButton({
   return (
     <button
       className={cn(
-        "font-bold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-50 disabled:active:scale-100 border",
+        "font-mono font-black uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100 border",
         variants[variant],
         sizes[size],
         fullWidth && "w-full",

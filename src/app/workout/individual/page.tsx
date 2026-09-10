@@ -211,7 +211,7 @@ export default function IndividualWorkout() {
       {flashKey > 0 && (
         <div
           key={flashKey}
-          className="fixed inset-0 z-[70] bg-primary-container/30 pointer-events-none animate-flash"
+          className="fixed inset-0 z-[70] bg-primary/30 pointer-events-none animate-flash"
           onAnimationEnd={() => setFlashKey(0)}
         />
       )}
@@ -251,7 +251,7 @@ export default function IndividualWorkout() {
             <button
               onClick={() => navigateExercise(-1)}
               disabled={currentExerciseIndex === 0}
-              className="p-2 text-on-surface-variant disabled:opacity-30 active:scale-95"
+              className="p-2 text-zinc-400 disabled:opacity-30 active:scale-95"
               aria-label="Ejercicio anterior"
             >
               <ArrowLeft className="w-5 h-5" />
@@ -264,7 +264,7 @@ export default function IndividualWorkout() {
             <button
               onClick={() => navigateExercise(1)}
               disabled={currentExerciseIndex >= totalExercises - 1}
-              className="p-2 text-on-surface-variant disabled:opacity-30 active:scale-95"
+              className="p-2 text-zinc-400 disabled:opacity-30 active:scale-95"
               aria-label="Ejercicio siguiente"
             >
               <ArrowRight className="w-5 h-5" />

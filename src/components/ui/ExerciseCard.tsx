@@ -36,7 +36,7 @@ const MUSCLE_COLORS: Record<string, string> = {
   legs: "bg-orange-500/15 text-orange-300 border-orange-500/25",
   core: "bg-cyan-500/15 text-cyan-300 border-cyan-500/25",
   full_body:
-    "bg-primary-container/20 text-primary-container border-primary-container/30",
+    "bg-primary/20 text-primary border-primary/30",
 };
 
 const formatRest = (seconds: number) => {

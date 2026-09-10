@@ -62,7 +62,7 @@ export default function WorkoutComplete() {
         <p className="text-zinc-400 mb-4">No hay entrenamiento completado.</p>
         <button
           onClick={() => router.push("/")}
-          className="h-[48px] px-6 bg-primary-container text-black font-bold rounded-xl flex items-center gap-2 shadow-[0_0_15px_rgba(204,255,0,0.3)]"
+          className="h-[48px] px-6 bg-gradient-to-r from-primary to-emerald-400 text-black font-bold rounded-xl flex items-center gap-2 shadow-[0_0_15px_rgba(204,255,0,0.3)]"
         >
           Volver al inicio
         </button>
@@ -72,8 +72,8 @@ export default function WorkoutComplete() {
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden bg-[#080808] text-white relative select-none">
-      <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary-container/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary-container/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[140px] pointer-events-none" />
 
       <TopAppBar title="RESUMEN" variant="workout" showBack backHref="/" />
 

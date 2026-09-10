@@ -268,7 +268,7 @@ export default function Dashboard() {
 
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-black uppercase tracking-wider text-on-surface-variant">
+                <span className="text-xs font-black uppercase tracking-wider text-zinc-400">
                   Seleccionar Día (1 al 13)
                 </span>
                 <span className="text-[11px] font-bold text-primary">
@@ -291,7 +291,7 @@ export default function Dashboard() {
 
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between px-1">
-                <h3 className="border-l-2 border-primary pl-2 text-xs font-bold uppercase tracking-wider text-on-surface">
+                <h3 className="border-l-2 border-primary pl-2 text-xs font-bold uppercase tracking-wider text-white">
                   Rutinas del Plan ({filteredRoutines.length})
                 </h3>
                 {selectedCategory !== "all" && (

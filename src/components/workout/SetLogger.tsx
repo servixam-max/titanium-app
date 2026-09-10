@@ -91,17 +91,17 @@ export default function SetLogger({
 
       <div className="grid grid-cols-2 gap-3">
         {/* Weight input */}
-        <div className="bg-surface-container-low border border-surface-container-highest rounded-2xl p-3 flex flex-col gap-2">
+        <div className="bg-[#121620]-low border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-label-caps text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
-              <Weight className="w-3.5 h-3.5 text-primary-container" />
+            <span className="text-xs font-label-caps text-zinc-400 uppercase tracking-wider flex items-center gap-1">
+              <Weight className="w-3.5 h-3.5 text-primary" />
               Peso (kg)
             </span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => adjustWeight(-2.5)}
-              className="w-10 h-10 rounded-xl bg-surface-container-high border border-surface-container-highest flex items-center justify-center text-on-surface active:scale-95"
+              className="w-10 h-10 rounded-xl bg-[#161e2e] border border-white/10 flex items-center justify-center text-white active:scale-95"
               aria-label="Bajar peso"
             >
               <Minus className="w-4 h-4" />
@@ -113,11 +113,11 @@ export default function SetLogger({
               onChange={(e) => setLocalWeight(e.target.value)}
               onBlur={commitWeight}
               onKeyDown={(e) => e.key === "Enter" && commitWeight()}
-              className="flex-1 min-w-0 h-10 bg-background border border-surface-container-highest rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary-container"
+              className="flex-1 min-w-0 h-10 bg-background border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
             />
             <button
               onClick={() => adjustWeight(2.5)}
-              className="w-10 h-10 rounded-xl bg-surface-container-high border border-surface-container-highest flex items-center justify-center text-on-surface active:scale-95"
+              className="w-10 h-10 rounded-xl bg-[#161e2e] border border-white/10 flex items-center justify-center text-white active:scale-95"
               aria-label="Subir peso"
             >
               <Plus className="w-4 h-4" />
@@ -126,17 +126,17 @@ export default function SetLogger({
         </div>
 
         {/* Reps input */}
-        <div className="bg-surface-container-low border border-surface-container-highest rounded-2xl p-3 flex flex-col gap-2">
+        <div className="bg-[#121620]-low border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-label-caps text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
-              <Hash className="w-3.5 h-3.5 text-primary-container" />
+            <span className="text-xs font-label-caps text-zinc-400 uppercase tracking-wider flex items-center gap-1">
+              <Hash className="w-3.5 h-3.5 text-primary" />
               Reps
             </span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => adjustReps(-1)}
-              className="w-10 h-10 rounded-xl bg-surface-container-high border border-surface-container-highest flex items-center justify-center text-on-surface active:scale-95"
+              className="w-10 h-10 rounded-xl bg-[#161e2e] border border-white/10 flex items-center justify-center text-white active:scale-95"
               aria-label="Bajar reps"
             >
               <Minus className="w-4 h-4" />
@@ -148,11 +148,11 @@ export default function SetLogger({
               onChange={(e) => setLocalReps(e.target.value)}
               onBlur={commitReps}
               onKeyDown={(e) => e.key === "Enter" && commitReps()}
-              className="flex-1 min-w-0 h-10 bg-background border border-surface-container-highest rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary-container"
+              className="flex-1 min-w-0 h-10 bg-background border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
             />
             <button
               onClick={() => adjustReps(1)}
-              className="w-10 h-10 rounded-xl bg-surface-container-high border border-surface-container-highest flex items-center justify-center text-on-surface active:scale-95"
+              className="w-10 h-10 rounded-xl bg-[#161e2e] border border-white/10 flex items-center justify-center text-white active:scale-95"
               aria-label="Subir reps"
             >
               <Plus className="w-4 h-4" />

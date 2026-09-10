@@ -37,28 +37,28 @@ export default function DashboardHeader({
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="rounded-3xl border border-white/10 bg-gradient-to-br from-surface-container-low to-surface-container p-4 shadow-xl"
+      className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#121620] to-[#151b28] p-4 shadow-xl"
     >
       <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent rounded-t-3xl" />
 
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-on-surface-variant">
+          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-zinc-400">
             <GreetingIcon className="h-3.5 w-3.5 text-primary" />
             <span>{greetingText}</span>
           </div>
-          <h2 className="mt-0.5 truncate text-2xl font-black tracking-tight text-on-surface">
+          <h2 className="mt-0.5 truncate text-2xl font-black tracking-tight text-white">
             {user?.username || "Atleta"}
           </h2>
         </div>
 
-        <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl border border-white/10 bg-surface-container-lowest px-3 py-1.5 shadow-md">
+        <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl border border-white/10 bg-[#0e121a] px-3 py-1.5 shadow-md">
           <Flame className="h-4 w-4 animate-pulse text-primary fill-primary/30" />
           <div className="flex flex-col text-right">
             <span className="font-mono text-base font-black leading-none text-primary">
               {streak}
             </span>
-            <span className="text-[9px] font-bold uppercase tracking-tighter text-on-surface-variant">
+            <span className="text-[9px] font-bold uppercase tracking-tighter text-zinc-400">
               {streak === 1 ? "Día racha" : "Días racha"}
             </span>
           </div>
@@ -78,7 +78,7 @@ export default function DashboardHeader({
                     ? "bg-primary text-on-primary shadow-sm"
                     : isToday
                     ? "border-2 border-primary/80 bg-primary/10 text-primary"
-                    : "border border-white/5 bg-white/5 text-on-surface-variant"
+                    : "border border-white/5 bg-white/5 text-zinc-400"
                 }`}
               >
                 {label}
@@ -87,14 +87,14 @@ export default function DashboardHeader({
           })}
         </div>
 
-        <div className="flex items-center gap-2 pl-2 text-[11px] text-on-surface-variant">
+        <div className="flex items-center gap-2 pl-2 text-[11px] text-zinc-400">
           <span className="flex items-center gap-1.5 rounded-xl border border-white/5 bg-white/5 px-2.5 py-1">
             <Zap className="h-3.5 w-3.5 text-cyan-400" />
-            <strong className="text-on-surface">{totalWorkouts}</strong>
+            <strong className="text-white">{totalWorkouts}</strong>
           </span>
           <span className="flex items-center gap-1.5 rounded-xl border border-white/5 bg-white/5 px-2.5 py-1">
             <Clock className="h-3.5 w-3.5 text-primary" />
-            <strong className="text-on-surface">{totalMinutes}m</strong>
+            <strong className="text-white">{totalMinutes}m</strong>
           </span>
         </div>
       </div>

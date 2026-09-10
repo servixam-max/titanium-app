@@ -405,15 +405,15 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           disabled={!audioEnabled && option.value !== "silent"}
                           className={`flex flex-col items-center justify-center gap-1 h-[76px] rounded-xl border-2 transition-all active:scale-95 ${
                             selected
-                              ? "border-primary-container bg-primary-container/10 text-primary-container"
-                              : "border-surface-container-highest bg-surface-container-low text-on-surface-variant"
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-white/10 bg-[#121620]-low text-zinc-400"
                           } ${!audioEnabled && option.value !== "silent" ? "opacity-50" : ""}`}
                         >
                           <span
                             className={
                               selected
-                                ? "text-primary-container"
-                                : "text-on-surface-variant"
+                                ? "text-primary"
+                                : "text-zinc-400"
                             }
                           >
                             {option.icon}
@@ -570,7 +570,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             setOtaError(msg);
                           }
                         }}
-                        className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shadow-black/40 border border-emerald-400/30 cursor-pointer"
+                        className="w-full h-12 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shadow-black/40 border border-primary/40 cursor-pointer"
                       >
                         <RefreshCw className="w-4 h-4" />
                         Comprobar Actualizaciones
@@ -643,7 +643,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               setOtaError(result.error || "Fallo en la descarga interna. Puedes descargar desde el navegador.");
                             }
                           }}
-                          className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-black/40 border border-emerald-400/30 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                          className="w-full h-12 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-black/40 border border-primary/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
                         >
                           <Download className="w-4 h-4" />
                           Descargar e Instalar v{otaInfo.version}
@@ -709,15 +709,15 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "error" && (
-                      <div className="bg-error/10 border border-error/30 rounded-2xl p-4 flex flex-col gap-2">
-                        <div className="flex items-center gap-2 text-error font-bold text-sm">
+                      <div className="bg-red-500/10 border border-error/30 rounded-2xl p-4 flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-red-400 font-bold text-sm">
                           <AlertTriangle className="w-5 h-5" />
                           <span>No se pudo comprobar</span>
                         </div>
                         <p className="text-xs text-zinc-400">{otaError}</p>
                         <button
                           onClick={() => setOtaStatus("idle")}
-                          className="w-full h-10 mt-1 bg-surface-container-highest text-white font-bold rounded-lg flex items-center justify-center gap-2 text-xs active:scale-95"
+                          className="w-full h-10 mt-1 bg-[#161e2e]est text-white font-bold rounded-lg flex items-center justify-center gap-2 text-xs active:scale-95"
                         >
                           <RefreshCw className="w-4 h-4" />
                           Reintentar
@@ -725,7 +725,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </div>
                     )}
 
-                    <p className="text-[11px] text-on-surface-variant text-center">
+                    <p className="text-[11px] text-zinc-400 text-center">
                       Actualizaciones automáticas y seguras a nivel global.
                     </p>
                   </div>
@@ -737,7 +737,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     icon={<Database className="w-4 h-4" />}
                     label="Copias de Seguridad Locales"
                   />
-                  <div className="bg-surface-container-low border border-surface-container-highest rounded-xl p-4 flex flex-col gap-3">
+                  <div className="bg-[#121620]-low border border-white/10 rounded-xl p-4 flex flex-col gap-3">
                     <p className="text-xs text-zinc-400">
                       Guarda o restaura tus entrenamientos y pesos directamente en un archivo <strong className="text-white">.json</strong> en tu móvil.
                     </p>
@@ -745,7 +745,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <button
                       disabled={syncStatus === "syncing"}
                       onClick={handleExportBackup}
-                      className="w-full h-12 bg-surface-container-high border border-primary/20 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-primary"
+                      className="w-full h-12 bg-[#161e2e] border border-primary/20 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-primary"
                     >
                       <Download className="w-5 h-5" />
                       <span className="font-bold text-sm">
@@ -753,7 +753,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </span>
                     </button>
 
-                    <label className="w-full h-12 bg-surface-container border border-surface-container-highest rounded-xl flex items-center justify-center gap-2 text-on-surface hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
+                    <label className="w-full h-12 bg-[#121620] border border-white/10 rounded-xl flex items-center justify-center gap-2 text-white hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
                       <Upload className="w-4 h-4 text-primary" />
                       <span className="text-sm font-semibold">Restaurar Copia de Seguridad</span>
                       <input
@@ -765,7 +765,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </label>
                     
                     {syncMsg && (
-                      <p className={`text-xs text-center font-bold ${syncStatus === "error" ? "text-error" : "text-primary"}`}>
+                      <p className={`text-xs text-center font-bold ${syncStatus === "error" ? "text-red-400" : "text-primary"}`}>
                         {syncMsg}
                       </p>
                     )}
@@ -773,16 +773,16 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     {!showResetConfirm ? (
                       <button
                         onClick={() => setShowResetConfirm(true)}
-                        className="w-full h-10 bg-surface-container flex items-center justify-center gap-2 rounded-lg text-error hover:bg-error/10 active:scale-95 transition-all mt-2"
+                        className="w-full h-10 bg-[#121620] flex items-center justify-center gap-2 rounded-lg text-red-400 hover:bg-red-500/10 active:scale-95 transition-all mt-2"
                       >
                         <Trash2 className="w-4 h-4" />
                         <span className="text-xs font-bold">Borrar todos los datos locales</span>
                       </button>
                     ) : (
-                      <div className="bg-error/10 border border-error/20 rounded-lg p-3 mt-2">
-                        <p className="text-xs text-error mb-3 text-center">¿Seguro? Se perderán tus entrenamientos en este dispositivo.</p>
+                      <div className="bg-red-500/10 border border-error/20 rounded-lg p-3 mt-2">
+                        <p className="text-xs text-red-400 mb-3 text-center">¿Seguro? Se perderán tus entrenamientos en este dispositivo.</p>
                         <div className="flex gap-2">
-                          <button onClick={() => setShowResetConfirm(false)} className="flex-1 h-10 bg-surface rounded-md text-xs font-bold">Cancelar</button>
+                          <button onClick={() => setShowResetConfirm(false)} className="flex-1 h-10 bg-[#0e121a] rounded-md text-xs font-bold">Cancelar</button>
                           <button onClick={handleResetHistory} className="flex-1 h-10 bg-error text-black rounded-md text-xs font-bold">Sí, borrar</button>
                         </div>
                       </div>

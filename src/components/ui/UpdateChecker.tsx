@@ -47,7 +47,7 @@ export default function UpdateChecker() {
 
   if (upToDateMsg) {
     return (
-      <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] bg-surface-container border border-primary/20 text-white px-4 py-2 rounded-full shadow-lg text-sm animate-fade-in-up">
+      <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] bg-[#121620] border border-primary/20 text-white px-4 py-2 rounded-full shadow-lg text-sm animate-fade-in-up">
         FORTIXAM está actualizado (v{APP_VERSION.version})
       </div>
     );
@@ -159,7 +159,7 @@ export default function UpdateChecker() {
           ) : (
             <button
               onClick={handleStartUpdate}
-              className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-black/50 border border-emerald-400/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full h-12 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-bold text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-black/50 border border-primary/40 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               Actualizar a v{updateInfo.version}

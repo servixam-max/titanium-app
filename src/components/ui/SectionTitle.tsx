@@ -33,18 +33,18 @@ export default function SectionTitle({
           align === "center" && "justify-center",
         )}
       >
-        {icon && <span className="text-primary-container">{icon}</span>}
+        {icon && <span className="text-primary">{icon}</span>}
         <h2
           className={cn(
             "font-headline-md text-headline-md uppercase tracking-wider",
-            accent && "text-primary-container",
+            accent && "text-primary",
           )}
         >
           {children}
         </h2>
       </div>
       {subtitle && (
-        <p className="text-on-surface-variant text-sm mt-1">{subtitle}</p>
+        <p className="text-zinc-400 text-sm mt-1">{subtitle}</p>
       )}
     </div>
   );

@@ -54,7 +54,7 @@ export default function ExerciseDetailModal({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-[#0F141F] border-t sm:border border-white/15 rounded-t-[32px] sm:rounded-3xl shadow-2xl overflow-hidden z-10 max-h-[90vh] flex flex-col"
+            className="relative w-full max-w-lg bg-gradient-to-br from-[#0e121b] to-[#151b28] border-t sm:border border-white/15 rounded-t-[32px] sm:rounded-3xl shadow-2xl overflow-hidden z-10 max-h-[90vh] flex flex-col"
           >
             {/* Top Close Button */}
             <button
@@ -85,7 +85,7 @@ export default function ExerciseDetailModal({
 
               {/* Tags overlay */}
               <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between pointer-events-none">
-                <span className="px-3 py-1 rounded-xl bg-emerald-600 text-white font-mono font-bold text-xs uppercase tracking-wider border border-emerald-400/30 shadow-md">
+                <span className="px-3 py-1 rounded-xl bg-gradient-to-r from-primary to-emerald-400 text-black font-mono font-bold text-xs uppercase tracking-wider border border-primary/40 shadow-md">
                   {muscle}
                 </span>
                 <span
@@ -115,19 +115,19 @@ export default function ExerciseDetailModal({
 
               {/* Key Specs Pills */}
               <div className="grid grid-cols-3 gap-2 py-1">
-                <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center text-center">
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-[#111724] to-[#161e2e] border border-white/10 flex flex-col items-center text-center shadow-md">
                   <Layers className="w-4 h-4 text-primary mb-1" />
                   <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">Series</span>
                   <span className="font-mono text-base font-black text-white">{exercise.sets}</span>
                 </div>
-                <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center text-center">
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-[#111724] to-[#161e2e] border border-white/10 flex flex-col items-center text-center shadow-md">
                   <Activity className="w-4 h-4 text-amber-400 mb-1" />
                   <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">Reps</span>
                   <span className="font-mono text-sm font-black text-white truncate max-w-full">
                     {exercise.reps}
                   </span>
                 </div>
-                <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center text-center">
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-[#111724] to-[#161e2e] border border-white/10 flex flex-col items-center text-center shadow-md">
                   <Clock className="w-4 h-4 text-cyan-400 mb-1" />
                   <span className="text-[10px] font-mono text-zinc-400 uppercase font-bold">Descanso</span>
                   <span className="font-mono text-base font-black text-cyan-300">
@@ -138,7 +138,7 @@ export default function ExerciseDetailModal({
 
               {/* Description */}
               {exercise.description && (
-                <div className="p-3.5 rounded-2xl bg-[#131926] border border-white/10">
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-[#111724] to-[#161e2e] border border-white/10 shadow-md">
                   <span className="font-mono text-[10px] font-black uppercase text-zinc-400 block mb-1">
                     Técnica y Ejecución
                   </span>
@@ -150,7 +150,7 @@ export default function ExerciseDetailModal({
 
               {/* Tempo Tip */}
               {exercise.tempo && (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 text-xs font-mono">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-br from-[#111724] to-[#161e2e] border border-white/10 text-xs font-mono shadow-md">
                   <span className="text-zinc-400">Tempo de ejecución:</span>
                   <span className="text-primary font-bold">{exercise.tempo}</span>
                 </div>
@@ -158,13 +158,13 @@ export default function ExerciseDetailModal({
             </div>
 
             {/* Bottom Sticky Action Button */}
-            <div className="p-4 border-t border-white/10 bg-[#0F141F]">
+            <div className="p-4 border-t border-white/10 bg-[#0e121b]">
               <button
                 onClick={() => {
                   haptics.impact();
                   onStartExercise(exercise);
                 }}
-                className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-black/50 border border-emerald-400/30 active:scale-98 transition-all cursor-pointer"
+                className="w-full h-14 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-black/50 border border-primary/40 active:scale-98 transition-all cursor-pointer"
               >
                 <Play className="w-4 h-4 fill-current" />
                 <span>Entrenar este ejercicio ahora</span>

@@ -34,8 +34,8 @@ const CATEGORY_STYLES: Record<string, { badge: string; border: string }> = {
     border: "hover:border-cyan-500/40",
   },
   personalizado: {
-    badge: "bg-primary-container/20 text-primary-container border-primary-container/30",
-    border: "hover:border-primary-container/40",
+    badge: "bg-primary/20 text-primary border-primary/30",
+    border: "hover:border-primary/40",
   },
 };
 
@@ -96,7 +96,7 @@ export default function RoutineCard({
         {/* Center Info */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-600 text-white border border-emerald-400/30">
+            <span className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-gradient-to-r from-primary to-emerald-400 text-white border border-primary/40">
               {dayBadge}
             </span>
             <span
@@ -176,7 +176,7 @@ export default function RoutineCard({
             haptics.impact();
             onClick?.();
           }}
-          className="h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-black/40 border border-emerald-400/30 active:scale-95 transition-all cursor-pointer"
+          className="h-9 px-4 rounded-xl bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-black/40 border border-primary/40 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Comenzar</span>

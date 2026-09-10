@@ -48,7 +48,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
   if (!routine) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="font-headline-md text-headline-md text-error">
+        <p className="font-headline-md text-headline-md text-red-400">
           Rutina no encontrada
         </p>
       </div>
@@ -156,12 +156,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         {isFreeDay && (
           <section className="flex flex-col gap-stack-gap">
             <div className="flex justify-between items-end">
-              <h2 className="font-headline-md text-headline-md text-on-surface">
+              <h2 className="font-headline-md text-headline-md text-white">
                 Favoritos
               </h2>
             </div>
             {favoriteExerciseIds.length === 0 ? (
-              <p className="text-on-surface-variant text-sm">
+              <p className="text-zinc-400 text-sm">
                 Aún no tienes favoritos. Aparecerán los ejercicios que más usas.
               </p>
             ) : (
@@ -177,8 +177,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-primary-container text-on-primary-container border-primary-container shadow-neon"
-                          : "bg-surface-container-low text-on-surface border-surface-container-highest"
+                          ? "bg-gradient-to-r from-primary to-emerald-400 text-black border-primary shadow-neon"
+                          : "bg-[#121620]-low text-white border-white/10"
                       }`}
                     >
                       <span>{ex.name}</span>
@@ -199,12 +199,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
             )}
 
             <div className="flex justify-between items-end mt-2">
-              <h2 className="font-headline-md text-headline-md text-on-surface">
+              <h2 className="font-headline-md text-headline-md text-white">
                 Recientes
               </h2>
             </div>
             {recentExerciseIds.length === 0 ? (
-              <p className="text-on-surface-variant text-sm">
+              <p className="text-zinc-400 text-sm">
                 Aún no hay ejercicios recientes. Haz algún entrenamiento
                 primero.
               </p>
@@ -221,8 +221,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-primary-container text-on-primary-container border-primary-container shadow-neon"
-                          : "bg-surface-container-low text-on-surface border-surface-container-highest"
+                          ? "bg-gradient-to-r from-primary to-emerald-400 text-black border-primary shadow-neon"
+                          : "bg-[#121620]-low text-white border-white/10"
                       }`}
                     >
                       <span>{ex.name}</span>
@@ -248,18 +248,18 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         <section className="flex flex-col gap-stack-gap">
           <div className="flex justify-between items-end">
             <div>
-              <h2 className="font-headline-md text-headline-md text-on-surface">
+              <h2 className="font-headline-md text-headline-md text-white">
                 {isFreeDay
                   ? "Ejercicio seleccionado"
                   : `Ejercicios (${exercises.length})`}
               </h2>
-              <p className="text-xs text-on-surface-variant mt-0.5">
+              <p className="text-xs text-zinc-400 mt-0.5">
                 {mode === "individual"
                   ? "⚡ Toca cualquier ejercicio para empezar al instante"
                   : "🧭 Flujo secuencial guiado paso a paso"}
               </p>
             </div>
-            <span className="font-label-caps text-label-caps text-primary-container font-bold">
+            <span className="font-label-caps text-label-caps text-primary font-bold">
               {routine.duration}
             </span>
           </div>

@@ -91,7 +91,7 @@ export default function TopAppBar({
           {showVolume && (
             <button
               onClick={toggleAudio}
-              className="flex items-center justify-center w-8 h-12 text-on-surface hover:opacity-80 transition-opacity active:scale-95"
+              className="flex items-center justify-center w-8 h-12 text-white hover:opacity-80 transition-opacity active:scale-95"
               aria-label={audioEnabled ? "Desactivar audio" : "Activar audio"}
             >
               {audioEnabled ? (
@@ -104,7 +104,7 @@ export default function TopAppBar({
           {showSettings && (
             <button
               onClick={() => setSettingsOpen(true)}
-              className="flex items-center justify-center w-8 h-12 text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95"
+              className="flex items-center justify-center w-8 h-12 text-zinc-400 hover:opacity-80 transition-opacity active:scale-95"
               aria-label="Ajustes"
             >
               <Settings className="w-6 h-6" />

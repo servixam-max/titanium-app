@@ -137,18 +137,18 @@ export default function RestOverlay() {
       <header className="flex-shrink-0 h-[56px] flex items-center justify-between px-2 w-full z-20">
         <button
           onClick={() => setShowExitConfirm(true)}
-          className="flex items-center gap-1 h-10 px-2 text-on-surface hover:text-primary-container active:scale-95 transition-all"
+          className="flex items-center gap-1 h-10 px-2 text-white hover:text-primary active:scale-95 transition-all"
           aria-label="Volver atrás o cancelar"
         >
           <ArrowLeft className="w-6 h-6" />
           <span className="text-xs font-bold font-label-caps uppercase">Salir</span>
         </button>
-        <span className="text-primary-container font-label-caps tracking-[0.2em] text-xs uppercase font-bold">
+        <span className="text-primary font-label-caps tracking-[0.2em] text-xs uppercase font-bold">
           Descanso
         </span>
         <button
           onClick={toggleAudio}
-          className="flex items-center justify-center w-10 h-10 text-on-surface-variant hover:text-on-surface active:scale-95"
+          className="flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-white active:scale-95"
           title={audioEnabled ? "Desactivar audio" : "Activar audio"}
         >
           {audioEnabled ? (
@@ -163,17 +163,17 @@ export default function RestOverlay() {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
           className={`w-[520px] h-[520px] rounded-full blur-[120px] animate-ambient ${
-            restUrgent ? "bg-error/15" : "bg-primary-container/10"
+            restUrgent ? "bg-red-500/15" : "bg-primary/10"
           }`}
         />
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto my-auto">
         <div className="flex flex-col items-center mb-4">
-          <span className="text-primary-container font-label-caps tracking-[0.25em] text-xs uppercase mb-1">
+          <span className="text-primary font-label-caps tracking-[0.25em] text-xs uppercase mb-1">
             Intervalo de Recuperación
           </span>
-          <h2 className="font-headline-lg text-headline-lg text-on-surface uppercase">
+          <h2 className="font-headline-lg text-headline-lg text-white uppercase">
             Recupera
           </h2>
         </div>
@@ -190,11 +190,11 @@ export default function RestOverlay() {
 
         {/* Upcoming Exercise Preview Card */}
         <div className="w-full mb-6">
-          <p className="text-on-surface-variant font-label-caps tracking-[0.2em] text-[11px] uppercase mb-2 text-center">
+          <p className="text-zinc-400 font-label-caps tracking-[0.2em] text-[11px] uppercase mb-2 text-center">
             {isNewExercise ? "A continuación:" : "Continúas con:"}
           </p>
-          <div className="w-full bg-surface-container-high border border-surface-container-highest rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 border border-surface-container-highest">
+          <div className="w-full bg-[#161e2e] border border-white/10 rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#121620] flex-shrink-0 border border-white/10">
               <ExerciseImage
                 src={currentExercise?.image || ""}
                 alt={currentExercise?.name || "Ejercicio"}
@@ -202,12 +202,12 @@ export default function RestOverlay() {
               />
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <p className="text-on-surface font-headline-md text-headline-md truncate">
+              <p className="text-white font-headline-md text-headline-md truncate">
                 {currentExercise?.name}
               </p>
-              <div className="flex items-center gap-2 mt-1 text-on-surface-variant text-xs flex-wrap">
+              <div className="flex items-center gap-2 mt-1 text-zinc-400 text-xs flex-wrap">
                 <span className="flex items-center gap-1 font-bold text-white">
-                  <Dumbbell className="w-3.5 h-3.5 text-primary-container" />
+                  <Dumbbell className="w-3.5 h-3.5 text-primary" />
                   Serie {upcomingSet} de {totalSets}
                 </span>
                 <span className="text-zinc-600">·</span>
@@ -222,7 +222,7 @@ export default function RestOverlay() {
           <PrimaryButton
             variant="secondary"
             size="md"
-            leftIcon={<Minus className="w-4 h-4 text-primary-container" />}
+            leftIcon={<Minus className="w-4 h-4 text-primary" />}
             onClick={() => adjustRest(-15)}
             className="flex-1 max-w-[140px]"
           >
@@ -231,7 +231,7 @@ export default function RestOverlay() {
           <PrimaryButton
             variant="secondary"
             size="md"
-            leftIcon={<Plus className="w-4 h-4 text-primary-container" />}
+            leftIcon={<Plus className="w-4 h-4 text-primary" />}
             onClick={() => adjustRest(15)}
             className="flex-1 max-w-[140px]"
           >
@@ -243,7 +243,7 @@ export default function RestOverlay() {
         <PrimaryButton
           variant="secondary"
           size="md"
-          rightIcon={<FastForward className="w-5 h-5 text-primary-container" />}
+          rightIcon={<FastForward className="w-5 h-5 text-primary" />}
           onClick={() => {
             stopSpeaking();
             skipRest();

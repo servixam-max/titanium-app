@@ -290,7 +290,7 @@ export default function GuidedWorkout() {
       {flashKey > 0 && (
         <div
           key={flashKey}
-          className="fixed inset-0 z-[70] bg-primary-container/30 pointer-events-none animate-flash"
+          className="fixed inset-0 z-[70] bg-primary/30 pointer-events-none animate-flash"
           onAnimationEnd={() => setFlashKey(0)}
         />
       )}
@@ -323,10 +323,10 @@ export default function GuidedWorkout() {
 
         {activeWorkout.isPreparing ? (
           <div className="flex-1 flex flex-col items-center justify-center min-h-0">
-            <h2 className="font-headline-lg text-headline-lg text-on-surface uppercase text-center mb-2">
+            <h2 className="font-headline-lg text-headline-lg text-white uppercase text-center mb-2">
               Preparado/a?
             </h2>
-            <p className="text-on-surface-variant text-sm mb-6 text-center">
+            <p className="text-zinc-400 text-sm mb-6 text-center">
               Empieza en {activeWorkout.prepTimeRemaining} segundos
             </p>
             <TimerCircle
