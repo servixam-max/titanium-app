@@ -60,7 +60,7 @@ export async function findWorkingServer(): Promise<string> {
 const GITHUB_API_RELEASE_URL =
   "https://api.github.com/repos/servixam-max/titanium-app/releases/latest";
 const GITHUB_RAW_VERSION_URL =
-  "https://raw.githubusercontent.com/servixam-max/titanium-app/main/ota_server/version.json";
+  "https://raw.githubusercontent.com/servixam-max/titanium-app/main/version.json";
 
 interface RemoteVersion {
   version: string;
