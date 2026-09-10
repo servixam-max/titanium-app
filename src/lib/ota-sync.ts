@@ -8,8 +8,8 @@ export interface AppVersion {
 
 // canonical current version: bump versionCode when releasing a new APK
 export const APP_VERSION: AppVersion = {
-  version: "7.0.0-alpha.3",
-  versionCode: 764,
+  version: "7.0.0-alpha.5",
+  versionCode: 765,
   buildType: "debug",
 };
 const CANDIDATE_IPS = [
@@ -76,14 +76,47 @@ function parseVersionCode(value: unknown): number | null {
   return null;
 }
 
-function parseSemver(version: string): [number, number, number] {
+function parseSemver(version: string): [number, number, number, string] {
   const clean = String(version || "0").replace(/^[vV]/, "");
-  const parts = clean.split(".").map((p) => parseInt(p, 10));
+  // Split numeric part from pre-release part, e.g. "7.0.0-alpha.5"
+  const [core, pre = ""] = clean.split("-") as [string, string | undefined];
+  const parts = core.split(".").map((p) => parseInt(p, 10));
   return [
     Number.isFinite(parts[0]) ? parts[0] : 0,
     Number.isFinite(parts[1]) ? parts[1] : 0,
     Number.isFinite(parts[2]) ? parts[2] : 0,
+    pre,
   ];
+}
+
+function comparePreRelease(a: string, b: string): number {
+  // No pre-release is always newer than any pre-release in semver
+  if (a === "" && b === "") return 0;
+  if (a === "") return 1;
+  if (b === "") return -1;
+  const aParts = a.split(".");
+  const bParts = b.split(".");
+  const len = Math.max(aParts.length, bParts.length);
+  for (let i = 0; i < len; i++) {
+    const av = aParts[i];
+    const bv = bParts[i];
+    if (av === undefined) return -1;
+    if (bv === undefined) return 1;
+    const aNum = parseInt(av, 10);
+    const bNum = parseInt(bv, 10);
+    const aIsNum = Number.isFinite(aNum);
+    const bIsNum = Number.isFinite(bNum);
+    if (aIsNum && bIsNum) {
+      if (aNum !== bNum) return aNum - bNum;
+    } else if (aIsNum) {
+      return -1;
+    } else if (bIsNum) {
+      return 1;
+    } else if (av !== bv) {
+      return av.localeCompare(bv);
+    }
+  }
+  return 0;
 }
 
 /**
@@ -99,12 +132,15 @@ export function isRemoteNewer(
     return remoteVersionCode > current.versionCode;
   }
 
-  const [rMajor, rMinor, rPatch] = parseSemver(remote.version);
-  const [cMajor, cMinor, cPatch] = parseSemver(current.version);
+  const [rMajor, rMinor, rPatch, rPre] = parseSemver(remote.version);
+  const [cMajor, cMinor, cPatch, cPre] = parseSemver(current.version);
 
   if (rMajor !== cMajor) return rMajor > cMajor;
   if (rMinor !== cMinor) return rMinor > cMinor;
-  return rPatch > cPatch;
+  if (rPatch !== cPatch) return rPatch > cPatch;
+
+  // Same core version: compare pre-release identifiers
+  return comparePreRelease(rPre, cPre) > 0;
 }
 
 export async function checkOtaUpdate(): Promise<{

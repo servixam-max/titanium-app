@@ -209,9 +209,11 @@ export const useAppStore = create<AppState>()(
         // Pre-fill default reps from exercise definition
         const defaultReps: Record<string, number> = {};
         routine.exercises.forEach((ex) => {
-          const match = ex.reps.match(/(\d+)/);
-          if (match) {
-            defaultReps[ex.id] = parseInt(match[1], 10);
+          if (ex.reps) {
+            const match = ex.reps.match(/(\d+)/);
+            if (match) {
+              defaultReps[ex.id] = parseInt(match[1], 10);
+            }
           }
         });
 
@@ -359,7 +361,8 @@ export const useAppStore = create<AppState>()(
         // Mark exercise as recent when any set is completed
         get().markExerciseRecent(currentExercise.id);
 
-        const isLastSet = setNumber >= currentExercise.sets;
+        const totalSets = currentExercise.sets ?? 3;
+        const isLastSet = setNumber >= totalSets;
         const isLastExercise =
           exerciseIndex >= (activeWorkout.routine?.exercises.length || 1) - 1;
         const isWorkoutFinishing = isLastSet && isLastExercise;
