@@ -9,9 +9,9 @@ import { useEffect } from "react";
 import { routines } from "@/lib/data";
 
 interface WorkoutCompleteCardProps {
-  session: WorkoutSession;
+  session?: WorkoutSession | null;
   activeRoutineTitle?: string;
-  sessions: WorkoutSession[];
+  sessions?: WorkoutSession[];
 }
 
 function StatBox({
@@ -42,6 +42,10 @@ export default function WorkoutCompleteCard({
   sessions,
 }: WorkoutCompleteCardProps) {
   const router = useRouter();
+
+  // Robust fallback: if the session is missing or malformed, still show a celebration screen
+  const safeSession = session && session.exercises ? session : null;
+  const safeSessions = Array.isArray(sessions) ? sessions : [];
 
   useEffect(() => {
     const colors = ["#10B981", "#059669", "#34D399", "#F59E0B", "#FFFFFF", "#00F59B"];
@@ -77,32 +81,47 @@ export default function WorkoutCompleteCard({
 
   const routineTitle =
     activeRoutineTitle ||
-    routines.find((r) => r.day === session.routineId)?.title ||
+    (safeSession && routines.find((r) => r.day === safeSession.routineId)?.title) ||
     "Entrenamiento";
 
-  const durationSeconds = session.endTime
-    ? Math.round(
-        (new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / 1000,
+  const durationSeconds =
+    safeSession && safeSession.endTime
+      ? Math.round(
+          (new Date(safeSession.endTime).getTime() - new Date(safeSession.startTime).getTime()) /
+            1000,
+        )
+      : 0;
+  const totalSets = safeSession
+    ? safeSession.exercises.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0)
+    : 0;
+  const totalReps = safeSession
+    ? safeSession.exercises.reduce(
+        (sum, ex) => sum + (ex.sets || []).reduce((s, set) => s + (set.reps || 0), 0),
+        0,
       )
     : 0;
-  const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
-  const totalReps = session.exercises.reduce(
-    (sum, ex) => sum + ex.sets.reduce((s, set) => s + (set.reps || 0), 0),
-    0,
-  );
-  const totalVolume = session.exercises.reduce(
-    (sum, ex) => sum + ex.sets.reduce((s, set) => s + (set.weight || 0) * (set.reps || 0), 0),
-    0,
-  );
+  const totalVolume = safeSession
+    ? safeSession.exercises.reduce(
+        (sum, ex) =>
+          sum +
+          (ex.sets || []).reduce(
+            (s, set) => s + (set.weight || 0) * (set.reps || 0),
+            0,
+          ),
+        0,
+      )
+    : 0;
   const minutes = Math.floor(durationSeconds / 60);
   const seconds = durationSeconds % 60;
 
-  const previousSessions = sessions
-    .filter(
-      (s) =>
-        s.routineId === session.routineId && s.completed && s.id !== session.id,
-    )
-    .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+  const previousSessions = safeSession
+    ? safeSessions
+        .filter(
+          (s) =>
+            s.routineId === safeSession.routineId && s.completed && s.id !== safeSession.id,
+        )
+        .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
+    : [];
   const lastSession = previousSessions[0];
   const lastDuration = lastSession?.endTime
     ? Math.round(
@@ -110,7 +129,12 @@ export default function WorkoutCompleteCard({
       )
     : 0;
   const lastVolume = lastSession?.exercises.reduce(
-    (sum, ex) => sum + ex.sets.reduce((s, set) => s + (set.weight || 0) * (set.reps || 0), 0),
+    (sum, ex) =>
+      sum +
+      (ex.sets || []).reduce(
+        (s, set) => s + (set.weight || 0) * (set.reps || 0),
+        0,
+      ),
     0,
   );
   const pbDuration = durationSeconds > lastDuration;

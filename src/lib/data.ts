@@ -416,13 +416,14 @@ export const routines: Routine[] = [
     difficulty: "Cardio HIIT",
     equipment: "MANCUERNAS / PESO CORPORAL",
     categoryTag: "hiit",
+    rounds: 4,
     coverImage: getImg("dumbbell_thrusters", "jpg"),
     coverImageBodyweight: getImg("burpees", "jpg"),
     exercises: [
       {
         id: "d4-a-1",
         name: "Sentadilla Goblet",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -435,7 +436,7 @@ export const routines: Routine[] = [
       {
         id: "d4-a-2",
         name: "Dumbbell Floor Press",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -448,7 +449,7 @@ export const routines: Routine[] = [
       {
         id: "d4-a-3",
         name: "Devil Press",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -461,7 +462,7 @@ export const routines: Routine[] = [
       {
         id: "d4-a-4",
         name: "Remo a una Mano",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -474,7 +475,7 @@ export const routines: Routine[] = [
       {
         id: "d4-a-5",
         name: "Press Militar de Hombros",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -487,7 +488,7 @@ export const routines: Routine[] = [
       {
         id: "d4-a-6",
         name: "Dumbbell Thrusters",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -500,7 +501,7 @@ export const routines: Routine[] = [
       {
         id: "d4-a-7",
         name: "Peso Muerto Rumano",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -513,7 +514,7 @@ export const routines: Routine[] = [
       {
         id: "d4-a-8",
         name: "Zancadas con Mancuernas",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -526,7 +527,7 @@ export const routines: Routine[] = [
       {
         id: "d4-a-9",
         name: "Renegade Row con Mancuernas",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -541,7 +542,7 @@ export const routines: Routine[] = [
       {
         id: "d4-b-1",
         name: "Sentadillas con Salto",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -554,7 +555,7 @@ export const routines: Routine[] = [
       {
         id: "d4-b-2",
         name: "Flexiones Explosivas",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -567,7 +568,7 @@ export const routines: Routine[] = [
       {
         id: "d4-b-3",
         name: "Mountain Climbers",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -580,7 +581,7 @@ export const routines: Routine[] = [
       {
         id: "d4-b-4",
         name: "Plank Jacks",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -593,7 +594,7 @@ export const routines: Routine[] = [
       {
         id: "d4-b-5",
         name: "Pike Push-ups",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -606,7 +607,7 @@ export const routines: Routine[] = [
       {
         id: "d4-b-6",
         name: "Burpees Clásicos",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -619,7 +620,7 @@ export const routines: Routine[] = [
       {
         id: "d4-b-7",
         name: "Puente de Glúteo",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -632,7 +633,7 @@ export const routines: Routine[] = [
       {
         id: "d4-b-8",
         name: "Zancadas con Salto",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -645,7 +646,7 @@ export const routines: Routine[] = [
       {
         id: "d4-b-9",
         name: "High Knees",
-        sets: 3,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -1184,13 +1185,14 @@ export const routines: Routine[] = [
     difficulty: "Cardio HIIT",
     equipment: "MANCUERNAS / PESO CORPORAL",
     categoryTag: "hiit",
+    rounds: 4,
     coverImage: getImg("devil_press", "jpg"),
     coverImageBodyweight: getImg("burpees", "jpg"),
     exercises: [
       {
         id: "d9-1",
         name: "Devil Press",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -1204,7 +1206,7 @@ export const routines: Routine[] = [
       {
         id: "d9-2",
         name: "Renegade Row",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -1218,7 +1220,7 @@ export const routines: Routine[] = [
       {
         id: "d9-3",
         name: "Dumbbell Thrusters",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -1232,7 +1234,7 @@ export const routines: Routine[] = [
       {
         id: "d9-4",
         name: "Dumbbell Floor Press",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -1246,7 +1248,7 @@ export const routines: Routine[] = [
       {
         id: "d9-5",
         name: "Peso Muerto Rumano",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -1260,7 +1262,7 @@ export const routines: Routine[] = [
       {
         id: "d9-6",
         name: "Sentadilla Goblet",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "dumbbells",
@@ -1276,7 +1278,7 @@ export const routines: Routine[] = [
       {
         id: "d9-b-1",
         name: "Burpees Clásicos",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -1289,7 +1291,7 @@ export const routines: Routine[] = [
       {
         id: "d9-b-2",
         name: "Mountain Climbers",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -1302,7 +1304,7 @@ export const routines: Routine[] = [
       {
         id: "d9-b-3",
         name: "Sentadillas con Salto",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -1315,7 +1317,7 @@ export const routines: Routine[] = [
       {
         id: "d9-b-4",
         name: "High Knees",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -1328,7 +1330,7 @@ export const routines: Routine[] = [
       {
         id: "d9-b-5",
         name: "Plank Jacks",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",
@@ -1341,7 +1343,7 @@ export const routines: Routine[] = [
       {
         id: "d9-b-6",
         name: "Jumping Jacks",
-        sets: 4,
+        sets: 1,
         reps: "40s",
         restSeconds: 20,
         equipment: "bodyweight",

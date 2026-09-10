@@ -552,15 +552,15 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           setOtaInfo(null);
                           try {
                             const result = await checkOtaUpdate();
+                            setOtaInfo({
+                              version: result.latestVersion,
+                              downloadUrl: result.downloadUrl,
+                              serverUrl: result.serverUrl,
+                            });
                             if (result.hasUpdate) {
                               const canInst = await canInstallUnknownApps();
                               setHasInstallPermission(canInst);
                               setOtaStatus("update-found");
-                              setOtaInfo({
-                                version: result.latestVersion,
-                                downloadUrl: result.downloadUrl,
-                                serverUrl: result.serverUrl,
-                              });
                             } else {
                               setOtaStatus("up-to-date");
                             }
@@ -692,10 +692,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </div>
                     )}
 
-                    {otaStatus === "up-to-date" && (
+                    {otaStatus === "up-to-date" && otaInfo && (
                       <div className="bg-[#141a24] border border-primary/30 rounded-2xl p-4 flex flex-col items-center gap-2 text-center">
                         <CheckCircle2 className="w-6 h-6 text-primary" />
                         <span className="font-mono font-bold text-white text-xs uppercase">Tu aplicación está al día (v{APP_VERSION.version})</span>
+                        <p className="text-[11px] text-zinc-400 font-mono">
+                          Última versión en servidor: <strong className="text-white">v{otaInfo.version}</strong>
+                        </p>
                         <button
                           onClick={() => setOtaStatus("idle")}
                           className="text-xs text-cyan-400 underline mt-1 font-mono"

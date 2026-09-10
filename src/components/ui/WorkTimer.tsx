@@ -57,17 +57,13 @@ export default function WorkTimer() {
       endAnnouncedRef.current = false;
       announceWorkStart();
       if (activeWorkout.routine?.type === "hiit") {
-        const per = 3;
-        const total = Math.ceil(
-          (activeWorkout.routine.exercises.length || 1) / per,
-        );
-        const cur = Math.floor(activeWorkout.currentExerciseIndex / per) + 1;
-        // Only announce the circuit block on its first exercise
-        const isFirstOfCircuit =
-          activeWorkout.currentExerciseIndex % per === 0 &&
+        const currentRound = activeWorkout.currentRound ?? 1;
+        const totalRounds = activeWorkout.routine.rounds ?? 1;
+        const isFirstOfRound =
+          activeWorkout.currentExerciseIndex === 0 &&
           activeWorkout.currentSet === 1;
-        if (isFirstOfCircuit) {
-          setTimeout(() => announceCircuit(cur, total), 1200);
+        if (isFirstOfRound && totalRounds > 1) {
+          setTimeout(() => announceCircuit(currentRound, totalRounds), 1200);
         }
       }
     }
@@ -114,15 +110,10 @@ export default function WorkTimer() {
   const currentExercise =
     activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
   const isHIIT = activeWorkout.routine?.type === "hiit";
-  const exercisesPerCircuit = 3;
-  const circuitNumber = isHIIT
-    ? Math.floor(activeWorkout.currentExerciseIndex / exercisesPerCircuit) + 1
-    : 0;
-  const totalCircuits = isHIIT
-    ? Math.ceil(
-        (activeWorkout.routine?.exercises.length || 1) / exercisesPerCircuit,
-      )
-    : 0;
+  const currentRound = activeWorkout.currentRound ?? 1;
+  const totalRounds = activeWorkout.routine?.rounds ?? 1;
+  const circuitNumber = isHIIT ? currentRound : 0;
+  const totalCircuits = isHIIT ? totalRounds : 0;
 
   const timeLeft = activeWorkout.workTimeRemaining;
   const workUrgent = timeLeft <= 10;

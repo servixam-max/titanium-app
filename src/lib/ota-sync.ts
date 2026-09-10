@@ -8,8 +8,8 @@ export interface AppVersion {
 
 // canonical current version: bump versionCode when releasing a new APK
 export const APP_VERSION: AppVersion = {
-  version: "7.0.0-alpha.5",
-  versionCode: 765,
+  version: "7.0.1-alpha.2",
+  versionCode: 771,
   buildType: "debug",
 };
 const CANDIDATE_IPS = [
@@ -60,7 +60,7 @@ export async function findWorkingServer(): Promise<string> {
 const GITHUB_API_RELEASE_URL =
   "https://api.github.com/repos/servixam-max/titanium-app/releases/latest";
 const GITHUB_RAW_VERSION_URL =
-  "https://raw.githubusercontent.com/servixam-max/titanium-app/main/version.json";
+  "https://raw.githubusercontent.com/servixam-max/titanium-app/feat/v7-dashboard/version.json";
 
 interface RemoteVersion {
   version: string;
@@ -149,7 +149,41 @@ export async function checkOtaUpdate(): Promise<{
   downloadUrl: string;
   serverUrl: string;
 }> {
-  // 1. Primary: GitHub Releases API (instantaneous, global, zero cache delay)
+  // 1. Primary: Global GitHub Raw version.json (instant raw file with versionCode)
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch(`${GITHUB_RAW_VERSION_URL}?t=${Date.now()}`, {
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = (await res.json()) as RemoteVersion;
+      const latestVersion = String(data.version || "").trim();
+      const hasUpdate = isRemoteNewer(APP_VERSION, {
+        version: latestVersion,
+        versionCode: parseVersionCode(data.versionCode) ?? undefined,
+      });
+      const downloadUrl =
+        data.url ||
+        `https://github.com/servixam-max/titanium-app/releases/download/v${latestVersion}/${data.apkName || `FORTIXAM-${latestVersion}.apk`}`;
+
+      if (latestVersion && downloadUrl) {
+        return {
+          hasUpdate,
+          latestVersion,
+          downloadUrl,
+          serverUrl: "GitHub Cloud (Global)",
+        };
+      }
+    }
+  } catch (err) {
+    logger.warn("GitHub Raw check failed, trying GitHub Releases API:", err);
+  }
+
+  // 2. Secondary: GitHub Releases API (instantaneous, global, zero cache delay)
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3500);
@@ -183,39 +217,7 @@ export async function checkOtaUpdate(): Promise<{
       }
     }
   } catch (err) {
-    logger.warn("GitHub Releases API check failed, trying raw fallback:", err);
-  }
-
-  // 2. Secondary: Global GitHub Raw version.json
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-    const res = await fetch(`${GITHUB_RAW_VERSION_URL}?t=${Date.now()}`, {
-      signal: controller.signal,
-      cache: "no-store",
-    });
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = (await res.json()) as RemoteVersion;
-      const latestVersion = String(data.version || "").trim();
-      const hasUpdate = isRemoteNewer(APP_VERSION, {
-        version: latestVersion,
-        versionCode: parseVersionCode(data.versionCode) ?? undefined,
-      });
-      const downloadUrl =
-        data.url ||
-        `https://github.com/servixam-max/titanium-app/releases/download/v${latestVersion}/${data.apkName || `FORTIXAM-${latestVersion}.apk`}`;
-
-      return {
-        hasUpdate,
-        latestVersion,
-        downloadUrl,
-        serverUrl: "GitHub Cloud (Global)",
-      };
-    }
-  } catch (err) {
-    logger.warn("GitHub Raw check failed, trying local server fallback:", err);
+    logger.warn("GitHub Releases API check failed, trying local server fallback:", err);
   }
 
   // 3. Fallback: Local PC server (Tailscale / WiFi)

@@ -28,6 +28,8 @@ export interface Routine {
   coverImage?: string;
   coverImageBodyweight?: string;
   categoryTag?: "fuerza" | "full_body" | "hiit" | "movilidad" | "personalizado";
+  /** Number of circuit rounds for HIIT-style routines (default 1). */
+  rounds?: number;
   exercises: Exercise[];
   alternativeExercises?: Exercise[];
 }
@@ -78,6 +80,8 @@ export interface ActiveWorkoutState {
   mode: TrainingMode;
   currentExerciseIndex: number;
   currentSet: number;
+  /** Current circuit round for HIIT routines (1-based). */
+  currentRound?: number;
   equipmentPref: EquipmentPreference;
   isResting: boolean;
   restTimeRemaining: number;

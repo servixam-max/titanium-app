@@ -100,6 +100,7 @@ const initialActiveWorkout: ActiveWorkoutState = {
   mode: "individual",
   currentExerciseIndex: 0,
   currentSet: 1,
+  currentRound: 1,
   equipmentPref: "dumbbells",
   isResting: false,
   restTimeRemaining: 0,
@@ -232,6 +233,7 @@ export const useAppStore = create<AppState>()(
             mode,
             currentExerciseIndex: startExerciseIndex,
             currentSet: 1,
+            currentRound: 1,
             equipmentPref: get().equipmentPreference,
             isResting: false,
             restTimeRemaining: 0,
@@ -365,7 +367,10 @@ export const useAppStore = create<AppState>()(
         const isLastSet = setNumber >= totalSets;
         const isLastExercise =
           exerciseIndex >= (activeWorkout.routine?.exercises.length || 1) - 1;
-        const isWorkoutFinishing = isLastSet && isLastExercise;
+        const rounds = activeWorkout.routine?.rounds ?? 1;
+        const currentRound = activeWorkout.currentRound ?? 1;
+        const isLastRound = currentRound >= rounds;
+        const isWorkoutFinishing = isLastSet && isLastExercise && isLastRound;
         const nextRestSeconds = currentExercise.restSeconds || 75;
 
         const nextActiveWorkout: ActiveWorkoutState = {
@@ -385,6 +390,11 @@ export const useAppStore = create<AppState>()(
             const nextIndex = exerciseIndex + 1;
             nextActiveWorkout.currentExerciseIndex = nextIndex;
             nextActiveWorkout.currentSet = 1;
+          } else if (!isLastRound) {
+            // HIIT circuit: advance to next round and restart from first exercise
+            nextActiveWorkout.currentExerciseIndex = 0;
+            nextActiveWorkout.currentSet = 1;
+            nextActiveWorkout.currentRound = currentRound + 1;
           }
         } else {
           nextActiveWorkout.currentSet = setNumber + 1;
@@ -610,8 +620,25 @@ export const useAppStore = create<AppState>()(
         if (!activeWorkout.routine) return;
 
         const nextIndex = activeWorkout.currentExerciseIndex + 1;
+        const rounds = activeWorkout.routine.rounds ?? 1;
+        const currentRound = activeWorkout.currentRound ?? 1;
         if (nextIndex >= activeWorkout.routine.exercises.length) {
-          get().finishWorkout();
+          if (currentRound < rounds) {
+            set({
+              activeWorkout: {
+                ...activeWorkout,
+                currentExerciseIndex: 0,
+                currentSet: 1,
+                currentRound: currentRound + 1,
+                isResting: false,
+                restTimeRemaining: 0,
+                isWorking: false,
+                workTimeRemaining: 0,
+              },
+            });
+          } else {
+            get().finishWorkout();
+          }
         } else {
           set({
             activeWorkout: {

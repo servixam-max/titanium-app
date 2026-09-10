@@ -49,6 +49,8 @@ export default function GuidedWorkout() {
   const routine = activeWorkout.routine;
   const currentExerciseIndex = activeWorkout.currentExerciseIndex;
   const currentSet = activeWorkout.currentSet;
+  const currentRound = activeWorkout.currentRound ?? 1;
+  const totalRounds = routine?.rounds ?? 1;
   const currentExercise = routine?.exercises[currentExerciseIndex];
   const isHIIT = routine?.type === "hiit";
   const timedSeconds =
@@ -131,19 +133,26 @@ export default function GuidedWorkout() {
 
   const totalExercises = routine?.exercises.length ?? 0;
   const totalSetsInRoutine = useMemo(
-    () => routine?.exercises.reduce((sum, ex) => sum + (ex.sets || 3), 0) || 1,
-    [routine],
+    () =>
+      (routine?.exercises.reduce((sum, ex) => sum + (ex.sets || 3), 0) || 1) *
+      totalRounds,
+    [routine, totalRounds],
   );
 
   const completedSetsCount = useMemo(() => {
     if (!routine) return 0;
-    let count = 0;
+    const setsPerRound = routine.exercises.reduce(
+      (sum, ex) => sum + (ex.sets || 3),
+      0,
+    );
+    const completedRounds = Math.max(0, currentRound - 1);
+    let count = completedRounds * setsPerRound;
     for (let i = 0; i < currentExerciseIndex; i++) {
       count += routine.exercises[i]?.sets || 3;
     }
     count += Math.max(0, currentSet - 1);
     return count;
-  }, [currentExerciseIndex, currentSet, routine]);
+  }, [currentExerciseIndex, currentSet, currentRound, routine]);
 
   const workoutPercent = Math.min(
     100,
@@ -154,14 +163,19 @@ export default function GuidedWorkout() {
 
   const isLastSet = currentSet >= currentExercise.sets;
   const isLastExercise = currentExerciseIndex >= totalExercises - 1;
-  const isWorkoutFinishing = isLastSet && isLastExercise;
+  const isLastRound = currentRound >= totalRounds;
+  const isWorkoutFinishing = isLastSet && isLastExercise && isLastRound;
 
   const triggerFeedback = () => {
     setFlashKey((k) => k + 1);
     haptics.tick();
   };
 
+  const [isFinishing, setIsFinishing] = useState(false);
+
   const handleComplete = async () => {
+    if (isFinishing) return;
+    setIsFinishing(true);
     if (activeWorkout.isWorking) skipWork();
 
     const targetMatch = currentExercise.reps.match(/\d+/g);
@@ -180,6 +194,7 @@ export default function GuidedWorkout() {
       router.push("/workout/complete");
       return;
     }
+    setIsFinishing(false);
 
     if (isLastSet) {
       const nextEx = routine.exercises[currentExerciseIndex + 1];
@@ -218,12 +233,8 @@ export default function GuidedWorkout() {
     }
   };
 
-  const circuitNumber = isHIIT
-    ? Math.floor(currentExerciseIndex / 3) + 1
-    : undefined;
-  const totalCircuits = isHIIT
-    ? Math.ceil(totalExercises / 3)
-    : undefined;
+  const circuitNumber = isHIIT ? currentRound : undefined;
+  const totalCircuits = isHIIT ? totalRounds : undefined;
 
   const footer = isTimedSet ? (
     <PrimaryButton
