@@ -25,6 +25,7 @@ import {
   ExitConfirmModal,
 } from "@/components/workout";
 import PrimaryButton from "@/components/ui/PrimaryButton";
+import TimerCircle from "@/components/ui/TimerCircle";
 
 export default function GuidedWorkout() {
   const router = useRouter();
@@ -36,6 +37,9 @@ export default function GuidedWorkout() {
     setExerciseWeight,
     goToExercise,
     startWork,
+    startPrep,
+    tickPrep,
+    skipPrep,
     skipWork,
     audioEnabled,
     audioMode,
@@ -97,28 +101,39 @@ export default function GuidedWorkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExerciseIndex, audioEnabled]);
 
-  // Auto-start the work timer for time-based (HIIT) sets
+  // Auto-start the 10s HIIT preparation before the work timer
   useEffect(() => {
     if (
       routine &&
       isTimedSet &&
+      !activeWorkout.isPreparing &&
       !activeWorkout.isWorking &&
       !activeWorkout.isResting &&
       !activeWorkout.justFinished
     ) {
-      startWork(timedSeconds);
+      startPrep(10);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     routine,
     isTimedSet,
     timedSeconds,
+    activeWorkout.isPreparing,
     activeWorkout.isWorking,
     activeWorkout.isResting,
     activeWorkout.justFinished,
     currentExerciseIndex,
     currentSet,
   ]);
+
+  // Tick the HIIT preparation countdown
+  useEffect(() => {
+    if (!activeWorkout.isPreparing) return;
+    const interval = setInterval(() => {
+      tickPrep();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [activeWorkout.isPreparing, tickPrep]);
 
   // Confirm before leaving the page
   const onBeforeUnload = useCallback((e: BeforeUnloadEvent) => {
@@ -236,7 +251,16 @@ export default function GuidedWorkout() {
   const circuitNumber = isHIIT ? currentRound : undefined;
   const totalCircuits = isHIIT ? totalRounds : undefined;
 
-  const footer = isTimedSet ? (
+  const footer = activeWorkout.isPreparing ? (
+    <PrimaryButton
+      leftIcon={<CheckCircle className="w-6 h-6" />}
+      onClick={() => {
+        skipPrep();
+      }}
+    >
+      EMPEZAR YA
+    </PrimaryButton>
+  ) : isTimedSet ? (
     <PrimaryButton
       leftIcon={<CheckCircle className="w-6 h-6" />}
       onClick={() => {
@@ -297,15 +321,34 @@ export default function GuidedWorkout() {
           />
         </div>
 
-        <ExerciseStage
-          exercise={currentExercise}
-          currentSet={currentSet}
-          exerciseIndex={currentExerciseIndex}
-          isHIIT={isHIIT}
-          circuitNumber={circuitNumber}
-          totalCircuits={totalCircuits}
-          className="flex-1 min-h-0"
-        />
+        {activeWorkout.isPreparing ? (
+          <div className="flex-1 flex flex-col items-center justify-center min-h-0">
+            <h2 className="font-headline-lg text-headline-lg text-on-surface uppercase text-center mb-2">
+              Preparado/a?
+            </h2>
+            <p className="text-on-surface-variant text-sm mb-6 text-center">
+              Empieza en {activeWorkout.prepTimeRemaining} segundos
+            </p>
+            <TimerCircle
+              seconds={activeWorkout.prepTimeRemaining}
+              total={10}
+              size={220}
+              strokeWidth={10}
+              label="segundos"
+              className="mb-6"
+            />
+          </div>
+        ) : (
+          <ExerciseStage
+            exercise={currentExercise}
+            currentSet={currentSet}
+            exerciseIndex={currentExerciseIndex}
+            isHIIT={isHIIT}
+            circuitNumber={circuitNumber}
+            totalCircuits={totalCircuits}
+            className="flex-1 min-h-0"
+          />
+        )}
       </WorkoutShell>
       <RestTimer />
       <WorkTimer />

@@ -85,6 +85,9 @@ export interface ActiveWorkoutState {
   equipmentPref: EquipmentPreference;
   isResting: boolean;
   restTimeRemaining: number;
+  /** Countdown before a timed work interval starts (HIIT prep) */
+  isPreparing: boolean;
+  prepTimeRemaining: number;
   /** Work-interval timer (HIIT): countdown while performing a time-based set */
   isWorking: boolean;
   workTimeRemaining: number;

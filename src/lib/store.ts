@@ -49,6 +49,9 @@ interface AppState {
   startRest: (seconds?: number) => void;
   skipRest: () => void;
   tickRest: () => void;
+  startPrep: (seconds?: number) => void;
+  tickPrep: () => void;
+  skipPrep: () => void;
   startWork: (seconds?: number) => void;
   tickWork: () => void;
   skipWork: () => void;
@@ -104,6 +107,8 @@ const initialActiveWorkout: ActiveWorkoutState = {
   equipmentPref: "dumbbells",
   isResting: false,
   restTimeRemaining: 0,
+  isPreparing: false,
+  prepTimeRemaining: 0,
   isWorking: false,
   workTimeRemaining: 0,
   session: null,
@@ -237,6 +242,8 @@ export const useAppStore = create<AppState>()(
             equipmentPref: get().equipmentPreference,
             isResting: false,
             restTimeRemaining: 0,
+            isPreparing: false,
+            prepTimeRemaining: 0,
             isWorking: false,
             workTimeRemaining: 0,
             session,
@@ -422,6 +429,8 @@ export const useAppStore = create<AppState>()(
             ...activeWorkout,
             isResting: true,
             restTimeRemaining: restSeconds,
+            isPreparing: false,
+            prepTimeRemaining: 0,
           },
         });
       },
@@ -532,6 +541,58 @@ export const useAppStore = create<AppState>()(
 
       // Work-interval countdown (HIIT time-based sets). When it hits 0, the set
       // is auto-completed via completeSet(), which owns progression + rest start.
+      startPrep: (seconds = 10) => {
+        const { activeWorkout } = get();
+        if (!activeWorkout.routine) return;
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            isPreparing: true,
+            prepTimeRemaining: seconds,
+            isWorking: false,
+            workTimeRemaining: 0,
+          },
+        });
+      },
+
+      tickPrep: () => {
+        const { activeWorkout } = get();
+        if (!activeWorkout.isPreparing || activeWorkout.prepTimeRemaining <= 0)
+          return;
+
+        const newTime = activeWorkout.prepTimeRemaining - 1;
+        if (newTime <= 0) {
+          set({
+            activeWorkout: {
+              ...activeWorkout,
+              isPreparing: false,
+              prepTimeRemaining: 0,
+            },
+          });
+          // Auto-start the actual work interval when prep ends
+          get().startWork();
+        } else {
+          set({
+            activeWorkout: {
+              ...activeWorkout,
+              prepTimeRemaining: newTime,
+            },
+          });
+        }
+      },
+
+      skipPrep: () => {
+        const { activeWorkout } = get();
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            isPreparing: false,
+            prepTimeRemaining: 0,
+          },
+        });
+        get().startWork();
+      },
+
       startWork: (seconds) => {
         const { activeWorkout } = get();
         const currentExercise =
@@ -550,6 +611,8 @@ export const useAppStore = create<AppState>()(
         set({
           activeWorkout: {
             ...activeWorkout,
+            isPreparing: false,
+            prepTimeRemaining: 0,
             isWorking: true,
             workTimeRemaining: workSeconds,
           },
@@ -974,6 +1037,8 @@ export const useAppStore = create<AppState>()(
               ...state.activeWorkout,
               isResting: false,
               restTimeRemaining: 0,
+              isPreparing: false,
+              prepTimeRemaining: 0,
               isWorking: false,
               workTimeRemaining: 0,
               justFinished: false,
@@ -999,6 +1064,8 @@ export const useAppStore = create<AppState>()(
         if (state.activeWorkout.routine) {
           state.activeWorkout.isResting = false;
           state.activeWorkout.restTimeRemaining = 0;
+          state.activeWorkout.isPreparing = false;
+          state.activeWorkout.prepTimeRemaining = 0;
           state.activeWorkout.isWorking = false;
           state.activeWorkout.workTimeRemaining = 0;
           state.activeWorkout.justFinished = false;
