@@ -12,9 +12,13 @@ import {
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
+import { SkeletonStatCard } from "@/components/ui/Skeleton";
+import MuscleMap, { categoryToMuscles, type MuscleActivity } from "@/components/ui/MuscleMap";
+import AchievementsList from "@/components/ui/AchievementsList";
 import { getSessions, LocalSession } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
-import { routines } from "@/lib/data";
+import { routines, getExerciseById } from "@/lib/data";
+import { computeAchievements } from "@/lib/gamification";
 
 function formatDuration(seconds: number) {
   if (!seconds) return "--";
@@ -78,7 +82,7 @@ function calculateStreak(sessions: LocalSession[]) {
 export default function StatsPage() {
   const { currentUser } = useAppStore();
   const [sessions, setSessions] = useState<LocalSession[]>([]);
-  const [, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadStats = useCallback(async () => {
     setIsLoading(true);
@@ -198,6 +202,65 @@ export default function StatsPage() {
     return Math.max(...recentSessions.map((s) => s.volumeKg), 500);
   }, [recentSessions]);
 
+  // Muscle activity for this week
+  const muscleActivity = useMemo((): MuscleActivity[] => {
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    const day = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
+    startOfWeek.setDate(diff);
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const volumeByMuscle = new Map<string, number>();
+    for (const session of completed) {
+      if (!session.endTime || new Date(session.endTime) < startOfWeek) continue;
+      for (const ex of session.exercises) {
+        const catalogEx = getExerciseById(ex.exerciseId);
+        const category = catalogEx?.category ?? "";
+        const muscles = categoryToMuscles(category);
+        const vol = (ex.sets || []).reduce(
+          (sum, set) => sum + (set.weight || 0) * (set.reps || 0),
+          0
+        );
+        for (const m of muscles) {
+          volumeByMuscle.set(m, (volumeByMuscle.get(m) ?? 0) + vol);
+        }
+      }
+    }
+    return Array.from(volumeByMuscle.entries()).map(([group, volumeKg]) => ({
+      group: group as MuscleActivity["group"],
+      volumeKg,
+    }));
+  }, [completed]);
+
+  const majorGroupVolume = useMemo(() => {
+    const groups: { name: string; key: string; color: string; volume: number }[] = [
+      { name: "Pecho", key: "chest", color: "#00D68F", volume: 0 },
+      { name: "Espalda", key: "back", color: "#00E1FF", volume: 0 },
+      { name: "Hombros", key: "shoulders", color: "#7C3AED", volume: 0 },
+      { name: "Brazos", key: "arms", color: "#F59E0B", volume: 0 },
+      { name: "Piernas", key: "legs", color: "#FF007A", volume: 0 },
+      { name: "Core", key: "core", color: "#10B981", volume: 0 },
+    ];
+
+    for (const act of muscleActivity) {
+      if (["chest"].includes(act.group)) groups[0].volume += act.volumeKg;
+      else if (["back", "lats", "traps"].includes(act.group)) groups[1].volume += act.volumeKg;
+      else if (["shoulders"].includes(act.group)) groups[2].volume += act.volumeKg;
+      else if (["biceps", "triceps", "forearms"].includes(act.group)) groups[3].volume += act.volumeKg;
+      else if (["quads", "hamstrings", "glutes", "calves"].includes(act.group)) groups[4].volume += act.volumeKg;
+      else if (["abs", "obliques", "core"].includes(act.group)) groups[5].volume += act.volumeKg;
+    }
+
+    const totalVol = groups.reduce((sum, g) => sum + g.volume, 0);
+    return { groups, totalVol };
+  }, [muscleActivity]);
+
+  const achievements = useMemo(
+    () => computeAchievements(sessions, streak),
+    [sessions, streak]
+  );
+
   return (
     <div className="min-h-screen pb-[120px] bg-background text-on-background">
       <TopAppBar title="FORTIXAM" showBack backHref="/" showSettings />
@@ -259,6 +322,15 @@ export default function StatsPage() {
 
         {/* 4 Cyber Stat Cards */}
         <section className="grid grid-cols-2 gap-2.5">
+          {isLoading ? (
+            <>
+              <SkeletonStatCard />
+              <SkeletonStatCard />
+              <SkeletonStatCard />
+              <SkeletonStatCard />
+            </>
+          ) : (
+            <>
           {/* Card 1: Sesiones */}
           <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
             <div className="flex items-center justify-between">
@@ -339,6 +411,8 @@ export default function StatsPage() {
               </p>
             </div>
           </div>
+            </>
+          )}
         </section>
 
         {/* Resumen Periódico */}
@@ -401,6 +475,66 @@ export default function StatsPage() {
             </div>
           </section>
         )}
+
+        {/* Muscle Map — actividad semanal */}
+        <section className="bg-[#121620] border border-white/10 rounded-2xl p-4 shadow-lg">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Activación Muscular
+            </h3>
+            <span className="text-[10px] font-mono text-zinc-400">Esta semana</span>
+          </div>
+          {muscleActivity.length === 0 ? (
+            <div className="text-center py-4">
+              <p className="text-zinc-500 text-xs font-mono">Sin datos de esta semana</p>
+              <p className="text-zinc-600 text-[10px] font-mono mt-1">Completa un entrenamiento para ver tu mapa muscular</p>
+            </div>
+          ) : null}
+          <MuscleMap activity={muscleActivity} className="justify-center" />
+
+          {majorGroupVolume.totalVol > 0 && (
+            <div className="mt-5 pt-4 border-t border-white/5 space-y-2.5">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block mb-2">
+                Volumen Semanal por Grupo ({Math.round(majorGroupVolume.totalVol)} kg)
+              </span>
+              {majorGroupVolume.groups.map((group) => {
+                const pct =
+                  majorGroupVolume.totalVol > 0
+                    ? Math.round((group.volume / majorGroupVolume.totalVol) * 100)
+                    : 0;
+                return (
+                  <div key={group.key} className="space-y-1">
+                    <div className="flex justify-between text-[11px] font-mono">
+                      <span className="text-zinc-300 font-bold">{group.name}</span>
+                      <span className="text-zinc-400">
+                        {Math.round(group.volume)} kg{" "}
+                        <span className="text-primary font-bold">({pct}%)</span>
+                      </span>
+                    </div>
+                    <div className="w-full bg-[#161c28] h-2 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${pct}%`,
+                          backgroundColor: group.color,
+                          boxShadow: pct > 0 ? `0 0 8px ${group.color}66` : undefined,
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* Medallas y Logros */}
+        <section className="bg-[#121620] border border-white/10 rounded-2xl p-4 shadow-lg">
+          <AchievementsList achievements={achievements} />
+        </section>
       </main>
 
       <BottomNav />

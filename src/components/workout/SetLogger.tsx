@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Minus, Plus, CheckCircle, Hash, Weight, RotateCcw } from "lucide-react";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { Exercise } from "@/lib/types";
+import { haptics } from "@/lib/haptics";
+import { estimate1RM, checkNewSetRecord, ExerciseRecord } from "@/lib/records";
 
 interface SetLoggerProps {
   exercise: Exercise;
@@ -12,6 +14,7 @@ interface SetLoggerProps {
   weight: number;
   reps: number;
   showRepeat?: boolean;
+  existingRecord?: ExerciseRecord;
   onWeightChange: (weight: number) => void;
   onRepsChange: (reps: number) => void;
   onComplete: () => void;
@@ -30,6 +33,7 @@ export default function SetLogger({
   weight,
   reps,
   showRepeat = false,
+  existingRecord,
   onWeightChange,
   onRepsChange,
   onComplete,
@@ -46,6 +50,16 @@ export default function SetLogger({
   useEffect(() => {
     setLocalReps(reps > 0 ? String(reps) : "");
   }, [reps, exercise.id]);
+
+  const estimated1RM = useMemo(
+    () => estimate1RM(Number(localWeight) || 0, Number(localReps) || 0),
+    [localWeight, localReps]
+  );
+
+  const prStatus = useMemo(
+    () => checkNewSetRecord(exercise.id ?? "", Number(localWeight) || 0, Number(localReps) || 0, existingRecord),
+    [localWeight, localReps, exercise.id, existingRecord]
+  );
 
   const commitWeight = () => {
     const parsed = Number(localWeight);
@@ -66,6 +80,7 @@ export default function SetLogger({
     const next = clamp(base + delta, 0, 9999);
     setLocalWeight(String(next));
     onWeightChange(next);
+    haptics.tick();
   };
 
   const adjustReps = (delta: number) => {
@@ -73,6 +88,7 @@ export default function SetLogger({
     const next = clamp(base + delta, 0, 9999);
     setLocalReps(String(next));
     onRepsChange(next);
+    haptics.tick();
   };
 
   return (
@@ -160,6 +176,23 @@ export default function SetLogger({
           </div>
         </div>
       </div>
+
+      {/* 1RM estimate — shown when weight > 0 and reps >= 2 */}
+      {estimated1RM > 0 && (Number(localReps) || 0) >= 2 && (
+        <div className="flex items-center justify-center gap-2 py-1.5 px-3 bg-cyan-400/10 border border-cyan-400/20 rounded-xl">
+          <span className="text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">1RM Est.</span>
+          <span className="text-white font-mono font-black text-sm">{estimated1RM} kg</span>
+          <span className="text-zinc-400 text-[10px] font-mono">(Epley)</span>
+        </div>
+      )}
+
+      {/* PR badge — shown when current values beat the existing record */}
+      {(prStatus.isBest1RM || prStatus.isBestWeight) && (Number(localWeight) || 0) > 0 && (Number(localReps) || 0) > 0 && (
+        <div className="flex items-center justify-center gap-1.5 py-1 px-3 bg-primary/15 border border-primary/40 rounded-full">
+          <span className="text-base">🏆</span>
+          <span className="text-primary text-xs font-mono font-black uppercase tracking-wider">¡Nuevo Récord!</span>
+        </div>
+      )}
 
       <PrimaryButton
         leftIcon={<CheckCircle className="w-6 h-6" />}

@@ -25,12 +25,14 @@ export default function ExerciseImage({
   const [currentSrc, setCurrentSrc] = useState<string | undefined>(src);
   const [hasTriedFallback, setHasTriedFallback] = useState(false);
   const [error, setError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
     setCurrentSrc(src);
     setHasTriedFallback(false);
     setError(false);
+    setIsLoaded(false);
   }, [src]);
 
   const handleError = () => {
@@ -58,16 +60,31 @@ export default function ExerciseImage({
       )}
     >
       {!showFallback ? (
-        <img
-          ref={imgRef}
-          src={currentSrc}
-          alt={alt}
-          loading={priority ? "eager" : "lazy"}
-          decoding="async"
-          className={cn("w-full h-full object-contain block will-change-transform", className)}
-          srcSet={size === "sm" && currentSrc?.includes("/images/exercises/") ? `${currentSrc.replace("/screen.", "/screen-sm.")} 1x, ${currentSrc} 2x` : undefined}
-          onError={handleError}
-        />
+        <>
+          {/* Shimmer loading skeleton until image finishes loading */}
+          {!isLoaded && (
+            <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-[#121620] via-[#1a2230] to-[#121620] bg-[length:200%_100%]" />
+          )}
+          <img
+            ref={imgRef}
+            src={currentSrc}
+            alt={alt}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            onLoad={() => setIsLoaded(true)}
+            className={cn(
+              "w-full h-full object-contain block will-change-transform transition-opacity duration-300",
+              isLoaded ? "opacity-100" : "opacity-0",
+              className
+            )}
+            srcSet={
+              size === "sm" && currentSrc?.includes("/images/exercises/")
+                ? `${currentSrc.replace("/screen.", "/screen-sm.")} 1x, ${currentSrc} 2x`
+                : undefined
+            }
+            onError={handleError}
+          />
+        </>
       ) : (
         <div className="absolute inset-0 flex items-center justify-center text-primary/40">
           {fallbackIcon ?? (

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
+import { SkeletonSessionCard } from "@/components/ui/Skeleton";
 import { getSessions, deleteSession, deleteExerciseFromSession, LocalSession } from "@/lib/db";
 import { routines } from "@/lib/data";
 import { useAppStore } from "@/lib/store";
@@ -339,9 +340,9 @@ export default function HistoryPage() {
         {/* Sessions List */}
         <section className="flex flex-col gap-3">
           {isLoading ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-24 bg-[#121620] rounded-2xl animate-pulse" />
+            <div className="flex flex-col gap-3">
+              {[1, 2, 3, 4].map((i) => (
+                <SkeletonSessionCard key={i} />
               ))}
             </div>
           ) : filteredSessions.length === 0 ? (

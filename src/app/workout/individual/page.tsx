@@ -16,6 +16,7 @@ import {
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
 import { detectSupersetGroups } from "@/lib/workout";
+import { getAllRecords, ExerciseRecord } from "@/lib/records";
 import {
   WorkoutShell,
   ExerciseStage,
@@ -39,11 +40,17 @@ export default function IndividualWorkout() {
     audioMode,
     voiceRate,
     toggleAudio,
+    currentUser,
   } = useAppStore();
 
   const [flashKey, setFlashKey] = useState(0);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [isFinishing, setIsFinishing] = useState(false);
+  const [recordsMap, setRecordsMap] = useState<Map<string, ExerciseRecord>>(new Map());
+
+  useEffect(() => {
+    getAllRecords(currentUser?.id).then(setRecordsMap).catch(console.error);
+  }, [currentUser?.id]);
 
   const routine = activeWorkout.routine;
   const currentExerciseIndex = activeWorkout.currentExerciseIndex;
@@ -231,6 +238,7 @@ export default function IndividualWorkout() {
             weight={activeWorkout.exerciseWeights[currentExercise.id] || 0}
             reps={activeWorkout.exerciseReps[currentExercise.id] || 0}
             showRepeat={currentSet > 1}
+            existingRecord={recordsMap.get(currentExercise.id)}
             onWeightChange={(w) => setExerciseWeight(currentExercise.id, w)}
             onRepsChange={(r) => setExerciseReps(currentExercise.id, r)}
             onComplete={handleComplete}

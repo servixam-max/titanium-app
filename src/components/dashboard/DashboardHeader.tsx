@@ -1,8 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Sunrise, Sun, Moon, Flame, Zap, Clock } from "lucide-react";
 import { UserAccount } from "@/lib/types";
+import { getAthleteLevel } from "@/lib/gamification";
 
 interface DashboardHeaderProps {
   user: UserAccount | null;
@@ -11,6 +13,7 @@ interface DashboardHeaderProps {
   totalMinutes: number;
   weeklyDays: boolean[];
   todayIndex: number;
+  totalXP?: number;
 }
 
 const DAY_LABELS = ["L", "M", "X", "J", "V", "S", "D"];
@@ -29,8 +32,13 @@ export default function DashboardHeader({
   totalMinutes,
   weeklyDays,
   todayIndex,
+  totalXP,
 }: DashboardHeaderProps) {
   const { text: greetingText, Icon: GreetingIcon } = useGreeting();
+
+  const athleteInfo = useMemo(() => {
+    return totalXP !== undefined ? getAthleteLevel(totalXP) : null;
+  }, [totalXP]);
 
   return (
     <motion.section
@@ -50,6 +58,35 @@ export default function DashboardHeader({
           <h2 className="mt-0.5 truncate text-title-md text-white">
             {user?.username || "Atleta"}
           </h2>
+
+          {athleteInfo && (
+            <div className="mt-1 flex items-center gap-2">
+              <span
+                className="text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded-md border"
+                style={{
+                  color: athleteInfo.currentLevel.badgeColor,
+                  borderColor: `${athleteInfo.currentLevel.badgeColor}40`,
+                  backgroundColor: `${athleteInfo.currentLevel.badgeColor}15`,
+                }}
+              >
+                Nv. {athleteInfo.currentLevel.level} · {athleteInfo.currentLevel.title}
+              </span>
+              <div className="flex items-center gap-1.5 flex-1 max-w-[130px]">
+                <div className="w-full bg-[#161c28] h-1.5 rounded-full overflow-hidden border border-white/5">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${athleteInfo.progressPercent}%`,
+                      backgroundColor: athleteInfo.currentLevel.badgeColor,
+                    }}
+                  />
+                </div>
+                <span className="text-[9px] font-mono text-zinc-400 font-bold whitespace-nowrap">
+                  {totalXP} XP
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl border border-white/10 bg-[#0e121a] px-3 py-1.5 shadow-md">

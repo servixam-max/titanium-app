@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
 import RestTimer from "@/components/ui/RestTimer";
 import WorkTimer from "@/components/ui/WorkTimer";
@@ -17,6 +18,7 @@ import {
   unlockAudio,
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
+import { getAllRecords, ExerciseRecord } from "@/lib/records";
 import {
   WorkoutShell,
   ExerciseStage,
@@ -44,11 +46,17 @@ export default function GuidedWorkout() {
     audioMode,
     voiceRate,
     toggleAudio,
+    currentUser,
   } = useAppStore();
 
   const [flashKey, setFlashKey] = useState(0);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [isFinishing, setIsFinishing] = useState(false);
+  const [recordsMap, setRecordsMap] = useState<Map<string, ExerciseRecord>>(new Map());
+
+  useEffect(() => {
+    getAllRecords(currentUser?.id).then(setRecordsMap).catch(console.error);
+  }, [currentUser?.id]);
 
   const routine = activeWorkout.routine;
   const currentExerciseIndex = activeWorkout.currentExerciseIndex;
@@ -276,6 +284,7 @@ export default function GuidedWorkout() {
       weight={activeWorkout.exerciseWeights[currentExercise.id] || 0}
       reps={activeWorkout.exerciseReps[currentExercise.id] || 0}
       showRepeat={currentSet > 1}
+      existingRecord={recordsMap.get(currentExercise.id)}
       onWeightChange={(w) => setExerciseWeight(currentExercise.id, w)}
       onRepsChange={(r) => setExerciseReps(currentExercise.id, r)}
       onComplete={handleComplete}
@@ -337,15 +346,26 @@ export default function GuidedWorkout() {
             />
           </div>
         ) : (
-          <ExerciseStage
-            exercise={currentExercise}
-            currentSet={currentSet}
-            exerciseIndex={currentExerciseIndex}
-            isHIIT={isHIIT}
-            circuitNumber={circuitNumber}
-            totalCircuits={totalCircuits}
-            className="flex-1 min-h-0"
-          />
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={`exercise-${currentExerciseIndex}-${currentExercise.id}`}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ type: "spring", stiffness: 380, damping: 32, mass: 0.8 }}
+              className="flex-1 min-h-0"
+            >
+              <ExerciseStage
+                exercise={currentExercise}
+                currentSet={currentSet}
+                exerciseIndex={currentExerciseIndex}
+                isHIIT={isHIIT}
+                circuitNumber={circuitNumber}
+                totalCircuits={totalCircuits}
+                className="h-full"
+              />
+            </motion.div>
+          </AnimatePresence>
         )}
       </WorkoutShell>
       <RestTimer />

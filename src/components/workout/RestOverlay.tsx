@@ -18,6 +18,7 @@ import {
   announceHalfRest,
   stopSpeaking,
 } from "@/lib/audio";
+import { haptics } from "@/lib/haptics";
 
 export default function RestOverlay() {
   const router = useRouter();
@@ -50,9 +51,12 @@ export default function RestOverlay() {
 
   // Announce rest start once
   useEffect(() => {
-    if (activeWorkout.isResting && !hasAnnouncedRef.current && audioEnabled) {
+    if (activeWorkout.isResting && !hasAnnouncedRef.current) {
       const restSec = activeWorkout.restTimeRemaining;
-      announceRest(restSec);
+      haptics.restStart();
+      if (audioEnabled) {
+        announceRest(restSec);
+      }
       hasAnnouncedRef.current = true;
     }
     if (!activeWorkout.isResting) {

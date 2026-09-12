@@ -32,6 +32,7 @@ import { setAudioMode, setVoiceRate } from "@/lib/audio";
 import { preloadVoices } from "@/lib/speech";
 import { haptics } from "@/lib/haptics";
 import { Routine, WorkoutSession, Exercise, Plan } from "@/lib/types";
+import { calculateTotalXP } from "@/lib/gamification";
 
 const InstallPrompt = dynamic(() => import("@/components/ui/InstallPrompt"), { ssr: false });
 
@@ -147,6 +148,7 @@ export default function Dashboard() {
 
   const stats = useMemo(() => buildWeeklyStats(sessionsList), [sessionsList]);
   const streakCount = useMemo(() => calculateStreak(sessionsList), [sessionsList]);
+  const totalXP = useMemo(() => calculateTotalXP(sessionsList), [sessionsList]);
 
   const completedTodayRoutineIds = useMemo(() => {
     const today = new Date();
@@ -258,6 +260,7 @@ export default function Dashboard() {
           totalMinutes={stats.totalMinutes}
           weeklyDays={stats.weeklyDays}
           todayIndex={stats.todayIndex}
+          totalXP={totalXP}
         />
 
         <ActiveWorkoutBanner activeWorkout={activeWorkout} />

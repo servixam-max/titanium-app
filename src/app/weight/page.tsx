@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
+import { SkeletonWeightEntry } from "@/components/ui/Skeleton";
 import { saveWeight, getWeights, deleteWeight, getWeightStats, LocalWeightEntry } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { haptics } from "@/lib/haptics";
@@ -118,27 +119,66 @@ export default function WeightPage() {
   // SVG Trend Points
   const trendPoints = useMemo(() => {
     if (!stats || stats.history.length < 2) return null;
-    const history = stats.history.slice(-10); // last 10 points
+    const history = stats.history.slice(-14); // last 14 points max
     const weightsArr = history.map((h) => h.weight);
-    const min = Math.min(...weightsArr) - 0.5;
-    const max = Math.max(...weightsArr) + 0.5;
-    const range = Math.max(1, max - min);
-
+    const dataMin = Math.min(...weightsArr);
+    const dataMax = Math.max(...weightsArr);
+    const range = Math.max(0.5, dataMax - dataMin);
+    const padding = { top: 16, right: 16, bottom: 20, left: 16 };
     const width = 300;
-    const height = 90;
-    const padding = 15;
+    const height = 110;
+    const chartW = width - padding.left - padding.right;
+    const chartH = height - padding.top - padding.bottom;
 
-    const points = history.map((item, idx) => {
-      const x = padding + (idx / (history.length - 1)) * (width - 2 * padding);
-      const y = height - padding - ((item.weight - min) / range) * (height - 2 * padding);
-      return { x, y, weight: item.weight, date: item.date };
+    const toX = (idx: number) =>
+      padding.left + (idx / Math.max(1, history.length - 1)) * chartW;
+    const toY = (w: number) =>
+      padding.top + chartH - ((w - (dataMin - range * 0.15)) / (range * 1.3)) * chartH;
+
+    const points = history.map((item, idx) => ({
+      x: toX(idx),
+      y: toY(item.weight),
+      weight: item.weight,
+      date: item.date,
+    }));
+
+    // Smooth bezier path
+    const smooth = (pts: { x: number; y: number }[]) => {
+      if (pts.length < 2) return "";
+      let d = `M ${pts[0].x},${pts[0].y}`;
+      for (let i = 1; i < pts.length; i++) {
+        const prev = pts[i - 1];
+        const curr = pts[i];
+        const cpx = (prev.x + curr.x) / 2;
+        d += ` C ${cpx},${prev.y} ${cpx},${curr.y} ${curr.x},${curr.y}`;
+      }
+      return d;
+    };
+
+    const pathString = smooth(points);
+
+    // Area under curve (for fill)
+    const baseY = padding.top + chartH;
+    const areaPath = pathString
+      ? `${pathString} L ${points[points.length - 1].x},${baseY} L ${points[0].x},${baseY} Z`
+      : "";
+
+    // 7-day moving average
+    const maWindow = Math.min(7, history.length);
+    const maPoints = points.map((pt, idx) => {
+      const slice = weightsArr.slice(Math.max(0, idx - maWindow + 1), idx + 1);
+      const avg = slice.reduce((a, b) => a + b, 0) / slice.length;
+      return { x: pt.x, y: toY(avg) };
     });
+    const maPath = smooth(maPoints);
 
-    const pathString = points.reduce((acc, pt, i) => {
-      return i === 0 ? `M ${pt.x},${pt.y}` : `${acc} L ${pt.x},${pt.y}`;
-    }, "");
+    // Min/max positions
+    const minIdx = weightsArr.indexOf(dataMin);
+    const maxIdx = weightsArr.indexOf(dataMax);
+    const minPt = points[minIdx];
+    const maxPt = points[maxIdx];
 
-    return { points, pathString, width, height };
+    return { points, pathString, areaPath, maPath, width, height, minPt, maxPt, dataMin, dataMax };
   }, [stats]);
 
   const formatDate = (dateStr: string) => {
@@ -244,41 +284,103 @@ export default function WeightPage() {
               </div>
             </div>
 
-            {/* Trend SVG Sparkline */}
+            {/* Enhanced Trend SVG Chart */}
             {trendPoints && (
-              <div className="mt-4 pt-3 border-t border-white/5 flex flex-col items-center">
-                <span className="text-[10px] font-mono text-zinc-400 uppercase self-start mb-1 flex items-center gap-1">
-                  <Activity className="w-3 h-3 text-primary" /> Tendencia Reciente
+              <div className="mt-4 pt-3 border-t border-white/5 flex flex-col">
+                <span className="text-[10px] font-mono text-zinc-400 uppercase mb-2 flex items-center gap-1">
+                  <Activity className="w-3 h-3 text-primary" /> Evolución de peso
                 </span>
                 <svg
                   viewBox={`0 0 ${trendPoints.width} ${trendPoints.height}`}
-                  className="w-full h-20 overflow-visible"
+                  className="w-full overflow-visible"
+                  style={{ height: 110 }}
                 >
                   <defs>
-                    <linearGradient id="trendGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#00F0FF" />
-                      <stop offset="100%" stopColor="#00F59B" />
+                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#00D68F" stopOpacity="0.25" />
+                      <stop offset="100%" stopColor="#00D68F" stopOpacity="0.02" />
                     </linearGradient>
+                    <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#00E1FF" />
+                      <stop offset="100%" stopColor="#00D68F" />
+                    </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="2" result="blur" />
+                      <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                    </filter>
                   </defs>
+
+                  {/* Area fill */}
+                  <path d={trendPoints.areaPath} fill="url(#areaGrad)" />
+
+                  {/* Main line */}
                   <path
                     d={trendPoints.pathString}
                     fill="none"
-                    stroke="url(#trendGrad)"
-                    strokeWidth="3"
+                    stroke="url(#lineGrad)"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="drop-shadow-[0_0_8px_rgba(0,245,155,0.6)]"
+                    filter="url(#glow)"
                   />
+
+                  {/* 7-day moving average */}
+                  {trendPoints.maPath && (
+                    <path
+                      d={trendPoints.maPath}
+                      fill="none"
+                      stroke="#00E1FF"
+                      strokeWidth="1.2"
+                      strokeDasharray="4 3"
+                      strokeOpacity="0.6"
+                      strokeLinecap="round"
+                    />
+                  )}
+
+                  {/* Data points */}
                   {trendPoints.points.map((pt, i) => (
                     <circle
                       key={i}
                       cx={pt.x}
                       cy={pt.y}
-                      r="4"
-                      className="fill-[#0f131a] stroke-[#00F59B] stroke-[2.5]"
+                      r="3"
+                      className="fill-[#0f131a] stroke-[#00D68F]"
+                      strokeWidth="1.8"
                     />
                   ))}
+
+                  {/* Min marker */}
+                  {trendPoints.minPt && (
+                    <g>
+                      <circle cx={trendPoints.minPt.x} cy={trendPoints.minPt.y} r="5" fill="#00E1FF" fillOpacity="0.2" stroke="#00E1FF" strokeWidth="1.5" />
+                      <text x={trendPoints.minPt.x} y={trendPoints.minPt.y + 14} textAnchor="middle" fontSize="8" fill="#00E1FF" fontFamily="monospace" fontWeight="bold">
+                        {trendPoints.dataMin.toFixed(1)}
+                      </text>
+                    </g>
+                  )}
+
+                  {/* Max marker */}
+                  {trendPoints.maxPt && (
+                    <g>
+                      <circle cx={trendPoints.maxPt.x} cy={trendPoints.maxPt.y} r="5" fill="#F59E0B" fillOpacity="0.2" stroke="#F59E0B" strokeWidth="1.5" />
+                      <text x={trendPoints.maxPt.x} y={trendPoints.maxPt.y - 8} textAnchor="middle" fontSize="8" fill="#F59E0B" fontFamily="monospace" fontWeight="bold">
+                        {trendPoints.dataMax.toFixed(1)}
+                      </text>
+                    </g>
+                  )}
                 </svg>
+
+                {/* Legend */}
+                <div className="flex items-center gap-4 mt-1 self-end">
+                  <div className="flex items-center gap-1">
+                    <div className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-primary rounded" />
+                    <span className="text-[9px] font-mono text-zinc-500">Peso</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-6 h-0.5 border-t border-dashed border-cyan-400 opacity-60" />
+                    <span className="text-[9px] font-mono text-zinc-500">Media 7d</span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -382,9 +484,9 @@ export default function WeightPage() {
           </div>
 
           {isLoading ? (
-            <div className="space-y-2.5">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 bg-[#121620] rounded-2xl animate-pulse" />
+            <div className="flex flex-col gap-2.5">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <SkeletonWeightEntry key={i} />
               ))}
             </div>
           ) : weights.length === 0 ? (
