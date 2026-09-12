@@ -165,13 +165,13 @@ export default function RoutineDetailModal({
 
               {/* Equipment toggle if applicable */}
               {hasAlternatives && (
-                <div className="p-1 bg-[#121620] border border-white/10 rounded-2xl flex gap-1 shadow-inner">
+                <div className="p-1 bg-[#121622] border border-white/10 rounded-2xl flex gap-1 shadow-inner">
                   <button
                     type="button"
                     onClick={() => setEquipmentPreference("dumbbells")}
                     className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 ${
                       equipmentPreference === "dumbbells"
-                        ? "bg-primary text-black shadow-neon"
+                        ? "bg-[#00D68F] text-black font-black shadow-md"
                         : "text-zinc-400 hover:text-white"
                     }`}
                   >
@@ -182,7 +182,7 @@ export default function RoutineDetailModal({
                     onClick={() => setEquipmentPreference("bodyweight")}
                     className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 ${
                       equipmentPreference === "bodyweight"
-                        ? "bg-primary text-black shadow-neon"
+                        ? "bg-[#00D68F] text-black font-black shadow-md"
                         : "text-zinc-400 hover:text-white"
                     }`}
                   >
@@ -196,18 +196,18 @@ export default function RoutineDetailModal({
                 <span className="text-xs font-mono text-zinc-300 font-bold uppercase tracking-wider">
                   {exercises.length} Ejercicios
                 </span>
-                <div className="relative flex bg-[#121620] border border-white/10 rounded-2xl p-1 text-[11px] font-mono font-bold">
+                <div className="relative flex bg-[#121622] border border-white/10 rounded-2xl p-1 text-[11px] font-mono font-bold">
                   <button
                     type="button"
                     onClick={() => setMode("guided")}
                     className={`relative z-10 px-3.5 py-1.5 rounded-xl transition-colors duration-200 ${
-                      mode === "guided" ? "text-black" : "text-zinc-400 hover:text-white"
+                      mode === "guided" ? "text-black font-black" : "text-zinc-400 hover:text-white"
                     }`}
                   >
                     {mode === "guided" && (
                       <motion.div
                         layoutId="detail-mode-pill"
-                        className="absolute inset-0 bg-primary rounded-xl shadow-neon -z-10"
+                        className="absolute inset-0 bg-[#00D68F] rounded-xl shadow-md -z-10"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -217,13 +217,13 @@ export default function RoutineDetailModal({
                     type="button"
                     onClick={() => setMode("individual")}
                     className={`relative z-10 px-3.5 py-1.5 rounded-xl transition-colors duration-200 ${
-                      mode === "individual" ? "text-black" : "text-zinc-400 hover:text-white"
+                      mode === "individual" ? "text-black font-black" : "text-zinc-400 hover:text-white"
                     }`}
                   >
                     {mode === "individual" && (
                       <motion.div
                         layoutId="detail-mode-pill"
-                        className="absolute inset-0 bg-primary rounded-xl shadow-neon -z-10"
+                        className="absolute inset-0 bg-[#00D68F] rounded-xl shadow-md -z-10"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -258,7 +258,7 @@ export default function RoutineDetailModal({
             <div className="p-4 bg-[#0a0c12] border-t border-white/10 flex-shrink-0 flex gap-2 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-10px_30px_rgba(0,0,0,0.8)] z-30">
               <button
                 onClick={() => handleStartWorkoutFlow(0)}
-                className="w-full h-14 bg-primary text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon hover:shadow-[0_0_30px_rgba(0,245,155,0.6)] active:scale-95 transition-all cursor-pointer"
+                className="w-full h-14 bg-[#00D68F] hover:bg-[#05f5a4] text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,214,143,0.4)] active:scale-95 transition-all cursor-pointer border border-emerald-300"
               >
                 <Play className="w-5 h-5 fill-current" />
                 <span>{mode === "guided" ? "INICIAR ENTRENAMIENTO GUIADO" : "INICIAR MODO INDIVIDUAL"}</span>

@@ -27,6 +27,10 @@ const config: Config = {
           50: "#F1F5F9",
         },
         primary: {
+          DEFAULT: "#00D68F",
+          container: "#059669",
+          fixed: "#34D399",
+          "fixed-dim": "#047857",
           600: "#059669",
           500: "#00D68F",
           400: "#34D399",

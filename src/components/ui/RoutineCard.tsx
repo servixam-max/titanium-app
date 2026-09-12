@@ -96,7 +96,7 @@ export default function RoutineCard({
         {/* Center Info */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-gradient-to-r from-primary to-emerald-400 text-white border border-primary/40">
+            <span className="font-mono text-[10px] font-black tracking-wider px-2.5 py-0.5 rounded-full bg-[#00D68F] text-black border border-emerald-300 shadow-sm">
               {dayBadge}
             </span>
             <span
@@ -176,7 +176,7 @@ export default function RoutineCard({
             haptics.impact();
             onClick?.();
           }}
-          className="h-9 px-4 rounded-xl bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-black/40 border border-primary/40 active:scale-95 transition-all cursor-pointer"
+          className="h-9 px-4 rounded-xl bg-[#00D68F] hover:bg-[#05f5a4] text-black font-mono font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-black/40 border border-emerald-300 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Comenzar</span>

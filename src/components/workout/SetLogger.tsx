@@ -91,7 +91,7 @@ export default function SetLogger({
 
       <div className="grid grid-cols-2 gap-3">
         {/* Weight input */}
-        <div className="bg-[#121620]-low border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
+        <div className="bg-[#121620] border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-label-caps text-zinc-400 uppercase tracking-wider flex items-center gap-1">
               <Weight className="w-3.5 h-3.5 text-primary" />
@@ -126,7 +126,7 @@ export default function SetLogger({
         </div>
 
         {/* Reps input */}
-        <div className="bg-[#121620]-low border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
+        <div className="bg-[#121620] border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-label-caps text-zinc-400 uppercase tracking-wider flex items-center gap-1">
               <Hash className="w-3.5 h-3.5 text-primary" />

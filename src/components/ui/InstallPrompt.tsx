@@ -111,7 +111,7 @@ export default function InstallPrompt() {
             {platform === "android" && deferredPrompt && (
               <button
                 onClick={handleInstall}
-                className="flex-1 h-[40px] bg-primary-container text-on-primary font-bold rounded-lg text-sm active:scale-95 transition-transform"
+                className="flex-1 h-[40px] bg-[#00D68F] text-black font-black rounded-lg text-sm active:scale-95 transition-transform"
               >
                 <PlusSquare className="w-4 h-4 inline mr-1" />
                 Instalar
@@ -121,7 +121,7 @@ export default function InstallPrompt() {
             {platform === "ios" && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 h-[40px] bg-[#121620]-low text-white font-bold rounded-lg text-sm border border-white/10 active:scale-95 transition-transform"
+                className="flex-1 h-[40px] bg-[#121620] text-white font-bold rounded-lg text-sm border border-white/10 active:scale-95 transition-transform"
               >
                 Entendido
               </button>
@@ -130,7 +130,7 @@ export default function InstallPrompt() {
             {platform === "other" && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 h-[40px] bg-primary-container text-on-primary font-bold rounded-lg text-sm active:scale-95 transition-transform"
+                className="flex-1 h-[40px] bg-[#00D68F] text-black font-black rounded-lg text-sm active:scale-95 transition-transform"
               >
                 OK
               </button>

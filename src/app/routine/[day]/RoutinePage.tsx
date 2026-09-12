@@ -177,8 +177,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-gradient-to-r from-primary to-emerald-400 text-black border-primary shadow-neon"
-                          : "bg-[#121620]-low text-white border-white/10"
+                          ? "bg-[#00D68F] text-black font-black border-emerald-300 shadow-neon"
+                          : "bg-[#121620] text-white border-white/10"
                       }`}
                     >
                       <span>{ex.name}</span>
@@ -221,8 +221,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-gradient-to-r from-primary to-emerald-400 text-black border-primary shadow-neon"
-                          : "bg-[#121620]-low text-white border-white/10"
+                          ? "bg-[#00D68F] text-black font-black border-emerald-300 shadow-neon"
+                          : "bg-[#121620] text-white border-white/10"
                       }`}
                     >
                       <span>{ex.name}</span>

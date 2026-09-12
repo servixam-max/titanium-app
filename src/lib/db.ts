@@ -155,12 +155,114 @@ interface LegacyWeight {
 
 export const db = new FortixamDatabase();
 
-// Clean up historical dummy seed entries once on load
+// Migrate historical data from previous database versions (e.g. titanium-db)
+export async function migrateLegacyDatabases(): Promise<void> {
+  if (typeof window === "undefined") return;
+  try {
+    const candidateNames = ["titanium-db", "titanium", "fortixam", "fortixam-db"];
+
+    // Also discover any other database if supported
+    if (typeof indexedDB !== "undefined" && "databases" in indexedDB) {
+      try {
+        const found = await indexedDB.databases();
+        for (const info of found) {
+          if (info.name && info.name !== "fortixam-db-v8" && !candidateNames.includes(info.name)) {
+            const lower = info.name.toLowerCase();
+            if (lower.includes("titanium") || lower.includes("fortixam")) {
+              candidateNames.push(info.name);
+            }
+          }
+        }
+      } catch {
+        // ignore error from databases()
+      }
+    }
+
+    const currentOwner = getActiveUserId() || "xam-seed-id";
+    const clientId = getClientId();
+    const now = nowIso();
+
+    for (const dbName of candidateNames) {
+      try {
+        const exists = await Dexie.exists(dbName);
+        if (!exists) continue;
+
+        const oldDb = new Dexie(dbName);
+        await oldDb.open();
+        const tableNames = oldDb.tables.map((t) => t.name);
+
+        // Migrate weights
+        if (tableNames.includes("weights")) {
+          const oldWeights = (await oldDb.table("weights").toArray()) as Array<Record<string, unknown>>;
+          for (const w of oldWeights) {
+            if (!w || !w.id) continue;
+            const existing = await db.weights.get(String(w.id));
+            if (!existing) {
+              const entry: WeightEntry = {
+                id: String(w.id),
+                ownerUserId: String(w.ownerUserId || w.userId || currentOwner),
+                clientId: String(w.clientId || clientId),
+                weight: Number(w.weight),
+                date: String(w.date || w.created_at || now.slice(0, 10)),
+                createdAt: String(w.createdAt || w.created_at || now),
+                modifiedAt: String(w.modifiedAt || now),
+                version: Number(w.version || 1),
+                deleted: Boolean(w.deleted || false),
+              };
+              await db.weights.put(entry);
+              await enqueueSync("WeightEntry", entry.id, "create", entry);
+            }
+          }
+        }
+
+        // Migrate sessions
+        if (tableNames.includes("sessions")) {
+          const oldSessions = (await oldDb.table("sessions").toArray()) as Array<Record<string, unknown>>;
+          for (const s of oldSessions) {
+            if (!s || !s.id) continue;
+            const existing = await db.sessions.get(String(s.id));
+            if (!existing) {
+              const session: WorkoutSession = {
+                id: String(s.id),
+                ownerUserId: String(s.ownerUserId || s.userId || currentOwner),
+                clientId: String(s.clientId || clientId),
+                routineId: Number(s.routineId) || 1,
+                routineName: s.routineName ? String(s.routineName) : undefined,
+                mode: (s.mode as WorkoutSession["mode"]) || "guided",
+                startTime: String(s.startTime || now),
+                endTime: s.endTime ? String(s.endTime) : undefined,
+                durationSeconds: Number(s.durationSeconds) || 0,
+                exercises: Array.isArray(s.exercises) ? (s.exercises as WorkoutSession["exercises"]) : [],
+                completed: Boolean(s.completed),
+                notes: s.notes ? String(s.notes) : undefined,
+                createdAt: String(s.createdAt || s.startTime || now),
+                modifiedAt: String(s.modifiedAt || now),
+                version: Number(s.version || 1),
+                deleted: Boolean(s.deleted || false),
+              };
+              await db.sessions.put(session);
+              await enqueueSync("WorkoutSession", session.id, "create", session);
+            }
+          }
+        }
+
+        oldDb.close();
+      } catch (err) {
+        console.warn(`[DB Migration] Notice for ${dbName}:`, err);
+      }
+    }
+  } catch (err) {
+    console.warn("[DB Migration] Overall migration notice:", err);
+  }
+}
+
+// Clean up historical dummy seed entries and trigger legacy migration once on load
 if (typeof window !== "undefined") {
   setTimeout(() => {
     db.weights.delete("w-xam-1").catch(() => {});
     db.weights.delete("w-xam-2").catch(() => {});
     db.sessions.delete("d061a9cb-817d-4ad6-aeaa-b3629d74caf1").catch(() => {});
+    migrateLegacyDatabases().catch(() => {});
   }, 100);
 }
 
@@ -225,14 +327,40 @@ export async function saveSession(
 }
 
 export async function getSessions(targetUserId?: string): Promise<WorkoutSession[]> {
-  const ownerUserId = targetUserId || getActiveUserId() || "xam-seed-id";
+  const activeUser = targetUserId || getActiveUserId();
   try {
-    const all = await db.sessions
-      .where("ownerUserId")
-      .equals(ownerUserId)
-      .and((s) => !s.deleted)
-      .sortBy("startTime");
-    return all.reverse();
+    const all = await db.sessions.toArray();
+    const nonDeleted = all.filter((s) => !s.deleted);
+
+    let matching: (WorkoutSession & LegacySession)[];
+    if (activeUser) {
+      matching = nonDeleted.filter((s) =>
+        s.ownerUserId === activeUser ||
+        s.userId === activeUser ||
+        s.ownerUserId === "xam-seed-id" ||
+        !s.ownerUserId
+      );
+
+      // Auto-adopt orphans to the active user in background
+      const orphans = matching.filter((s) => s.ownerUserId !== activeUser);
+      if (orphans.length > 0) {
+        const adopted = orphans.map((s) => ({
+          ...s,
+          ownerUserId: activeUser,
+          modifiedAt: nowIso(),
+          version: (s.version || 1) + 1,
+        }));
+        db.sessions.bulkPut(adopted).catch(console.error);
+        for (const item of adopted) {
+          enqueueSync("WorkoutSession", item.id, "update", item).catch(() => {});
+        }
+      }
+    } else {
+      matching = nonDeleted;
+    }
+
+    matching.sort((a, b) => (b.startTime || "").localeCompare(a.startTime || ""));
+    return matching;
   } catch (err) {
     console.error("Error getting sessions from db:", err);
     return [];
@@ -313,13 +441,40 @@ export async function saveWeight(entry: WeightEntry, targetUserId?: string): Pro
 }
 
 export async function getWeights(targetUserId?: string): Promise<WeightEntry[]> {
-  const ownerUserId = targetUserId || getActiveUserId() || "xam-seed-id";
+  const activeUser = targetUserId || getActiveUserId();
   try {
-    return await db.weights
-      .where("ownerUserId")
-      .equals(ownerUserId)
-      .and((w) => !w.deleted)
-      .sortBy("date");
+    const all = await db.weights.toArray();
+    const nonDeleted = all.filter((w) => !w.deleted);
+
+    let matching: (WeightEntry & LegacyWeight)[];
+    if (activeUser) {
+      matching = nonDeleted.filter((w) =>
+        w.ownerUserId === activeUser ||
+        w.userId === activeUser ||
+        w.ownerUserId === "xam-seed-id" ||
+        !w.ownerUserId
+      );
+
+      // Auto-adopt orphans to the active user in background
+      const orphans = matching.filter((w) => w.ownerUserId !== activeUser);
+      if (orphans.length > 0) {
+        const adopted = orphans.map((w) => ({
+          ...w,
+          ownerUserId: activeUser,
+          modifiedAt: nowIso(),
+          version: (w.version || 1) + 1,
+        }));
+        db.weights.bulkPut(adopted).catch(console.error);
+        for (const item of adopted) {
+          enqueueSync("WeightEntry", item.id, "update", item).catch(() => {});
+        }
+      }
+    } else {
+      matching = nonDeleted;
+    }
+
+    matching.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    return matching;
   } catch (err) {
     console.error("Error getting weights from db:", err);
     return [];
@@ -374,7 +529,9 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
 
 export async function getProfile(userId?: string): Promise<UserProfile | undefined> {
   const target = userId || getActiveUserId() || "xam-seed-id";
-  return db.profiles.where("userId").equals(target).first();
+  const profile = await db.profiles.where("userId").equals(target).first();
+  if (profile) return profile;
+  return db.profiles.toCollection().first();
 }
 
 // =========================================================

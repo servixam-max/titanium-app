@@ -32,14 +32,16 @@ export default function ExerciseDotProgress({
             <div
               className={`w-3 h-3 rounded-full border-2 transition-colors ${
                 state === "done"
-                  ? "bg-primary-container border-primary-container"
+                  ? "bg-[#00D68F] border-[#00D68F]"
                   : state === "active"
-                    ? "bg-background border-primary-container shadow-[0_0_8px_rgba(204,255,0,0.6)]"
-                    : "bg-surface-container-highest border-surface-container-highest"
+                    ? "bg-black border-[#00D68F] shadow-[0_0_8px_rgba(0,214,143,0.8)] scale-110"
+                    : "bg-white/20 border-white/20"
               }`}
             />
             <span
-              className={`text-[10px] font-bold leading-tight text-center max-w-[60px] truncate ${state === "active" ? "text-primary-container" : "text-on-surface-variant"}`}
+              className={`text-[10px] font-mono font-bold leading-tight text-center max-w-[60px] truncate ${
+                state === "active" ? "text-[#00D68F]" : "text-zinc-400"
+              }`}
             >
               {ex.name}
             </span>

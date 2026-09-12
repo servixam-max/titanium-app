@@ -406,7 +406,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           className={`flex flex-col items-center justify-center gap-1 h-[76px] rounded-xl border-2 transition-all active:scale-95 ${
                             selected
                               ? "border-primary bg-primary/10 text-primary"
-                              : "border-white/10 bg-[#121620]-low text-zinc-400"
+                              : "border-white/10 bg-[#121620] text-zinc-400"
                           } ${!audioEnabled && option.value !== "silent" ? "opacity-50" : ""}`}
                         >
                           <span
@@ -737,7 +737,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     icon={<Database className="w-4 h-4" />}
                     label="Copias de Seguridad Locales"
                   />
-                  <div className="bg-[#121620]-low border border-white/10 rounded-xl p-4 flex flex-col gap-3">
+                  <div className="bg-[#121620] border border-white/10 rounded-xl p-4 flex flex-col gap-3">
                     <p className="text-xs text-zinc-400">
                       Guarda o restaura tus entrenamientos y pesos directamente en un archivo <strong className="text-white">.json</strong> en tu móvil.
                     </p>

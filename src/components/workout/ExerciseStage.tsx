@@ -74,12 +74,12 @@ export default function ExerciseStage({
       {/* Metrics grid */}
       <div className="grid grid-cols-3 gap-2.5 w-full">
         {/* Target reps/time */}
-        <div className="bg-[#121218]/95 border-2 border-primary-container/80 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-[0_0_22px_rgba(204,255,0,0.28)]">
-          <span className="text-xs font-label-caps text-primary-container uppercase font-bold tracking-wider flex items-center gap-1">
-            <Zap className="w-3.5 h-3.5 text-primary-container animate-pulse" />
+        <div className="bg-[#121218]/95 border-2 border-[#00D68F]/80 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-[0_0_22px_rgba(0,214,143,0.28)]">
+          <span className="text-xs font-label-caps text-[#00D68F] uppercase font-bold tracking-wider flex items-center gap-1">
+            <Zap className="w-3.5 h-3.5 text-[#00D68F] animate-pulse" />
             {isTimedSet ? "TIEMPO" : "REPETICIONES"}
           </span>
-          <span className="font-mono font-black text-3xl sm:text-4xl text-primary-container drop-shadow-[0_0_15px_rgba(204,255,0,0.6)] my-1">
+          <span className="font-mono font-black text-3xl sm:text-4xl text-[#00D68F] drop-shadow-[0_0_15px_rgba(0,214,143,0.6)] my-1">
             {isTimedSet ? `${timedSeconds}s` : exercise.reps}
           </span>
           <span className="text-[10px] font-label-caps text-zinc-400 font-bold uppercase">
@@ -106,10 +106,10 @@ export default function ExerciseStage({
                 key={i}
                 className={`rounded-full transition-all duration-300 ${
                   i < currentSet - 1
-                    ? "w-2.5 h-2.5 bg-primary-container shadow-[0_0_8px_rgba(204,255,0,0.9)]"
+                    ? "w-2.5 h-2.5 bg-[#00D68F] shadow-[0_0_8px_rgba(0,214,143,0.9)]"
                     : i === currentSet - 1
-                      ? "w-4 h-2.5 bg-primary-container shadow-[0_0_10px_rgba(204,255,0,1)]"
-                      : "w-2.5 h-2.5 bg-white/15"
+                      ? "w-4 h-2.5 bg-[#00D68F] shadow-[0_0_10px_rgba(0,214,143,1)]"
+                      : "w-2.5 h-2.5 bg-white/20"
                 }`}
               />
             ))}

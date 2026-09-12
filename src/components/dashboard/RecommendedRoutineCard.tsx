@@ -75,7 +75,7 @@ export default function RecommendedRoutineCard({
               haptics.impact();
               onStart();
             }}
-            className="flex h-11 items-center gap-1.5 rounded-2xl border border-primary/30 bg-primary px-5 text-xs font-bold uppercase tracking-wider text-on-primary shadow-md shadow-black/40 active:scale-95 transition-all"
+            className="flex h-11 items-center gap-1.5 rounded-2xl border border-emerald-300/40 bg-[#00D68F] hover:bg-[#05f5a4] px-5 text-xs font-black uppercase tracking-wider text-black shadow-md shadow-black/40 active:scale-95 transition-all cursor-pointer"
           >
             <span>Empezar</span>
             <ChevronRight className="h-4 w-4" />
