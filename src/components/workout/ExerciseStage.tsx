@@ -1,8 +1,9 @@
 "use client";
 
-import { Zap, Clock } from "lucide-react";
+import { Zap, Clock, Repeat } from "lucide-react";
 import ExerciseImage from "@/components/ui/ExerciseImage";
-import { Exercise } from "@/lib/types";
+import { Exercise, ExerciseGroup } from "@/lib/types";
+import { getSupersetPartner } from "@/lib/workout";
 
 interface ExerciseStageProps {
   exercise: Exercise;
@@ -11,6 +12,8 @@ interface ExerciseStageProps {
   isHIIT?: boolean;
   circuitNumber?: number;
   totalCircuits?: number;
+  groups?: ExerciseGroup[];
+  routine?: { exercises: Exercise[] };
   className?: string;
 }
 
@@ -21,8 +24,13 @@ export default function ExerciseStage({
   isHIIT = false,
   circuitNumber,
   totalCircuits,
+  groups,
+  routine,
   className,
 }: ExerciseStageProps) {
+  const supersetPartnerId = groups ? getSupersetPartner(exercise.id || `ex-${exerciseIndex}`, groups) : undefined;
+  const supersetPartner = supersetPartnerId && routine?.exercises?.find((ex) => ex.id === supersetPartnerId);
+
   const timedSeconds =
     exercise.workSeconds ??
     (() => {
@@ -42,6 +50,12 @@ export default function ExerciseStage({
           <p className="text-primary-container font-label-caps tracking-[0.2em] text-xs uppercase mt-0.5 font-bold">
             Circuito {circuitNumber} de {totalCircuits}
           </p>
+        )}
+        {supersetPartner && (
+          <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent-cyan/10 border border-accent-cyan/30 text-accent-cyan text-xs font-semibold">
+            <Repeat className="w-3.5 h-3.5" />
+            Superset con {supersetPartner.name}
+          </div>
         )}
       </div>
 

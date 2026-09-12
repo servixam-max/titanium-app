@@ -19,7 +19,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 w-full z-30 bg-[#090c12]/95 backdrop-blur-2xl border-t border-white/10 shadow-[0_-10px_35px_rgba(0,0,0,0.8)] max-w-app left-1/2 -translate-x-1/2 pb-[env(safe-area-inset-bottom,0px)]">
+    <nav className="fixed bottom-0 w-full z-30 glass-titanium border-t border-white/10 shadow-[0_-10px_35px_rgba(0,0,0,0.8)] max-w-app left-1/2 -translate-x-1/2 pb-[env(safe-area-inset-bottom,0px)]">
       <div className="flex justify-around items-center h-[70px] px-3 relative">
         {navItems.map((item) => {
           const isActive =

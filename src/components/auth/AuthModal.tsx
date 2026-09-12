@@ -34,6 +34,7 @@ import {
 } from "@/lib/email-service";
 import { haptics } from "@/lib/haptics";
 import { playExerciseStart } from "@/lib/audio";
+import { syncNow } from "@/lib/sync";
 
 export default function AuthModal() {
   const { currentUser, setCurrentUser } = useAppStore();
@@ -73,18 +74,19 @@ export default function AuthModal() {
   // If already logged in, do not render modal
   if (currentUser) return null;
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
     setSuccessMsg("");
     setIsSubmitting(true);
 
     try {
-      const res = loginUser(usernameOrEmail, password);
+      const res = await loginUser(usernameOrEmail, password);
       if (res.success && res.user) {
         haptics.success();
         playExerciseStart();
         setCurrentUser(res.user);
+        syncNow().catch(() => {});
       } else {
         haptics.error();
         setErrorMsg(res.error || "Error al iniciar sesión");
@@ -96,7 +98,7 @@ export default function AuthModal() {
     }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
     setSuccessMsg("");
@@ -109,11 +111,12 @@ export default function AuthModal() {
 
     setIsSubmitting(true);
     try {
-      const res = registerUser(regUsername, regEmail, regPassword);
+      const res = await registerUser(regUsername, regEmail, regPassword);
       if (res.success && res.user) {
         haptics.success();
         playExerciseStart();
         setCurrentUser(res.user);
+        syncNow().catch(() => {});
       } else {
         haptics.error();
         setErrorMsg(res.error || "Error al registrar la cuenta");

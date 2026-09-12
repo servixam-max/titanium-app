@@ -70,11 +70,9 @@ export default function WeightPage() {
     try {
       const entry: LocalWeightEntry = {
         id: `w_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-        userId: currentUser?.id,
         weight: Number(inputWeight.toFixed(1)),
         date: inputDate || new Date().toISOString().split("T")[0],
-        created_at: new Date().toISOString(),
-      };
+      } as LocalWeightEntry;
       await saveWeight(entry, currentUser?.id);
       setShowInput(false);
       await loadWeights();

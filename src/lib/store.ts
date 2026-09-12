@@ -10,10 +10,11 @@ import {
   AudioMode,
 } from "@/lib/types";
 import { apiUrl, isApiEnabled } from "@/lib/api-config";
-import { saveSession, getSessions, clearAllSessions } from "@/lib/db";
+import { saveSession, getSessions, clearAllSessions, generateId, nowIso, makeSyncable } from "@/lib/db";
 import { logger } from "@/lib/logger";
-import {} from "@/lib/ota-sync";
-import { UserAccount, getActiveUser, getActiveUserId, logoutUser } from "./auth";
+import { getActiveUser, getActiveUserId, logoutUser } from "./auth";
+import { UserAccount } from "@/lib/types";
+import { calculateAdaptiveRest } from "./workout";
 
 interface AppState {
   // Authentication & Profile
@@ -118,13 +119,6 @@ const initialActiveWorkout: ActiveWorkoutState = {
   justFinished: false,
 };
 
-function generateId(): string {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-}
-
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
@@ -200,13 +194,18 @@ export const useAppStore = create<AppState>()(
       },
 
       startWorkout: (routine, mode, startExerciseIndex = 0) => {
+        const ownerUserId = getActiveUserId() || "xam-seed-id";
         const session: WorkoutSession = {
-          id: generateId(),
+          ...makeSyncable(ownerUserId),
           routineId: routine.day,
+          routineName: routine.title,
           mode,
-          startTime: new Date(),
-          exercises: routine.exercises.map((ex) => ({
-            exerciseId: ex.id,
+          startTime: nowIso(),
+          exercises: routine.exercises.map((ex, idx) => ({
+            ...makeSyncable(ownerUserId),
+            exerciseId: ex.id || generateId(),
+            exerciseName: ex.name,
+            order: idx,
             sets: [],
           })),
           completed: false,
@@ -347,23 +346,26 @@ export const useAppStore = create<AppState>()(
           (s) => s.setNumber === setNumber,
         );
 
+        const setOwnerUserId = getActiveUserId() || "xam-seed-id";
         if (existingSetIndex >= 0) {
           exerciseLog.sets[existingSetIndex] = {
+            ...makeSyncable(setOwnerUserId),
             setNumber,
             weight: setWeight,
             reps: setReps,
             duration,
             completed: true,
-            timestamp: new Date(),
+            timestamp: nowIso(),
           };
         } else {
           exerciseLog.sets.push({
+            ...makeSyncable(setOwnerUserId),
             setNumber,
             weight: setWeight,
             reps: setReps,
             duration,
             completed: true,
-            timestamp: new Date(),
+            timestamp: nowIso(),
           });
         }
 
@@ -378,7 +380,22 @@ export const useAppStore = create<AppState>()(
         const currentRound = activeWorkout.currentRound ?? 1;
         const isLastRound = currentRound >= rounds;
         const isWorkoutFinishing = isLastSet && isLastExercise && isLastRound;
-        const nextRestSeconds = currentExercise.restSeconds || 75;
+        const lastSetDuration = duration || (currentExercise.workSeconds ? currentExercise.workSeconds : undefined);
+        const category = currentExercise.category;
+        const exerciseType =
+          category === "chest" || category === "back" || category === "legs" || category === "shoulders"
+            ? "compound"
+            : category === "biceps" || category === "triceps" || category === "core"
+            ? "isolation"
+            : "compound";
+        const nextRestSeconds = isWorkoutFinishing
+          ? 0
+          : calculateAdaptiveRest({
+              baseRestSeconds: currentExercise.restSeconds || 75,
+              lastSetDuration,
+              exerciseType,
+              goal: "hypertrophy",
+            });
 
         const nextActiveWorkout: ActiveWorkoutState = {
           ...activeWorkout,
@@ -754,7 +771,7 @@ export const useAppStore = create<AppState>()(
 
         const completedSession: WorkoutSession = {
           ...activeWorkout.session,
-          endTime: activeWorkout.session.endTime || new Date(),
+          endTime: activeWorkout.session.endTime || nowIso(),
           completed: true,
         };
 
@@ -814,8 +831,8 @@ export const useAppStore = create<AppState>()(
           );
           const durationSeconds = completedSession.endTime
             ? Math.round(
-                (completedSession.endTime.getTime() -
-                  completedSession.startTime.getTime()) /
+                (new Date(completedSession.endTime).getTime() -
+                  new Date(completedSession.startTime).getTime()) /
                   1000,
               )
             : 0;
@@ -830,8 +847,8 @@ export const useAppStore = create<AppState>()(
               routine_id: completedSession.routineId,
               routine_name: routine.title,
               mode: completedSession.mode,
-              start_time: completedSession.startTime.toISOString(),
-              end_time: completedSession.endTime?.toISOString(),
+              start_time: completedSession.startTime,
+              end_time: completedSession.endTime,
               duration_seconds: durationSeconds,
               total_sets: totalSets,
               total_reps: totalReps,
@@ -885,7 +902,7 @@ export const useAppStore = create<AppState>()(
         // Always persist current progress to IndexedDB first
         await saveSession({
           ...activeWorkout.session,
-          endTime: new Date(),
+          endTime: nowIso(),
           completed: false,
         });
 
@@ -916,15 +933,15 @@ export const useAppStore = create<AppState>()(
           0,
         );
         const durationSeconds = Math.round(
-          (new Date().getTime() - session.startTime.getTime()) / 1000,
+          (Date.now() - new Date(session.startTime).getTime()) / 1000,
         );
 
         const payload = {
           routine_id: session.routineId,
           routine_name: routine.title,
           mode: session.mode,
-          start_time: session.startTime.toISOString(),
-          end_time: new Date().toISOString(),
+          start_time: session.startTime,
+          end_time: nowIso(),
           duration_seconds: durationSeconds,
           total_sets: totalSets,
           total_reps: totalReps,

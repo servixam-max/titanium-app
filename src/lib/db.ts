@@ -1,45 +1,161 @@
 import Dexie, { Table } from "dexie";
-import { WorkoutSession, WeightEntry } from "./types";
+import { v4 as uuidv4 } from "uuid";
+import {
+  WorkoutSession,
+  WeightEntry,
+  UserProfile,
+  Plan,
+  PlannedSession,
+  Achievement,
+  SyncQueueItem,
+  SyncState,
+  Routine,
+  Exercise,
+} from "./types";
 import { getActiveUserId } from "./auth";
 
-export interface LocalSession extends WorkoutSession {
-  userId?: string;
-  synced?: boolean;
-  syncError?: string;
+// =========================================================
+// ID generation
+// =========================================================
+
+let cachedClientId: string | null = null;
+
+export function getClientId(): string {
+  if (typeof window === "undefined") return "server";
+  if (cachedClientId) return cachedClientId;
+  const key = "fortixam_client_id";
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = uuidv4();
+    localStorage.setItem(key, id);
+  }
+  cachedClientId = id;
+  return id;
 }
 
-export interface LocalWeightEntry extends WeightEntry {
-  userId?: string;
-  synced?: boolean;
+export function generateId(): string {
+  return uuidv4();
 }
 
-class TitaniumDatabase extends Dexie {
-  sessions!: Table<LocalSession, string>;
-  weights!: Table<LocalWeightEntry, string>;
+export function nowIso(): string {
+  return new Date().toISOString();
+}
+
+// =========================================================
+// Database
+// =========================================================
+
+class FortixamDatabase extends Dexie {
+  // v7 legacy tables
+  sessions!: Table<WorkoutSession & LegacySession, string>;
+  weights!: Table<WeightEntry & LegacyWeight, string>;
+
+  // v8 tables
+  profiles!: Table<UserProfile, string>;
+  plans!: Table<Plan, string>;
+  plannedSessions!: Table<PlannedSession, string>;
+  achievements!: Table<Achievement, string>;
+  syncQueue!: Table<SyncQueueItem, string>;
+  syncState!: Table<SyncState, string>;
+  routines!: Table<Routine, string>;
+  exercises!: Table<Exercise, string>;
 
   constructor() {
-    super("titanium-db");
+    super("fortixam-db-v8");
+
     this.version(1).stores({
-      sessions: "id, routineId, mode, startTime, completed, synced",
-      weights: "id, date, synced",
+      sessions: "id, userId, routineId, mode, startTime, completed, synced",
+      weights: "id, userId, date, synced",
     });
+
     this.version(2).stores({
       sessions: "id, userId, routineId, mode, startTime, completed, synced",
       weights: "id, userId, date, synced",
+      profiles: "id, userId, email",
+      plans: "id, ownerUserId, active",
+      plannedSessions: "id, planId, weekIndex, dayIndex",
+      achievements: "id, userId, key",
+      syncQueue: "id, entityType, entityId, operation",
+      syncState: "id, ownerUserId, deviceId",
+      routines: "id, day, ownerUserId, planId",
+      exercises: "id, category, equipment, ownerUserId",
+    });
+
+    this.version(3).stores({
+      sessions: "id, ownerUserId, routineId, mode, startTime, completed, [ownerUserId+modifiedAt]",
+      weights: "id, ownerUserId, date, [ownerUserId+modifiedAt]",
+      profiles: "id, userId, email, [ownerUserId+modifiedAt]",
+      plans: "id, ownerUserId, active, [ownerUserId+modifiedAt]",
+      plannedSessions: "id, planId, weekIndex, dayIndex, [ownerUserId+modifiedAt]",
+      achievements: "id, userId, key, [ownerUserId+modifiedAt]",
+      syncQueue: "id, entityType, entityId, operation, [ownerUserId+modifiedAt]",
+      syncState: "id, ownerUserId, deviceId",
+      routines: "id, day, ownerUserId, planId, [ownerUserId+modifiedAt]",
+      exercises: "id, category, equipment, ownerUserId, [ownerUserId+modifiedAt]",
     }).upgrade(async (tx) => {
-      await tx.table("sessions").toCollection().modify((session) => {
-        if (!session.userId) session.userId = "xam-seed-id";
+      const clientId = getClientId();
+      const ownerUserId = getActiveUserId() || "xam-seed-id";
+      const now = nowIso();
+
+      await tx.table("sessions").toCollection().modify((session: Record<string, unknown>) => {
+        if (!session.ownerUserId) session.ownerUserId = session.userId || ownerUserId;
+        if (!session.clientId) session.clientId = clientId;
+        if (!session.createdAt) session.createdAt = now;
+        if (!session.modifiedAt) session.modifiedAt = now;
+        if (!session.version) session.version = 1;
+        // Normalize timestamps to ISO strings
+        if (session.startTime instanceof Date) session.startTime = session.startTime.toISOString();
+        if (session.endTime instanceof Date) session.endTime = session.endTime.toISOString();
+        if (Array.isArray(session.exercises)) {
+          (session.exercises as Array<Record<string, unknown>>).forEach((ex) => {
+            if (!ex.id) ex.id = generateId();
+            if (!ex.clientId) ex.clientId = clientId;
+            if (!ex.ownerUserId) ex.ownerUserId = session.ownerUserId;
+            if (!ex.createdAt) ex.createdAt = now;
+            if (!ex.modifiedAt) ex.modifiedAt = now;
+            if (!ex.version) ex.version = 1;
+            if (Array.isArray(ex.sets)) {
+              (ex.sets as Array<Record<string, unknown>>).forEach((set) => {
+                if (!set.id) set.id = generateId();
+                if (!set.clientId) set.clientId = clientId;
+                if (!set.ownerUserId) set.ownerUserId = session.ownerUserId;
+                if (!set.createdAt) set.createdAt = now;
+                if (!set.modifiedAt) set.modifiedAt = now;
+                if (!set.version) set.version = 1;
+                if (set.timestamp instanceof Date) set.timestamp = set.timestamp.toISOString();
+              });
+            }
+          });
+        }
       });
-      await tx.table("weights").toCollection().modify((weight) => {
-        if (!weight.userId) weight.userId = "xam-seed-id";
+
+      await tx.table("weights").toCollection().modify((weight: Record<string, unknown>) => {
+        if (!weight.ownerUserId) weight.ownerUserId = weight.userId || ownerUserId;
+        if (!weight.clientId) weight.clientId = clientId;
+        if (!weight.createdAt) weight.createdAt = now;
+        if (!weight.modifiedAt) weight.modifiedAt = now;
+        if (!weight.version) weight.version = 1;
+        if (!weight.date && weight.created_at) weight.date = weight.created_at;
       });
     });
   }
 }
 
-export const db = new TitaniumDatabase();
+interface LegacySession {
+  userId?: string;
+  synced?: boolean;
+  syncError?: string;
+}
 
-// Clean up any historical dummy seed entries once on load
+interface LegacyWeight {
+  userId?: string;
+  synced?: boolean;
+  created_at?: string;
+}
+
+export const db = new FortixamDatabase();
+
+// Clean up historical dummy seed entries once on load
 if (typeof window !== "undefined") {
   setTimeout(() => {
     db.weights.delete("w-xam-1").catch(() => {});
@@ -48,85 +164,183 @@ if (typeof window !== "undefined") {
   }, 100);
 }
 
-export async function saveSession(session: WorkoutSession, targetUserId?: string): Promise<void> {
-  const userId = targetUserId || getActiveUserId() || "xam-seed-id";
-  await db.sessions.put({ ...session, userId, synced: false });
+// =========================================================
+// Syncable entity helpers
+// =========================================================
+
+export function makeSyncable(ownerUserId?: string, overrides: Partial<{
+  id: string;
+  clientId: string;
+  createdAt: string;
+  modifiedAt: string;
+  version: number;
+}> = {}): {
+  id: string;
+  clientId: string;
+  ownerUserId: string;
+  createdAt: string;
+  modifiedAt: string;
+  version: number;
+} {
+  return {
+    id: overrides.id || generateId(),
+    clientId: overrides.clientId || getClientId(),
+    ownerUserId: ownerUserId || getActiveUserId() || "xam-seed-id",
+    createdAt: overrides.createdAt || nowIso(),
+    modifiedAt: overrides.modifiedAt || nowIso(),
+    version: overrides.version ?? 1,
+  };
 }
 
-export async function getSessions(targetUserId?: string): Promise<LocalSession[]> {
-  const userId = targetUserId || getActiveUserId() || "xam-seed-id";
+export function bumpVersion(entity: { version: number; modifiedAt: string }) {
+  return {
+    version: entity.version + 1,
+    modifiedAt: nowIso(),
+  };
+}
+
+// =========================================================
+// Sessions
+// =========================================================
+
+export async function saveSession(
+  session: WorkoutSession,
+  targetUserId?: string,
+): Promise<void> {
+  const ownerUserId = targetUserId || getActiveUserId() || "xam-seed-id";
+  const clientId = getClientId();
+  const now = nowIso();
+
+  const enriched: WorkoutSession = {
+    ...session,
+    ownerUserId,
+    clientId,
+    createdAt: session.createdAt || now,
+    modifiedAt: now,
+    version: (session.version || 0) + 1,
+  };
+
+  await db.sessions.put(enriched);
+  await enqueueSync("WorkoutSession", enriched.id, enriched.version > 1 ? "update" : "create", enriched);
+}
+
+export async function getSessions(targetUserId?: string): Promise<WorkoutSession[]> {
+  const ownerUserId = targetUserId || getActiveUserId() || "xam-seed-id";
   try {
-    const all = await db.sessions.toArray();
-    all.sort((a, b) => {
-      const timeA = a.startTime ? new Date(a.startTime).getTime() : 0;
-      const timeB = b.startTime ? new Date(b.startTime).getTime() : 0;
-      return timeB - timeA;
-    });
-    // Filter for this user's data; if user is XAM, also include legacy records without userId
-    return all.filter((s) => s.userId === userId || (!s.userId && userId === "xam-seed-id"));
+    const all = await db.sessions
+      .where("ownerUserId")
+      .equals(ownerUserId)
+      .and((s) => !s.deleted)
+      .sortBy("startTime");
+    return all.reverse();
   } catch (err) {
     console.error("Error getting sessions from db:", err);
     return [];
   }
 }
 
+export async function getSessionById(id: string): Promise<WorkoutSession | undefined> {
+  return db.sessions.get(id);
+}
+
 export async function deleteSession(id: string): Promise<void> {
-  await db.sessions.delete(id);
+  const session = await db.sessions.get(id);
+  if (!session) return;
+  const updated = {
+    ...session,
+    deleted: true,
+    modifiedAt: nowIso(),
+    version: session.version + 1,
+  };
+  await db.sessions.put(updated);
+  await enqueueSync("WorkoutSession", id, "delete", { id });
 }
 
 export async function deleteExerciseFromSession(
   sessionId: string,
-  exerciseIndex: number
+  exerciseIndex: number,
 ): Promise<boolean> {
   const session = await db.sessions.get(sessionId);
   if (!session) return false;
   if (!session.exercises || session.exercises.length <= 1) {
-    // If only 1 exercise left in session, deleting the exercise deletes the session
-    await db.sessions.delete(sessionId);
+    await deleteSession(sessionId);
     return true;
   }
   const updatedExercises = [...session.exercises];
   updatedExercises.splice(exerciseIndex, 1);
-  await db.sessions.update(sessionId, { exercises: updatedExercises });
+  const updated = {
+    ...session,
+    exercises: updatedExercises,
+    modifiedAt: nowIso(),
+    version: session.version + 1,
+  };
+  await db.sessions.put(updated);
+  await enqueueSync("WorkoutSession", sessionId, "update", updated);
   return true;
 }
 
 export async function clearAllSessions(targetUserId?: string): Promise<void> {
-  const userId = targetUserId || getActiveUserId() || "xam-seed-id";
-  const userSessions = await getSessions(userId);
-  const ids = userSessions.map((s) => s.id);
-  await db.sessions.bulkDelete(ids);
+  const ownerUserId = targetUserId || getActiveUserId() || "xam-seed-id";
+  const userSessions = await db.sessions.where("ownerUserId").equals(ownerUserId).toArray();
+  const updates = userSessions.map((s) => ({
+    ...s,
+    deleted: true,
+    modifiedAt: nowIso(),
+    version: s.version + 1,
+  }));
+  await db.sessions.bulkPut(updates);
+  for (const s of userSessions) {
+    await enqueueSync("WorkoutSession", s.id, "delete", { id: s.id });
+  }
 }
+
+// =========================================================
+// Weights
+// =========================================================
 
 export async function saveWeight(entry: WeightEntry, targetUserId?: string): Promise<void> {
-  const userId = targetUserId || getActiveUserId() || "xam-seed-id";
-  await db.weights.put({ ...entry, userId, synced: false });
+  const ownerUserId = targetUserId || getActiveUserId() || "xam-seed-id";
+  const enriched: WeightEntry = {
+    ...entry,
+    ownerUserId,
+    clientId: getClientId(),
+    createdAt: entry.createdAt || nowIso(),
+    modifiedAt: nowIso(),
+    version: (entry.version || 0) + 1,
+  };
+  await db.weights.put(enriched);
+  await enqueueSync("WeightEntry", enriched.id, enriched.version > 1 ? "update" : "create", enriched);
 }
 
-export async function getWeights(targetUserId?: string): Promise<LocalWeightEntry[]> {
-  const userId = targetUserId || getActiveUserId() || "xam-seed-id";
+export async function getWeights(targetUserId?: string): Promise<WeightEntry[]> {
+  const ownerUserId = targetUserId || getActiveUserId() || "xam-seed-id";
   try {
-    const all = await db.weights.toArray();
-    all.sort((a, b) => {
-      const timeA = a.date ? new Date(a.date).getTime() : 0;
-      const timeB = b.date ? new Date(b.date).getTime() : 0;
-      return timeB - timeA;
-    });
-    return all.filter((w) => w.userId === userId || (!w.userId && userId === "xam-seed-id"));
+    return await db.weights
+      .where("ownerUserId")
+      .equals(ownerUserId)
+      .and((w) => !w.deleted)
+      .sortBy("date");
   } catch (err) {
     console.error("Error getting weights from db:", err);
     return [];
   }
 }
 
+export async function getWeightById(id: string): Promise<WeightEntry | undefined> {
+  return db.weights.get(id);
+}
+
 export async function deleteWeight(id: string): Promise<void> {
-  await db.weights.delete(id);
+  const entry = await db.weights.get(id);
+  if (!entry) return;
+  const updated = { ...entry, deleted: true, modifiedAt: nowIso(), version: entry.version + 1 };
+  await db.weights.put(updated);
+  await enqueueSync("WeightEntry", id, "delete", { id });
 }
 
 export async function getWeightStats(targetUserId?: string) {
   const userWeights = await getWeights(targetUserId);
   if (userWeights.length === 0) return null;
-  // Sort chronologically ascending for stats
   const sorted = [...userWeights].sort((a, b) => a.date.localeCompare(b.date));
   const values = sorted.map((w) => w.weight);
   const current = values[values.length - 1];
@@ -142,3 +356,166 @@ export async function getWeightStats(targetUserId?: string) {
     history: sorted,
   };
 }
+
+// =========================================================
+// Profile
+// =========================================================
+
+export async function saveProfile(profile: UserProfile): Promise<void> {
+  const enriched: UserProfile = {
+    ...profile,
+    clientId: getClientId(),
+    modifiedAt: nowIso(),
+    version: (profile.version || 0) + 1,
+  };
+  await db.profiles.put(enriched);
+  await enqueueSync("UserProfile", enriched.id, enriched.version > 1 ? "update" : "create", enriched);
+}
+
+export async function getProfile(userId?: string): Promise<UserProfile | undefined> {
+  const target = userId || getActiveUserId() || "xam-seed-id";
+  return db.profiles.where("userId").equals(target).first();
+}
+
+// =========================================================
+// Plans
+// =========================================================
+
+export async function savePlan(plan: Plan): Promise<void> {
+  const version = (plan.version || 0) + 1;
+  const enriched: Plan = {
+    ...plan,
+    clientId: getClientId(),
+    modifiedAt: nowIso(),
+    version,
+  };
+  await db.plans.put(enriched);
+  await enqueueSync("Plan", enriched.id ?? generateId(), version > 1 ? "update" : "create", enriched);
+}
+
+export async function getPlans(ownerUserId?: string): Promise<Plan[]> {
+  const target = ownerUserId || getActiveUserId() || "xam-seed-id";
+  return db.plans.where("ownerUserId").equals(target).and((p) => !p.deleted).toArray();
+}
+
+export async function getActivePlan(ownerUserId?: string): Promise<Plan | undefined> {
+  const target = ownerUserId || getActiveUserId() || "xam-seed-id";
+  return db.plans.where({ ownerUserId: target, active: true }).first();
+}
+
+// =========================================================
+// Sync queue
+// =========================================================
+
+export async function enqueueSync(
+  entityType: string,
+  entityId: string,
+  operation: "create" | "update" | "delete",
+  payload: unknown,
+): Promise<void> {
+  const ownerUserId = getActiveUserId() || "xam-seed-id";
+  const existing = await db.syncQueue
+    .where({ entityType, entityId })
+    .filter((item) => item.operation !== "delete")
+    .first();
+
+  if (existing && operation !== "delete") {
+    const updated: SyncQueueItem = {
+      ...existing,
+      operation,
+      payload,
+      modifiedAt: nowIso(),
+      version: existing.version + 1,
+    };
+    await db.syncQueue.put(updated);
+    return;
+  }
+
+  const item: SyncQueueItem = {
+    ...makeSyncable(ownerUserId),
+    entityType,
+    entityId,
+    operation,
+    payload,
+    attempts: 0,
+  };
+  await db.syncQueue.put(item);
+}
+
+export async function getSyncQueue(ownerUserId?: string): Promise<SyncQueueItem[]> {
+  const target = ownerUserId || getActiveUserId() || "xam-seed-id";
+  return db.syncQueue.where("ownerUserId").equals(target).sortBy("modifiedAt");
+}
+
+export async function removeSyncQueueItem(id: string): Promise<void> {
+  await db.syncQueue.delete(id);
+}
+
+export async function updateSyncAttempt(
+  id: string,
+  error?: string,
+): Promise<void> {
+  const item = await db.syncQueue.get(id);
+  if (!item) return;
+  await db.syncQueue.put({
+    ...item,
+    attempts: item.attempts + 1,
+    lastError: error,
+    modifiedAt: nowIso(),
+  });
+}
+
+export async function getSyncState(ownerUserId?: string): Promise<SyncState | undefined> {
+  const target = ownerUserId || getActiveUserId() || "xam-seed-id";
+  return db.syncState.where("ownerUserId").equals(target).first();
+}
+
+export async function saveSyncState(state: SyncState): Promise<void> {
+  await db.syncState.put({
+    ...state,
+    clientId: getClientId(),
+    modifiedAt: nowIso(),
+  });
+}
+
+// =========================================================
+// Routines / Exercises (local edits and community clones)
+// =========================================================
+
+export async function saveRoutine(routine: Routine): Promise<void> {
+  const version = (routine.version || 0) + 1;
+  const enriched: Routine = {
+    ...routine,
+    clientId: getClientId(),
+    modifiedAt: nowIso(),
+    version,
+  };
+  await db.routines.put(enriched);
+  await enqueueSync("Routine", enriched.id ?? generateId(), version > 1 ? "update" : "create", enriched);
+}
+
+export async function getRoutines(ownerUserId?: string): Promise<Routine[]> {
+  const target = ownerUserId || getActiveUserId() || "xam-seed-id";
+  return db.routines.where("ownerUserId").equals(target).and((r) => !r.deleted).toArray();
+}
+
+export async function saveExercise(exercise: Exercise): Promise<void> {
+  const version = (exercise.version || 0) + 1;
+  const enriched: Exercise = {
+    ...exercise,
+    clientId: getClientId(),
+    modifiedAt: nowIso(),
+    version,
+  };
+  await db.exercises.put(enriched);
+  await enqueueSync("Exercise", enriched.id, version > 1 ? "update" : "create", enriched);
+}
+
+export async function getExercises(ownerUserId?: string): Promise<Exercise[]> {
+  const target = ownerUserId || getActiveUserId() || "xam-seed-id";
+  return db.exercises.where("ownerUserId").equals(target).and((e) => !e.deleted).toArray();
+}
+
+// Legacy aliases for gradual migration
+export type LocalSession = WorkoutSession;
+export type LocalWeightEntry = WeightEntry;

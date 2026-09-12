@@ -1,26 +1,32 @@
 {
   "appId": "com.servixam.titanium",
   "appName": "FORTIXAM",
-  "webDir": "dist",
+  "webDir": "dist-apk",
   "server": {
     "androidScheme": "https",
-    "cleartext": true,
-    "allowNavigation": ["*"]
+    "cleartext": false,
+    "allowNavigation": [
+      "https://*.servixam.app",
+      "https://*.tail31979d.ts.net",
+      "http://localhost:*",
+      "https://accounts.google.com",
+      "https://appleid.apple.com"
+    ]
   },
   "android": {
-    "allowMixedContent": true
+    "allowMixedContent": false
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 1500,
       "launchAutoHide": true,
-      "backgroundColor": "#131313",
+      "backgroundColor": "#05090C",
       "androidSplashResourceName": "splash",
       "androidScaleType": "CENTER_CROP"
     },
     "StatusBar": {
       "style": "DARK",
-      "backgroundColor": "#131313"
+      "backgroundColor": "#05090C"
     }
   }
 }

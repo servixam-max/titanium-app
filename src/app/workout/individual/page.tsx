@@ -15,6 +15,7 @@ import {
   unlockAudio,
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
+import { detectSupersetGroups } from "@/lib/workout";
 import {
   WorkoutShell,
   ExerciseStage,
@@ -42,6 +43,7 @@ export default function IndividualWorkout() {
 
   const [flashKey, setFlashKey] = useState(0);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
 
   const routine = activeWorkout.routine;
   const currentExerciseIndex = activeWorkout.currentExerciseIndex;
@@ -49,6 +51,7 @@ export default function IndividualWorkout() {
   const currentRound = activeWorkout.currentRound ?? 1;
   const totalRounds = routine?.rounds ?? 1;
   const currentExercise = routine?.exercises[currentExerciseIndex];
+  const supersetGroups = useMemo(() => (routine ? detectSupersetGroups(routine) : []), [routine]);
 
   // Read exercise query param once if provided
   useEffect(() => {
@@ -122,8 +125,6 @@ export default function IndividualWorkout() {
     setFlashKey((k) => k + 1);
     haptics.tick();
   };
-
-  const [isFinishing, setIsFinishing] = useState(false);
 
   const handleComplete = async () => {
     if (isFinishing) return;
@@ -276,6 +277,8 @@ export default function IndividualWorkout() {
           exercise={currentExercise}
           currentSet={currentSet}
           exerciseIndex={currentExerciseIndex}
+          groups={supersetGroups}
+          routine={routine}
           className="flex-1 min-h-0"
         />
       </WorkoutShell>

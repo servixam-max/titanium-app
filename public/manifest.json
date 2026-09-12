@@ -4,8 +4,8 @@
   "description": "App PWA de fitness para entrenamientos guiados e individuales",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#131313",
-  "theme_color": "#131313",
+  "background_color": "#05090C",
+  "theme_color": "#05090C",
   "orientation": "portrait",
   "scope": "/",
   "icons": [

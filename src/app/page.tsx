@@ -11,6 +11,7 @@ import {
   CategoryFilter,
   ViewSwitcher,
   EmptyCatalogState,
+  PlansView,
   type CategoryFilterValue,
   type ActiveTab,
 } from "@/components/dashboard";
@@ -24,11 +25,13 @@ import BottomNav from "@/components/ui/BottomNav";
 import ExerciseSearchBar, { MuscleCategory, EquipmentFilter } from "@/components/ui/ExerciseSearchBar";
 import { routines, warmUpExercises, getCompleteExerciseCatalog } from "@/lib/data";
 import { useAppStore } from "@/lib/store";
-import { getSessions } from "@/lib/db";
+import { getSessions, getActivePlan, getPlans } from "@/lib/db";
+import OnboardingModal from "@/components/onboarding/OnboardingModal";
+import { useSync } from "@/hooks/useSync";
 import { setAudioMode, setVoiceRate } from "@/lib/audio";
 import { preloadVoices } from "@/lib/speech";
 import { haptics } from "@/lib/haptics";
-import { Routine, WorkoutSession, Exercise } from "@/lib/types";
+import { Routine, WorkoutSession, Exercise, Plan } from "@/lib/types";
 
 const InstallPrompt = dynamic(() => import("@/components/ui/InstallPrompt"), { ssr: false });
 
@@ -113,10 +116,13 @@ export default function Dashboard() {
   const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
   const [selectedExerciseForModal, setSelectedExerciseForModal] = useState<Exercise | null>(null);
   const [sessionsList, setSessionsList] = useState<WorkoutSession[]>([]);
+  useSync(60000);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMuscle, setSelectedMuscle] = useState<MuscleCategory>("all");
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentFilter>("all");
+  const [activePlan, setActivePlan] = useState<Plan | null>(null);
+  const [savedPlans, setSavedPlans] = useState<Plan[]>([]);
 
   const allDays = useMemo(() => routines.map((r) => r.day), []);
   const completeCatalog = useMemo(() => getCompleteExerciseCatalog(), []);
@@ -129,6 +135,13 @@ export default function Dashboard() {
     getSessions(currentUser?.id).then((sessions) => {
       const allSessions = sessions?.length > 0 ? sessions : storeSessions;
       setSessionsList(allSessions);
+    });
+
+    getActivePlan(currentUser?.id).then((plan) => {
+      if (plan) setActivePlan(plan);
+    });
+    getPlans(currentUser?.id).then((plans) => {
+      if (plans?.length) setSavedPlans(plans);
     });
   }, [audioMode, voiceRate, storeSessions, currentUser]);
 
@@ -146,13 +159,21 @@ export default function Dashboard() {
   }, [sessionsList, storeSessions]);
 
   const recommendedRoutine = useMemo(() => {
+    if (activePlan?.schedule?.length) {
+      const completed = sessionsList.filter((s) => s.completed && s.routineId);
+      const nextIdx = completed.length % activePlan.schedule.length;
+      const targetDay = activePlan.schedule[nextIdx];
+      const found = routines.find((r) => r.day === targetDay);
+      if (found) return found;
+    }
+
     const completed = sessionsList.filter((s) => s.completed && s.routineId);
     if (completed.length === 0) return routines[0];
     const lastRoutineId = Number(completed[0].routineId);
     if (isNaN(lastRoutineId) || lastRoutineId < 1 || lastRoutineId > 12) return routines[0];
     const nextDay = (lastRoutineId % 12) + 1;
     return routines.find((r) => r.day === nextDay) || routines[0];
-  }, [sessionsList]);
+  }, [sessionsList, activePlan]);
 
   useEffect(() => {
     if (recommendedRoutine) setSelectedDay(recommendedRoutine.day);
@@ -245,6 +266,7 @@ export default function Dashboard() {
           value={activeTab}
           onChange={setActiveTab}
           routinesCount={routines.length}
+          plansCount={savedPlans.length > 0 ? savedPlans.length : 4}
           catalogCount={completeCatalog.length}
         />
 
@@ -322,6 +344,23 @@ export default function Dashboard() {
           </div>
         )}
 
+        {activeTab === "plans" && (
+          <PlansView
+            activePlan={activePlan}
+            savedPlans={savedPlans}
+            currentUserId={currentUser?.id}
+            onPlanActivated={(p) => {
+              setActivePlan(p);
+              getPlans(currentUser?.id).then((list) => {
+                if (list?.length) setSavedPlans(list);
+              });
+            }}
+            onSelectRoutine={(routine) => {
+              setSelectedRoutine(routine);
+            }}
+          />
+        )}
+
         {activeTab === "catalog" && (
           <div className="flex flex-col gap-4">
             <ExerciseSearchBar
@@ -381,6 +420,7 @@ export default function Dashboard() {
 
       <InstallPrompt />
       <BottomNav />
+      <OnboardingModal />
     </div>
   );
 }

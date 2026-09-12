@@ -1,63 +1,92 @@
 const { test, expect } = require('@playwright/test');
 
-// Test end-to-end: guiado -> warmup -> ejercicios
+// FORTIXAM v8 — flujo real de inicio de entreno sobre el export estático.
+//
+// Notas:
+// - AuthModal cubre la app cuando no hay usuario logeado: sembramos el
+//   usuario (fortixam_server_user) en localStorage antes de navegar.
+// - OnboardingModal cubriría el dashboard: marcamos onboardingComplete en
+//   el store persistido (titanium-storage).
+// - La página de rutina anima su entrada (framer-motion) y React hidrata
+//   tras cargar los chunks: esperamos hidratación y usamos force:true.
 
-test.describe('Flujo Guiado: Calentamiento > Ejercicios', () => {
-  
-  test('Modo guiado redirige a /warmup con redirect=/workout/guided', async ({ page }) => {
-    await page.goto('http://localhost:3001/routine/1');
-    await page.waitForSelector('body', { timeout: 10000 });
-    
-    // Hacer click en modo guided (ya está por defecto en guided)
-    // Esperar que el botón GUIDED esté seleccionado
-    const startBtn = await page.locator('button:has-text("INICIAR ENTRENAMIENTO")').first();
-    await expect(startBtn).toBeVisible();
-    
-    // Click en iniciar
-    await startBtn.click();
-    
-    // Esperar navegación a /warmup?redirect=/workout/guided
-    await page.waitForURL(/\/warmup.*/, { timeout: 5000 });
-    const url = page.url();
-    expect(url).toContain('/warmup');
-    expect(url).toContain('redirect=/workout/guided');
-    console.log('✅ Navegación a warmup con redirect correcto:', url);
+const E2E_USER = {
+  id: 'e2e-user-id',
+  clientId: 'e2e',
+  ownerUserId: 'e2e-user-id',
+  username: 'E2E',
+  email: 'e2e@fortixam.local',
+  passwordHash: '',
+  avatarColor: '#00D68F',
+  createdAt: new Date().toISOString(),
+  modifiedAt: new Date().toISOString(),
+  lastLogin: new Date().toISOString(),
+  version: 1,
+  authProvider: 'local',
+  serverUserId: 'e2e-user-id',
+};
+
+async function sembrarUsuario(page) {
+  await page.addInitScript((user) => {
+    localStorage.setItem('fortixam_server_user', JSON.stringify(user));
+    localStorage.setItem('fortixam_active_user_id', user.id);
+    localStorage.setItem(
+      'titanium-storage',
+      JSON.stringify({ state: { onboardingComplete: true }, version: 0 })
+    );
+  }, E2E_USER);
+}
+
+async function esperarHidratacion(page) {
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(600);
+}
+
+test.describe('Flujo de entreno', () => {
+  test.beforeEach(async ({ page }) => {
+    await sembrarUsuario(page);
   });
 
-  test('Warmup con redirect redirige al workout', async ({ page }) => {
-    // Ir directamente a warmup con redirect
-    await page.goto('http://localhost:3001/warmup?redirect=/workout/guided');
-    await page.waitForSelector('body', { timeout: 10000 });
-    
-    // Verificar que está en la página de warmup
-    await expect(page.locator('text=CALENTAMIENTO').first()).toBeVisible();
-    
-    // Simular que venimos del modo guiado: startWorkout debería estar en localStorage/Zustand
-    // Pero con Playwright nuevo no hay sesión. 
-    // En su lugar, verificamos que el parámetro redirect se lee bien comprobando la redirección final.
-    
-    // Saltar el warmup
-    const skipBtn = await page.locator('button:has-text("Saltar")').first();
-    await skipBtn.click();
-    
-    // Esperar a workout/guided
-    await page.waitForURL(/\/workout\/guided/, { timeout: 5000 });
+  test('Modo individual: rutina → entreno directo', async ({ page }) => {
+    await page.goto('/routine/1');
+    await esperarHidratacion(page);
+
+    // Conmutar a modo individual (por defecto es guiado)
+    await page.locator('button:has-text("Modo Individual")').first().click({ force: true });
+    await expect(page.locator('text=INICIAR MODO INDIVIDUAL').first()).toBeVisible({ timeout: 8000 });
+
+    await page.locator('text=INICIAR MODO INDIVIDUAL').first().click({ force: true });
+
+    await page.waitForURL(/\/workout\/individual/, { timeout: 8000 });
+    expect(page.url()).toContain('/workout/individual');
+  });
+
+  test('Modo guiado: rutina → modal calentamiento → warmup → guided', async ({ page }) => {
+    await page.goto('/routine/1');
+    await esperarHidratacion(page);
+
+    // Abrir modal de calentamiento
+    await page.locator('text=INICIAR MODO GUIADO').first().click({ force: true });
+    await expect(page.locator('text=¿Quieres calentar?').first()).toBeVisible({ timeout: 8000 });
+
+    // Elegir calentar primero → /warmup?redirect=/workout/guided
+    await page.locator('text=SÍ, CALENTAR PRIMERO').first().click({ force: true });
+    await page.waitForURL(/\/warmup\?redirect=\/workout\/guided/, { timeout: 8000 });
+
+    // Saltar el calentamiento → aterrizamos en /workout/guided
+    await page.locator('button:has-text("Saltar")').first().click({ force: true });
+    await page.waitForURL(/\/workout\/guided/, { timeout: 8000 });
     expect(page.url()).toContain('/workout/guided');
-    console.log('✅ Warmup salta a /workout/guided correctamente');
   });
 
-  test('Warmup por defecto (sin redirect) vuelve a /', async ({ page }) => {
-    await page.goto('http://localhost:3001/warmup');
-    await page.waitForSelector('body', { timeout: 10000 });
-    
-    // Saltar
-    const skipBtn = await page.locator('button:has-text("Saltar")').first();
-    await skipBtn.click();
-    
-    // Volver a home
-    await page.waitForURL('http://localhost:3001/', { timeout: 5000 });
-    expect(page.url()).toBe('http://localhost:3001/');
-    console.log('✅ Warmup sin redirect vuelve a /');
-  });
+  test('Modo guiado: ir directo al entreno sin calentar', async ({ page }) => {
+    await page.goto('/routine/1');
+    await esperarHidratacion(page);
 
+    await page.locator('text=INICIAR MODO GUIADO').first().click({ force: true });
+    await expect(page.locator('text=¿Quieres calentar?').first()).toBeVisible({ timeout: 8000 });
+
+    await page.locator('text=NO, IR DIRECTO AL ENTRENO').first().click({ force: true });
+    await page.waitForURL(/\/workout\/guided/, { timeout: 8000 });
+  });
 });

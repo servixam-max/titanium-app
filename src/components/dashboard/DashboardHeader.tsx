@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Sunrise, Sun, Moon, Flame, Zap, Clock } from "lucide-react";
-import { UserAccount } from "@/lib/auth";
+import { UserAccount } from "@/lib/types";
 
 interface DashboardHeaderProps {
   user: UserAccount | null;
@@ -37,17 +37,17 @@ export default function DashboardHeader({
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#121620] to-[#151b28] p-4 shadow-xl"
+      className="glass-panel p-4 shadow-xl"
     >
       <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent rounded-t-3xl" />
 
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-zinc-400">
+          <div className="flex items-center gap-1.5 text-caption font-medium text-text-secondary">
             <GreetingIcon className="h-3.5 w-3.5 text-primary" />
             <span>{greetingText}</span>
           </div>
-          <h2 className="mt-0.5 truncate text-2xl font-black tracking-tight text-white">
+          <h2 className="mt-0.5 truncate text-title-md text-white">
             {user?.username || "Atleta"}
           </h2>
         </div>
@@ -58,7 +58,7 @@ export default function DashboardHeader({
             <span className="font-mono text-base font-black leading-none text-primary">
               {streak}
             </span>
-            <span className="text-[9px] font-bold uppercase tracking-tighter text-zinc-400">
+            <span className="text-[9px] font-medium text-text-secondary">
               {streak === 1 ? "Día racha" : "Días racha"}
             </span>
           </div>

@@ -6,7 +6,10 @@
 const fs = require("fs");
 const path = require("path");
 
-const DIST_DIR = path.join(__dirname, "..", "dist");
+const distArg = process.argv[2] || "dist";
+const DIST_DIR = path.isAbsolute(distArg)
+  ? distArg
+  : path.join(__dirname, "..", distArg);
 const SW_PATH = path.join(DIST_DIR, "sw.js");
 
 function walk(dir, base = "") {

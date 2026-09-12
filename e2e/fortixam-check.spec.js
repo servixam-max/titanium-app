@@ -1,113 +1,82 @@
 const { test, expect } = require('@playwright/test');
 
-// Comprobación: Servidor corriendo en 3001
-// Build completo con BUILD_ID, CSS y JS generados
-// API responde correctamente
-// HTML contiene todos los elementos PWA
+// FORTIXAM v8 — humo del export estático (lo que sirve el APK WebView).
+// Las API requieren auth + PostgreSQL y se cubren con Vitest en src/lib.
 
-test.describe('FORTIXAM - Verificación Completa de Build y Servidor', () => {
-  
-  test('Build existe y servidor responde', async ({ request }) => {
-    // 1. API Test
-    const apiResponse = await request.get('http://localhost:3001/api/sessions');
-    expect(apiResponse.ok()).toBe(true);
-    const apiData = await apiResponse.json();
-    expect(Array.isArray(apiData.sessions)).toBe(true);
-    console.log('✅ API /api/sessions responde:', JSON.stringify(apiData).slice(0, 100));
-  });
+test.describe('FORTIXAM — PWA estática', () => {
 
-  test('HTML contiene elementos PWA esenciales', async ({ page }) => {
-    await page.goto('http://localhost:3001/');
-    
-    // Esperar que cargue
-    await page.waitForSelector('body', { timeout: 10000 });
-    
-    // 2. Verificar meta tags PWA
-    const title = await page.title();
-    expect(title).toContain('FORTIXAM');
-    
-    const manifestLinks = await page.locator('link[rel="manifest"]').all();
-    expect(manifestLinks.length).toBeGreaterThan(0);
-    const href = await manifestLinks[0].getAttribute('href');
-    expect(href).toBe('/manifest.json');
-    
-    const appleMobile = await page.locator('meta[name="apple-mobile-web-app-capable"]').first().getAttribute('content');
-    expect(appleMobile).toBe('yes');
-    
-    const appleStatusBar = await page.locator('meta[name="apple-mobile-web-app-status-bar-style"]').first().getAttribute('content');
-    expect(appleStatusBar).toBe('black-translucent');
-    
-    const viewport = await page.locator('meta[name="viewport"]').first().getAttribute('content');
-    expect(viewport).toContain('width=device-width');
-    expect(viewport).toContain('initial-scale=1');
-    expect(viewport).toContain('user-scalable=no');
-    console.log('✅ Meta tags PWA correctos');
-    
-    // 3. Verificar CSS cargado
-    const cssLinks = await page.locator('link[rel="stylesheet"]').count();
-    expect(cssLinks).toBeGreaterThan(0);
-    console.log('✅ CSS cargado, links:', cssLinks);
-    
-    // 4. Verificar contenido visible
+  test('Home carga con título y branding', async ({ page }) => {
+    await page.goto('/');
+    await expect(page).toHaveTitle(/FORTIXAM/);
     await expect(page.locator('text=FORTIXAM').first()).toBeVisible();
-    await expect(page.locator('text=Historial').first()).toBeVisible();
-    await expect(page.locator('text=Peso').first()).toBeVisible();
-    
-    console.log('✅ Contenido visible correctamente');
   });
 
-  test('Manifest.json es accesible y válido', async ({ request }) => {
-    const response = await request.get('http://localhost:3001/manifest.json');
-    expect(response.ok()).toBe(true);
-    
-    const manifest = await response.json();
+  test('Meta tags PWA esenciales', async ({ page }) => {
+    await page.goto('/');
+
+    const manifest = page.locator('link[rel="manifest"]').first();
+    await expect(manifest).toHaveAttribute('href', '/manifest.json');
+
+    await expect(
+      page.locator('meta[name="apple-mobile-web-app-capable"]').first()
+    ).toHaveAttribute('content', 'yes');
+
+    await expect(
+      page.locator('meta[name="theme-color"]').first()
+    ).toHaveAttribute('content', '#05090C');
+
+    // CSS cargado
+    const cssCount = await page.locator('link[rel="stylesheet"]').count();
+    expect(cssCount).toBeGreaterThan(0);
+  });
+
+  test('manifest.json válido con tema v8', async ({ request }) => {
+    const res = await request.get('/manifest.json');
+    expect(res.ok()).toBe(true);
+
+    const manifest = await res.json();
     expect(manifest.name).toContain('FORTIXAM');
-    expect(manifest.short_name).toContain('FORTIXAM');
+    expect(manifest.short_name).toBe('FORTIXAM');
     expect(manifest.display).toBe('standalone');
-    expect(manifest.background_color).toBe('#131313');
-    expect(manifest.theme_color).toBe('#131313');
+    expect(manifest.theme_color).toBe('#05090C');
     expect(Array.isArray(manifest.icons)).toBe(true);
     expect(manifest.icons.length).toBeGreaterThan(0);
-    
-    console.log('✅ Manifest.json válido:', manifest.name, '- icons:', manifest.icons.length);
   });
 
-  test('Service Worker está registrado', async ({ page }) => {
-    await page.goto('http://localhost:3001/');
-    await page.waitForTimeout(3000); // Esperar registro del SW
-    
-    const swUrl = await page.evaluate(async () => {
+  test('Páginas principales renderizan', async ({ page }) => {
+    for (const ruta of ['/history', '/stats', '/weight']) {
+      const res = await page.goto(ruta);
+      expect(res.status(), `${ruta} debe responder 200`).toBe(200);
+      await expect(page.locator('body')).toBeVisible();
+    }
+  });
+
+  test('Páginas de detalle de rutina renderizan', async ({ page }) => {
+    const res = await page.goto('/routine/1');
+    expect(res.status()).toBe(200);
+    await expect(page.locator('text=INICIAR MODO').first()).toBeVisible();
+  });
+
+  test('Assets de imagen servidos', async ({ request }) => {
+    const res = await request.get('/images/exercises/dumbbell_flat_bench/screen.webp');
+    expect(res.ok()).toBe(true);
+    expect(res.headers()['content-type']).toContain('image/webp');
+  });
+
+  test('Service Worker registrado', async ({ page }) => {
+    await page.goto('/');
+    const scope = await page.evaluate(async () => {
       const registration = await navigator.serviceWorker.ready;
       return registration.scope;
     });
-    
-    expect(swUrl).toContain('localhost:3001');
-    console.log('✅ Service Worker registrado, scope:', swUrl);
+    expect(scope).toContain('127.0.0.1:3310');
   });
 
-  test('API de peso funciona', async ({ request }) => {
-    const response = await request.get('http://localhost:3001/api/weight');
-    expect(response.ok()).toBe(true);
-    
-    const data = await response.json();
-    expect(Array.isArray(data.weights)).toBe(true);
-    console.log('✅ API /api/weight responde, weights:', data.weights.length);
+  test('Sin errores de consola en la home', async ({ page }) => {
+    const errores = [];
+    page.on('pageerror', (err) => errores.push(err.message));
+    await page.goto('/');
+    await page.waitForTimeout(1500);
+    expect(errores, `Errores de página: ${errores.join(' | ')}`).toEqual([]);
   });
-
-  test('Página de historial carga correctamente', async ({ page }) => {
-    await page.goto('http://localhost:3001/history');
-    await page.waitForSelector('body', { timeout: 10000 });
-    
-    await expect(page.locator('text=Historial').first()).toBeVisible();
-    console.log('✅ Página /history carga correctamente');
-  });
-
-  test('Página de peso carga correctamente', async ({ page }) => {
-    await page.goto('http://localhost:3001/weight');
-    await page.waitForSelector('body', { timeout: 10000 });
-    
-    await expect(page.locator('h1:has-text("REGISTRO PESO")').first()).toBeVisible();
-    console.log('✅ Página /weight carga correctamente');
-  });
-
 });

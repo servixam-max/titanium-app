@@ -1,56 +1,92 @@
 # FORTIXAM (Titanium) ⚡
 
-Aplicación moderna y minimalista de entrenamiento guiado y seguimiento de fuerza, diseñada con estética Cyber-Titanium y funcionamiento offline-first para Android.
+App de fitness PWA + Android con entrenamientos guiados e individuales, seguimiento de fuerza y peso. Diseño Cyber-Titanium, offline-first, y desde la **v8**: cuentas reales, sincronización multi-dispositivo y coach inteligente.
 
 ---
 
-## 🚀 Características Principales
+## 🚀 Características v8
 
-- **13 Rutinas Especializadas**:
-  - Días 1 al 5: Full Body, Piernas & Core, Torso, HIIT Tabata y Fuerza Máxima.
-  - Días 6 al 8: Empuje (Push), Tracción (Pull), Full Body Express.
-  - Días 9 y 10: Super HIIT Tabata y Movilidad Articular.
-  - Día 11: Entrenamiento Libre con catálogo completo de ejercicios.
-  - Día 12: Piernas & Cadena Posterior de Acero (Sentadilla sumo, Hip thrust, Peso muerto a una pierna).
-  - Día 13: Brazos & Hombros de Titanio (Press Arnold, Skull crushers, Farmer's walk).
-- **HUD Iluminado de Alta Visibilidad**:
-  - 3 bloques destacados para Repeticiones/Tiempo, Serie actual y Descanso.
-  - Cero distracciones de entrada manual durante el ejercicio.
-- **Descansos Optimizados a 75s** en rutinas de fuerza e hipertrofia.
-- **Actualizaciones Globales Over-The-Air (OTA)**:
-  - Distribución pública y automática a través de **GitHub Releases**.
-  - No requiere VPN ni Tailscale para recibir actualizaciones.
+- **13 rutinas especializadas** (fuerza, HIIT Tabata, full body, movilidad, libre) + catálogo completo de ejercicios con búsqueda por músculo y equipamiento.
+- **Cuentas y sync**: registro/login con JWT (bcrypt) contra PostgreSQL; cola de sincronización offline-first con resolución de conflictos last-write-wins. El APK funciona sin conexión y sincroniza cuando hay red.
+- **Coach inteligente**: onboarding de 5 pasos (objetivo, nivel, días/semana, equipo, limitaciones) y generación automática de un plan personalizado.
+- **Temporizador adaptativo**: el descanso se ajusta por tipo de ejercicio y duración de la serie; supersets detectados y señalados en la UI.
+- **HUD de alta visibilidad** con estética Titanium Energy (`#05090C` / `#00D68F`), modos claro y alto contraste.
+- **OTA**: distribución del APK vía GitHub Releases.
+- **Testing**: Vitest (unit) + Playwright (e2e contra el export estático).
 
----
+## 🏗️ Arquitectura
 
-## 🛠️ Guía para Desarrolladores e Inteligencias Artificiales
+| Pieza | Tecnología |
+|---|---|
+| Web/PWA | Next.js 16 (App Router, Turbopack), React 19, `output: 'standalone'` |
+| APK Android | Next.js `output: 'export'` estático + Capacitor 8 |
+| Datos cliente | Dexie (IndexedDB) con entidades sincizables (`version`, `deleted`, `modifiedAt`) |
+| Servidor | API Routes de Next.js + PostgreSQL (esquema en `server/schema.sql`) |
+| Estado | Zustand persistido |
+| Estilos | Tailwind CSS con tokens Titanium Energy |
 
-Si eres un desarrollador o un modelo de IA trabajando en este proyecto, consulta el manual completo de mantenimiento:
+Un único `next build` cambia de modo con `BUILD_MODE`: sin la variable produce el bundle standalone del servidor web; con `BUILD_MODE=apk` produce el export estático para el WebView (las API routes quedan excluidas — el APK opera offline-first).
+
+## ⚙️ Puesta en marcha
+
+```bash
+npm install
+cp .env.example .env        # ajusta secretos y credenciales
+npm run dev                # http://localhost:3000
+```
+
+Necesitas PostgreSQL con el esquema aplicado:
+
+```bash
+psql -h localhost -U titanium -d titanium -f server/schema.sql
+```
+
+O todo con Docker (Postgres + web, esquema auto-aplicado):
+
+```bash
+cp .env.example .env       # define JWT_SECRET y JWT_REFRESH_SECRET
+npm run build:web
+docker compose up -d       # http://localhost:3000
+```
+
+## 🔨 Builds de producción
+
+```bash
+npm run build:web     # bundle standalone → .next-standalone/standalone
+                      # arranca: PORT=3000 HOSTNAME=0.0.0.0 node .next-standalone/standalone/server.js
+
+npm run build:apk     # export estático + service worker + cap sync + gradle assembleRelease
+                      # (gradle requiere Android SDK; el resto es portable)
+
+node scripts/optimize-assets.mjs            # informe de imágenes
+node scripts/optimize-assets.mjs --compress  # re-encode de imágenes >120KB a WebP
+```
+
+## 🧪 Tests
+
+```bash
+npm test              # Vitest (unit: coach, auth server, workout)
+npm run test:e2e      # Playwright contra dist-apk (requiere export: npm run build:apk)
+npm run lint          # ESLint
+npx tsc --noEmit      # TypeScript
+```
+
+Los e2e siembran un usuario en localStorage (`fortixam_server_user`) para saltar AuthModal y cubren el flujo real: rutina → modal de calentamiento → modo guiado/individual.
+
+## 📦 Publicar una versión
+
+```bash
+npm run release       # unifica versión en package.json, version.json, ota_server, build.gradle
+npm run build:apk     # APK
+cd android && ./gradlew assembleRelease
+cp android/app/build/outputs/apk/release/app-release.apk FORTIXAM-<version>.apk
+./scripts/publish-release.sh   # GitHub Releases (OTA)
+```
+
+## 🤖 Guía para desarrolladores e IA
 
 👉 **[AI_MAINTENANCE_GUIDE.md](./AI_MAINTENANCE_GUIDE.md)**
 
-Para publicar una nueva versión tras realizar cambios:
-```bash
-# 1. Incrementar versión en src/lib/ota-sync.ts, android/app/build.gradle y ota_server/version.json
-# 2. Compilar web y sincronizar
-npm run build && npx cap sync android
+## 📥 Descarga del APK
 
-# 3. Compilar APK Android
-cd android && JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home ./gradlew assembleDebug && cd ..
-
-# 4. Copiar APK
-cp android/app/build/outputs/apk/debug/app-debug.apk FORTIXAM-<version>.apk
-cp android/app/build/outputs/apk/debug/app-debug.apk ota_server/FORTIXAM-<version>.apk
-
-# 5. Publicar en GitHub Releases
-./scripts/publish-release.sh
-
-# 6. Subir a Git
-git add . && git commit -m "feat: actualización v<version>" && git push origin main
-```
-
----
-
-## 📥 Descarga de la Última Versión
-
-Puedes descargar directamente el último archivo APK desde la sección de **[Releases de GitHub](https://github.com/servixam-max/titanium-app/releases/latest)**.
+Última versión en **[Releases de GitHub](https://github.com/servixam-max/titanium-app/releases/latest)**.

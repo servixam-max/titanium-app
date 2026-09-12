@@ -25,10 +25,10 @@ interface TopAppBarProps {
 }
 
 const variantClasses: Record<TopAppBarVariant, string> = {
-  default: "bg-[#090c12]/90 backdrop-blur-xl border-white/10",
-  solid: "bg-[#090c12] border-white/10",
+  default: "glass-titanium border-white/10",
+  solid: "bg-surface-900 border-white/10",
   transparent: "bg-transparent border-transparent",
-  workout: "bg-[#090c12]/80 backdrop-blur-xl border-white/10",
+  workout: "glass-titanium border-white/10",
 };
 
 export const topAppBarHeightClass = "h-touch-target-min";
@@ -73,7 +73,7 @@ export default function TopAppBar({
           )}
         </div>
 
-        <h1 className="font-mono text-base sm:text-lg font-black tracking-widest text-white uppercase text-center flex-1">
+        <h1 className="font-display text-title-sm text-white text-center flex-1">
           {title}
         </h1>
 

@@ -36,7 +36,6 @@ export default function GuidedWorkout() {
     setExerciseReps,
     setExerciseWeight,
     goToExercise,
-    startWork,
     startPrep,
     tickPrep,
     skipPrep,
@@ -49,6 +48,7 @@ export default function GuidedWorkout() {
 
   const [flashKey, setFlashKey] = useState(0);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
 
   const routine = activeWorkout.routine;
   const currentExerciseIndex = activeWorkout.currentExerciseIndex;
@@ -185,8 +185,6 @@ export default function GuidedWorkout() {
     setFlashKey((k) => k + 1);
     haptics.tick();
   };
-
-  const [isFinishing, setIsFinishing] = useState(false);
 
   const handleComplete = async () => {
     if (isFinishing) return;

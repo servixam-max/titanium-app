@@ -30,7 +30,6 @@ export default function WorkTimer() {
     activeWorkout,
     tickWork,
     skipWork,
-    skipPrep,
     completeSet,
     cancelWorkout,
     finishWorkout,

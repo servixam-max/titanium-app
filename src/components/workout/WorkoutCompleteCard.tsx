@@ -125,7 +125,7 @@ export default function WorkoutCompleteCard({
   const lastSession = previousSessions[0];
   const lastDuration = lastSession?.endTime
     ? Math.round(
-        (lastSession.endTime.getTime() - lastSession.startTime.getTime()) / 1000,
+        (new Date(lastSession.endTime).getTime() - new Date(lastSession.startTime).getTime()) / 1000,
       )
     : 0;
   const lastVolume = lastSession?.exercises.reduce(

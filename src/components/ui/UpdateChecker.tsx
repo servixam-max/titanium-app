@@ -56,6 +56,13 @@ export default function UpdateChecker() {
   if (!show || !updateInfo) return null;
 
   const handleStartUpdate = async () => {
+    const canInst = await canInstallUnknownApps();
+    if (!canInst) {
+      setHasPermission(false);
+      await requestInstallPermission();
+      return;
+    }
+
     setIsDownloading(true);
     setProgress(0);
     setErrorMsg(null);

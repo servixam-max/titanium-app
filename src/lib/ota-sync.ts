@@ -8,9 +8,9 @@ export interface AppVersion {
 
 // canonical current version: bump versionCode when releasing a new APK
 export const APP_VERSION: AppVersion = {
-  version: "7.0.1-alpha.5",
-  versionCode: 774,
-  buildType: "debug",
+  version: "8.0.0",
+  versionCode: 8000001,
+  buildType: "release",
 };
 const CANDIDATE_IPS = [
   "100.126.164.101", // Tailscale VPN
@@ -60,7 +60,7 @@ export async function findWorkingServer(): Promise<string> {
 const GITHUB_API_RELEASE_URL =
   "https://api.github.com/repos/servixam-max/titanium-app/releases/latest";
 const GITHUB_RAW_VERSION_URL =
-  "https://raw.githubusercontent.com/servixam-max/titanium-app/feat/v7-dashboard/version.json";
+  "https://raw.githubusercontent.com/servixam-max/titanium-app/main/version.json";
 
 interface RemoteVersion {
   version: string;

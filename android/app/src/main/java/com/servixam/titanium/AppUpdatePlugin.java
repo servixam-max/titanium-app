@@ -113,12 +113,9 @@ public class AppUpdatePlugin extends Plugin {
                 long fileLength = connection.getContentLength();
                 input = connection.getInputStream();
 
-                // Save to app external downloads directory or fallback to cache
+                // Save to app internal cache directory (guarantees FileProvider access across all Android versions)
                 Context context = getContext();
-                File downloadDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-                if (downloadDir == null) {
-                    downloadDir = context.getCacheDir();
-                }
+                File downloadDir = context.getCacheDir();
                 if (!downloadDir.exists()) {
                     downloadDir.mkdirs();
                 }
@@ -180,7 +177,7 @@ public class AppUpdatePlugin extends Plugin {
         String filePath = call.getString("filePath");
         File file = (filePath != null && !filePath.isEmpty())
             ? new File(filePath)
-            : new File(getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "FORTIXAM-update.apk");
+            : new File(getContext().getCacheDir(), "FORTIXAM-update.apk");
 
         if (!file.exists()) {
             call.reject("El archivo APK no existe en " + file.getAbsolutePath());
@@ -206,7 +203,19 @@ public class AppUpdatePlugin extends Plugin {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Explicitly grant read permissions to package installer activities
+        try {
+            java.util.List<android.content.pm.ResolveInfo> resInfoList = context.getPackageManager()
+                .queryIntentActivities(intent, android.content.pm.PackageManager.MATCH_DEFAULT_ONLY);
+            for (android.content.pm.ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                context.grantUriPermission(packageName, apkUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+        } catch (Exception ignored) {}
+
         context.startActivity(intent);
     }
 }
