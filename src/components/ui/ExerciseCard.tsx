@@ -79,7 +79,7 @@ export default function ExerciseCard({
       {/* Exercise Image/Icon */}
       <div
         className={`
-        rounded-xl bg-black/40 flex-shrink-0 flex items-center justify-center overflow-hidden border border-white/10 relative
+        rounded-full bg-black/40 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-white/15 relative
         ${compact ? "w-14 h-14" : "w-16 h-16"}
       `}
       >
@@ -87,7 +87,9 @@ export default function ExerciseCard({
           <ExerciseImage
             src={exercise.image}
             alt={exercise.name}
-            containerClassName="w-full h-full"
+            priority={true}
+            size="sm"
+            containerClassName="w-full h-full rounded-full"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             fallbackIcon={
               <Dumbbell className="w-7 h-7 text-primary/60" />
@@ -97,7 +99,7 @@ export default function ExerciseCard({
           <Dumbbell className="w-7 h-7 text-primary/60" />
         )}
         {index !== undefined && !isIndividual && (
-          <span className="absolute top-1 left-1 bg-primary text-black font-mono text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
+          <span className="absolute top-0.5 left-0.5 bg-primary text-black font-mono text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm z-20">
             #{index + 1}
           </span>
         )}

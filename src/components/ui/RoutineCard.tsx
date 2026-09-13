@@ -80,16 +80,18 @@ export default function RoutineCard({
         onClick={onClick}
         className="p-4 flex items-center gap-3.5 cursor-pointer active:bg-white/[0.02] transition-colors"
       >
-        {/* Cover Thumbnail - Increased to 68px */}
+        {/* Cover Thumbnail - Circular 68px */}
         {routine.coverImage && (
-          <div className="w-[68px] h-[68px] rounded-2xl overflow-hidden bg-black/40 border border-white/15 flex-shrink-0 relative group-hover:border-primary/50 transition-colors shadow-md">
+          <div className="w-[68px] h-[68px] rounded-full overflow-hidden bg-black/40 border-2 border-white/15 flex-shrink-0 relative group-hover:border-primary/50 transition-colors shadow-md">
             <ExerciseImage
               src={routine.coverImage}
               alt={routine.title}
-              size="sm" containerClassName="w-full h-full"
+              size="sm"
+              priority={true}
+              containerClassName="w-full h-full rounded-full"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none rounded-full" />
           </div>
         )}
 
@@ -209,12 +211,14 @@ export default function RoutineCard({
                   className="flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-[#131926]/90 border border-white/5 hover:border-primary/30 transition-all group/item"
                 >
                   {/* Photo */}
-                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-black/50 border border-white/10 flex-shrink-0 relative">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-black/50 border border-white/15 flex-shrink-0 relative">
                     {ex.image ? (
                       <ExerciseImage
                         src={ex.image}
                         alt={ex.name}
-                        size="sm" containerClassName="w-full h-full"
+                        size="sm"
+                        priority={true}
+                        containerClassName="w-full h-full rounded-full"
                         className="object-cover"
                       />
                     ) : (

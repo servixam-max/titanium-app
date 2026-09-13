@@ -5,6 +5,7 @@ import { Clock, Layers, ChevronRight, Zap } from "lucide-react";
 import { Routine } from "@/lib/types";
 import { haptics } from "@/lib/haptics";
 import BorderBeam from "@/components/ui/BorderBeam";
+import ExerciseImage from "@/components/ui/ExerciseImage";
 
 interface RecommendedRoutineCardProps {
   routine: Routine;
@@ -41,6 +42,18 @@ export default function RecommendedRoutineCard({
       </div>
 
       <div className="flex items-center justify-between gap-3">
+        {routine.coverImage && (
+          <div className="w-14 h-14 rounded-full overflow-hidden bg-black/50 border-2 border-primary/50 flex-shrink-0 relative shadow-md">
+            <ExerciseImage
+              src={routine.coverImage}
+              alt={routine.title}
+              size="sm"
+              priority={true}
+              containerClassName="w-full h-full rounded-full"
+              className="object-cover"
+            />
+          </div>
+        )}
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-lg font-black text-white transition-colors group-hover:text-primary">
             Día {routine.day} · {routine.title}
