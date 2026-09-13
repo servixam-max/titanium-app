@@ -7,6 +7,7 @@ import { useAppStore } from "@/lib/store";
 import TimerCircle from "@/components/ui/TimerCircle";
 import ExerciseImage from "@/components/ui/ExerciseImage";
 import PrimaryButton from "@/components/ui/PrimaryButton";
+import AudioWaveform from "@/components/ui/AudioWaveform";
 import ExitConfirmModal from "./ExitConfirmModal";
 import {
   playRestEndAlarm,
@@ -189,7 +190,16 @@ export default function RestOverlay() {
           strokeWidth={10}
           urgent={restUrgent}
           label="segundos"
-          className="mb-6"
+          className="mb-4"
+        />
+
+        {/* Bioluminescent Audio Waveform Pulse */}
+        <AudioWaveform
+          active={timeLeft > 0}
+          barCount={22}
+          color={restUrgent ? "#EF4444" : "#00D68F"}
+          secondaryColor={restUrgent ? "#F87171" : "#00E1FF"}
+          className="mb-5"
         />
 
         {/* Upcoming Exercise Preview Card */}

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Trophy, CheckCircle2, Lock } from "lucide-react";
 import { Achievement } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
+import Card3D from "@/components/ui/Card3D";
+import BorderBeam from "@/components/ui/BorderBeam";
 
 interface AchievementsListProps {
   achievements: Achievement[];
@@ -98,48 +100,77 @@ export default function AchievementsList({ achievements, className }: Achievemen
         })}
       </div>
 
-      {/* Detail Modal */}
+      {/* 3D Interactive Trophy Modal */}
       {selectedAchievement && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none"
           onClick={() => setSelectedAchievement(null)}
         >
           <div
-            className="bg-[#121620] border border-primary/40 rounded-3xl p-6 max-w-xs w-full shadow-2xl relative"
+            className="max-w-xs w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="text-center">
-              <span className="text-5xl block mb-2">{selectedAchievement.icon}</span>
-              <h3 className="text-lg font-mono font-black text-white">
-                {selectedAchievement.title}
-              </h3>
-              <p className="text-xs font-mono text-zinc-400 mt-1">
-                {selectedAchievement.description}
-              </p>
+            <Card3D highlight rotateXMax={14} rotateYMax={14}>
+              <div className="relative overflow-hidden bg-gradient-to-b from-[#161f2e] to-[#0e121a] border border-primary/40 rounded-3xl p-6 text-center shadow-2xl">
+                {selectedAchievement.isUnlocked && (
+                  <BorderBeam
+                    size={160}
+                    duration={5}
+                    colorFrom="#00D68F"
+                    colorTo="#00E1FF"
+                    borderWidth={2}
+                    borderRadius={24}
+                  />
+                )}
 
-              <div className="my-4 p-3 bg-black/40 rounded-xl border border-white/5">
-                <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">
-                  Estado
-                </span>
-                <span
-                  className={cn(
-                    "text-xs font-mono font-black uppercase",
-                    selectedAchievement.isUnlocked ? "text-primary" : "text-amber-400"
-                  )}
-                >
-                  {selectedAchievement.isUnlocked
-                    ? "✨ ¡Logro Desbloqueado!"
-                    : `En progreso: ${selectedAchievement.progress} / ${selectedAchievement.target} ${selectedAchievement.unit}`}
-                </span>
+                <div className="relative z-10">
+                  <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-tr from-black/80 to-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_24px_rgba(0,214,143,0.3)]">
+                    <span className="text-5xl block select-none">
+                      {selectedAchievement.icon}
+                    </span>
+                  </div>
+
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-400 block mb-1">
+                    {selectedAchievement.category}
+                  </span>
+                  <h3 className="text-lg font-mono font-black text-white">
+                    {selectedAchievement.title}
+                  </h3>
+                  <p className="text-xs font-mono text-zinc-300 mt-1 leading-relaxed">
+                    {selectedAchievement.description}
+                  </p>
+
+                  <div className="my-4 p-3 bg-black/50 rounded-2xl border border-white/5">
+                    <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">
+                      Estado del Logro
+                    </span>
+                    <span
+                      className={cn(
+                        "text-xs font-mono font-black uppercase tracking-wide",
+                        selectedAchievement.isUnlocked
+                          ? "text-primary drop-shadow-[0_0_8px_rgba(0,214,143,0.5)]"
+                          : "text-amber-400"
+                      )}
+                    >
+                      {selectedAchievement.isUnlocked
+                        ? "✨ ¡Trofeo Desbloqueado!"
+                        : `Progreso: ${selectedAchievement.progress} / ${selectedAchievement.target} ${selectedAchievement.unit}`}
+                    </span>
+                  </div>
+
+                  <p className="text-[10px] font-mono text-zinc-500 mb-3">
+                    👆 Mueve el dedo para inspeccionar el trofeo en 3D
+                  </p>
+
+                  <button
+                    onClick={() => setSelectedAchievement(null)}
+                    className="w-full h-11 bg-primary text-black font-mono font-black text-xs uppercase rounded-xl transition-all cursor-pointer active:scale-95 shadow-neon"
+                  >
+                    Entendido
+                  </button>
+                </div>
               </div>
-
-              <button
-                onClick={() => setSelectedAchievement(null)}
-                className="w-full h-11 bg-white/10 hover:bg-white/20 text-white font-mono font-bold text-xs uppercase rounded-xl transition-all cursor-pointer"
-              >
-                Cerrar
-              </button>
-            </div>
+            </Card3D>
           </div>
         </div>
       )}

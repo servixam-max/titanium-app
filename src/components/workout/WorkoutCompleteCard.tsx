@@ -5,8 +5,12 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { WorkoutSession } from "@/lib/types";
 import confetti from "canvas-confetti";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { routines } from "@/lib/data";
+import { playVictoryFanfare } from "@/lib/audio";
+import NumberTicker from "@/components/ui/NumberTicker";
+import BorderBeam from "@/components/ui/BorderBeam";
+import { generateAIDebrief } from "@/lib/ai-debrief";
 
 interface WorkoutCompleteCardProps {
   session?: WorkoutSession | null;
@@ -18,11 +22,15 @@ function StatBox({
   icon: Icon,
   label,
   value,
+  numericValue,
+  suffix = "",
   color = "text-primary",
 }: {
   icon: React.ElementType;
   label: string;
-  value: string;
+  value?: string;
+  numericValue?: number;
+  suffix?: string;
   color?: string;
 }) {
   return (
@@ -31,7 +39,15 @@ function StatBox({
       <span className="text-zinc-400 text-[10px] font-mono uppercase font-bold tracking-wider">
         {label}
       </span>
-      <span className="text-lg font-black font-mono text-white mt-0.5">{value}</span>
+      {numericValue !== undefined ? (
+        <NumberTicker
+          value={numericValue}
+          suffix={suffix}
+          className="text-lg font-black font-mono text-white mt-0.5"
+        />
+      ) : (
+        <span className="text-lg font-black font-mono text-white mt-0.5">{value}</span>
+      )}
     </div>
   );
 }
@@ -45,7 +61,7 @@ export default function WorkoutCompleteCard({
 
   // Robust fallback: if the session is missing or malformed, still show a celebration screen
   const safeSession = session && session.exercises ? session : null;
-  const safeSessions = Array.isArray(sessions) ? sessions : [];
+  const safeSessions = useMemo(() => (Array.isArray(sessions) ? sessions : []), [sessions]);
 
   useEffect(() => {
     const colors = ["#10B981", "#059669", "#34D399", "#F59E0B", "#FFFFFF", "#00F59B"];
@@ -76,8 +92,15 @@ export default function WorkoutCompleteCard({
       });
     }, 280);
 
+    playVictoryFanfare();
+
     return () => clearTimeout(timer);
   }, []);
+
+  const aiDebrief = useMemo(
+    () => (safeSession ? generateAIDebrief(safeSession, safeSessions) : null),
+    [safeSession, safeSessions]
+  );
 
   const routineTitle =
     activeRoutineTitle ||
@@ -198,20 +221,82 @@ export default function WorkoutCompleteCard({
           value={`${minutes}:${seconds.toString().padStart(2, "0")}`}
           color="text-cyan-400"
         />
-        <StatBox icon={Hash} label="Series" value={String(totalSets)} color="text-primary" />
+        <StatBox
+          icon={Hash}
+          label="Series"
+          numericValue={totalSets}
+          color="text-primary"
+        />
         <StatBox
           icon={Dumbbell}
           label="Volumen"
-          value={`${Math.round(totalVolume)} kg`}
+          numericValue={Math.round(totalVolume)}
+          suffix=" kg"
           color="text-cyan-400"
         />
-        <StatBox icon={Calendar} label="Reps" value={String(totalReps)} color="text-primary" />
+        <StatBox
+          icon={Calendar}
+          label="Reps"
+          numericValue={totalReps}
+          color="text-primary"
+        />
       </motion.div>
+
+      {/* AI Workout Debrief Card */}
+      {aiDebrief && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="relative overflow-hidden w-full bg-gradient-to-br from-[#101726] to-[#121620] border border-cyan-500/30 rounded-3xl p-4 text-left shadow-2xl mb-5"
+        >
+          <BorderBeam
+            size={180}
+            duration={6}
+            colorFrom="#00E1FF"
+            colorTo="#00D68F"
+            borderWidth={1.5}
+            borderRadius={24}
+          />
+
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              Coach IA · Debrief Biomecánico
+            </span>
+            <div className="flex gap-1.5 flex-wrap">
+              {aiDebrief.tags.map((t, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase bg-cyan-400/10 text-cyan-300 border border-cyan-400/30"
+                >
+                  {t.label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <h4 className="text-xs font-mono font-bold text-white mb-1">
+            {aiDebrief.headline}
+          </h4>
+          <p className="text-[11px] font-mono text-zinc-300 leading-relaxed mb-2.5">
+            {aiDebrief.summary}
+          </p>
+
+          <div className="pt-2 border-t border-white/5 flex items-start gap-2">
+            <span className="text-sm flex-shrink-0">💡</span>
+            <p className="text-[10px] font-mono text-zinc-400 leading-tight">
+              <strong className="text-primary font-bold">Consejo para mañana: </strong>
+              {aiDebrief.recommendationTomorrow}
+            </p>
+          </div>
+        </motion.div>
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.35 }}
         className="w-full space-y-2.5"
       >
         <button

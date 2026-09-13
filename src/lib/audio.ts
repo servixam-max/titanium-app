@@ -248,6 +248,35 @@ function playHarmonicChime(
 }
 
 /**
+ * Polyphonic synthesized victory fanfare for level up / workout complete
+ */
+export function playVictoryFanfare(): void {
+  if (isAudioSilent() || !isBeepAllowed()) return;
+  try {
+    resumeContext().then(() => {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      // Synthesized victory fanfare chords (C4, E4, G4, C5)
+      const notes = [261.63, 329.63, 392.0, 523.25];
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq, now + idx * 0.11);
+        gain.gain.setValueAtTime(0, now + idx * 0.11);
+        gain.gain.linearRampToValueAtTime(0.2, now + idx * 0.11 + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.11 + 0.55);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.11);
+        osc.stop(now + idx * 0.11 + 0.6);
+      });
+    });
+  } catch {}
+}
+
+/**
  * Modern iOS-style acoustic woodblock/droplet tick for countdowns
  */
 function playSoftTick(freq: number = 600, volume: number = 0.18) {

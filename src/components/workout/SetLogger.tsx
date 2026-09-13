@@ -6,6 +6,9 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import { Exercise } from "@/lib/types";
 import { haptics } from "@/lib/haptics";
 import { estimate1RM, checkNewSetRecord, ExerciseRecord } from "@/lib/records";
+import VoiceLoggerButton from "./VoiceLoggerButton";
+import NumberTicker from "@/components/ui/NumberTicker";
+import { ParsedVoiceWorkout } from "@/lib/voice-parser";
 
 interface SetLoggerProps {
   exercise: Exercise;
@@ -91,19 +94,39 @@ export default function SetLogger({
     haptics.tick();
   };
 
+  const handleVoiceParsed = (data: ParsedVoiceWorkout) => {
+    if (data.weight !== undefined) {
+      setLocalWeight(String(data.weight));
+      onWeightChange(data.weight);
+    }
+    if (data.reps !== undefined) {
+      setLocalReps(String(data.reps));
+      onRepsChange(data.reps);
+    }
+    if (data.autoSubmit) {
+      setTimeout(() => {
+        onComplete();
+      }, 600);
+    }
+  };
+
   return (
     <div className={`flex flex-col gap-2 ${className ?? ""}`}>
-      {showRepeat && onRepeatLastSet && (
-        <PrimaryButton
-          variant="secondary"
-          size="sm"
-          leftIcon={<RotateCcw className="w-4 h-4" />}
-          onClick={onRepeatLastSet}
-          className="mb-1"
-        >
-          Repetir última serie
-        </PrimaryButton>
-      )}
+      <div className="flex items-center justify-between mb-0.5">
+        {showRepeat && onRepeatLastSet ? (
+          <button
+            type="button"
+            onClick={onRepeatLastSet}
+            className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono font-bold text-zinc-400 hover:text-white bg-white/5 border border-white/5 rounded-xl active:scale-95 transition-all"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Repetir serie</span>
+          </button>
+        ) : (
+          <div />
+        )}
+        <VoiceLoggerButton onParsed={handleVoiceParsed} />
+      </div>
 
       <div className="grid grid-cols-2 gap-3">
         {/* Weight input */}
@@ -181,7 +204,7 @@ export default function SetLogger({
       {estimated1RM > 0 && (Number(localReps) || 0) >= 2 && (
         <div className="flex items-center justify-center gap-2 py-1.5 px-3 bg-cyan-400/10 border border-cyan-400/20 rounded-xl">
           <span className="text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">1RM Est.</span>
-          <span className="text-white font-mono font-black text-sm">{estimated1RM} kg</span>
+          <NumberTicker value={estimated1RM} suffix=" kg" className="text-white font-mono font-black text-sm" />
           <span className="text-zinc-400 text-[10px] font-mono">(Epley)</span>
         </div>
       )}

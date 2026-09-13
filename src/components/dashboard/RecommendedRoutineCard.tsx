@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Clock, Layers, ChevronRight, Zap } from "lucide-react";
 import { Routine } from "@/lib/types";
 import { haptics } from "@/lib/haptics";
+import BorderBeam from "@/components/ui/BorderBeam";
 
 interface RecommendedRoutineCardProps {
   routine: Routine;
@@ -23,6 +24,7 @@ export default function RecommendedRoutineCard({
       transition={{ duration: 0.35, delay: 0.05 }}
       className="group relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-[#121620] via-[#141b2a] to-[#111522] p-4 shadow-xl active:scale-[0.99] transition-transform"
     >
+      <BorderBeam size={200} duration={6} colorFrom="#00D68F" colorTo="#00E1FF" borderWidth={2} borderRadius={24} />
       <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
 
       <div className="mb-2.5 flex items-center justify-between gap-2">
