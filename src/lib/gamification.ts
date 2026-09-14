@@ -126,6 +126,68 @@ export function computeAchievements(sessions: LocalSession[], currentStreak: num
     return hour >= 21 || hour < 4;
   });
 
+  // Additional metric calculations for new achievements
+  const totalSets = completed.reduce(
+    (sum, s) => sum + (s.exercises || []).reduce((eSum, ex) => eSum + (ex.sets || []).length, 0),
+    0
+  );
+
+  const maxSessionReps = Math.max(
+    0,
+    ...completed.map((s) =>
+      (s.exercises || []).reduce(
+        (eSum, ex) => eSum + (ex.sets || []).reduce((sSum, st) => sSum + (st.reps || 0), 0),
+        0
+      )
+    )
+  );
+
+  const maxSessionVolume = Math.max(
+    0,
+    ...completed.map((s) =>
+      (s.exercises || []).reduce(
+        (eSum, ex) =>
+          eSum + (ex.sets || []).reduce((sSum, st) => sSum + (st.weight || 0) * (st.reps || 0), 0),
+        0
+      )
+    )
+  );
+
+  const hasWeekend = completed.some((s) => {
+    const d = new Date(s.startTime);
+    const day = d.getDay();
+    return day === 0 || day === 6; // Sunday or Saturday
+  });
+
+  const hasCustom = completed.some(
+    (s) =>
+      s.routineId === 18 ||
+      (typeof s.routineId === "string" && s.routineId.startsWith("custom")) ||
+      (s.routineName && s.routineName.toLowerCase().includes("personalizad"))
+  );
+
+  const hasHIIT = completed.some((s) => {
+    const t = (s.routineName || "").toLowerCase();
+    const isHIITTitle = t.includes("tabata") || t.includes("hiit") || t.includes("quemagrasa");
+    const hasHIITEx = (s.exercises || []).some((e) => {
+      const en = (e.exerciseName || "").toLowerCase();
+      return (
+        en.includes("burpee") ||
+        en.includes("patinador") ||
+        en.includes("escalador") ||
+        en.includes("tabata")
+      );
+    });
+    return isHIITTitle || hasHIITEx;
+  });
+
+  const hasFastWorkout = completed.some((s) => {
+    const durSec =
+      s.durationSeconds ??
+      (s.endTime ? (new Date(s.endTime).getTime() - new Date(s.startTime).getTime()) / 1000 : 0);
+    return durSec > 300 && durSec <= 1500; // Between 5 and 25 min
+  });
+
   return [
     {
       id: "first_workout",
@@ -158,6 +220,17 @@ export function computeAchievements(sessions: LocalSession[], currentStreak: num
       isUnlocked: currentStreak >= 7,
       progress: Math.min(7, currentStreak),
       target: 7,
+      unit: "días",
+    },
+    {
+      id: "streak_14",
+      icon: "🔱",
+      title: "Espíritu Inquebrantable",
+      description: "2 semanas (14 días) continuas de disciplina",
+      category: "streak",
+      isUnlocked: currentStreak >= 14,
+      progress: Math.min(14, currentStreak),
+      target: 14,
       unit: "días",
     },
     {
@@ -205,6 +278,39 @@ export function computeAchievements(sessions: LocalSession[], currentStreak: num
       unit: "sesiones",
     },
     {
+      id: "century_sets",
+      icon: "💯",
+      title: "Centurión del Hierro",
+      description: "Completa 100 series totales de esfuerzo",
+      category: "milestone",
+      isUnlocked: totalSets >= 100,
+      progress: Math.min(100, totalSets),
+      target: 100,
+      unit: "series",
+    },
+    {
+      id: "custom_routine",
+      icon: "🛠️",
+      title: "Arquitecto del Titanio",
+      description: "Crea o entrena tu propia rutina personalizada",
+      category: "milestone",
+      isUnlocked: hasCustom,
+      progress: hasCustom ? 1 : 0,
+      target: 1,
+      unit: "sesión",
+    },
+    {
+      id: "tabata_master",
+      icon: "⚡",
+      title: "Furia Tabata",
+      description: "Supera una sesión de alta intensidad o Tabata",
+      category: "milestone",
+      isUnlocked: hasHIIT,
+      progress: hasHIIT ? 1 : 0,
+      target: 1,
+      unit: "sesión",
+    },
+    {
       id: "volume_1t",
       icon: "🏋️",
       title: "Primer Tonel",
@@ -238,6 +344,28 @@ export function computeAchievements(sessions: LocalSession[], currentStreak: num
       unit: "kg",
     },
     {
+      id: "ton_single",
+      icon: "🚛",
+      title: "Golpe de Tonelada",
+      description: "Supera 1.500 kg en una única sesión",
+      category: "volume",
+      isUnlocked: maxSessionVolume >= 1500,
+      progress: Math.min(1500, Math.round(maxSessionVolume)),
+      target: 1500,
+      unit: "kg",
+    },
+    {
+      id: "rep_storm",
+      icon: "🌪️",
+      title: "Tormenta de Reps",
+      description: "Ejecuta más de 100 repeticiones en una sola sesión",
+      category: "volume",
+      isUnlocked: maxSessionReps >= 100,
+      progress: Math.min(100, maxSessionReps),
+      target: 100,
+      unit: "reps",
+    },
+    {
       id: "early_bird",
       icon: "🌅",
       title: "Madrugador",
@@ -256,6 +384,28 @@ export function computeAchievements(sessions: LocalSession[], currentStreak: num
       category: "discipline",
       isUnlocked: hasNightOwl,
       progress: hasNightOwl ? 1 : 0,
+      target: 1,
+      unit: "sesión",
+    },
+    {
+      id: "weekend_warrior",
+      icon: "🌟",
+      title: "Fin de Semana Imparable",
+      description: "Entrena un sábado o domingo sin excusas",
+      category: "discipline",
+      isUnlocked: hasWeekend,
+      progress: hasWeekend ? 1 : 0,
+      target: 1,
+      unit: "sesión",
+    },
+    {
+      id: "speed_demon",
+      icon: "⏱️",
+      title: "Sesión Relámpago",
+      description: "Entrenamiento completado en 25 minutos o menos",
+      category: "discipline",
+      isUnlocked: hasFastWorkout,
+      progress: hasFastWorkout ? 1 : 0,
       target: 1,
       unit: "sesión",
     },
