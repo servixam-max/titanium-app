@@ -57,7 +57,11 @@ function main() {
   const shellFiles = shellRoutes.map((r) => (r === "/" ? "/index.html" : `${r}.html`));
   const precacheList = Array.from(new Set([...shellFiles, ...htmlRoutes, ...staticAssets]));
 
-  const sw = `const CACHE_NAME = 'fortixam-v2-1';
+  const pkg = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf-8")
+  );
+  const cacheVersion = pkg.version.replace(/\./g, "-");
+  const sw = `const CACHE_NAME = 'fortixam-v${cacheVersion}';
 const PRECACHE_ASSETS = ${JSON.stringify(precacheList, null, 2)};
 
 // Install: precache shell and static assets

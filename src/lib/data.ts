@@ -563,7 +563,7 @@ export const routines: Routine[] = [
         tempo: "Potente",
         category: "chest",
         difficulty: "Intermedio",
-        image: getImg("classic_push_ups"),
+        image: getImg("explosive_pushups", "webp"),
       },
       {
         id: "d4-b-3",
@@ -602,7 +602,7 @@ export const routines: Routine[] = [
         tempo: "Controlado",
         category: "shoulders",
         difficulty: "Intermedio",
-        image: getImg("wall_bench_push"),
+        image: getImg("pike_pushups", "webp"),
       },
       {
         id: "d4-b-6",
@@ -756,7 +756,7 @@ export const routines: Routine[] = [
         tempo: "2 - 0 - 2 - 0",
         category: "triceps",
         difficulty: "Principiante",
-        image: getImg("wall_bench_push"),
+        image: getImg("bench_dips", "webp"),
       },
       {
         id: "d5-7",
@@ -872,7 +872,7 @@ export const routines: Routine[] = [
         tempo: "2 - 0 - 2 - 0",
         category: "core",
         difficulty: "Intermedio",
-        image: getImg("abdominal_crunch", "webp"),
+        image: getImg("bicycle_crunches", "webp"),
       },
     ],
   },
@@ -988,7 +988,7 @@ export const routines: Routine[] = [
         tempo: "2 - 0 - 2 - 0",
         category: "triceps",
         difficulty: "Principiante",
-        image: getImg("wall_bench_push"),
+        image: getImg("bench_dips", "webp"),
       },
     ],
   },
@@ -1816,7 +1816,7 @@ export const routines: Routine[] = [
         tempo: "2 - 1 - 1 - 0",
         category: "shoulders",
         difficulty: "Intermedio",
-        image: getImg("wall_bench_push"),
+        image: getImg("pike_pushups", "webp"),
       },
       {
         id: "d12-2-bw",
@@ -1830,7 +1830,7 @@ export const routines: Routine[] = [
         tempo: "2 - 0 - 1 - 0",
         category: "arms",
         difficulty: "Principiante",
-        image: getImg("wall_bench_push"),
+        image: getImg("bench_dips", "webp"),
       },
       {
         id: "d12-3-bw",
@@ -1844,7 +1844,7 @@ export const routines: Routine[] = [
         tempo: "3 - 0 - 1 - 0",
         category: "arms",
         difficulty: "Avanzado",
-        image: getImg("classic_push_ups"),
+        image: getImg("diamond_pushups", "webp"),
       },
       {
         id: "d12-4-bw",
@@ -1858,7 +1858,7 @@ export const routines: Routine[] = [
         tempo: "Controlado",
         category: "shoulders",
         difficulty: "Intermedio",
-        image: getImg("plank_jack"),
+        image: getImg("shoulder_taps", "webp"),
       },
       {
         id: "d12-5-bw",
@@ -2194,7 +2194,7 @@ export const routines: Routine[] = [
         tempo: "2 - 0 - 2 - 0",
         category: "shoulders",
         difficulty: "Intermedio",
-        image: getImg("push_press"),
+        image: getImg("pike_pushups", "webp"),
       },
       {
         id: "d14-4-bw",
@@ -2207,7 +2207,7 @@ export const routines: Routine[] = [
         tempo: "2 - 0 - 2 - 0",
         category: "triceps",
         difficulty: "Principiante",
-        image: getImg("wall_bench_push"),
+        image: getImg("bench_dips", "webp"),
       },
       {
         id: "d14-5-bw",
@@ -3323,7 +3323,7 @@ export const routines: Routine[] = [
         tempo: "Explosivo",
         category: "chest",
         difficulty: "Avanzado",
-        image: getImg("classic_push_ups"),
+        image: getImg("explosive_pushups", "webp"),
       },
       {
         id: "d13-bw-3",
@@ -3351,7 +3351,7 @@ export const routines: Routine[] = [
         tempo: "2 - 1 - 1 - 0",
         category: "triceps",
         difficulty: "Intermedio",
-        image: getImg("wall_bench_push"),
+        image: getImg("bench_dips", "webp"),
       },
       {
         id: "d13-bw-5",
@@ -3519,7 +3519,7 @@ export const routines: Routine[] = [
         tempo: "2 - 1 - 2 - 0",
         category: "core",
         difficulty: "Intermedio",
-        image: getImg("abdominal_crunch"),
+        image: getImg("bicycle_crunches", "webp"),
       },
       {
         id: "d13-bw-17",
@@ -3659,7 +3659,7 @@ export const routines: Routine[] = [
         tempo: "Estático",
         category: "core",
         difficulty: "Intermedio",
-        image: getImg("plank_single"),
+        image: getImg("side_plank", "webp"),
       },
     ],
   },
