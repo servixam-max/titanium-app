@@ -432,3 +432,54 @@ nav {
 .animate-shimmer {
   animation: shimmer 1.8s ease-in-out infinite;
 }
+
+/* === 3D Cyber Hologram & Biometric Scanner === */
+@keyframes laser-sweep {
+  0% {
+    top: 4%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    top: 94%;
+    opacity: 0;
+  }
+}
+.animate-laser-sweep {
+  animation: laser-sweep 2.8s ease-in-out infinite;
+}
+
+@keyframes cyber-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px #00D68F) drop-shadow(0 0 12px rgba(0, 214, 143, 0.45));
+    opacity: 0.95;
+  }
+  50% {
+    filter: drop-shadow(0 0 8px #CCFF00) drop-shadow(0 0 22px rgba(204, 255, 0, 0.8));
+    opacity: 1;
+  }
+}
+.animate-cyber-pulse {
+  animation: cyber-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes hologram-scanline {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
+.hologram-grid-floor {
+  background-image:
+    linear-gradient(rgba(0, 214, 143, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 214, 143, 0.18) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+

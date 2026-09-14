@@ -442,21 +442,28 @@ export default function StatsPage() {
           </section>
         )}
 
-        {/* Mapa Muscular Anatómico 3D */}
-        <section className="bg-gradient-to-br from-[#121622] via-[#141b2a] to-[#0e131d] border border-primary/30 rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
+        {/* Mapa Muscular Anatómico 3D de Última Generación */}
+        <section className="bg-gradient-to-br from-[#101522] via-[#12192b] to-[#0c101a] border border-primary/30 rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-[0_0_12px_rgba(0,214,143,0.3)]">
                 <Activity className="w-4 h-4" />
               </span>
               <div>
-                <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider">
-                  Mapa Anatómico 3D
+                <h3 className="text-xs font-mono font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+                  Escenario Anatómico 3D
+                  <span className="px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/30 rounded text-[9px] font-mono font-bold">
+                    v8.4.3
+                  </span>
                 </h3>
                 <span className="text-[10px] font-mono text-zinc-400">
-                  Activación biomecánica y volumen muscular
+                  Telemetría biomecánica, hipertrofia y simetría
                 </span>
               </div>
+            </div>
+            <div className="flex items-center gap-1 text-[10px] font-mono text-zinc-400 bg-black/40 px-2.5 py-1 rounded-full border border-white/10">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-zinc-300 font-bold">Holograma</span>
             </div>
           </div>
 
