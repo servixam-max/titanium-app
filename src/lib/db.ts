@@ -656,6 +656,15 @@ export async function getRoutines(ownerUserId?: string): Promise<Routine[]> {
   return db.routines.where("ownerUserId").equals(target).and((r) => !r.deleted).toArray();
 }
 
+export async function deleteRoutine(id: string): Promise<void> {
+  const routine = await db.routines.get(id);
+  if (routine) {
+    const updated = { ...routine, deleted: true, modifiedAt: nowIso(), version: (routine.version || 0) + 1 };
+    await db.routines.put(updated);
+    await enqueueSync("Routine", id, "delete", updated);
+  }
+}
+
 export async function saveExercise(exercise: Exercise): Promise<void> {
   const version = (exercise.version || 0) + 1;
   const enriched: Exercise = {

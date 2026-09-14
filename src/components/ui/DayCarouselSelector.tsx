@@ -46,7 +46,7 @@ export default function DayCarouselSelector({
         {days.map((day) => {
           const isSelected = selectedDay === day;
           const isCompleted = completedDayIds.has(day);
-          const isExtra = day === 13;
+          const isExtra = day === 18;
 
           return (
             <button
@@ -80,7 +80,7 @@ export default function DayCarouselSelector({
                     isSelected ? "text-black font-black text-xl" : isCompleted ? "text-emerald-300 font-black" : "text-white font-black"
                   }`}
                 >
-                  {isExtra ? "13" : day < 10 ? `0${day}` : day}
+                  {isExtra ? "18" : day < 10 ? `0${day}` : day}
                 </span>
 
                 {isCompleted && (

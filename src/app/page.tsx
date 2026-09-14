@@ -23,6 +23,7 @@ import ExerciseGridCard from "@/components/ui/ExerciseGridCard";
 import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
 import ExerciseSearchBar, { MuscleCategory, EquipmentFilter } from "@/components/ui/ExerciseSearchBar";
+import { CustomWorkoutBuilder } from "@/components/custom-workout";
 import { routines, warmUpExercises, getCompleteExerciseCatalog } from "@/lib/data";
 import { useAppStore } from "@/lib/store";
 import { getSessions, getActivePlan, getPlans } from "@/lib/db";
@@ -172,8 +173,8 @@ export default function Dashboard() {
     const completed = sessionsList.filter((s) => s.completed && s.routineId);
     if (completed.length === 0) return routines[0];
     const lastRoutineId = Number(completed[0].routineId);
-    if (isNaN(lastRoutineId) || lastRoutineId < 1 || lastRoutineId > 12) return routines[0];
-    const nextDay = (lastRoutineId % 12) + 1;
+    if (isNaN(lastRoutineId) || lastRoutineId < 1 || lastRoutineId > 17) return routines[0];
+    const nextDay = (lastRoutineId % 17) + 1;
     return routines.find((r) => r.day === nextDay) || routines[0];
   }, [sessionsList, activePlan]);
 
@@ -222,7 +223,7 @@ export default function Dashboard() {
 
   const handleStartSingleExercise = (exercise: Exercise) => {
     const singleRoutine: Routine = {
-      day: 13,
+      day: 18,
       title: exercise.name,
       subtitle: exercise.description || "Ejercicio individual",
       type: "strength",
@@ -294,10 +295,10 @@ export default function Dashboard() {
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between px-1">
                 <span className="text-xs font-black uppercase tracking-wider text-zinc-400">
-                  Seleccionar Día (1 al 13)
+                  Seleccionar Día (1 al 18)
                 </span>
                 <span className="text-[11px] font-bold text-primary">
-                  Día activo: {selectedDay === 13 ? "Libre (Extra)" : `Día ${selectedDay}`}
+                  Día activo: {selectedDay === 18 ? "Libre (Extra)" : `Día ${selectedDay}`}
                 </span>
               </div>
               <DayCarouselSelector
@@ -311,6 +312,28 @@ export default function Dashboard() {
                 completedDayIds={completedTodayRoutineIds}
               />
             </div>
+
+            {selectedDay === 18 && (
+              <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-primary/15 to-cyan-500/15 border border-primary/30 p-3 shadow-lg">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-primary">
+                    Constructor Personalizado
+                  </span>
+                  <span className="text-xs font-bold text-white">
+                    ¿Quieres crear tu entrenamiento por series y tiempos?
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    haptics.selection();
+                    setActiveTab("custom");
+                  }}
+                  className="rounded-xl bg-primary text-black px-3 py-1.5 text-xs font-black uppercase tracking-wider shadow-neon hover:brightness-110 active:scale-95 transition-all"
+                >
+                  Abrir Creador
+                </button>
+              </div>
+            )}
 
             <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
 
@@ -360,6 +383,16 @@ export default function Dashboard() {
             }}
             onSelectRoutine={(routine) => {
               setSelectedRoutine(routine);
+            }}
+          />
+        )}
+
+        {activeTab === "custom" && (
+          <CustomWorkoutBuilder
+            catalog={completeCatalog}
+            onStartCustomWorkout={(routine, mode) => {
+              startWorkout(routine, mode, 0);
+              router.push(mode === "guided" ? "/workout/guided" : "/workout/individual");
             }}
           />
         )}

@@ -58,7 +58,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
     routine.alternativeExercises && routine.alternativeExercises.length > 0
   );
   const isFreeDay =
-    routine.categoryTag === "personalizado" || routine.day === 13;
+    routine.categoryTag === "personalizado" || routine.day === 18;
   const exercises =
     hasAlternatives &&
     equipmentPreference === "bodyweight" &&
