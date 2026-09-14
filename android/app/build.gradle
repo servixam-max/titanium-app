@@ -7,8 +7,8 @@ android {
         applicationId "com.servixam.titanium"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8020006
-        versionName "8.4.3"
+        versionCode 8020007
+        versionName "8.4.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
