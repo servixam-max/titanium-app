@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Trophy, CheckCircle2, Lock, Sparkles, Filter } from "lucide-react";
+import { Trophy, CheckCircle2, Lock } from "lucide-react";
 import { Achievement } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
 import Card3D from "@/components/ui/Card3D";

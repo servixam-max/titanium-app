@@ -13,6 +13,8 @@ const publicDir = path.join(root, "public");
 const SUPPORTED = new Set([".webp", ".jpg", ".jpeg", ".png"]);
 const MAX_SIZE_KB = 120;
 
+let sharp;
+
 async function walk(dir, extFilter) {
   const entries = [];
   const files = await fs.readdir(dir, { withFileTypes: true });
@@ -32,11 +34,32 @@ async function getSizeKb(file) {
   return stat.size / 1024;
 }
 
+async function encodeTo(file, opts, pass = 1) {
+  const dir = path.dirname(file);
+  const ext = path.extname(file).toLowerCase();
+  const isJpg = ext === ".jpg" || ext === ".jpeg";
+  const tmpExt = isJpg ? `.tmp${pass}.jpg` : `.tmp${pass}.webp`;
+  const tmp = path.join(dir, `${path.basename(file, ext)}${tmpExt}`);
+
+  const pipeline = sharp(file).resize({
+    width: opts.width,
+    height: opts.width,
+    fit: "inside",
+    withoutEnlargement: true,
+  });
+  if (isJpg) {
+    pipeline.jpeg({ quality: opts.quality, mozjpeg: true });
+  } else {
+    pipeline.webp({ quality: opts.quality, effort: 6 });
+  }
+  await pipeline.toFile(tmp);
+  return tmp;
+}
+
 async function main() {
   const compress = process.argv.includes("--compress");
   console.log(`🔍 Scanning assets${compress ? " and compressing" : ""}...`);
 
-  let sharp;
   if (compress) {
     try {
       sharp = (await import("sharp")).default;
@@ -57,18 +80,32 @@ async function main() {
     if (kb > MAX_SIZE_KB) {
       oversized++;
       if (compress) {
-        const dir = path.dirname(file);
-        const base = path.basename(file, path.extname(file));
-        const tmp = path.join(dir, `${base}.tmp.webp`);
         const originalSize = await fs.stat(file).then((s) => s.size);
-        await sharp(file)
-          .resize({ width: 1080, height: 1080, fit: "inside", withoutEnlargement: true })
-          .webp({ quality: 82, effort: 6 })
-          .toFile(tmp);
-        const newSize = await fs.stat(tmp).then((s) => s.size);
-        await fs.rename(tmp, path.join(dir, `${base}.webp`));
+
+        // Primera pasada: alta calidad (1440px, q85/q82)
+        let tmp = await encodeTo(file, { width: 1440, quality: file.match(/\.jpe?g$/) ? 82 : 85 }, 1);
+        let newSize = await fs.stat(tmp).then((s) => s.size);
+
+        // Segunda pasada si sigue por encima del presupuesto
+        if (newSize / 1024 > MAX_SIZE_KB) {
+          const tmp2 = await encodeTo(file, { width: 1080, quality: 76 }, 2);
+          const size2 = await fs.stat(tmp2).then((s) => s.size);
+          if (size2 < newSize) {
+            await fs.rm(tmp).catch(() => {});
+            tmp = tmp2;
+            newSize = size2;
+          } else {
+            await fs.rm(tmp2).catch(() => {});
+          }
+        }
+
+        const dir = path.dirname(file);
+        const ext = path.extname(file).toLowerCase();
+        const isJpg = ext === ".jpg" || ext === ".jpeg";
+        await fs.rename(tmp, path.join(dir, `${path.basename(file, ext)}${isJpg ? ".jpg" : ".webp"}`));
         savedKb += (originalSize - newSize) / 1024;
-        console.log(`✅ Compressed ${path.relative(root, file)} (${kb.toFixed(1)} KB → ${(newSize / 1024).toFixed(1)} KB)`);
+        const stillOver = newSize / 1024 > MAX_SIZE_KB ? " (⚠️ límite no alcanzado)" : "";
+        console.log(`✅ Compressed ${path.relative(root, file)} (${kb.toFixed(1)} KB → ${(newSize / 1024).toFixed(1)} KB)${stillOver}`);
       } else {
         console.log(`⚠️  Oversized: ${path.relative(root, file)} (${kb.toFixed(1)} KB)`);
       }

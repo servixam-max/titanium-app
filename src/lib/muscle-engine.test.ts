@@ -4,6 +4,64 @@ import {
   getExerciseBiomechanics,
 } from "./muscle-engine";
 import { LocalSession } from "./db";
+import { ExerciseLog, SetLog } from "./types";
+
+function makeSet(
+  ownerUserId: string,
+  setNumber: number,
+  weight: number,
+  reps: number,
+): SetLog {
+  const now = new Date().toISOString();
+  return {
+    id: `set-${ownerUserId}-${setNumber}`,
+    clientId: "test-client",
+    ownerUserId,
+    createdAt: now,
+    modifiedAt: now,
+    version: 1,
+    setNumber,
+    weight,
+    reps,
+    completed: true,
+    timestamp: now,
+  };
+}
+
+function makeSession(
+  id: string,
+  exerciseId: string,
+  exerciseName: string,
+  sets: SetLog[],
+): LocalSession {
+  const now = new Date().toISOString();
+  const exercise: ExerciseLog = {
+    id: `exlog-${id}`,
+    clientId: "test-client",
+    ownerUserId: "u1",
+    createdAt: now,
+    modifiedAt: now,
+    version: 1,
+    exerciseId,
+    exerciseName,
+    order: 0,
+    sets,
+  };
+  return {
+    id,
+    clientId: "test-client",
+    ownerUserId: "u1",
+    createdAt: now,
+    modifiedAt: now,
+    version: 1,
+    routineId: 1,
+    mode: "individual",
+    startTime: now,
+    endTime: now,
+    completed: true,
+    exercises: [exercise],
+  };
+}
 
 describe("Biomechanical Muscle Engine", () => {
   it("correctly identifies primary and secondary muscles for chest press", () => {
@@ -20,34 +78,15 @@ describe("Biomechanical Muscle Engine", () => {
   });
 
   it("computes muscle volume and sets across completed sessions", () => {
-    const mockSessions: any[] = [
-      {
-        id: "s1",
-        clientId: "c1",
-        ownerUserId: "u1",
-        routineId: 1,
-        mode: "individual",
-        startTime: new Date().toISOString(),
-        endTime: new Date().toISOString(),
-        completed: true,
-        createdAt: new Date().toISOString(),
-        modifiedAt: new Date().toISOString(),
-        version: 1,
-        exercises: [
-          {
-            exerciseId: "bench-press",
-            exerciseName: "Press de Banca Plano",
-            sets: [
-              { setNumber: 1, weight: 60, reps: 10, completed: true },
-              { setNumber: 2, weight: 60, reps: 10, completed: true },
-            ] as any,
-          },
-        ],
-      },
+    const sessions: LocalSession[] = [
+      makeSession("s1", "bench-press", "Press de Banca Plano", [
+        makeSet("u1", 1, 60, 10),
+        makeSet("u1", 2, 60, 10),
+      ]),
     ];
 
     const { muscleStats, totalEffectiveVolume } = computeMuscleBreakdown(
-      mockSessions as any,
+      sessions,
       "week"
     );
 
@@ -63,32 +102,13 @@ describe("Biomechanical Muscle Engine", () => {
   });
 
   it("activates muscles even for 0kg bodyweight exercises", () => {
-    const mockSessions: any[] = [
-      {
-        id: "s2",
-        clientId: "c2",
-        ownerUserId: "u1",
-        routineId: 2,
-        mode: "guided",
-        startTime: new Date().toISOString(),
-        endTime: new Date().toISOString(),
-        completed: true,
-        createdAt: new Date().toISOString(),
-        modifiedAt: new Date().toISOString(),
-        version: 1,
-        exercises: [
-          {
-            exerciseId: "squats",
-            exerciseName: "Sentadillas Libres",
-            sets: [
-              { setNumber: 1, weight: 0, reps: 20, completed: true },
-            ] as any,
-          },
-        ],
-      },
+    const sessions: LocalSession[] = [
+      makeSession("s2", "squats", "Sentadillas Libres", [
+        makeSet("u1", 1, 0, 20),
+      ]),
     ];
 
-    const { muscleStats } = computeMuscleBreakdown(mockSessions as any, "week");
+    const { muscleStats } = computeMuscleBreakdown(sessions, "week");
     expect(muscleStats.quads.volumeKg).toBeGreaterThan(0);
     expect(muscleStats.glutes.volumeKg).toBeGreaterThan(0);
   });

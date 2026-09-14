@@ -7,14 +7,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   RotateCw,
   Scan,
-  Compass,
-  Maximize2,
-  Sparkles,
   Info,
-  Flame,
-  Activity,
-  Layers,
-  Crosshair,
   Play,
   Pause,
 } from "lucide-react";
@@ -22,7 +15,6 @@ import {
   AnatomicalMuscle,
   DetailedMuscleStat,
   MuscleTimeframe,
-  MUSCLE_METADATA,
 } from "@/lib/muscle-engine";
 import { haptics } from "@/lib/haptics";
 
@@ -147,18 +139,21 @@ export default function ThreeMuscleViewer({
   const origPositionsRef = useRef<Float32Array | null>(null);
 
   // Color mapper for intensity
-  const getIntensityColor = (muscle: AnatomicalMuscle, isSelected: boolean) => {
-    if (isSelected) return HEATMAP_COLORS.selected;
-    const stat = muscleStats[muscle];
-    if (!stat || stat.volumeKg === 0) return null;
-    if (stat.intensityLevel === "peak") return HEATMAP_COLORS.peak;
-    if (stat.intensityLevel === "high") return HEATMAP_COLORS.high;
-    if (stat.intensityLevel === "moderate") return HEATMAP_COLORS.moderate;
-    return HEATMAP_COLORS.light;
-  };
+  const getIntensityColor = React.useCallback(
+    (muscle: AnatomicalMuscle, isSelected: boolean) => {
+      if (isSelected) return HEATMAP_COLORS.selected;
+      const stat = muscleStats[muscle];
+      if (!stat || stat.volumeKg === 0) return null;
+      if (stat.intensityLevel === "peak") return HEATMAP_COLORS.peak;
+      if (stat.intensityLevel === "high") return HEATMAP_COLORS.high;
+      if (stat.intensityLevel === "moderate") return HEATMAP_COLORS.moderate;
+      return HEATMAP_COLORS.light;
+    },
+    [muscleStats]
+  );
 
   // Recompute vertex colors on the mesh
-  const updateHeatmapColors = () => {
+  const updateHeatmapColors = React.useCallback(() => {
     const mesh = meshRef.current;
     const origPositions = origPositionsRef.current;
     if (!mesh || !origPositions) return;
@@ -216,10 +211,10 @@ export default function ThreeMuscleViewer({
 
     colorAttr.needsUpdate = true;
     (mesh.material as THREE.MeshStandardMaterial).needsUpdate = true;
-  };
+  }, [selectedMuscle, getIntensityColor]);
 
   // Position reticle beacon on selected muscle
-  const updateReticlePosition = () => {
+  const updateReticlePosition = React.useCallback(() => {
     if (!reticleBeaconRef.current) return;
     if (!selectedMuscle) {
       reticleBeaconRef.current.visible = false;
@@ -236,7 +231,17 @@ export default function ThreeMuscleViewer({
     const target = centroids[0];
     reticleBeaconRef.current.position.set(target.z, target.y, target.x);
     reticleBeaconRef.current.visible = true;
-  };
+  }, [selectedMuscle]);
+
+  const updateHeatmapColorsRef = useRef(updateHeatmapColors);
+  const updateReticlePositionRef = useRef(updateReticlePosition);
+  const isScannerActiveRef = useRef(isScannerActive);
+
+  useEffect(() => {
+    updateHeatmapColorsRef.current = updateHeatmapColors;
+    updateReticlePositionRef.current = updateReticlePosition;
+    isScannerActiveRef.current = isScannerActive;
+  }, [updateHeatmapColors, updateReticlePosition, isScannerActive]);
 
   // Three.js Mount & Animation Loop
   useEffect(() => {
@@ -382,8 +387,8 @@ export default function ThreeMuscleViewer({
           meshRef.current = mesh;
 
           setIsLoading(false);
-          updateHeatmapColors();
-          updateReticlePosition();
+          updateHeatmapColorsRef.current();
+          updateReticlePositionRef.current();
         } else {
           setLoadError("No se encontró la geometría 3D");
           setIsLoading(false);
@@ -455,7 +460,7 @@ export default function ThreeMuscleViewer({
       podiumGroup.rotation.y += 0.003;
 
       // Laser scanner animation
-      if (scannerBeamRef.current && isScannerActive) {
+      if (scannerBeamRef.current && isScannerActiveRef.current) {
         scannerBeamRef.current.visible = true;
         scanY += scanDir * 0.008;
         if (scanY < -0.48) {
@@ -505,7 +510,7 @@ export default function ThreeMuscleViewer({
   useEffect(() => {
     updateHeatmapColors();
     updateReticlePosition();
-  }, [muscleStats, selectedMuscle]);
+  }, [updateHeatmapColors, updateReticlePosition]);
 
   // Update scanner visibility
   useEffect(() => {

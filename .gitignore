@@ -59,3 +59,4 @@ android/fortixam.keystore
 test-results/
 test-screenshots/
 *.log
+*.bak

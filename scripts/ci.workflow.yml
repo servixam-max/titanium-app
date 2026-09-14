@@ -1,0 +1,175 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint · Types · Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Unit tests
+        run: npx vitest run
+
+  build-web:
+    name: Build web (standalone)
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build standalone bundle
+        run: npm run build:web
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Smoke test del servidor
+        run: |
+          PORT=3311 HOSTNAME=127.0.0.1 node .next-standalone/standalone/server.js &
+          sleep 5
+          curl -sf -o /dev/null http://127.0.0.1:3311/ || (echo "home falló" && exit 1)
+          curl -sf -o /dev/null http://127.0.0.1:3311/manifest.json || (echo "manifest falló" && exit 1)
+          curl -s http://127.0.0.1:3311/api/health | grep -q '"service":"fortixam-api"'
+          echo "✅ Servidor standalone OK"
+
+      - name: Subir artefacto del bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: fortixam-web-standalone
+          path: .next-standalone/standalone
+          retention-days: 7
+
+  e2e:
+    name: E2E (export estático)
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build static export
+        run: npx next build
+        env:
+          BUILD_MODE: apk
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Generate service worker
+        run: node scripts/generate-sw.js dist-apk
+
+      - name: Run e2e tests
+        run: npx playwright test --project=chromium
+        env:
+          CI: "true"
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fortixam-e2e-results
+          path: test-results/
+          retention-days: 7
+
+  build-apk-web:
+    name: Build APK (static export)
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Export estático (sin API routes)
+        run: npx next build
+        env:
+          BUILD_MODE: apk
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Generar service worker
+        run: node scripts/generate-sw.js dist-apk
+
+      - name: Verificar export
+        run: |
+          test -f dist-apk/index.html
+          test -f dist-apk/sw.js
+          test -f dist-apk/manifest.json
+          echo "✅ Export estático OK"
+
+      - name: Subir artefacto del export
+        uses: actions/upload-artifact@v4
+        with:
+          name: fortixam-apk-web
+          path: dist-apk
+          retention-days: 7
+
+  assets:
+    name: Presupuesto de assets
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Comprobar imágenes
+        run: |
+          OUTPUT=$(node scripts/optimize-assets.mjs)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "Oversized (>120 KB): 0"; then
+            echo "✅ Todas las imágenes dentro del presupuesto"
+          else
+            echo "❌ Hay imágenes por encima de 120 KB — ejecuta: node scripts/optimize-assets.mjs --compress"
+            exit 1
+          fi

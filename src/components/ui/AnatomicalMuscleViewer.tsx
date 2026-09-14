@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import { Box, Layers, RotateCw, Activity } from "lucide-react";
+import { Box, Layers } from "lucide-react";
 import {
   AnatomicalMuscle,
   DetailedMuscleStat,
@@ -97,8 +97,8 @@ export default function AnatomicalMuscleViewer({
 // 2D Vector Fallback Viewer
 function TwoDimensionalViewer({
   muscleStats,
-  timeframe,
-  onTimeframeChange,
+  timeframe: _timeframe,
+  onTimeframeChange: _onTimeframeChange,
 }: AnatomicalMuscleViewerProps) {
   const [activeView, setActiveView] = useState<"front" | "back">("front");
   const [selectedMuscle, setSelectedMuscle] = useState<AnatomicalMuscle | null>("chest");

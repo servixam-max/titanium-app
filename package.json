@@ -49,6 +49,7 @@
     "@capacitor/cli": "^8.5.0",
     "@eslint/eslintrc": "^3.3.6",
     "@playwright/test": "^1.60.0",
+    "@rollup/rollup-darwin-arm64": "^4.63.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@types/bcryptjs": "^2.4.6",

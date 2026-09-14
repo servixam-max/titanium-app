@@ -9,10 +9,14 @@ App de fitness PWA + Android con entrenamientos guiados e individuales, seguimie
 - **13 rutinas especializadas** (fuerza, HIIT Tabata, full body, movilidad, libre) + catálogo completo de ejercicios con búsqueda por músculo y equipamiento.
 - **Cuentas y sync**: registro/login con JWT (bcrypt) contra PostgreSQL; cola de sincronización offline-first con resolución de conflictos last-write-wins. El APK funciona sin conexión y sincroniza cuando hay red.
 - **Coach inteligente**: onboarding de 5 pasos (objetivo, nivel, días/semana, equipo, limitaciones) y generación automática de un plan personalizado.
+- **Constructor de entrenamientos** (pestaña Creador): compón tu rutina desde el catálogo, define series por repeticiones o segundos HIIT, y arráncala en modo guiado o individual.
+- **Cuerpo anatómico 3D interactivo** (WebGL/Three.js): mapa muscular con heatmap de volumen por grupos, escáner holográfico y fallback 2D sin WebGL.
+- **Motor biomecánico**: volumen efectivo por músculo (primarios + sinergistas), equivalente de carga para peso corporal y stats por timeframe.
+- **Gamificación y records**: logros con progreso, récords personales por ejercicio (1RM, peso, reps) y resumen IA del entrenamiento.
 - **Temporizador adaptativo**: el descanso se ajusta por tipo de ejercicio y duración de la serie; supersets detectados y señalados en la UI.
 - **HUD de alta visibilidad** con estética Titanium Energy (`#05090C` / `#00D68F`), modos claro y alto contraste.
 - **OTA**: distribución del APK vía GitHub Releases.
-- **Testing**: Vitest (unit) + Playwright (e2e contra el export estático).
+- **Testing**: Vitest (35 unit) + Playwright (24 e2e contra el export estático, desktop + móvil).
 
 ## 🏗️ Arquitectura
 
