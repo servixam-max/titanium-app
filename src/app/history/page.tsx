@@ -172,7 +172,7 @@ export default function HistoryPage() {
               Registro completo de entrenamientos y marcas
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#141a24] border border-white/10 rounded-full">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#131626] border border-white/10 rounded-full">
             <span
               className="w-2 h-2 rounded-full"
               style={{ backgroundColor: currentUser?.avatarColor || "#10B981" }}
@@ -186,7 +186,7 @@ export default function HistoryPage() {
         {/* Hero Cyber Metrics Grid */}
         <section className="grid grid-cols-2 gap-2.5">
           {/* Metric 1: Total Volume */}
-          <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400">
                 Volumen Total
@@ -205,7 +205,7 @@ export default function HistoryPage() {
           </div>
 
           {/* Metric 2: Completed Sessions */}
-          <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
                 Entrenos
@@ -224,7 +224,7 @@ export default function HistoryPage() {
           </div>
 
           {/* Metric 3: Total Time */}
-          <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
                 Tiempo Total
@@ -242,7 +242,7 @@ export default function HistoryPage() {
           </div>
 
           {/* Metric 4: Total Sets */}
-          <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
                 Series Totales
@@ -271,7 +271,7 @@ export default function HistoryPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por rutina o modo..."
-              className="w-full h-10 bg-[#121620] border border-white/10 rounded-xl pl-10 pr-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-primary transition-all font-sans"
+              className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-primary transition-all font-sans"
             />
           </div>
 
@@ -282,8 +282,8 @@ export default function HistoryPage() {
               onClick={() => setFilterPeriod("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${
                 filterPeriod === "all"
-                  ? "bg-primary text-black shadow-neon"
-                  : "bg-[#141a24] text-zinc-400 border border-white/5"
+                  ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
+                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
               }`}
             >
               Todos
@@ -292,8 +292,8 @@ export default function HistoryPage() {
               onClick={() => setFilterPeriod("week")}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${
                 filterPeriod === "week"
-                  ? "bg-primary text-black shadow-neon"
-                  : "bg-[#141a24] text-zinc-400 border border-white/5"
+                  ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
+                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
               }`}
             >
               Esta Semana
@@ -302,8 +302,8 @@ export default function HistoryPage() {
               onClick={() => setFilterPeriod("month")}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${
                 filterPeriod === "month"
-                  ? "bg-primary text-black shadow-neon"
-                  : "bg-[#141a24] text-zinc-400 border border-white/5"
+                  ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
+                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
               }`}
             >
               Este Mes
@@ -316,8 +316,8 @@ export default function HistoryPage() {
               onClick={() => setFilterMode(filterMode === "guided" ? "all" : "guided")}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
                 filterMode === "guided"
-                  ? "bg-cyan-400 text-black shadow-[0_0_12px_rgba(0,240,255,0.4)]"
-                  : "bg-[#141a24] text-zinc-400 border border-white/5"
+                  ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-black shadow-[0_0_12px_rgba(0,240,255,0.4)]"
+                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
               }`}
             >
               <Zap className="w-3 h-3" />
@@ -327,8 +327,8 @@ export default function HistoryPage() {
               onClick={() => setFilterMode(filterMode === "individual" ? "all" : "individual")}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
                 filterMode === "individual"
-                  ? "bg-emerald-400 text-black shadow-[0_0_12px_rgba(0,245,155,0.4)]"
-                  : "bg-[#141a24] text-zinc-400 border border-white/5"
+                  ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
+                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
               }`}
             >
               <Dumbbell className="w-3 h-3" />
@@ -346,7 +346,7 @@ export default function HistoryPage() {
               ))}
             </div>
           ) : filteredSessions.length === 0 ? (
-            <div className="bg-[#10141c] border border-white/10 rounded-2xl p-8 flex flex-col items-center text-center my-4">
+            <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-8 flex flex-col items-center text-center my-4">
               <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-zinc-400 mb-3">
                 <Dumbbell className="w-7 h-7" />
               </div>
@@ -358,7 +358,7 @@ export default function HistoryPage() {
               </p>
               <button
                 onClick={() => router.push("/")}
-                className="mt-4 px-4 py-2 bg-primary text-black font-mono font-bold text-xs rounded-xl shadow-neon flex items-center gap-1.5 active:scale-95 transition-all"
+                className="mt-4 px-4 py-2 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-bold text-xs rounded-xl shadow-neon flex items-center gap-1.5 active:scale-95 transition-all"
               >
                 <span>Empezar a Entrenar</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -378,7 +378,7 @@ export default function HistoryPage() {
               return (
                 <div
                   key={session.id}
-                  className="bg-[#121620] border border-white/10 rounded-2xl overflow-hidden transition-all shadow-md hover:border-white/20"
+                  className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl overflow-hidden transition-all shadow-md hover:border-primary/40"
                 >
                   {/* Card Header Summary */}
                   <div
@@ -445,7 +445,7 @@ export default function HistoryPage() {
 
                   {/* Expanded Details Drawer */}
                   {isExpanded && (
-                    <div className="px-4 pb-4 pt-2 border-t border-white/5 bg-[#0e121a]">
+                    <div className="px-4 pb-4 pt-2 border-t border-white/5 bg-[#0d101a]">
                       <div className="space-y-3 mb-4">
                         {session.exercises.map((ex, idx) => {
                           const exerciseDef = routine?.exercises.find((e) => e.id === ex.exerciseId);
@@ -453,7 +453,7 @@ export default function HistoryPage() {
                           return (
                             <div
                               key={ex.exerciseId + idx}
-                              className="bg-[#141a24] rounded-xl p-2.5 border border-white/5 flex items-center justify-between"
+                              className="bg-[#141828] rounded-xl p-2.5 border border-white/10 flex items-center justify-between"
                             >
                               <div>
                                 <span className="text-xs font-bold text-white block">

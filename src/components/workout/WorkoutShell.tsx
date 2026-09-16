@@ -118,7 +118,7 @@ export default function WorkoutShell({
       </header>
 
       {typeof progress === "number" && (
-        <div className="w-full bg-[#10141a] h-1.5 relative overflow-hidden flex-shrink-0">
+        <div className="w-full bg-[#0d101a] h-1.5 relative overflow-hidden flex-shrink-0">
           <div
             className="h-full bg-gradient-to-r from-cyan-400 via-emerald-400 to-lime-400 transition-all duration-500 shadow-[0_0_12px_rgba(0,245,155,0.7)]"
             style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}

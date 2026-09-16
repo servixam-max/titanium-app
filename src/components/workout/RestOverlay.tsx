@@ -197,8 +197,8 @@ export default function RestOverlay() {
         <AudioWaveform
           active={timeLeft > 0}
           barCount={22}
-          color={restUrgent ? "#EF4444" : "#00D68F"}
-          secondaryColor={restUrgent ? "#F87171" : "#00E1FF"}
+          color={restUrgent ? "#EF4444" : "#D4FF00"}
+          secondaryColor={restUrgent ? "#F87171" : "#00F59B"}
           className="mb-5"
         />
 
@@ -207,8 +207,8 @@ export default function RestOverlay() {
           <p className="text-zinc-400 font-label-caps tracking-[0.2em] text-[11px] uppercase mb-2 text-center">
             {isNewExercise ? "A continuación:" : "Continúas con:"}
           </p>
-          <div className="w-full bg-[#161e2e] border border-white/10 rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#121620] flex-shrink-0 border border-white/10">
+          <div className="w-full bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#0d101a] flex-shrink-0 border border-white/10">
               <ExerciseImage
                 src={currentExercise?.image || ""}
                 alt={currentExercise?.name || "Ejercicio"}

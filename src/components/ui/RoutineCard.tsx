@@ -68,8 +68,8 @@ export default function RoutineCard({
       }}
       className={`group relative ${
         isCompletedToday
-          ? "bg-[#0B1713]/95 border-emerald-400/50 shadow-[0_0_24px_rgba(0,245,155,0.18)]"
-          : `bg-gradient-to-br from-[#101624] via-[#12192A] to-[#0D1320] border-white/10 ${style.border}`
+          ? "bg-gradient-to-br from-[#0e1a17] via-[#0d141e] to-[#0A0B10] border-emerald-400/50 shadow-neon"
+          : `bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-white/10 ${style.border}`
       } backdrop-blur-xl rounded-3xl border transition-all duration-300 shadow-xl overflow-hidden`}
     >
       {/* Subtle top ambient glow strip */}
@@ -98,7 +98,7 @@ export default function RoutineCard({
         {/* Center Info */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] font-black tracking-wider px-2.5 py-0.5 rounded-full bg-primary text-black border border-primary-300 shadow-sm">
+            <span className="font-mono text-[10px] font-black tracking-wider px-2.5 py-0.5 rounded-full bg-gradient-to-r from-primary to-emerald-400 text-black border border-white/20 shadow-neon">
               {dayBadge}
             </span>
             <span
@@ -178,7 +178,7 @@ export default function RoutineCard({
             haptics.impact();
             onClick?.();
           }}
-          className="h-9 px-4 rounded-xl bg-primary hover:brightness-110 text-black font-mono font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-neon border border-primary-300 active:scale-95 transition-all cursor-pointer"
+          className="h-9 px-4 rounded-xl bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-neon-strong border border-white/30 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Comenzar</span>
@@ -193,7 +193,7 @@ export default function RoutineCard({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: "easeInOut" }}
-            className="overflow-hidden bg-[#0A0F1A]/80 border-t border-white/10"
+            className="overflow-hidden bg-[#0d101a]/90 border-t border-white/10"
           >
             <div className="p-3.5 flex flex-col gap-2.5">
               <div className="flex items-center justify-between px-1">
@@ -208,7 +208,7 @@ export default function RoutineCard({
               {routine.exercises.map((ex, idx) => (
                 <div
                   key={ex.id || `${routine.day}-${idx}`}
-                  className="flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-[#121A2A]/90 border border-white/10 hover:border-primary/40 transition-all group/item"
+                  className="flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-[#131626] border border-white/10 hover:border-primary/40 transition-all group/item"
                 >
                   {/* Photo */}
                   <div className="w-12 h-12 rounded-full overflow-hidden bg-black/50 border border-white/15 flex-shrink-0 relative">

@@ -243,7 +243,7 @@ export default function StatsPage() {
               Rendimiento global, constancia y métricas de carga
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#141a24] border border-white/10 rounded-full">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#131626] border border-white/10 rounded-full">
             <span
               className="w-2 h-2 rounded-full"
               style={{ backgroundColor: currentUser?.avatarColor || "#10B981" }}
@@ -255,7 +255,7 @@ export default function StatsPage() {
         </div>
 
         {/* Hero Racha Cyber Card */}
-        <section className="bg-gradient-to-br from-[#121622] to-[#151b2a] border border-primary/30 rounded-3xl p-5 shadow-2xl relative overflow-hidden group">
+        <section className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/30 rounded-3xl p-5 shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-36 h-36 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex items-center justify-between relative z-10">
@@ -298,7 +298,7 @@ export default function StatsPage() {
           ) : (
             <>
           {/* Card 1: Sesiones */}
-          <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400">
                 Sesiones
@@ -318,7 +318,7 @@ export default function StatsPage() {
           </div>
 
           {/* Card 2: Volumen */}
-          <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
                 Volumen Total
@@ -339,7 +339,7 @@ export default function StatsPage() {
           </div>
 
           {/* Card 3: Tiempo Total */}
-          <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
                 Tiempo Total
@@ -359,7 +359,7 @@ export default function StatsPage() {
           </div>
 
           {/* Card 4: Repeticiones */}
-          <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
                 Repeticiones
@@ -382,7 +382,7 @@ export default function StatsPage() {
         </section>
 
         {/* Resumen Periódico */}
-        <section className="bg-[#121620] border border-white/10 rounded-2xl p-4 shadow-lg">
+        <section className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-4 shadow-lg">
           <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-primary" />
             Actividad Reciente
@@ -407,10 +407,10 @@ export default function StatsPage() {
 
         {/* Volume per Session Cyber Bar Chart */}
         {recentSessions.length > 0 && (
-          <section className="bg-[#121620] border border-white/10 rounded-2xl p-4 shadow-lg">
+          <section className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-4 shadow-lg">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-cyan-400" />
+                <TrendingUp className="w-4 h-4 text-primary" />
                 Carga por Sesión Reciente
               </h3>
               <span className="text-[10px] font-mono text-zinc-400">
@@ -426,9 +426,9 @@ export default function StatsPage() {
                     <span className="text-[9px] font-mono font-bold text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity">
                       {(session.volumeKg / 1000).toFixed(1)}T
                     </span>
-                    <div className="w-full bg-[#161c28] rounded-t-lg h-full flex items-end overflow-hidden">
+                    <div className="w-full bg-[#0d101a] rounded-t-lg h-full flex items-end overflow-hidden">
                       <div
-                        className="w-full bg-gradient-to-t from-cyan-500 to-emerald-400 rounded-t-lg transition-all duration-500 group-hover:brightness-125 shadow-[0_0_8px_rgba(0,245,155,0.4)]"
+                        className="w-full bg-gradient-to-t from-primary to-emerald-400 rounded-t-lg transition-all duration-500 group-hover:brightness-125 shadow-[0_0_8px_rgba(0,245,155,0.4)]"
                         style={{ height: `${heightPercent}%` }}
                       />
                     </div>
@@ -443,17 +443,17 @@ export default function StatsPage() {
         )}
 
         {/* Mapa Muscular Anatómico 3D de Última Generación */}
-        <section className="bg-gradient-to-br from-[#101522] via-[#12192b] to-[#0c101a] border border-primary/30 rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
+        <section className="bg-gradient-to-br from-[#141828] via-[#111524] to-[#0D101A] border border-primary/30 rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
-              <span className="w-8 h-8 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-[0_0_12px_rgba(0,214,143,0.3)]">
+              <span className="w-8 h-8 rounded-xl bg-gradient-to-r from-primary to-emerald-400 border border-primary/40 flex items-center justify-center text-black font-black shadow-neon">
                 <Activity className="w-4 h-4" />
               </span>
               <div>
                 <h3 className="text-xs font-mono font-black text-white uppercase tracking-wider flex items-center gap-1.5">
                   Escenario Anatómico 3D
                   <span className="px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/30 rounded text-[9px] font-mono font-bold">
-                    v8.4.3
+                    v8.4.9
                   </span>
                 </h3>
                 <span className="text-[10px] font-mono text-zinc-400">
@@ -527,7 +527,7 @@ export default function StatsPage() {
                       <span className="text-primary font-bold">({group.percentage}%)</span>
                     </span>
                   </div>
-                  <div className="w-full bg-[#161c28] h-2 rounded-full overflow-hidden border border-white/5">
+                  <div className="w-full bg-[#0d101a] h-2 rounded-full overflow-hidden border border-white/5">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
@@ -544,7 +544,7 @@ export default function StatsPage() {
         </section>
 
         {/* Medallas y Logros */}
-        <section className="bg-[#121620] border border-white/10 rounded-2xl p-4 shadow-lg">
+        <section className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-4 shadow-lg">
           <AchievementsList achievements={achievements} />
         </section>
       </main>

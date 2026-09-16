@@ -180,7 +180,7 @@ function WarmupContent() {
       : POST_REST_SECONDS;
 
   return (
-    <div className="h-[100dvh] animate-page-in flex flex-col overflow-hidden bg-[#080B10] text-white select-none">
+    <div className="h-[100dvh] animate-page-in flex flex-col overflow-hidden bg-background text-white select-none">
       <TopAppBar
         title="CALENTAMIENTO"
         variant="workout"
@@ -217,7 +217,7 @@ function WarmupContent() {
                   cy="80"
                   r="72"
                   fill="none"
-                  stroke="#161c28"
+                  stroke="#0d101a"
                   strokeWidth="8"
                 />
                 <circle
@@ -247,14 +247,14 @@ function WarmupContent() {
           <div className="w-full max-w-sm space-y-3 pb-[env(safe-area-inset-bottom,0px)]">
             <button
               onClick={handleSkipToWorkout}
-              className="w-full h-14 bg-primary text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="w-full h-14 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon-strong hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/20"
             >
               <Play className="w-5 h-5 fill-current" />
               <span>Empezar Entrenamiento Ya</span>
             </button>
             <button
               onClick={() => setIsPaused((p) => !p)}
-              className="w-full h-10 bg-[#121622] text-zinc-400 hover:text-white font-mono font-bold text-xs uppercase rounded-xl border border-white/10"
+              className="w-full h-10 bg-[#131626] text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase rounded-xl border border-white/10"
             >
               {isPaused ? "Reanudar cuenta" : "Pausar cuenta"}
             </button>
@@ -287,7 +287,7 @@ function WarmupContent() {
               </span>
             </div>
 
-            <div className="w-full h-2 bg-[#121622] border border-white/5 rounded-full overflow-hidden p-0.5">
+            <div className="w-full h-2 bg-[#0d101a] border border-white/5 rounded-full overflow-hidden p-0.5">
               <div
                 className="h-full bg-gradient-to-r from-cyan-400 via-emerald-400 to-primary shadow-neon rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
@@ -328,7 +328,7 @@ function WarmupContent() {
 
           {/* Center Visual Media Card */}
           <div className="flex-shrink-0 flex-1 min-h-0 px-4">
-            <div className="w-full h-full rounded-3xl overflow-hidden border border-white/10 relative bg-[#111622] shadow-xl">
+            <div className="w-full h-full rounded-3xl overflow-hidden border border-white/10 relative bg-[#0d101a] shadow-xl">
               {phase === "transition" && nextExercise ? (
                 <div className="relative w-full h-full">
                   <ExerciseImage
@@ -352,7 +352,7 @@ function WarmupContent() {
                   className="object-contain"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-[#111622]">
+                <div className="w-full h-full flex items-center justify-center bg-[#0d101a]">
                   <Dumbbell className="w-16 h-16 text-primary/30" />
                 </div>
               )}
@@ -368,7 +368,7 @@ function WarmupContent() {
                   cy="55"
                   r="48"
                   fill="none"
-                  stroke="#161c28"
+                  stroke="#0d101a"
                   strokeWidth="6"
                 />
                 <circle
@@ -430,11 +430,11 @@ function WarmupContent() {
           </div>
 
           {/* Action Footer */}
-          <footer className="flex-shrink-0 px-4 pb-[env(safe-area-inset-bottom,0px)] pt-2 bg-[#090c12] border-t border-white/10">
+          <footer className="flex-shrink-0 px-4 pb-[env(safe-area-inset-bottom,0px)] pt-2 bg-[#0A0B10] border-t border-white/10">
             <div className="flex gap-2.5">
               <button
                 onClick={() => setShowExitConfirm(true)}
-                className="h-12 px-4 bg-[#141a24] hover:bg-[#18212e] text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+                className="h-12 px-4 bg-[#131626] hover:bg-[#181d2e] text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer"
               >
                 <SkipForward className="w-4 h-4" />
                 <span>Saltar</span>
@@ -442,7 +442,7 @@ function WarmupContent() {
 
               <button
                 onClick={() => setIsPaused((p) => !p)}
-                className="h-12 px-4 bg-[#141a24] text-zinc-300 font-mono font-bold text-xs uppercase rounded-2xl border border-white/10 flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
+                className="h-12 px-4 bg-[#131626] text-zinc-300 font-mono font-bold text-xs uppercase rounded-2xl border border-white/10 flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
               >
                 {isPaused ? <Play className="w-4 h-4 text-primary" /> : <Pause className="w-4 h-4" />}
                 <span>{isPaused ? "Reanudar" : "Pausar"}</span>
@@ -451,7 +451,7 @@ function WarmupContent() {
               {phase === "prep" && (
                 <button
                   onClick={() => startExercise(0)}
-                  className="flex-1 h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon active:scale-95 transition-all cursor-pointer"
+                  className="flex-1 h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon-strong active:scale-95 transition-all cursor-pointer border border-white/20"
                 >
                   <span>Empezar ya</span>
                   <ArrowRight className="w-4 h-4" />
@@ -477,7 +477,7 @@ function WarmupContent() {
                       startTransition(currentExerciseIndex + 1);
                     }
                   }}
-                  className="flex-1 h-12 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon active:scale-95 transition-all cursor-pointer"
+                  className="flex-1 h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon-strong active:scale-95 transition-all cursor-pointer border border-white/20"
                 >
                   <span>
                     {currentExerciseIndex >= warmUpExercises.length - 1
@@ -507,7 +507,7 @@ export default function WarmupPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#080B10] flex items-center justify-center">
+        <div className="min-h-screen bg-background flex items-center justify-center">
           <p className="text-white font-mono">Cargando calentamiento...</p>
         </div>
       }

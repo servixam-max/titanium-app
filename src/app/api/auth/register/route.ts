@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       `INSERT INTO users (email, username, password_hash, avatar_color)
        VALUES ($1, $2, $3, $4)
        RETURNING id, email, username`,
-      [email, username, passwordHash, "#00D68F"],
+      [email, username, passwordHash, "#00F59B"],
     );
 
     const user = userResult.rows[0];

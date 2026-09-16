@@ -27,6 +27,7 @@ import {
   Sparkles,
   LogOut,
   Upload,
+  RotateCcw,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { AudioMode } from "@/lib/types";
@@ -289,13 +290,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               damping: 30,
               duration: isMobile ? undefined : 0.25,
             }}
-            className="relative w-full h-full md:h-auto md:max-w-app bg-[#0b0e14] md:rounded-3xl border border-white/10 shadow-2xl md:max-h-[85vh] flex flex-col overflow-hidden"
+            className="relative w-full h-full md:h-auto md:max-w-app bg-[#0A0B10] md:rounded-3xl border border-white/10 shadow-2xl md:max-h-[85vh] flex flex-col overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="settings-title"
           >
             {/* Header */}
-            <div className="sticky top-0 bg-[#0e121a]/95 backdrop-blur-md border-b border-white/10 p-container-padding flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-[#0d101a]/95 backdrop-blur-md border-b border-white/10 p-container-padding flex items-center justify-between z-10">
               <div className="flex items-center gap-3">
                 <Settings className="w-5 h-5 text-primary hidden md:block" />
                 <h2
@@ -318,7 +319,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             <div className="p-container-padding flex-1 overflow-y-auto pb-[10vh]">
               <div className="flex flex-col gap-section-gap">
                 {/* User Profile Card */}
-                <section className="bg-gradient-to-r from-[#121722] to-[#161e2b] border border-white/10 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
+                <section className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
                   <div className="flex items-center gap-3.5 relative z-10">
                     <div
                       className="w-12 h-12 rounded-xl flex items-center justify-center text-black font-black font-mono text-xl shadow-neon"
@@ -364,7 +365,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     className={`w-full h-touch-target-min rounded-2xl border flex items-center justify-between px-4 transition-all active:scale-95 ${
                       audioEnabled
                         ? "border-primary/40 bg-primary/10 shadow-[0_0_15px_rgba(0,245,155,0.15)]"
-                        : "border-white/10 bg-[#121620]"
+                        : "border-white/10 bg-[#131626]"
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -406,7 +407,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           className={`flex flex-col items-center justify-center gap-1 h-[76px] rounded-xl border-2 transition-all active:scale-95 ${
                             selected
                               ? "border-primary bg-primary/10 text-primary"
-                              : "border-white/10 bg-[#121620] text-zinc-400"
+                              : "border-white/10 bg-[#131626] text-zinc-400"
                           } ${!audioEnabled && option.value !== "silent" ? "opacity-50" : ""}`}
                         >
                           <span
@@ -430,7 +431,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
 
                   {/* Voice Rate */}
-                  <div className="flex flex-col gap-3 bg-[#121620] border border-white/10 rounded-2xl p-stack-gap shadow-lg">
+                  <div className="flex flex-col gap-3 bg-[#131626] border border-white/10 rounded-2xl p-stack-gap shadow-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-white">
                         <Gauge className="w-4 h-4 text-cyan-400" />
@@ -514,7 +515,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       className={`flex-1 h-12 rounded-2xl border font-mono text-xs font-bold transition-all active:scale-95 ${
                         equipmentPreference === "bodyweight"
                           ? "border-primary bg-primary/10 text-primary shadow-neon"
-                          : "border-white/10 bg-[#121620] text-zinc-400 hover:text-white"
+                          : "border-white/10 bg-[#131626] text-zinc-400 hover:text-white"
                       }`}
                     >
                       SIN MATERIAL
@@ -524,7 +525,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       className={`flex-1 h-12 rounded-2xl border font-mono text-xs font-bold transition-all active:scale-95 ${
                         equipmentPreference === "dumbbells"
                           ? "border-primary bg-primary/10 text-primary shadow-neon"
-                          : "border-white/10 bg-[#121620] text-zinc-400 hover:text-white"
+                          : "border-white/10 bg-[#131626] text-zinc-400 hover:text-white"
                       }`}
                     >
                       MANCUERNAS
@@ -538,7 +539,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     icon={<Download className="w-4 h-4" />}
                     label="Actualizaciones"
                   />
-                  <div className="bg-[#121620] border border-white/10 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                  <div className="bg-[#131626] border border-white/10 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
                     <div className="flex items-center justify-between text-xs text-zinc-400 pb-2 border-b border-white/10 font-mono">
                       <span>Versión instalada:</span>
                       <span className="font-black text-cyan-400 font-mono text-sm">v{APP_VERSION.version}</span>
@@ -578,14 +579,14 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "checking" && (
-                      <div className="w-full h-12 bg-[#161c28] border border-cyan-400/30 rounded-2xl flex items-center justify-center gap-3 text-cyan-400 font-mono font-bold text-xs uppercase">
+                      <div className="w-full h-12 bg-[#131626] border border-cyan-400/30 rounded-2xl flex items-center justify-center gap-3 text-cyan-400 font-mono font-bold text-xs uppercase">
                         <Loader2 className="w-4 h-4 animate-spin" />
                         <span>Buscando actualizaciones...</span>
                       </div>
                     )}
 
                     {otaStatus === "update-found" && otaInfo && (
-                      <div className="bg-gradient-to-br from-[#121622] to-[#151b2a] border border-emerald-500/40 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                      <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-emerald-500/40 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
                         <div className="flex items-center gap-2 text-emerald-400 font-mono font-black text-sm uppercase">
                           <Sparkles className="w-5 h-5" />
                           <span>¡Nueva versión v{otaInfo.version} lista!</span>
@@ -667,7 +668,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "downloading" && otaInfo && (
-                      <div className="bg-gradient-to-br from-[#121622] to-[#151b2a] border-2 border-primary rounded-2xl p-4 flex flex-col gap-3.5 shadow-neon">
+                      <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-2 border-primary rounded-2xl p-4 flex flex-col gap-3.5 shadow-neon">
                         <div className="flex items-center justify-between text-white font-mono text-xs font-bold">
                           <span className="flex items-center gap-2 text-primary">
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -693,7 +694,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "up-to-date" && otaInfo && (
-                      <div className="bg-[#141a24] border border-primary/30 rounded-2xl p-4 flex flex-col items-center gap-2 text-center">
+                      <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/30 rounded-2xl p-4 flex flex-col items-center gap-2 text-center">
                         <CheckCircle2 className="w-6 h-6 text-primary" />
                         <span className="font-mono font-bold text-white text-xs uppercase">Tu aplicación está al día (v{APP_VERSION.version})</span>
                         <p className="text-[11px] text-zinc-400 font-mono">
@@ -717,7 +718,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <p className="text-xs text-zinc-400">{otaError}</p>
                         <button
                           onClick={() => setOtaStatus("idle")}
-                          className="w-full h-10 mt-1 bg-[#161e2e]est text-white font-bold rounded-lg flex items-center justify-center gap-2 text-xs active:scale-95"
+                          className="w-full h-10 mt-1 bg-[#181d2e] hover:bg-[#1f253a] border border-white/10 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-xs active:scale-95 transition-all cursor-pointer"
                         >
                           <RefreshCw className="w-4 h-4" />
                           Reintentar
@@ -737,7 +738,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     icon={<Database className="w-4 h-4" />}
                     label="Copias de Seguridad Locales"
                   />
-                  <div className="bg-[#121620] border border-white/10 rounded-xl p-4 flex flex-col gap-3">
+                  <div className="bg-[#131626] border border-white/10 rounded-xl p-4 flex flex-col gap-3">
                     <p className="text-xs text-zinc-400">
                       Guarda o restaura tus entrenamientos y pesos directamente en un archivo <strong className="text-white">.json</strong> en tu móvil.
                     </p>
@@ -745,7 +746,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <button
                       disabled={syncStatus === "syncing"}
                       onClick={handleExportBackup}
-                      className="w-full h-12 bg-[#161e2e] border border-primary/20 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-primary"
+                      className="w-full h-12 bg-[#181d2e] border border-primary/20 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-primary"
                     >
                       <Download className="w-5 h-5" />
                       <span className="font-bold text-sm">
@@ -753,7 +754,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </span>
                     </button>
 
-                    <label className="w-full h-12 bg-[#121620] border border-white/10 rounded-xl flex items-center justify-center gap-2 text-white hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
+                    <label className="w-full h-12 bg-[#181d2e] border border-white/10 rounded-xl flex items-center justify-center gap-2 text-white hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
                       <Upload className="w-4 h-4 text-primary" />
                       <span className="text-sm font-semibold">Restaurar Copia de Seguridad</span>
                       <input
@@ -769,11 +770,31 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         {syncMsg}
                       </p>
                     )}
+                  </div>
+                </section>
+
+                {/* Reset Section */}
+                <section className="flex flex-col gap-stack-gap">
+                  <SectionHeader
+                    icon={<RotateCcw className="w-4 h-4" />}
+                    label="Zona de Peligro"
+                  />
+                  <div className="bg-[#131626] border border-red-500/20 rounded-2xl p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-xs font-mono font-bold text-red-400 block">
+                          Restablecer Historial
+                        </span>
+                        <span className="text-[11px] font-mono text-zinc-400">
+                          Borra todas las sesiones locales de entrenamiento
+                        </span>
+                      </div>
+                    </div>
 
                     {!showResetConfirm ? (
                       <button
                         onClick={() => setShowResetConfirm(true)}
-                        className="w-full h-10 bg-[#121620] flex items-center justify-center gap-2 rounded-lg text-red-400 hover:bg-red-500/10 active:scale-95 transition-all mt-2"
+                        className="w-full h-10 bg-[#181d2e] flex items-center justify-center gap-2 rounded-lg text-red-400 hover:bg-red-500/10 active:scale-95 transition-all mt-2"
                       >
                         <Trash2 className="w-4 h-4" />
                         <span className="text-xs font-bold">Borrar todos los datos locales</span>
@@ -782,7 +803,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       <div className="bg-red-500/10 border border-error/20 rounded-lg p-3 mt-2">
                         <p className="text-xs text-red-400 mb-3 text-center">¿Seguro? Se perderán tus entrenamientos en este dispositivo.</p>
                         <div className="flex gap-2">
-                          <button onClick={() => setShowResetConfirm(false)} className="flex-1 h-10 bg-[#0e121a] rounded-md text-xs font-bold">Cancelar</button>
+                          <button onClick={() => setShowResetConfirm(false)} className="flex-1 h-10 bg-[#131626] rounded-md text-xs font-bold border border-white/10 text-white">Cancelar</button>
                           <button onClick={handleResetHistory} className="flex-1 h-10 bg-error text-black rounded-md text-xs font-bold">Sí, borrar</button>
                         </div>
                       </div>
@@ -797,7 +818,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     label="Información y Estadísticas"
                   />
                   <div className="grid grid-cols-2 gap-2.5">
-                    <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-cyan-500/20 rounded-2xl p-4 text-center shadow-lg">
+                    <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-cyan-500/20 rounded-2xl p-4 text-center shadow-lg">
                       <Dumbbell className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
                       <span className="font-mono text-2xl font-black text-white block">
                         {sessions.length}
@@ -806,7 +827,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         ENTRENAMIENTOS
                       </p>
                     </div>
-                    <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-primary/20 rounded-2xl p-4 text-center shadow-lg">
+                    <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/20 rounded-2xl p-4 text-center shadow-lg">
                       <Sparkles className="w-6 h-6 text-primary mx-auto mb-2" />
                       <span className="font-mono text-2xl font-black text-white block">
                         v{APP_VERSION.version}

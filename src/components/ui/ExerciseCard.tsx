@@ -63,16 +63,16 @@ export default function ExerciseCard({
     <div
       onClick={onClick}
       className={`
-        group relative bg-gradient-to-br from-[#121620] to-[#151b28] border rounded-2xl p-3.5
+        group relative bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border rounded-2xl p-3.5
         flex items-center gap-3 min-h-touch-target-min
         transition-all duration-200 overflow-hidden cursor-pointer
         active:scale-[0.98] shadow-md
         ${
           isIndividual
-            ? "border-white/10 hover:border-cyan-500/40 hover:bg-[#141b27]"
+            ? "border-white/10 hover:border-primary/40 hover:bg-[#181d2e]"
             : isSelected
-              ? "border-primary shadow-neon bg-[#161f2e]"
-              : "border-white/10 hover:border-white/20 hover:bg-[#141b27]"
+              ? "border-primary shadow-neon bg-[#131626]"
+              : "border-white/10 hover:border-white/20 hover:bg-[#181d2e]"
         }
       `}
     >
@@ -99,7 +99,7 @@ export default function ExerciseCard({
           <Dumbbell className="w-7 h-7 text-primary/60" />
         )}
         {index !== undefined && !isIndividual && (
-          <span className="absolute top-0.5 left-0.5 bg-primary text-black font-mono text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm z-20">
+          <span className="absolute top-0.5 left-0.5 bg-gradient-to-r from-primary to-emerald-400 text-black font-mono text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-neon z-20">
             #{index + 1}
           </span>
         )}
@@ -127,7 +127,7 @@ export default function ExerciseCard({
           </span>
 
           {exercise.restSeconds > 0 && (
-            <span className="font-mono text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#161c28] text-zinc-300 border border-white/10 flex items-center gap-1">
+            <span className="font-mono text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#181d2e] text-zinc-300 border border-white/10 flex items-center gap-1">
               <Timer className="w-2.5 h-2.5 text-cyan-400" />
               {formatRest(exercise.restSeconds)}
             </span>
@@ -137,7 +137,7 @@ export default function ExerciseCard({
 
       {/* Action CTA on Card */}
       {isIndividual ? (
-        <div className="flex items-center gap-1.5 bg-primary text-black px-3 py-1.5 rounded-xl font-mono font-black text-xs shadow-neon group-hover:scale-105 transition-transform flex-shrink-0">
+        <div className="flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-400 text-black px-3 py-1.5 rounded-xl font-mono font-black text-xs shadow-neon group-hover:scale-105 transition-transform flex-shrink-0">
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Iniciar</span>
         </div>

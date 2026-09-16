@@ -22,9 +22,9 @@ export default function PrimaryButton({
 }: PrimaryButtonProps) {
   const variants = {
     primary:
-      "bg-primary hover:brightness-110 text-black border-primary-300 shadow-neon-strong font-black",
+      "bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black border-white/30 shadow-neon-strong font-black",
     secondary:
-      "bg-[#111724] text-white border-white/10 hover:border-white/20 hover:bg-[#162032] shadow-md",
+      "bg-[#131626] text-white border-white/10 hover:border-primary/40 hover:bg-[#181d2e] shadow-md",
     danger:
       "bg-gradient-to-br from-[#2a1515] to-[#1a1010] text-red-400 border-red-500/20 shadow-md",
     ghost:

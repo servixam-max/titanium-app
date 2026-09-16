@@ -54,13 +54,13 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
                 "border transition-all duration-200 ease-out",
                 "active:scale-[0.97] cursor-pointer shadow-lg",
                 isSelected
-                  ? "bg-gradient-to-br from-[#121622] to-[#151b2a] border-primary shadow-neon"
-                  : "bg-[#121620] border-white/10 hover:border-white/20 hover:bg-[#151b28]",
+                  ? "bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-primary shadow-neon ring-1 ring-primary/40"
+                  : "bg-[#131626] border-white/10 hover:border-white/20 hover:bg-[#181d2e]",
               ].join(" ")}
             >
               {/* Recommended badge */}
               {badge && (
-                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-black px-2.5 py-0.5 rounded-full font-mono text-[9px] font-black shadow-neon whitespace-nowrap">
+                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-emerald-400 text-black px-2.5 py-0.5 rounded-full font-mono text-[9px] font-black shadow-neon whitespace-nowrap">
                   {badge.toUpperCase()}
                 </span>
               )}
@@ -70,7 +70,7 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
                 className={[
                   "absolute top-3 right-3 flex items-center justify-center w-5 h-5 rounded-full transition-all duration-200",
                   isSelected
-                    ? "bg-primary text-black scale-100 shadow-sm"
+                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black scale-100 shadow-sm"
                     : "bg-white/5 text-transparent scale-90",
                 ].join(" ")}
                 aria-hidden="true"
@@ -83,7 +83,7 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
                 className={[
                   "flex items-center justify-center rounded-2xl p-3 mb-1 transition-colors duration-200",
                   isSelected
-                    ? "bg-primary text-black shadow-neon"
+                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
                     : "bg-white/5 text-zinc-400",
                 ].join(" ")}
               >

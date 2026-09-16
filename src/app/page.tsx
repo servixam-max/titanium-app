@@ -338,7 +338,7 @@ export default function Dashboard() {
                   haptics.selection();
                   setActiveTab("custom");
                 }}
-                className="group flex h-[52px] items-center gap-3 rounded-2xl border border-white/10 bg-[#121522] px-4 shadow-lg transition-all hover:border-primary/50 active:scale-[0.98] text-left cursor-pointer"
+                className="group flex h-[52px] items-center gap-3 rounded-2xl border border-white/10 bg-[#131626] px-4 shadow-lg transition-all hover:border-primary/50 active:scale-[0.98] text-left cursor-pointer"
               >
                 <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors group-hover:bg-primary group-hover:text-black">
                   <SlidersHorizontal className="h-4 w-4" />

@@ -63,16 +63,19 @@ export default function AuthModal() {
   const [successMsg, setSuccessMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+
   // Check active user on mount
   useEffect(() => {
+    setMounted(true);
     const active = getActiveUser();
     if (active && !currentUser) {
       setCurrentUser(active);
     }
   }, [currentUser, setCurrentUser]);
 
-  // If already logged in, do not render modal
-  if (currentUser) return null;
+  // If not mounted or already logged in, do not render modal
+  if (!mounted || currentUser) return null;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -241,16 +244,16 @@ export default function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#07090e]/95 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-md bg-[#0f131a] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col my-auto">
+    <div className="fixed inset-0 z-[9999] bg-[#0A0B10]/95 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto">
+      <div className="w-full max-w-md bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col my-auto">
         {/* Neon Ambient Background Glows */}
         <div className="absolute -top-16 -left-16 w-48 h-48 bg-primary/20 rounded-full blur-[70px] pointer-events-none" />
-        <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-cyan-500/20 rounded-full blur-[70px] pointer-events-none" />
+        <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-emerald-500/20 rounded-full blur-[70px] pointer-events-none" />
 
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-6 relative z-10">
-          <div className="w-14 h-14 rounded-2xl bg-[#141b2a] border border-white/10 p-0.5 mb-3 shadow-lg flex items-center justify-center text-emerald-400">
-            <Zap className="w-7 h-7 fill-emerald-400" />
+          <div className="w-14 h-14 rounded-2xl bg-[#141828] border border-white/10 p-0.5 mb-3 shadow-neon flex items-center justify-center text-primary">
+            <Zap className="w-7 h-7 fill-primary" />
           </div>
           <h1 className="text-2xl font-black tracking-wider text-white uppercase font-mono">
             FORTIXAM
@@ -261,7 +264,7 @@ export default function AuthModal() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="grid grid-cols-2 bg-[#161c26] p-1 rounded-xl mb-5 relative z-10 border border-white/10">
+        <div className="grid grid-cols-2 bg-[#0d101a] p-1 rounded-xl mb-5 relative z-10 border border-white/10">
           <button
             type="button"
             onClick={() => {
@@ -271,7 +274,7 @@ export default function AuthModal() {
             }}
             className={`py-2 text-xs font-black font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeTab === "login"
-                ? "bg-[#00D68F] text-black shadow-md border border-emerald-300"
+                ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon border border-white/20"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
@@ -287,7 +290,7 @@ export default function AuthModal() {
             }}
             className={`py-2 text-xs font-black font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeTab === "register"
-                ? "bg-[#00D68F] text-black shadow-md border border-emerald-300"
+                ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon border border-white/20"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
@@ -325,7 +328,7 @@ export default function AuthModal() {
                   value={usernameOrEmail}
                   onChange={(e) => setUsernameOrEmail(e.target.value)}
                   placeholder="Nombre de usuario o correo"
-                  className="w-full h-11 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-sans"
+                  className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
                 />
               </div>
             </div>
@@ -342,7 +345,7 @@ export default function AuthModal() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full h-11 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-10 text-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-sans"
+                  className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-10 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
                 />
                 <button
                   type="button"
@@ -357,7 +360,7 @@ export default function AuthModal() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-12 bg-[#00D68F] hover:bg-[#05f5a4] text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-300 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+              className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
               Iniciar Sesión
@@ -370,7 +373,7 @@ export default function AuthModal() {
                 setErrorMsg("");
                 setSuccessMsg("");
               }}
-              className="text-xs text-zinc-400 hover:text-emerald-400 transition-colors text-center mt-2 underline"
+              className="text-xs text-zinc-400 hover:text-primary transition-colors text-center mt-2 underline"
             >
               ¿Olvidaste tu contraseña?
             </button>
@@ -392,7 +395,7 @@ export default function AuthModal() {
                   value={regUsername}
                   onChange={(e) => setRegUsername(e.target.value)}
                   placeholder="Tu nombre o apodo"
-                  className="w-full h-10 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
                 />
               </div>
             </div>
@@ -409,7 +412,7 @@ export default function AuthModal() {
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
                   placeholder="tu@correo.com"
-                  className="w-full h-10 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
                 />
               </div>
             </div>
@@ -426,7 +429,7 @@ export default function AuthModal() {
                   value={regPassword}
                   onChange={(e) => setRegPassword(e.target.value)}
                   placeholder="Mínimo 4 caracteres"
-                  className="w-full h-10 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
                 />
               </div>
             </div>
@@ -443,7 +446,7 @@ export default function AuthModal() {
                   value={regConfirmPassword}
                   onChange={(e) => setRegConfirmPassword(e.target.value)}
                   placeholder="Repite la contraseña"
-                  className="w-full h-10 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
                 />
               </div>
             </div>
@@ -455,7 +458,7 @@ export default function AuthModal() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-11 bg-[#00D68F] hover:bg-[#05f5a4] text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-300 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
+              className="w-full h-11 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
             >
               <UserPlus className="w-4 h-4" />
               Crear Cuenta Nueva
@@ -495,7 +498,7 @@ export default function AuthModal() {
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
                       placeholder="tu@correo.com"
-                      className="w-full h-11 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-sans"
+                      className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
                     />
                   </div>
                 </div>
@@ -503,7 +506,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-[#00D68F] hover:bg-[#05f5a4] text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-300 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                  className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   {isSubmitting ? "Enviando..." : "Enviar Código de Seguridad"}
@@ -539,14 +542,14 @@ export default function AuthModal() {
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Cambiar correo</span>
                   </button>
-                  <span className="text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <span className="text-[10px] font-mono uppercase bg-primary/15 text-primary px-2 py-0.5 rounded-full border border-primary/30">
                     Paso 2 de 3
                   </span>
                 </div>
 
-                <div className="bg-[#141a24] border border-white/10 rounded-xl p-3">
+                <div className="bg-[#131626] border border-white/10 rounded-xl p-3">
                   <div className="text-[10px] font-mono uppercase text-zinc-400">Código enviado a:</div>
-                  <div className="text-xs font-mono font-bold text-emerald-400 truncate mt-0.5">
+                  <div className="text-xs font-mono font-bold text-primary truncate mt-0.5">
                     {forgotEmail}
                   </div>
                 </div>
@@ -564,14 +567,14 @@ export default function AuthModal() {
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ""))}
                     placeholder="••••••"
-                    className="w-full h-14 bg-[#141a24] border border-emerald-500/40 rounded-xl text-center text-2xl font-mono font-black tracking-[0.4em] text-emerald-400 focus:outline-none focus:border-emerald-400 transition-all placeholder:tracking-normal placeholder:text-zinc-600"
+                    className="w-full h-14 bg-[#131626] border border-primary/50 rounded-xl text-center text-2xl font-mono font-black tracking-[0.4em] text-primary focus:outline-none focus:border-primary transition-all placeholder:tracking-normal placeholder:text-zinc-600 shadow-neon"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting || verificationCode.trim().length !== 6}
-                  className="w-full h-12 bg-[#00D68F] hover:bg-[#05f5a4] disabled:opacity-50 disabled:cursor-not-allowed text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-300 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
+                  className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   Verificar Código
@@ -633,7 +636,7 @@ export default function AuthModal() {
                       value={forgotNewPassword}
                       onChange={(e) => setForgotNewPassword(e.target.value)}
                       placeholder="Mínimo 4 caracteres"
-                      className="w-full h-11 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-sans"
+                      className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
                     />
                   </div>
                 </div>
@@ -650,7 +653,7 @@ export default function AuthModal() {
                       value={forgotConfirmPassword}
                       onChange={(e) => setForgotConfirmPassword(e.target.value)}
                       placeholder="Repite la nueva contraseña"
-                      className="w-full h-11 bg-[#141a24] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-all font-sans"
+                      className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
                     />
                   </div>
                 </div>
@@ -658,7 +661,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-[#00D68F] hover:bg-[#05f5a4] text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-black/40 border border-emerald-300 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                  className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
                 >
                   <KeyRound className="w-4 h-4" />
                   {isSubmitting ? "Actualizando..." : "Guardar Nueva Contraseña"}

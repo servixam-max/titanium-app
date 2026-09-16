@@ -74,12 +74,12 @@ export default function ExerciseStage({
       {/* Metrics grid */}
       <div className="grid grid-cols-3 gap-2.5 w-full">
         {/* Target reps/time */}
-        <div className="bg-[#121218]/95 border-2 border-[#00D68F]/80 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-[0_0_22px_rgba(0,214,143,0.28)]">
-          <span className="text-xs font-label-caps text-[#00D68F] uppercase font-bold tracking-wider flex items-center gap-1">
-            <Zap className="w-3.5 h-3.5 text-[#00D68F] animate-pulse" />
+        <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-2 border-primary/80 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-neon">
+          <span className="text-xs font-label-caps text-primary uppercase font-bold tracking-wider flex items-center gap-1">
+            <Zap className="w-3.5 h-3.5 text-primary animate-pulse" />
             {isTimedSet ? "TIEMPO" : "REPETICIONES"}
           </span>
-          <span className="font-mono font-black text-3xl sm:text-4xl text-[#00D68F] drop-shadow-[0_0_15px_rgba(0,214,143,0.6)] my-1">
+          <span className="font-mono font-black text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-400 drop-shadow-[0_0_15px_rgba(212,255,0,0.4)] my-1">
             {isTimedSet ? `${timedSeconds}s` : exercise.reps}
           </span>
           <span className="text-[10px] font-label-caps text-zinc-400 font-bold uppercase">
@@ -88,7 +88,7 @@ export default function ExerciseStage({
         </div>
 
         {/* Current set */}
-        <div className="bg-[#121218]/95 border border-white/20 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-lg">
+        <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/20 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-lg">
           <span className="text-xs font-label-caps text-zinc-300 uppercase font-bold tracking-wider">
             SERIE
           </span>
@@ -106,9 +106,9 @@ export default function ExerciseStage({
                 key={i}
                 className={`rounded-full transition-all duration-300 ${
                   i < currentSet - 1
-                    ? "w-2.5 h-2.5 bg-[#00D68F] shadow-[0_0_8px_rgba(0,214,143,0.9)]"
+                    ? "w-2.5 h-2.5 bg-gradient-to-r from-primary to-emerald-400 shadow-neon"
                     : i === currentSet - 1
-                      ? "w-4 h-2.5 bg-[#00D68F] shadow-[0_0_10px_rgba(0,214,143,1)]"
+                      ? "w-4 h-2.5 bg-gradient-to-r from-primary to-emerald-400 shadow-neon-strong"
                       : "w-2.5 h-2.5 bg-white/20"
                 }`}
               />
@@ -117,7 +117,7 @@ export default function ExerciseStage({
         </div>
 
         {/* Rest duration */}
-        <div className="bg-[#121218]/95 border border-cyan-400/40 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-lg">
+        <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-cyan-400/40 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-lg">
           <span className="text-xs font-label-caps text-cyan-400 uppercase font-bold tracking-wider flex items-center gap-1">
             <Clock className="w-3.5 h-3.5 text-cyan-400" />
             DESCANSO

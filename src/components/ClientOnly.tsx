@@ -17,9 +17,9 @@ export default function ClientOnly({
     return (
       <div className="min-h-screen bg-background">
         <div className="max-w-app mx-auto px-container-padding pt-[80px] space-y-4">
-          <div className="h-8 bg-[#161e2e] rounded animate-pulse" />
-          <div className="h-24 bg-[#161e2e] rounded animate-pulse" />
-          <div className="h-24 bg-[#161e2e] rounded animate-pulse" />
+          <div className="h-8 bg-[#131626] rounded-xl animate-pulse" />
+          <div className="h-24 bg-[#131626] rounded-2xl animate-pulse" />
+          <div className="h-24 bg-[#131626] rounded-2xl animate-pulse" />
         </div>
       </div>
     );

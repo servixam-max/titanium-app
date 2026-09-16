@@ -210,7 +210,7 @@ export default function WeightPage() {
               Evolución de masa corporal y composición
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#141a24] border border-white/10 rounded-full">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#131626] border border-white/10 rounded-full">
             <span
               className="w-2 h-2 rounded-full"
               style={{ backgroundColor: currentUser?.avatarColor || "#00F59B" }}
@@ -223,7 +223,7 @@ export default function WeightPage() {
 
         {/* Current Weight Hero Card */}
         {stats && stats.current ? (
-          <div className="bg-gradient-to-br from-[#121622] to-[#151b2a] border border-primary/30 rounded-3xl p-5 shadow-2xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/30 rounded-3xl p-5 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-36 h-36 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex items-start justify-between relative z-10">
@@ -243,7 +243,7 @@ export default function WeightPage() {
               <div
                 className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 text-xs font-mono font-bold ${
                   stats.diff < 0
-                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                    ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(0,245,155,0.2)]"
                     : stats.diff > 0
                     ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
                     : "bg-white/5 border-white/10 text-zinc-300"
@@ -264,19 +264,19 @@ export default function WeightPage() {
 
             {/* BMI & Stats Bar */}
             <div className="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-white/10 relative z-10">
-              <div className="text-center bg-[#0e121a] rounded-xl p-2.5">
+              <div className="text-center bg-[#0d101a] rounded-xl p-2.5 border border-white/5">
                 <span className="text-[10px] font-mono text-zinc-400 uppercase block">IMC Est.</span>
                 <span className="text-sm font-bold font-mono text-white mt-0.5 block">
                   {bmi ? bmi.value : "--"}
                 </span>
               </div>
-              <div className="text-center bg-[#0e121a] rounded-xl p-2.5">
+              <div className="text-center bg-[#0d101a] rounded-xl p-2.5 border border-white/5">
                 <span className="text-[10px] font-mono text-zinc-400 uppercase block">Mínimo</span>
                 <span className="text-sm font-bold font-mono text-cyan-400 mt-0.5 block">
                   {stats.min.toFixed(1)} kg
                 </span>
               </div>
-              <div className="text-center bg-[#0e121a] rounded-xl p-2.5">
+              <div className="text-center bg-[#0d101a] rounded-xl p-2.5 border border-white/5">
                 <span className="text-[10px] font-mono text-zinc-400 uppercase block">Máximo</span>
                 <span className="text-sm font-bold font-mono text-amber-400 mt-0.5 block">
                   {stats.max.toFixed(1)} kg
@@ -297,12 +297,12 @@ export default function WeightPage() {
                 >
                   <defs>
                     <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#00D68F" stopOpacity="0.25" />
-                      <stop offset="100%" stopColor="#00D68F" stopOpacity="0.02" />
+                      <stop offset="0%" stopColor="#D4FF00" stopOpacity="0.28" />
+                      <stop offset="100%" stopColor="#00F59B" stopOpacity="0.02" />
                     </linearGradient>
                     <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#00E1FF" />
-                      <stop offset="100%" stopColor="#00D68F" />
+                      <stop offset="0%" stopColor="#D4FF00" />
+                      <stop offset="100%" stopColor="#00F59B" />
                     </linearGradient>
                     <filter id="glow">
                       <feGaussianBlur stdDeviation="2" result="blur" />
@@ -344,7 +344,7 @@ export default function WeightPage() {
                       cx={pt.x}
                       cy={pt.y}
                       r="3"
-                      className="fill-[#0f131a] stroke-[#00D68F]"
+                      className="fill-[#0d101a] stroke-primary"
                       strokeWidth="1.8"
                     />
                   ))}
@@ -393,13 +393,13 @@ export default function WeightPage() {
               setShowInput(true);
               haptics.light();
             }}
-            className="w-full h-12 bg-primary text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl shadow-neon hover:opacity-95 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl shadow-neon-strong hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border border-white/30"
           >
             <Plus className="w-5 h-5" />
             Registrar Nuevo Pesaje
           </button>
         ) : (
-          <div className="bg-[#121622] border-2 border-primary/50 rounded-3xl p-5 shadow-2xl animate-fade-in-up">
+          <div className="bg-[#131626] border-2 border-primary/50 rounded-3xl p-5 shadow-2xl animate-fade-in-up">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4" /> Nuevo Registro
@@ -423,28 +423,28 @@ export default function WeightPage() {
                 <button
                   type="button"
                   onClick={() => adjustInput(-1.0)}
-                  className="px-3 py-2 bg-[#171d2a] border border-white/10 rounded-xl text-xs font-mono font-bold text-zinc-300 hover:text-white active:scale-90 transition-all"
+                  className="px-3 py-2 bg-[#181d2e] border border-white/10 hover:border-primary/40 rounded-xl text-xs font-mono font-bold text-zinc-300 hover:text-white active:scale-90 transition-all"
                 >
                   -1 kg
                 </button>
                 <button
                   type="button"
                   onClick={() => adjustInput(-0.1)}
-                  className="px-3 py-2 bg-[#171d2a] border border-white/10 rounded-xl text-xs font-mono font-bold text-zinc-300 hover:text-white active:scale-90 transition-all"
+                  className="px-3 py-2 bg-[#181d2e] border border-white/10 hover:border-primary/40 rounded-xl text-xs font-mono font-bold text-zinc-300 hover:text-white active:scale-90 transition-all"
                 >
                   -0.1
                 </button>
                 <button
                   type="button"
                   onClick={() => adjustInput(0.1)}
-                  className="px-3 py-2 bg-[#171d2a] border border-white/10 rounded-xl text-xs font-mono font-bold text-zinc-300 hover:text-white active:scale-90 transition-all"
+                  className="px-3 py-2 bg-[#181d2e] border border-white/10 hover:border-primary/40 rounded-xl text-xs font-mono font-bold text-zinc-300 hover:text-white active:scale-90 transition-all"
                 >
                   +0.1
                 </button>
                 <button
                   type="button"
                   onClick={() => adjustInput(1.0)}
-                  className="px-3 py-2 bg-[#171d2a] border border-white/10 rounded-xl text-xs font-mono font-bold text-zinc-300 hover:text-white active:scale-90 transition-all"
+                  className="px-3 py-2 bg-[#181d2e] border border-white/10 hover:border-primary/40 rounded-xl text-xs font-mono font-bold text-zinc-300 hover:text-white active:scale-90 transition-all"
                 >
                   +1 kg
                 </button>
@@ -460,14 +460,14 @@ export default function WeightPage() {
                 type="date"
                 value={inputDate}
                 onChange={(e) => setInputDate(e.target.value)}
-                className="w-full h-11 bg-[#161c28] border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-primary font-mono"
+                className="w-full h-11 bg-[#0d101a] border border-white/10 rounded-xl px-3 text-sm text-white focus:outline-none focus:border-primary font-mono"
               />
             </div>
 
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="w-full h-12 bg-primary text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon hover:opacity-95 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer"
+              className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer border border-white/30"
             >
               <CheckCircle2 className="w-4 h-4" />
               {isSaving ? "Guardando..." : "Confirmar Pesaje"}
@@ -490,7 +490,7 @@ export default function WeightPage() {
               ))}
             </div>
           ) : weights.length === 0 ? (
-            <div className="bg-[#10141c] border border-white/10 rounded-2xl p-8 flex flex-col items-center text-center my-2">
+            <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-8 flex flex-col items-center text-center my-2">
               <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-zinc-400 mb-2">
                 <Scale className="w-6 h-6" />
               </div>
@@ -507,7 +507,7 @@ export default function WeightPage() {
               return (
                 <div
                   key={entry.id}
-                  className="bg-[#121620] border border-white/10 rounded-2xl p-3.5 flex items-center justify-between hover:border-white/20 transition-all"
+                  className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3.5 flex items-center justify-between hover:border-primary/40 transition-all"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary font-mono font-bold text-xs">

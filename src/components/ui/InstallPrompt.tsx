@@ -71,7 +71,7 @@ export default function InstallPrompt() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-[80px] left-4 right-4 z-50 bg-[#161e2e] border border-primary/30 rounded-xl p-4 shadow-lg animate-in slide-in-from-bottom-4">
+    <div className="fixed bottom-[80px] left-4 right-4 z-50 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/40 rounded-2xl p-4 shadow-neon animate-in slide-in-from-bottom-4">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
           <Download className="w-5 h-5 text-primary" />
@@ -111,7 +111,7 @@ export default function InstallPrompt() {
             {platform === "android" && deferredPrompt && (
               <button
                 onClick={handleInstall}
-                className="flex-1 h-[40px] bg-[#00D68F] text-black font-black rounded-lg text-sm active:scale-95 transition-transform"
+                className="flex-1 h-[40px] bg-gradient-to-r from-primary to-emerald-400 text-black font-black rounded-lg text-sm active:scale-95 transition-transform shadow-neon"
               >
                 <PlusSquare className="w-4 h-4 inline mr-1" />
                 Instalar
@@ -121,7 +121,7 @@ export default function InstallPrompt() {
             {platform === "ios" && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 h-[40px] bg-[#121620] text-white font-bold rounded-lg text-sm border border-white/10 active:scale-95 transition-transform"
+                className="flex-1 h-[40px] bg-[#131626] text-white font-bold rounded-lg text-sm border border-white/10 active:scale-95 transition-transform"
               >
                 Entendido
               </button>
@@ -130,7 +130,7 @@ export default function InstallPrompt() {
             {platform === "other" && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 h-[40px] bg-[#00D68F] text-black font-black rounded-lg text-sm active:scale-95 transition-transform"
+                className="flex-1 h-[40px] bg-gradient-to-r from-primary to-emerald-400 text-black font-black rounded-lg text-sm active:scale-95 transition-transform shadow-neon"
               >
                 OK
               </button>

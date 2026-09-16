@@ -59,7 +59,7 @@ export default function ExerciseSearchBar({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Buscar por ejercicio o músculo (ej. sentadilla, press...)"
-          className="w-full h-12 pl-10 pr-10 rounded-2xl bg-[#111622] border border-white/15 focus:border-primary text-white placeholder-zinc-500 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-primary shadow-lg transition-all"
+          className="w-full h-12 pl-10 pr-10 rounded-2xl bg-[#131626] border border-white/10 focus:border-primary text-white placeholder-zinc-500 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-primary shadow-lg transition-all"
         />
         {searchQuery.length > 0 && (
           <button
@@ -138,8 +138,8 @@ export default function ExerciseSearchBar({
               }}
               className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 active:scale-95 cursor-pointer ${
                 isSelected
-                  ? "bg-primary text-black font-black shadow-neon scale-[1.02]"
-                  : "bg-[#111622] hover:bg-[#161e2e] text-zinc-400 border border-white/10"
+                  ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon scale-[1.02] border border-white/20"
+                  : "bg-[#131626] hover:bg-[#181d2e] text-zinc-400 border border-white/10"
               }`}
             >
               {tag.label}

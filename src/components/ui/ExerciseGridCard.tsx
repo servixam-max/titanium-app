@@ -43,7 +43,7 @@ export default function ExerciseGridCard({
         ease: [0.22, 1, 0.36, 1],
       }}
       whileTap={{ scale: 0.98 }}
-      className="group relative bg-gradient-to-br from-[#121723] via-[#141b2a] to-[#10141f] border border-white/10 hover:border-primary/40 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between transition-all duration-300"
+      className="group relative bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 hover:border-primary/40 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between transition-all duration-300"
     >
       {/* Top Image Box */}
       <div
@@ -64,7 +64,7 @@ export default function ExerciseGridCard({
         )}
 
         {/* Gradient dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#10141f] via-transparent to-black/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141828] via-transparent to-black/30 pointer-events-none" />
 
         {/* Badges on top of image */}
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-1 pointer-events-none">
@@ -94,7 +94,7 @@ export default function ExerciseGridCard({
       </div>
 
       {/* Bottom Info & Action Button */}
-      <div className="p-3 flex flex-col gap-2 flex-1 justify-between bg-[#121723]">
+      <div className="p-3 flex flex-col gap-2 flex-1 justify-between bg-[#131626]">
         <div onClick={onSelect} className="cursor-pointer">
           <h4 className="font-mono text-xs sm:text-sm font-bold text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
             {exercise.name}
@@ -113,7 +113,7 @@ export default function ExerciseGridCard({
             haptics.impact();
             onQuickStart();
           }}
-          className="w-full h-10 mt-1 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-black/40 border border-primary/40 active:scale-95 transition-all cursor-pointer"
+          className="w-full h-10 mt-1 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-mono font-black text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 shadow-neon border border-white/20 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Entrenar</span>

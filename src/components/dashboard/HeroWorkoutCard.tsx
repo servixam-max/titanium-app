@@ -46,7 +46,7 @@ export default function HeroWorkoutCard({
       {/* Header Tag Row */}
       <div className="flex items-center justify-between gap-2 flex-wrap mb-3">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-mono text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-primary text-black shadow-neon">
+          <span className="font-mono text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon border border-white/20">
             {dayBadge}
           </span>
           <span className="font-mono text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
@@ -97,7 +97,7 @@ export default function HeroWorkoutCard({
 
       {/* High-Contrast Metrics Strip */}
       <div className="grid grid-cols-3 gap-2 py-3 border-y border-white/10 my-3">
-        <div className="flex items-center gap-2 bg-[#161B2C] border border-white/5 rounded-2xl px-3 py-2">
+        <div className="flex items-center gap-2 bg-[#131626] border border-white/5 rounded-2xl px-3 py-2">
           <Clock className="w-4 h-4 text-cyan-400 flex-shrink-0" />
           <div className="flex flex-col min-w-0">
             <span className="text-[9px] font-mono uppercase text-slate-400 font-bold">Tiempo</span>
@@ -105,7 +105,7 @@ export default function HeroWorkoutCard({
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-[#161B2C] border border-white/5 rounded-2xl px-3 py-2">
+        <div className="flex items-center gap-2 bg-[#131626] border border-white/5 rounded-2xl px-3 py-2">
           <Layers className="w-4 h-4 text-primary flex-shrink-0" />
           <div className="flex flex-col min-w-0">
             <span className="text-[9px] font-mono uppercase text-slate-400 font-bold">Volumen</span>
@@ -113,7 +113,7 @@ export default function HeroWorkoutCard({
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-[#161B2C] border border-white/5 rounded-2xl px-3 py-2">
+        <div className="flex items-center gap-2 bg-[#131626] border border-white/5 rounded-2xl px-3 py-2">
           <Dumbbell className="w-4 h-4 text-amber-400 flex-shrink-0" />
           <div className="flex flex-col min-w-0">
             <span className="text-[9px] font-mono uppercase text-slate-400 font-bold">Material</span>
@@ -256,7 +256,7 @@ export default function HeroWorkoutCard({
             haptics.impact();
             onStartRoutine();
           }}
-          className="flex-1 h-13 py-3.5 px-6 rounded-2xl bg-primary hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-neon-strong active:scale-95 transition-all cursor-pointer border border-white/40"
+          className="flex-1 h-13 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-neon-strong active:scale-95 transition-all cursor-pointer border border-white/40"
         >
           <Play className="w-4 h-4 fill-current" />
           <span>Comenzar Entrenamiento</span>

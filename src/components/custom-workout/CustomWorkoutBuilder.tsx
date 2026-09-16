@@ -384,7 +384,7 @@ export default function CustomWorkoutBuilder({
   return (
     <div className="flex flex-col gap-5 pb-32">
       {/* Top Banner / Title Header */}
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#121622] via-[#141d2c] to-[#0e121a] p-5 shadow-2xl backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-5 shadow-2xl backdrop-blur-xl">
         <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-primary/15 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-cyan-400/15 blur-3xl" />
 
@@ -412,8 +412,8 @@ export default function CustomWorkoutBuilder({
                 }}
                 className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all border ${
                   viewSavedList
-                    ? "bg-primary text-black border-primary font-black"
-                    : "bg-[#182030] text-zinc-300 border-white/10 hover:text-white"
+                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black border-primary font-black shadow-neon"
+                    : "bg-[#131626] text-zinc-300 border-white/10 hover:text-white hover:bg-[#181d2e]"
                 }`}
               >
                 <FolderHeart className="h-3.5 w-3.5" />
@@ -483,7 +483,7 @@ export default function CustomWorkoutBuilder({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden rounded-3xl border border-primary/30 bg-[#0d131f] p-4 shadow-xl"
+            className="overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-4 shadow-xl"
           >
             <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
               <div className="flex items-center gap-2">
@@ -504,7 +504,7 @@ export default function CustomWorkoutBuilder({
               {savedRoutines.map((routine) => (
                 <div
                   key={routine.id || routine.title}
-                  className="flex items-center justify-between gap-3 rounded-2xl bg-[#141b2a] border border-white/5 p-3 hover:border-primary/40 transition-all"
+                  className="flex items-center justify-between gap-3 rounded-2xl bg-[#131626] border border-white/5 p-3 hover:border-primary/40 transition-all"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="h-11 w-11 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex-shrink-0">
@@ -590,7 +590,7 @@ export default function CustomWorkoutBuilder({
         </div>
 
         {selectedItems.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-white/15 bg-[#121622]/60 p-8 text-center">
+          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-white/15 bg-[#131626]/60 p-8 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 text-zinc-400 mb-3">
               <Dumbbell className="h-7 w-7 opacity-70" />
             </div>
@@ -624,7 +624,7 @@ export default function CustomWorkoutBuilder({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#131926] via-[#151c2c] to-[#111622] p-3.5 shadow-xl transition-all"
+                  className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-3.5 shadow-xl transition-all"
                 >
                   {/* Top exercise bar */}
                   <div className="flex items-center justify-between gap-3 mb-3">
@@ -985,7 +985,7 @@ export default function CustomWorkoutBuilder({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar por nombre (ej: Burpee, Press, Salto, Crunch...)"
-                className="w-full rounded-2xl border border-white/10 bg-[#121723] pl-10 pr-4 py-2.5 text-xs font-bold text-white placeholder-zinc-500 focus:border-primary focus:outline-none shadow-md"
+                className="w-full rounded-2xl border border-white/10 bg-[#131626] pl-10 pr-4 py-2.5 text-xs font-bold text-white placeholder-zinc-500 focus:border-primary focus:outline-none shadow-md"
               />
               {searchQuery && (
                 <button
@@ -1008,8 +1008,8 @@ export default function CustomWorkoutBuilder({
                   }}
                   className={`flex-shrink-0 rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
                     activeMuscle === tab.id
-                      ? "bg-primary text-black font-black shadow-neon"
-                      : "bg-[#141b2a] text-zinc-400 hover:text-white border border-white/5"
+                      ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon border border-white/20"
+                      : "bg-[#131626] text-zinc-400 hover:text-white border border-white/5"
                   }`}
                 >
                   {tab.label}
@@ -1072,9 +1072,9 @@ export default function CustomWorkoutBuilder({
                 return (
                   <div
                     key={exercise.id || exercise.name}
-                    className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-gradient-to-br from-[#121723] via-[#141b2a] to-[#10141f] ${
+                    className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] ${
                       count > 0
-                        ? "border-primary/60 shadow-[0_0_15px_rgba(0,214,143,0.15)]"
+                        ? "border-primary/60 shadow-neon"
                         : "border-white/10 hover:border-white/25"
                     }`}
                   >
@@ -1090,7 +1090,7 @@ export default function CustomWorkoutBuilder({
 
                       {/* Count badge if added */}
                       {count > 0 && (
-                        <div className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-black font-mono text-xs font-black shadow-lg">
+                        <div className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-r from-primary to-emerald-400 text-black font-mono text-xs font-black shadow-neon">
                           +{count}
                         </div>
                       )}
@@ -1118,7 +1118,7 @@ export default function CustomWorkoutBuilder({
                         onClick={() => handleAddExercise(exercise)}
                         className={`flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-black uppercase tracking-wider transition-all cursor-pointer active:scale-95 ${
                           count > 0
-                            ? "bg-primary text-black shadow-neon"
+                            ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
                             : "bg-white/10 text-white hover:bg-white/20 border border-white/10"
                         }`}
                       >
@@ -1136,7 +1136,7 @@ export default function CustomWorkoutBuilder({
 
       {/* Floating Action Bar (Sticky at bottom) */}
       <div className="fixed bottom-16 left-0 right-0 z-40 p-4 pointer-events-none">
-        <div className="mx-auto max-w-lg pointer-events-auto rounded-3xl border border-white/15 bg-[#0f1420]/95 p-3.5 shadow-2xl backdrop-blur-2xl">
+        <div className="mx-auto max-w-lg pointer-events-auto rounded-3xl border border-white/15 bg-[#0d101a]/95 p-3.5 shadow-2xl backdrop-blur-2xl">
           {/* Summary metrics header */}
           <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/10">
             <div className="flex items-center gap-2">
@@ -1177,7 +1177,7 @@ export default function CustomWorkoutBuilder({
             <button
               onClick={() => handleStart("guided")}
               disabled={selectedItems.length === 0}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#00D68F] to-[#00b075] py-3 px-3 text-xs font-black uppercase tracking-wider text-black shadow-neon transition-all hover:brightness-110 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+              className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] py-3 px-3 text-xs font-black uppercase tracking-wider text-black shadow-neon-strong border border-white/20 transition-all hover:brightness-110 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
             >
               <Play className="h-4 w-4 fill-current" />
               <span>Modo Guiado</span>

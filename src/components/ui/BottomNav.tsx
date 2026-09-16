@@ -41,7 +41,7 @@ export default function BottomNav() {
               {isActive && (
                 <motion.div
                   layoutId="active-nav-indicator"
-                  className="absolute -top-1 w-7 h-1 bg-primary rounded-full shadow-neon"
+                  className="absolute -top-1 w-8 h-1 bg-gradient-to-r from-primary to-emerald-400 rounded-full shadow-neon-strong"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}

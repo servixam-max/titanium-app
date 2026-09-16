@@ -70,13 +70,13 @@ export default function AudioTestPage() {
         </div>
 
         {/* Audio Toggle */}
-        <div className="w-full flex items-center justify-between bg-[#121620] border border-white/10 rounded-2xl px-4 py-3.5 shadow-lg">
+        <div className="w-full flex items-center justify-between bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl px-4 py-3.5 shadow-lg">
           <span className="font-mono text-xs font-bold text-white uppercase">
             {audioEnabled ? "Audio y Voz Activados" : "Audio Desactivado"}
           </span>
           <button
             onClick={toggleAudio}
-            className={`w-12 h-7 rounded-full p-1 transition-all ${audioEnabled ? "bg-primary shadow-neon" : "bg-white/10"}`}
+            className={`w-12 h-7 rounded-full p-1 transition-all ${audioEnabled ? "bg-gradient-to-r from-primary to-emerald-400 shadow-neon" : "bg-white/10"}`}
           >
             <div
               className={`w-5 h-5 rounded-full bg-black transition-transform ${audioEnabled ? "translate-x-5" : "translate-x-0"}`}
@@ -89,7 +89,7 @@ export default function AudioTestPage() {
           <button
             onClick={testSpeechWithExercise}
             disabled={!audioEnabled || testResult === "testing"}
-            className="w-full h-13 bg-primary text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-neon disabled:opacity-50 cursor-pointer"
+            className="w-full h-13 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-neon-strong border border-white/30 disabled:opacity-50 cursor-pointer"
           >
             <Mic className="w-4 h-4" />
             <span>PROBAR LECTURA DE EJERCICIOS</span>
@@ -98,7 +98,7 @@ export default function AudioTestPage() {
           <button
             onClick={testChimes}
             disabled={!audioEnabled || testResult === "testing"}
-            className="w-full h-12 bg-[#141a24] hover:bg-[#18212e] text-zinc-200 font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
+            className="w-full h-12 bg-[#131626] hover:bg-[#181d2e] text-zinc-200 font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
           >
             <Bell className="w-4 h-4 text-cyan-400" />
             <span>PROBAR CAMPANADAS Y TICKS TÁCTILES</span>
@@ -120,7 +120,7 @@ export default function AudioTestPage() {
         )}
 
         {/* Info Box */}
-        <div className="w-full bg-[#121620] rounded-2xl p-4 border border-white/10 text-left font-mono">
+        <div className="w-full bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] rounded-2xl p-4 border border-white/10 text-left font-mono shadow-lg">
           <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider mb-2">
             MEJORAS DE AUDIO v5.9:
           </p>
@@ -134,7 +134,7 @@ export default function AudioTestPage() {
         {/* Continue */}
         <button
           onClick={() => router.push("/")}
-          className="w-full h-12 bg-[#141a24] hover:bg-[#18212e] text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer mt-1"
+          className="w-full h-12 bg-[#131626] hover:bg-[#181d2e] text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer mt-1"
         >
           <span>VOLVER A INICIO</span>
           <ArrowRight className="w-4 h-4 text-cyan-400" />

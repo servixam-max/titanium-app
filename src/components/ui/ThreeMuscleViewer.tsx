@@ -106,10 +106,10 @@ const MUSCLE_CENTROIDS: MuscleCentroid[] = [
 
 // Color definitions for heatmap
 const HEATMAP_COLORS = {
-  inactive: new THREE.Color(0x1a2333),
+  inactive: new THREE.Color(0x131626),
   light: new THREE.Color(0x00e1ff),
-  moderate: new THREE.Color(0x00ff9d),
-  high: new THREE.Color(0x39ff14),
+  moderate: new THREE.Color(0x00f59b),
+  high: new THREE.Color(0xd4ff00),
   peak: new THREE.Color(0xffbb00),
   selected: new THREE.Color(0x00ffff),
 };
@@ -311,7 +311,7 @@ export default function ThreeMuscleViewer({
     podiumGroup.position.set(0, -0.52, 0);
 
     const ringGeo1 = new THREE.RingGeometry(0.32, 0.33, 48);
-    const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x00d68f, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
+    const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x00f59b, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
     const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
     ring1.rotation.x = Math.PI / 2;
     podiumGroup.add(ring1);
@@ -341,12 +341,12 @@ export default function ThreeMuscleViewer({
     // 8. 3D Reticle Targeting Beacon
     const beaconGroup = new THREE.Group();
     const beaconRingGeo = new THREE.RingGeometry(0.024, 0.028, 32);
-    const beaconRingMat = new THREE.MeshBasicMaterial({ color: 0x00d68f, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+    const beaconRingMat = new THREE.MeshBasicMaterial({ color: 0x00f59b, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
     const beaconRing = new THREE.Mesh(beaconRingGeo, beaconRingMat);
     beaconGroup.add(beaconRing);
 
     const beaconDotGeo = new THREE.SphereGeometry(0.008, 16, 16);
-    const beaconDotMat = new THREE.MeshBasicMaterial({ color: 0xccff00 });
+    const beaconDotMat = new THREE.MeshBasicMaterial({ color: 0xd4ff00 });
     const beaconDot = new THREE.Mesh(beaconDotGeo, beaconDotMat);
     beaconGroup.add(beaconDot);
 
@@ -595,7 +595,7 @@ export default function ThreeMuscleViewer({
       {/* View Presets & Tools Bar */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         {/* Preset Angle Buttons */}
-        <div className="flex items-center bg-[#0d121c] border border-white/10 rounded-2xl p-1 shadow-inner text-xs font-mono font-bold">
+        <div className="flex items-center bg-[#0d101a] border border-white/10 rounded-2xl p-1 shadow-inner text-xs font-mono font-bold">
           <button
             onClick={() => setCameraPreset("front")}
             className="px-3 py-1.5 rounded-xl hover:bg-white/10 text-zinc-300 hover:text-white transition-all"
@@ -626,8 +626,8 @@ export default function ThreeMuscleViewer({
             }}
             className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
               isAutoRotate
-                ? "bg-primary/20 border-primary text-primary shadow-[0_0_12px_rgba(0,214,143,0.35)]"
-                : "bg-[#0d121c] border-white/10 text-zinc-400 hover:text-zinc-200"
+                ? "bg-primary/20 border-primary text-primary shadow-neon"
+                : "bg-[#0d101a] border-white/10 text-zinc-400 hover:text-zinc-200"
             }`}
             title="Giro automático 360°"
           >
@@ -644,7 +644,7 @@ export default function ThreeMuscleViewer({
             className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
               isScannerActive
                 ? "bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-[0_0_12px_rgba(0,225,255,0.35)]"
-                : "bg-[#0d121c] border-white/10 text-zinc-400 hover:text-zinc-200"
+                : "bg-[#0d101a] border-white/10 text-zinc-400 hover:text-zinc-200"
             }`}
           >
             <Scan className={`w-3.5 h-3.5 ${isScannerActive ? "animate-spin text-cyan-400" : ""}`} />
@@ -653,7 +653,7 @@ export default function ThreeMuscleViewer({
 
           {/* Timeframe Chips */}
           {onTimeframeChange && (
-            <div className="flex items-center bg-[#0d121c] border border-white/10 rounded-2xl p-1 text-[11px] font-mono">
+            <div className="flex items-center bg-[#0d101a] border border-white/10 rounded-2xl p-1 text-[11px] font-mono">
               {(["week", "month", "all"] as MuscleTimeframe[]).map((tf) => (
                 <button
                   key={tf}
@@ -676,7 +676,7 @@ export default function ThreeMuscleViewer({
       </div>
 
       {/* Main 3D Canvas Stage */}
-      <div className="relative flex flex-col items-center justify-center h-[440px] bg-gradient-to-b from-[#080d16] via-[#0c1322] to-[#070b13] rounded-3xl border border-white/10 shadow-2xl overflow-hidden touch-none">
+      <div className="relative flex flex-col items-center justify-center h-[440px] bg-gradient-to-b from-[#0A0B10] via-[#0d101a] to-[#080a0f] rounded-3xl border border-white/10 shadow-2xl overflow-hidden touch-none">
         {/* Ambient Volumetric Neons */}
         <div className="pointer-events-none absolute -top-10 -left-10 w-64 h-64 rounded-full bg-primary/15 blur-[100px]" />
         <div className="pointer-events-none absolute -bottom-10 -right-10 w-64 h-64 rounded-full bg-cyan-500/15 blur-[100px]" />
@@ -698,7 +698,7 @@ export default function ThreeMuscleViewer({
 
         {/* Loading / Error State */}
         {isLoading && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-30 bg-[#080d16]/80 backdrop-blur-sm">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-30 bg-[#0A0B10]/80 backdrop-blur-sm">
             <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             <span className="text-xs font-mono text-zinc-400">Cargando Escenario 3D...</span>
           </div>
@@ -725,7 +725,7 @@ export default function ThreeMuscleViewer({
         {/* Heatmap Spectrum Legend */}
         <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2.5 bg-black/40 border-t border-white/5 text-[10px] font-mono z-20 backdrop-blur-sm">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#1a2333] border border-white/20" />
+            <span className="w-2 h-2 rounded-full bg-[#131626] border border-white/20" />
             <span className="text-zinc-500">Inactivo</span>
           </div>
           <div className="flex items-center gap-1.5">
@@ -733,12 +733,12 @@ export default function ThreeMuscleViewer({
             <span className="text-zinc-400">Leve</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_#00D68F]" />
+            <span className="w-2 h-2 rounded-full bg-primary shadow-neon" />
             <span className="text-primary font-bold">Óptimo</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#CCFF00] shadow-[0_0_8px_#CCFF00]" />
-            <span className="text-[#CCFF00] font-black">Hipertrofia</span>
+            <span className="w-2 h-2 rounded-full bg-[#D4FF00] shadow-[0_0_8px_#D4FF00]" />
+            <span className="text-[#D4FF00] font-black">Hipertrofia</span>
           </div>
         </div>
       </div>
@@ -746,7 +746,7 @@ export default function ThreeMuscleViewer({
       {/* Biomechanical Symmetry & Balance Panel */}
       <div className="grid grid-cols-2 gap-2.5">
         {/* Push vs Pull Postural Ratio */}
-        <div className="bg-[#0f1420] border border-white/10 rounded-2xl p-3 shadow-lg">
+        <div className="bg-[#131626] border border-white/10 rounded-2xl p-3 shadow-lg">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
               Empuje vs Tracción
@@ -755,7 +755,7 @@ export default function ThreeMuscleViewer({
               {biomechanics.pushRatio}% / {biomechanics.pullRatio}%
             </span>
           </div>
-          <div className="w-full bg-[#182030] h-2 rounded-full overflow-hidden flex">
+          <div className="w-full bg-[#0d101a] h-2 rounded-full overflow-hidden flex">
             <div
               className="h-full bg-gradient-to-r from-emerald-500 to-primary transition-all duration-500"
               style={{ width: `${biomechanics.pushRatio}%` }}
@@ -777,7 +777,7 @@ export default function ThreeMuscleViewer({
         </div>
 
         {/* Upper vs Lower Body Ratio */}
-        <div className="bg-[#0f1420] border border-white/10 rounded-2xl p-3 shadow-lg">
+        <div className="bg-[#131626] border border-white/10 rounded-2xl p-3 shadow-lg">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
               Torso vs Piernas
@@ -786,7 +786,7 @@ export default function ThreeMuscleViewer({
               {biomechanics.upperRatio}% / {biomechanics.lowerRatio}%
             </span>
           </div>
-          <div className="w-full bg-[#182030] h-2 rounded-full overflow-hidden flex">
+          <div className="w-full bg-[#0d101a] h-2 rounded-full overflow-hidden flex">
             <div
               className="h-full bg-gradient-to-r from-cyan-400 to-teal-400 transition-all duration-500"
               style={{ width: `${biomechanics.upperRatio}%` }}
@@ -799,16 +799,18 @@ export default function ThreeMuscleViewer({
             />
           </div>
           <span className="text-[9px] font-mono text-zinc-500 block mt-1.5">
-            {biomechanics.lowerRatio >= 35
-              ? "Desarrollo atlético balanceado"
-              : "Recomendado: Foco en piernas"}
+            {biomechanics.upperRatio >= 45 && biomechanics.upperRatio <= 55
+              ? "Equilibrio tren superior/inferior"
+              : biomechanics.upperRatio > 55
+              ? "Mayor volumen en tren superior"
+              : "Mayor volumen en piernas"}
           </span>
         </div>
       </div>
 
-      {/* Interactive Muscle Inspection Detail Card */}
+      {/* Detailed Selected Muscle Holographic Card */}
       {selectedStat && (
-        <div className="bg-gradient-to-br from-[#121826] via-[#151f30] to-[#0f1522] border border-primary/30 rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/30 rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none" />
 
           <div className="flex items-start justify-between gap-3 relative z-10">
@@ -834,9 +836,9 @@ export default function ThreeMuscleViewer({
               <span
                 className={`inline-block px-3 py-1 rounded-full text-[10px] font-mono font-black uppercase tracking-wider ${
                   selectedStat.intensityLevel === "peak"
-                    ? "bg-[#CCFF00]/20 text-[#CCFF00] border border-[#CCFF00]/40 shadow-[0_0_12px_rgba(204,255,0,0.35)]"
+                    ? "bg-[#D4FF00]/20 text-[#D4FF00] border border-[#D4FF00]/40 shadow-[0_0_12px_rgba(212,255,0,0.35)]"
                     : selectedStat.intensityLevel === "high"
-                    ? "bg-primary/20 text-primary border border-primary/40 shadow-[0_0_10px_rgba(0,214,143,0.3)]"
+                    ? "bg-primary/20 text-primary border border-primary/40 shadow-neon"
                     : selectedStat.intensityLevel === "moderate"
                     ? "bg-cyan-400/20 text-cyan-300 border border-cyan-400/30"
                     : selectedStat.intensityLevel === "light"

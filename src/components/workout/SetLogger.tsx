@@ -130,7 +130,7 @@ export default function SetLogger({
 
       <div className="grid grid-cols-2 gap-3">
         {/* Weight input */}
-        <div className="bg-[#121620] border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
+        <div className="bg-[#131626] border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-label-caps text-zinc-400 uppercase tracking-wider flex items-center gap-1">
               <Weight className="w-3.5 h-3.5 text-primary" />
@@ -140,7 +140,7 @@ export default function SetLogger({
           <div className="flex items-center gap-2">
             <button
               onClick={() => adjustWeight(-2.5)}
-              className="w-10 h-10 rounded-xl bg-[#161e2e] border border-white/10 flex items-center justify-center text-white active:scale-95"
+              className="w-10 h-10 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
               aria-label="Bajar peso"
             >
               <Minus className="w-4 h-4" />
@@ -152,11 +152,11 @@ export default function SetLogger({
               onChange={(e) => setLocalWeight(e.target.value)}
               onBlur={commitWeight}
               onKeyDown={(e) => e.key === "Enter" && commitWeight()}
-              className="flex-1 min-w-0 h-10 bg-background border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
+              className="flex-1 min-w-0 h-10 bg-[#0d101a] border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
             />
             <button
               onClick={() => adjustWeight(2.5)}
-              className="w-10 h-10 rounded-xl bg-[#161e2e] border border-white/10 flex items-center justify-center text-white active:scale-95"
+              className="w-10 h-10 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
               aria-label="Subir peso"
             >
               <Plus className="w-4 h-4" />
@@ -165,7 +165,7 @@ export default function SetLogger({
         </div>
 
         {/* Reps input */}
-        <div className="bg-[#121620] border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
+        <div className="bg-[#131626] border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-label-caps text-zinc-400 uppercase tracking-wider flex items-center gap-1">
               <Hash className="w-3.5 h-3.5 text-primary" />
@@ -175,7 +175,7 @@ export default function SetLogger({
           <div className="flex items-center gap-2">
             <button
               onClick={() => adjustReps(-1)}
-              className="w-10 h-10 rounded-xl bg-[#161e2e] border border-white/10 flex items-center justify-center text-white active:scale-95"
+              className="w-10 h-10 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
               aria-label="Bajar reps"
             >
               <Minus className="w-4 h-4" />
@@ -187,11 +187,11 @@ export default function SetLogger({
               onChange={(e) => setLocalReps(e.target.value)}
               onBlur={commitReps}
               onKeyDown={(e) => e.key === "Enter" && commitReps()}
-              className="flex-1 min-w-0 h-10 bg-background border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
+              className="flex-1 min-w-0 h-10 bg-[#0d101a] border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
             />
             <button
               onClick={() => adjustReps(1)}
-              className="w-10 h-10 rounded-xl bg-[#161e2e] border border-white/10 flex items-center justify-center text-white active:scale-95"
+              className="w-10 h-10 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
               aria-label="Subir reps"
             >
               <Plus className="w-4 h-4" />
@@ -211,7 +211,7 @@ export default function SetLogger({
 
       {/* PR badge — shown when current values beat the existing record */}
       {(prStatus.isBest1RM || prStatus.isBestWeight) && (Number(localWeight) || 0) > 0 && (Number(localReps) || 0) > 0 && (
-        <div className="flex items-center justify-center gap-1.5 py-1 px-3 bg-primary/15 border border-primary/40 rounded-full">
+        <div className="flex items-center justify-center gap-1.5 py-1 px-3 bg-gradient-to-r from-primary/20 to-emerald-500/20 border border-primary/40 rounded-full shadow-[0_0_12px_rgba(212,255,0,0.2)]">
           <span className="text-base">🏆</span>
           <span className="text-primary text-xs font-mono font-black uppercase tracking-wider">¡Nuevo Récord!</span>
         </div>

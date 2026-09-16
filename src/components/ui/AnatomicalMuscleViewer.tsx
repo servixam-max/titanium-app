@@ -14,7 +14,7 @@ import { haptics } from "@/lib/haptics";
 const ThreeMuscleViewer = dynamic(() => import("./ThreeMuscleViewer"), {
   ssr: false,
   loading: () => (
-    <div className="flex flex-col items-center justify-center h-[440px] bg-[#080d16] rounded-3xl border border-white/10 gap-3">
+    <div className="flex flex-col items-center justify-center h-[440px] bg-[#0A0B10] rounded-3xl border border-white/10 gap-3">
       <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       <span className="text-xs font-mono text-zinc-400">Iniciando Motor 3D WebGL...</span>
     </div>
@@ -40,7 +40,7 @@ export default function AnatomicalMuscleViewer({
     <div className={`flex flex-col gap-3 ${className}`}>
       {/* Visual Engine Mode Switcher: 3D Real 360° vs 2D Diagrama */}
       <div className="flex items-center justify-between px-1">
-        <div className="flex items-center gap-1.5 bg-[#0e1420] border border-white/10 rounded-2xl p-1 shadow-inner">
+        <div className="flex items-center gap-1.5 bg-[#0d101a] border border-white/10 rounded-2xl p-1 shadow-inner">
           <button
             onClick={() => {
               haptics.selection();
@@ -111,7 +111,7 @@ function TwoDimensionalViewer({
     if (!isTrained) {
       return {
         fill: isSelected ? "rgba(0, 214, 143, 0.28)" : "#1c2536",
-        stroke: isSelected ? "#00D68F" : "rgba(255, 255, 255, 0.15)",
+        stroke: isSelected ? "#D4FF00" : "rgba(255, 255, 255, 0.15)",
         strokeWidth: isSelected ? 2 : 0.8,
         opacity: isSelected ? 1 : 0.7,
         className: "transition-all duration-300 cursor-pointer hover:opacity-90",
@@ -160,14 +160,14 @@ function TwoDimensionalViewer({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center bg-[#0d121c] border border-white/10 rounded-2xl p-1 text-xs font-mono font-bold">
+        <div className="flex items-center bg-[#0d101a] border border-white/10 rounded-2xl p-1 text-xs font-mono font-bold">
           <button
             onClick={() => {
               haptics.selection();
               setActiveView("front");
             }}
             className={`px-3 py-1.5 rounded-xl transition-all ${
-              activeView === "front" ? "bg-primary text-black font-black" : "text-zinc-400"
+              activeView === "front" ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon" : "text-zinc-400 hover:text-white"
             }`}
           >
             Frontal
@@ -178,7 +178,7 @@ function TwoDimensionalViewer({
               setActiveView("back");
             }}
             className={`px-3 py-1.5 rounded-xl transition-all ${
-              activeView === "back" ? "bg-primary text-black font-black" : "text-zinc-400"
+              activeView === "back" ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon" : "text-zinc-400 hover:text-white"
             }`}
           >
             Dorsal
@@ -186,7 +186,7 @@ function TwoDimensionalViewer({
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center min-h-[360px] bg-[#080d16] rounded-3xl border border-white/10 p-4">
+      <div className="flex flex-col items-center justify-center min-h-[360px] bg-[#0A0B10] rounded-3xl border border-white/10 p-4">
         <svg viewBox="0 0 240 420" className="w-full h-[320px] select-none cursor-pointer">
           {activeView === "front" ? (
             <g id="front-view">
@@ -197,32 +197,31 @@ function TwoDimensionalViewer({
                    L126 274 L132 340 L138 396 L146 402 L160 398 L158 368 L154 324 L148 274 L148 230 L156 212 L162 184 L164 132
                    L174 142 L178 164 C180 178 184 192 188 194 C192 196 196 192 198 178 C202 152 194 122 186 104 C176 80 164 68 154 64
                    L132 58 L128 48 Z"
-                fill="#121824"
+                fill="#131626"
                 stroke="rgba(255,255,255,0.12)"
               />
               <g onClick={() => setSelectedMuscle("chest")}>
-                <path d="M92 74 C104 74 116 75 118 78 L118 116 C110 122 96 122 88 116 Z" {...getMuscleVisuals("chest")} />
-                <path d="M148 74 C136 74 124 75 122 78 L122 116 C130 122 144 122 152 116 Z" {...getMuscleVisuals("chest")} />
+                <path d="M96 90 L118 92 L118 116 L94 114 Z" {...getMuscleVisuals("chest")} />
+                <path d="M144 90 L122 92 L122 116 L146 114 Z" {...getMuscleVisuals("chest")} />
               </g>
               <g onClick={() => setSelectedMuscle("deltoids_ant")}>
-                <path d="M86 64 C78 66 66 76 60 92 C56 102 56 114 62 120 C68 126 74 124 78 112 Z" {...getMuscleVisuals("deltoids_ant")} />
-                <path d="M154 64 C162 66 174 76 180 92 C184 102 184 114 178 120 C172 126 166 124 162 112 Z" {...getMuscleVisuals("deltoids_ant")} />
+                <path d="M84 68 L70 94 L88 106 L96 82 Z" {...getMuscleVisuals("deltoids_ant")} />
+                <path d="M156 68 L170 94 L152 106 L144 82 Z" {...getMuscleVisuals("deltoids_ant")} />
               </g>
               <g onClick={() => setSelectedMuscle("biceps")}>
-                <path d="M60 114 C56 120 54 130 56 142 C58 150 62 154 66 148 Z" {...getMuscleVisuals("biceps")} />
-                <path d="M180 114 C184 120 186 130 184 142 C182 150 178 154 174 148 Z" {...getMuscleVisuals("biceps")} />
+                <path d="M60 108 L66 140 L74 112 Z" {...getMuscleVisuals("biceps")} />
+                <path d="M180 108 L174 140 L166 112 Z" {...getMuscleVisuals("biceps")} />
               </g>
               <g onClick={() => setSelectedMuscle("abs")}>
-                <path d="M102 126 L118 126 L118 190 L102 190 Z" {...getMuscleVisuals("abs")} />
-                <path d="M138 126 L122 126 L122 190 L138 190 Z" {...getMuscleVisuals("abs")} />
+                <path d="M102 124 L138 124 L134 186 L106 186 Z" {...getMuscleVisuals("abs")} />
               </g>
               <g onClick={() => setSelectedMuscle("quads")}>
-                <path d="M92 214 L116 226 L114 286 L88 238 Z" {...getMuscleVisuals("quads")} />
-                <path d="M148 214 L124 226 L126 286 L152 238 Z" {...getMuscleVisuals("quads")} />
+                <path d="M92 216 L118 218 L112 284 L88 244 Z" {...getMuscleVisuals("quads")} />
+                <path d="M148 216 L122 218 L128 284 L152 244 Z" {...getMuscleVisuals("quads")} />
               </g>
               <g onClick={() => setSelectedMuscle("calves")}>
-                <path d="M94 316 L108 338 L104 382 L92 368 Z" {...getMuscleVisuals("calves")} />
-                <path d="M146 316 L132 338 L136 382 L148 368 Z" {...getMuscleVisuals("calves")} />
+                <path d="M90 322 L110 328 L104 374 L94 374 Z" {...getMuscleVisuals("calves")} />
+                <path d="M150 322 L130 328 L136 374 L146 374 Z" {...getMuscleVisuals("calves")} />
               </g>
             </g>
           ) : (
@@ -234,7 +233,7 @@ function TwoDimensionalViewer({
                    L128 274 L134 340 L140 396 L148 402 L162 398 L160 368 L156 324 L150 274 L150 230 L158 212 L164 184 L166 132
                    L176 142 L180 164 C182 178 186 192 190 194 C194 196 198 192 200 178 C204 152 196 122 188 104 C178 80 166 68 156 64
                    L134 58 L128 48 Z"
-                fill="#121824"
+                fill="#131626"
                 stroke="rgba(255,255,255,0.12)"
               />
               <g onClick={() => setSelectedMuscle("traps")}>

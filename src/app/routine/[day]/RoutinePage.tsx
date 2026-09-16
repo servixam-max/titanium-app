@@ -124,12 +124,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
             <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-zinc-400">
               Equipamiento
             </h2>
-            <div className="flex p-1 bg-[#121620] border border-white/10 rounded-2xl w-full">
+            <div className="flex p-1 bg-[#131626] border border-white/10 rounded-2xl w-full">
               <button
                 onClick={() => setEquipmentPreference("dumbbells")}
                 className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${
                   equipmentPreference === "dumbbells"
-                    ? "bg-primary text-black font-black shadow-neon"
+                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon"
                     : "bg-transparent text-zinc-400 hover:text-white"
                 }`}
               >
@@ -139,7 +139,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                 onClick={() => setEquipmentPreference("bodyweight")}
                 className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${
                   equipmentPreference === "bodyweight"
-                    ? "bg-primary text-black font-black shadow-neon"
+                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon"
                     : "bg-transparent text-zinc-400 hover:text-white"
                 }`}
               >
@@ -177,8 +177,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-[#00D68F] text-black font-black border-emerald-300 shadow-neon"
-                          : "bg-[#121620] text-white border-white/10"
+                          ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black border-white/20 shadow-neon"
+                          : "bg-[#141828] text-white border-white/10 hover:border-white/20"
                       }`}
                     >
                       <span>{ex.name}</span>
@@ -221,8 +221,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-[#00D68F] text-black font-black border-emerald-300 shadow-neon"
-                          : "bg-[#121620] text-white border-white/10"
+                          ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black border-white/20 shadow-neon"
+                          : "bg-[#141828] text-white border-white/10 hover:border-white/20"
                       }`}
                     >
                       <span>{ex.name}</span>
@@ -289,7 +289,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         <div className="max-w-app mx-auto px-container-padding pointer-events-auto">
           <button
             onClick={() => handleStart(0)}
-            className="w-full bg-primary text-black font-mono font-black text-sm uppercase tracking-wider h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon hover:shadow-[0_0_30px_rgba(0,245,155,0.6)] cursor-pointer"
+            className="w-full bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-sm uppercase tracking-wider h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon-strong hover:brightness-110 border border-white/30 cursor-pointer"
           >
             <Play className="w-5 h-5 fill-current" />
             <span>{mode === "guided" ? "INICIAR MODO GUIADO" : "INICIAR MODO INDIVIDUAL"}</span>

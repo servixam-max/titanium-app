@@ -459,11 +459,11 @@ nav {
 
 @keyframes cyber-pulse {
   0%, 100% {
-    filter: drop-shadow(0 0 4px #00D68F) drop-shadow(0 0 12px rgba(0, 214, 143, 0.45));
+    filter: drop-shadow(0 0 4px #00F59B) drop-shadow(0 0 12px rgba(0, 245, 155, 0.45));
     opacity: 0.95;
   }
   50% {
-    filter: drop-shadow(0 0 8px #CCFF00) drop-shadow(0 0 22px rgba(204, 255, 0, 0.8));
+    filter: drop-shadow(0 0 8px #D4FF00) drop-shadow(0 0 22px rgba(212, 255, 0, 0.8));
     opacity: 1;
   }
 }

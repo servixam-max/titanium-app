@@ -146,7 +146,7 @@ async function serverLogin(email: string, password: string): Promise<AuthResult>
       username: data.user.username,
       email: data.user.email,
       passwordHash: "",
-      avatarColor: "#00D68F",
+      avatarColor: "#00F59B",
       createdAt: now,
       modifiedAt: now,
       lastLogin: now,
@@ -182,7 +182,7 @@ async function serverRegister(username: string, email: string, password: string)
       username: data.user.username,
       email: data.user.email,
       passwordHash: "",
-      avatarColor: "#00D68F",
+      avatarColor: "#00F59B",
       createdAt: now,
       modifiedAt: now,
       lastLogin: now,
@@ -240,7 +240,7 @@ function offlineRegister(username: string, email: string, passwordPlain: string)
   if (exists) return { success: false, error: "Ese usuario o correo ya existe en modo offline." };
 
   const now = new Date().toISOString();
-  const colors = ["#00D68F", "#00E1FF", "#7C3AED", "#FF6B00", "#FF007A"];
+  const colors = ["#00F59B", "#00E1FF", "#7C3AED", "#FF6B00", "#FF007A"];
   const user: UserAccount = {
     id: `local_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     clientId: "offline",

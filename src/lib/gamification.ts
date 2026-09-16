@@ -15,7 +15,7 @@ export const LEVELS: LevelInfo[] = [
   { level: 4, title: "Plata II", minXP: 2500, maxXP: 4500, badgeColor: "#CBD5E1" },
   { level: 5, title: "Oro", minXP: 4500, maxXP: 7500, badgeColor: "#F59E0B" },
   { level: 6, title: "Platino", minXP: 7500, maxXP: 12000, badgeColor: "#00E1FF" },
-  { level: 7, title: "Titanio", minXP: 12000, maxXP: 20000, badgeColor: "#00D68F" },
+  { level: 7, title: "Titanio", minXP: 12000, maxXP: 20000, badgeColor: "#00F59B" },
   { level: 8, title: "Élite Legendario", minXP: 20000, maxXP: 999999, badgeColor: "#FF007A" },
 ];
 

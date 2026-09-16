@@ -23,9 +23,9 @@ export default function RecommendedRoutineCard({
       initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.05 }}
-      className="group relative overflow-hidden rounded-3xl border border-primary/40 bg-gradient-to-br from-[#101624] via-[#121828] to-[#0E1422] p-4 shadow-xl active:scale-[0.99] transition-transform"
+      className="group relative overflow-hidden rounded-3xl border border-primary/40 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-4 shadow-xl active:scale-[0.99] transition-transform"
     >
-      <BorderBeam size={200} duration={6} colorFrom="#00F59B" colorTo="#00E5FF" borderWidth={2} borderRadius={24} />
+      <BorderBeam size={200} duration={6} colorFrom="#D4FF00" colorTo="#00F59B" borderWidth={2} borderRadius={24} />
       <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
 
       <div className="mb-2.5 flex items-center justify-between gap-2">
@@ -90,7 +90,7 @@ export default function RecommendedRoutineCard({
               haptics.impact();
               onStart();
             }}
-            className="flex h-11 items-center gap-1.5 rounded-2xl border border-primary/40 bg-primary hover:brightness-110 px-5 text-xs font-black uppercase tracking-wider text-black shadow-neon active:scale-95 transition-all cursor-pointer"
+            className="flex h-11 items-center gap-1.5 rounded-2xl border border-white/20 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 px-5 text-xs font-black uppercase tracking-wider text-black shadow-neon-strong active:scale-95 transition-all cursor-pointer"
           >
             <span>Empezar</span>
             <ChevronRight className="h-4 w-4" />

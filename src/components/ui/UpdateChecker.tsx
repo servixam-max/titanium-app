@@ -47,7 +47,7 @@ export default function UpdateChecker() {
 
   if (upToDateMsg) {
     return (
-      <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] bg-[#121620] border border-primary/20 text-white px-4 py-2 rounded-full shadow-lg text-sm animate-fade-in-up">
+      <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] bg-[#131626] border border-primary/30 text-white px-4 py-2 rounded-full shadow-lg text-sm animate-fade-in-up font-mono">
         FORTIXAM está actualizado (v{APP_VERSION.version})
       </div>
     );
@@ -88,7 +88,7 @@ export default function UpdateChecker() {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="bg-[#121622] border-2 border-primary/50 rounded-3xl p-6 w-full max-w-sm shadow-[0_0_40px_rgba(0,245,155,0.25)] animate-fade-in-up relative overflow-hidden font-mono">
+      <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-2 border-primary/50 rounded-3xl p-6 w-full max-w-sm shadow-[0_0_40px_rgba(0,245,155,0.25)] animate-fade-in-up relative overflow-hidden font-mono">
         {/* Glow effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/20 rounded-full blur-[60px] pointer-events-none" />
         
@@ -144,7 +144,7 @@ export default function UpdateChecker() {
           )}
 
           {isDownloading ? (
-            <div className="w-full bg-[#161c28] border border-primary/30 rounded-2xl p-4 flex flex-col gap-3">
+            <div className="w-full bg-[#131626] border border-primary/30 rounded-2xl p-4 flex flex-col gap-3">
               <div className="flex items-center justify-between text-xs font-bold text-white">
                 <span className="flex items-center gap-2 text-primary">
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -166,7 +166,7 @@ export default function UpdateChecker() {
           ) : (
             <button
               onClick={handleStartUpdate}
-              className="w-full h-12 bg-gradient-to-r from-primary to-emerald-400 hover:brightness-110 text-black font-bold text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-black/50 border border-primary/40 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-black text-xs uppercase tracking-wider rounded-2xl shadow-neon-strong border border-white/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               Actualizar a v{updateInfo.version}

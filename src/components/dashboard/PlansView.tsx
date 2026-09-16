@@ -160,7 +160,7 @@ export default function PlansView({
   return (
     <div className="flex flex-col gap-6">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-[#121622] via-[#101520] to-[#0a0d14] p-5 shadow-[0_0_30px_rgba(0,245,155,0.12)]">
+      <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-5 shadow-[0_0_30px_rgba(0,245,155,0.12)]">
         <div className="absolute top-0 right-0 h-40 w-40 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col gap-3">
           <div className="flex items-center justify-between">
@@ -193,7 +193,7 @@ export default function PlansView({
 
       {/* Active Plan Spotlight */}
       {activePlan && (
-        <div className="relative overflow-hidden rounded-3xl border-2 border-primary bg-[#121824] p-5 shadow-neon">
+        <div className="relative overflow-hidden rounded-3xl border-2 border-primary/60 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-5 shadow-neon">
           <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3 mb-4">
             <div className="flex items-center gap-2">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-black">
@@ -283,8 +283,8 @@ export default function PlansView({
                 key={planId}
                 className={`relative overflow-hidden rounded-2xl border p-4 transition-all ${
                   isActive
-                    ? "border-primary/60 bg-gradient-to-br from-[#121a22] to-[#0e141c] shadow-neon"
-                    : "border-white/10 bg-[#121620] hover:border-white/20"
+                    ? "border-primary/60 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] shadow-neon"
+                    : "border-white/10 bg-[#131626] hover:border-white/20"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -350,7 +350,7 @@ export default function PlansView({
                       <button
                         onClick={() => handleActivate(plan)}
                         disabled={isActivatingId === planId}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-primary/40 bg-primary px-3 py-2 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 cursor-pointer disabled:opacity-50"
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-gradient-to-r from-primary to-emerald-400 px-3 py-2 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 cursor-pointer disabled:opacity-50 shadow-neon"
                       >
                         {isActivatingId === planId ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -373,7 +373,7 @@ export default function PlansView({
       {/* Modal Coach IA */}
       {showCoachModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-md rounded-3xl border-2 border-primary/50 bg-[#121622] p-6 shadow-[0_0_40px_rgba(0,245,155,0.25)] font-mono max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full max-w-md rounded-3xl border-2 border-primary/50 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-6 shadow-[0_0_40px_rgba(0,245,155,0.25)] font-mono max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowCoachModal(false)}
               className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors cursor-pointer"

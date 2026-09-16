@@ -58,15 +58,15 @@ export default function AchievementsList({ achievements, className }: Achievemen
               </span>
             </div>
           </div>
-          <span className="text-[11px] font-mono font-black text-primary bg-primary/10 border border-primary/30 px-3 py-1 rounded-full shadow-[0_0_10px_rgba(0,214,143,0.2)]">
+          <span className="text-[11px] font-mono font-black text-primary bg-primary/10 border border-primary/30 px-3 py-1 rounded-full shadow-neon">
             {overallPercentage}%
           </span>
         </div>
 
         {/* Global Progress Bar */}
-        <div className="w-full bg-[#161c28] h-2 rounded-full overflow-hidden border border-white/5">
+        <div className="w-full bg-[#0d101a] h-2 rounded-full overflow-hidden border border-white/5">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-primary to-[#CCFF00] transition-all duration-700 shadow-[0_0_8px_rgba(0,214,143,0.7)]"
+            className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-primary to-[#00F59B] transition-all duration-700 shadow-neon"
             style={{ width: `${overallPercentage}%` }}
           />
         </div>
@@ -92,7 +92,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
             className={cn(
               "flex-shrink-0 px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold uppercase transition-all",
               activeFilter === tab.id
-                ? "bg-primary text-black font-black shadow-[0_0_8px_rgba(0,214,143,0.4)]"
+                ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon border border-white/20"
                 : "bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10"
             )}
           >
@@ -119,8 +119,8 @@ export default function AchievementsList({ achievements, className }: Achievemen
               className={cn(
                 "p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[115px] cursor-pointer active:scale-98",
                 achievement.isUnlocked
-                  ? "bg-gradient-to-br from-[#121620] to-[#151f28] border-primary/40 shadow-[0_0_12px_rgba(0,214,143,0.15)] hover:border-primary/60"
-                  : "bg-[#10141c] border-white/5 opacity-70 hover:opacity-100 hover:border-white/10"
+                  ? "bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-primary/50 shadow-neon hover:border-primary/80"
+                  : "bg-[#131626] border-white/5 opacity-70 hover:opacity-100 hover:border-white/10"
               )}
             >
               {achievement.isUnlocked && (
@@ -155,12 +155,12 @@ export default function AchievementsList({ achievements, className }: Achievemen
                     {achievement.progress}/{achievement.target} {achievement.unit}
                   </span>
                 </div>
-                <div className="w-full bg-[#161c28] h-1.5 rounded-full overflow-hidden">
+                <div className="w-full bg-[#0d101a] h-1.5 rounded-full overflow-hidden">
                   <div
                     className={cn(
                       "h-full rounded-full transition-all duration-500",
                       achievement.isUnlocked
-                        ? "bg-primary shadow-[0_0_6px_rgba(0,214,143,0.8)]"
+                        ? "bg-gradient-to-r from-primary to-emerald-400 shadow-[0_0_8px_rgba(0,245,155,0.8)]"
                         : "bg-cyan-500/60"
                     )}
                     style={{ width: `${pct}%` }}
@@ -183,20 +183,20 @@ export default function AchievementsList({ achievements, className }: Achievemen
             onClick={(e) => e.stopPropagation()}
           >
             <Card3D highlight rotateXMax={14} rotateYMax={14}>
-              <div className="relative overflow-hidden bg-gradient-to-b from-[#161f2e] to-[#0e121a] border border-primary/40 rounded-3xl p-6 text-center shadow-2xl">
+              <div className="relative overflow-hidden bg-gradient-to-b from-[#141828] via-[#111422] to-[#0d101a] border border-primary/40 rounded-3xl p-6 text-center shadow-2xl">
                 {selectedAchievement.isUnlocked && (
                   <BorderBeam
                     size={160}
                     duration={5}
-                    colorFrom="#00D68F"
-                    colorTo="#00E1FF"
+                    colorFrom="#D4FF00"
+                    colorTo="#00F59B"
                     borderWidth={2}
                     borderRadius={24}
                   />
                 )}
 
                 <div className="relative z-10">
-                  <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-tr from-black/80 to-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_24px_rgba(0,214,143,0.3)]">
+                  <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-tr from-black/80 to-white/5 border border-primary/30 flex items-center justify-center shadow-[0_0_24px_rgba(212,255,0,0.25)]">
                     <span className="text-5xl block select-none">
                       {selectedAchievement.icon}
                     </span>
@@ -240,7 +240,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
                       haptics.tick();
                       setSelectedAchievement(null);
                     }}
-                    className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-mono font-bold text-xs uppercase tracking-wider transition-all"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-xs uppercase tracking-wider transition-all shadow-neon cursor-pointer active:scale-95 border border-white/20"
                   >
                     Entendido
                   </button>

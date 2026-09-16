@@ -30,17 +30,17 @@ export default function ExerciseDotProgress({
             aria-label={ex.name}
           >
             <div
-              className={`w-3 h-3 rounded-full border-2 transition-colors ${
+              className={`w-3 h-3 rounded-full border-2 transition-all ${
                 state === "done"
-                  ? "bg-[#00D68F] border-[#00D68F]"
+                  ? "bg-gradient-to-r from-primary to-emerald-400 border-primary shadow-neon"
                   : state === "active"
-                    ? "bg-black border-[#00D68F] shadow-[0_0_8px_rgba(0,214,143,0.8)] scale-110"
+                    ? "bg-black border-primary shadow-neon-strong scale-110"
                     : "bg-white/20 border-white/20"
               }`}
             />
             <span
               className={`text-[10px] font-mono font-bold leading-tight text-center max-w-[60px] truncate ${
-                state === "active" ? "text-[#00D68F]" : "text-zinc-400"
+                state === "active" ? "text-primary font-black" : "text-zinc-400"
               }`}
             >
               {ex.name}

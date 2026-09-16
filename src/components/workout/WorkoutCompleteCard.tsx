@@ -34,7 +34,7 @@ function StatBox({
   color?: string;
 }) {
   return (
-    <div className="bg-gradient-to-br from-[#121620] to-[#151b28] border border-white/10 rounded-2xl p-3 flex flex-col items-center justify-center shadow-lg">
+    <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3 flex flex-col items-center justify-center shadow-lg">
       <Icon className={`w-4 h-4 ${color} mb-1`} />
       <span className="text-zinc-400 text-[10px] font-mono uppercase font-bold tracking-wider">
         {label}
@@ -248,13 +248,13 @@ export default function WorkoutCompleteCard({
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="relative overflow-hidden w-full bg-gradient-to-br from-[#101726] to-[#121620] border border-cyan-500/30 rounded-3xl p-4 text-left shadow-2xl mb-5"
+          className="relative overflow-hidden w-full bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/30 rounded-3xl p-4 text-left shadow-2xl mb-5"
         >
           <BorderBeam
             size={180}
             duration={6}
-            colorFrom="#00E1FF"
-            colorTo="#00D68F"
+            colorFrom="#D4FF00"
+            colorTo="#00F59B"
             borderWidth={1.5}
             borderRadius={24}
           />
@@ -301,13 +301,13 @@ export default function WorkoutCompleteCard({
       >
         <button
           onClick={() => router.push("/history")}
-          className="w-full h-12 bg-primary text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-neon cursor-pointer"
+          className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-neon-strong border border-white/30 cursor-pointer"
         >
           <Calendar className="w-4 h-4" /> Ver Historial Completo
         </button>
         <button
           onClick={() => router.push("/")}
-          className="w-full h-11 bg-[#121622] hover:bg-[#161c28] text-zinc-300 hover:text-white font-mono font-bold rounded-2xl border border-white/10 flex items-center justify-center gap-2 active:scale-98 transition-all text-xs uppercase tracking-wider cursor-pointer"
+          className="w-full h-11 bg-[#131626] hover:bg-[#181d2e] text-zinc-300 hover:text-white font-mono font-bold rounded-2xl border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 active:scale-98 transition-all text-xs uppercase tracking-wider cursor-pointer"
         >
           <Home className="w-4 h-4" /> Volver al Inicio
         </button>

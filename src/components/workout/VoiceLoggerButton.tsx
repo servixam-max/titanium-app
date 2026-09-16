@@ -157,8 +157,8 @@ export default function VoiceLoggerButton({ onParsed, className }: VoiceLoggerBu
         className={cn(
           "relative flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer",
           isListening
-            ? "bg-primary text-black border-primary shadow-[0_0_16px_rgba(0,214,143,0.8)] animate-pulse"
-            : "bg-[#141b26] border-white/10 text-zinc-300 hover:text-white hover:border-primary/40"
+            ? "bg-gradient-to-r from-primary to-emerald-400 text-black border-white/30 shadow-neon-strong animate-pulse font-black"
+            : "bg-[#131626] border-white/10 text-zinc-300 hover:text-white hover:border-primary/40"
         )}
         title={isListening ? "Detener micrófono" : "Dictar serie por voz (ej. '12 reps con 20 kilos')"}
         aria-label="Dictar por voz"
@@ -189,7 +189,7 @@ export default function VoiceLoggerButton({ onParsed, className }: VoiceLoggerBu
             initial={{ opacity: 0, y: 6, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.95 }}
-            className="absolute left-0 -top-8 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0e131d] border border-primary/40 shadow-xl text-[11px] font-mono text-white whitespace-nowrap pointer-events-none"
+            className="absolute left-0 -top-8 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0d101a] border border-primary/40 shadow-xl text-[11px] font-mono text-white whitespace-nowrap pointer-events-none"
           >
             {feedbackMsg ? (
               <>

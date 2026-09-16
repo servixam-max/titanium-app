@@ -17,8 +17,8 @@ interface BorderBeamProps {
 export default function BorderBeam({
   className,
   duration = 5,
-  colorFrom = "#00D68F",
-  colorTo = "#00E1FF",
+  colorFrom = "#D4FF00",
+  colorTo = "#00F59B",
   borderWidth = 2,
   size = 160,
   borderRadius = 24,

@@ -203,8 +203,8 @@ export default function RestTimer() {
           <p className="text-zinc-400 font-label-caps tracking-[0.2em] text-[11px] uppercase mb-2 text-center">
             {isNewExercise ? "A continuación:" : "Continúas con:"}
           </p>
-          <div className="w-full bg-[#161e2e] border border-white/10 rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#121620] flex-shrink-0 border border-white/10">
+          <div className="w-full bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#0d101a] flex-shrink-0 border border-white/10">
               <ExerciseImage
                 src={currentExercise?.image || ""}
                 alt={currentExercise?.name || "Ejercicio"}
@@ -279,7 +279,7 @@ export default function RestTimer() {
 
       {showExitConfirm && (
         <div className="fixed inset-0 z-[70] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">
-          <div className="w-full max-w-sm bg-[#121620] border border-white/10 rounded-2xl p-6 shadow-2xl">
+          <div className="w-full max-w-sm bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-3xl p-6 shadow-2xl">
             <SectionTitle align="center" className="mb-2">
               ¿Salir del entreno?
             </SectionTitle>

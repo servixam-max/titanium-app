@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Sunrise, Sun, Moon, Flame, Zap, Clock } from "lucide-react";
 import { UserAccount } from "@/lib/types";
@@ -19,10 +19,19 @@ interface DashboardHeaderProps {
 const DAY_LABELS = ["L", "M", "X", "J", "V", "S", "D"];
 
 function useGreeting() {
-  const hour = new Date().getHours();
-  if (hour >= 6 && hour < 13) return { text: "Buenos días", Icon: Sunrise };
-  if (hour >= 13 && hour < 20) return { text: "Buenas tardes", Icon: Sun };
-  return { text: "Buenas noches", Icon: Moon };
+  const [greeting, setGreeting] = useState<{ text: string; Icon: React.ComponentType<{ className?: string }> }>({
+    text: "Hola",
+    Icon: Sun,
+  });
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 13) setGreeting({ text: "Buenos días", Icon: Sunrise });
+    else if (hour >= 13 && hour < 20) setGreeting({ text: "Buenas tardes", Icon: Sun });
+    else setGreeting({ text: "Buenas noches", Icon: Moon });
+  }, []);
+
+  return greeting;
 }
 
 export default function DashboardHeader({
@@ -72,7 +81,7 @@ export default function DashboardHeader({
                 Nv. {athleteInfo.currentLevel.level} · {athleteInfo.currentLevel.title}
               </span>
               <div className="flex items-center gap-1.5 flex-1 max-w-[130px]">
-                <div className="w-full bg-[#181C2C] h-1.5 rounded-full overflow-hidden border border-white/10">
+                <div className="w-full bg-[#0d101a] h-1.5 rounded-full overflow-hidden border border-white/10">
                   <div
                     className="h-full rounded-full transition-all duration-500 shadow-sm"
                     style={{
@@ -114,10 +123,10 @@ export default function DashboardHeader({
                 key={label}
                 className={`flex h-7 w-7 items-center justify-center rounded-xl text-[10px] font-black transition-all sm:h-8 sm:w-8 sm:text-xs ${
                   trained
-                    ? "bg-primary text-black shadow-neon font-black scale-105"
+                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon font-black scale-105 border border-white/20"
                     : isToday
                     ? "border-2 border-primary bg-primary/20 text-primary font-black"
-                    : "border border-white/10 bg-[#141824] text-slate-400 font-bold"
+                    : "border border-white/10 bg-[#131626] text-slate-400 font-bold"
                 }`}
               >
                 {label}
