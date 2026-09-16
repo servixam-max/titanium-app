@@ -28,15 +28,14 @@ const MUSCLE_LABELS: Record<string, string> = {
 };
 
 const MUSCLE_COLORS: Record<string, string> = {
-  chest: "bg-rose-500/15 text-rose-300 border-rose-500/25",
-  back: "bg-sky-500/15 text-sky-300 border-sky-500/25",
-  shoulders: "bg-amber-500/15 text-amber-300 border-amber-500/25",
-  biceps: "bg-emerald-500/15 text-emerald-300 border-emerald-500/25",
-  triceps: "bg-violet-500/15 text-violet-300 border-violet-500/25",
-  legs: "bg-orange-500/15 text-orange-300 border-orange-500/25",
-  core: "bg-cyan-500/15 text-cyan-300 border-cyan-500/25",
-  full_body:
-    "bg-primary/20 text-primary border-primary/30",
+  chest: "bg-rose-100 dark:bg-rose-500/15 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-500/25",
+  back: "bg-sky-100 dark:bg-sky-500/15 text-sky-800 dark:text-sky-300 border-sky-300 dark:border-sky-500/25",
+  shoulders: "bg-amber-100 dark:bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-500/25",
+  biceps: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/25",
+  triceps: "bg-violet-100 dark:bg-violet-500/15 text-violet-800 dark:text-violet-300 border-violet-300 dark:border-violet-500/25",
+  legs: "bg-orange-100 dark:bg-orange-500/15 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-500/25",
+  core: "bg-cyan-100 dark:bg-cyan-500/15 text-cyan-800 dark:text-cyan-300 border-cyan-300 dark:border-cyan-500/25",
+  full_body: "bg-emerald-100 dark:bg-primary/20 text-emerald-800 dark:text-primary border-emerald-300 dark:border-primary/30",
 };
 
 const formatRest = (seconds: number) => {
@@ -108,14 +107,14 @@ export default function ExerciseCard({
       {/* Exercise Info */}
       <div className="flex-1 flex flex-col gap-0.5 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <span className="font-mono text-sm text-white font-bold tracking-tight truncate group-hover:text-primary transition-colors">
+          <span className="font-mono text-sm text-slate-900 dark:text-white font-bold tracking-tight truncate group-hover:text-primary transition-colors">
             {exercise.name}
           </span>
         </div>
 
         {/* Main meta: sets × reps */}
-        <span className="font-mono text-xs text-zinc-400 font-medium">
-          {exercise.sets} Series · <strong className="text-white">{exercise.reps}</strong> Reps
+        <span className="font-mono text-xs text-slate-600 dark:text-zinc-400 font-medium">
+          {exercise.sets} Series · <strong className="text-slate-900 dark:text-white">{exercise.reps}</strong> Reps
         </span>
 
         {/* Secondary meta: muscle badge, rest, difficulty */}
@@ -127,8 +126,8 @@ export default function ExerciseCard({
           </span>
 
           {exercise.restSeconds > 0 && (
-            <span className="font-mono text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#181d2e] text-zinc-300 border border-white/10 flex items-center gap-1">
-              <Timer className="w-2.5 h-2.5 text-cyan-400" />
+            <span className="font-mono text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#181d2e] text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-white/10 flex items-center gap-1">
+              <Timer className="w-2.5 h-2.5 text-cyan-600 dark:text-cyan-400" />
               {formatRest(exercise.restSeconds)}
             </span>
           )}

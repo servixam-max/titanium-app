@@ -69,7 +69,7 @@ export default function TopAppBar({
           {showBack && (
             <Link
               href={backHref}
-              className="flex items-center justify-center w-12 h-12 text-zinc-300 hover:text-white transition-colors active:scale-95"
+              className="flex items-center justify-center w-12 h-12 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-colors active:scale-95"
               aria-label="Volver"
             >
               <ArrowLeft className="w-5 h-5" />
@@ -78,7 +78,7 @@ export default function TopAppBar({
           {onClose && (
             <button
               onClick={onClose}
-              className="flex items-center justify-center w-12 h-12 text-zinc-300 hover:text-white transition-colors active:scale-95"
+              className="flex items-center justify-center w-12 h-12 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-colors active:scale-95"
               aria-label="Cerrar"
             >
               <X className="w-5 h-5" />
@@ -86,7 +86,7 @@ export default function TopAppBar({
           )}
         </div>
 
-        <h1 className="font-display text-title-sm font-bold tracking-wider text-white text-center flex-1 truncate px-2">
+        <h1 className="font-display text-title-sm font-bold tracking-wider text-slate-900 dark:text-white text-center flex-1 truncate px-2">
           {title}
         </h1>
 
@@ -104,34 +104,34 @@ export default function TopAppBar({
           {showSettings && (
             <button
               onClick={handleToggleTheme}
-              className="flex items-center justify-center w-8 h-12 text-slate-300 hover:text-white transition-all active:scale-95 cursor-pointer"
+              className="flex items-center justify-center w-8 h-12 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 cursor-pointer"
               aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
               title={isDark ? "Modo Claro" : "Modo Oscuro"}
             >
               {isDark ? (
                 <Sun className="w-5 h-5 text-amber-400 hover:scale-110 transition-transform" />
               ) : (
-                <Moon className="w-5 h-5 text-indigo-500 hover:scale-110 transition-transform" />
+                <Moon className="w-5 h-5 text-indigo-600 hover:scale-110 transition-transform" />
               )}
             </button>
           )}
           {showVolume && (
             <button
               onClick={toggleAudio}
-              className="flex items-center justify-center w-8 h-12 text-white hover:opacity-80 transition-opacity active:scale-95"
+              className="flex items-center justify-center w-8 h-12 text-slate-700 dark:text-white hover:opacity-80 transition-opacity active:scale-95"
               aria-label={audioEnabled ? "Desactivar audio" : "Activar audio"}
             >
               {audioEnabled ? (
-                <Volume2 className="w-6 h-6" />
+                <Volume2 className="w-6 h-6 text-emerald-600 dark:text-primary" />
               ) : (
-                <VolumeX className="w-6 h-6" />
+                <VolumeX className="w-6 h-6 text-slate-400" />
               )}
             </button>
           )}
           {showSettings && (
             <button
               onClick={() => setSettingsOpen(true)}
-              className="flex items-center justify-center w-8 h-12 text-slate-300 hover:text-white transition-opacity active:scale-95"
+              className="flex items-center justify-center w-8 h-12 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-opacity active:scale-95"
               aria-label="Ajustes"
             >
               <Settings className="w-6 h-6" />

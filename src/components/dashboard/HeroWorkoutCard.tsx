@@ -89,35 +89,35 @@ export default function HeroWorkoutCard({
           )}
         </h3>
         {routine.subtitle && (
-          <p className="text-xs text-slate-300 font-medium mt-1 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-slate-600 dark:text-slate-300 font-medium mt-1 line-clamp-2 leading-relaxed">
             {routine.subtitle}
           </p>
         )}
       </div>
 
       {/* High-Contrast Metrics Strip */}
-      <div className="grid grid-cols-3 gap-2 py-3 border-y border-white/10 my-3">
-        <div className="flex items-center gap-2 bg-[#131626] border border-white/5 rounded-2xl px-3 py-2">
-          <Clock className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+      <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-200 dark:border-white/10 my-3">
+        <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#131626] border border-slate-200/60 dark:border-white/5 rounded-2xl px-3 py-2">
+          <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400 flex-shrink-0" />
           <div className="flex flex-col min-w-0">
-            <span className="text-[9px] font-mono uppercase text-slate-400 font-bold">Tiempo</span>
-            <span className="text-xs font-mono font-black text-white truncate">{routine.duration}</span>
+            <span className="text-[9px] font-mono uppercase text-slate-600 dark:text-slate-400 font-bold">Tiempo</span>
+            <span className="text-xs font-mono font-black text-slate-900 dark:text-white truncate">{routine.duration}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-[#131626] border border-white/5 rounded-2xl px-3 py-2">
-          <Layers className="w-4 h-4 text-primary flex-shrink-0" />
+        <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#131626] border border-slate-200/60 dark:border-white/5 rounded-2xl px-3 py-2">
+          <Layers className="w-4 h-4 text-emerald-600 dark:text-primary flex-shrink-0" />
           <div className="flex flex-col min-w-0">
-            <span className="text-[9px] font-mono uppercase text-slate-400 font-bold">Volumen</span>
-            <span className="text-xs font-mono font-black text-white truncate">{routine.exercises.length} ej · {totalSets} ser</span>
+            <span className="text-[9px] font-mono uppercase text-slate-600 dark:text-slate-400 font-bold">Volumen</span>
+            <span className="text-xs font-mono font-black text-slate-900 dark:text-white truncate">{routine.exercises.length} ej · {totalSets} ser</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-[#131626] border border-white/5 rounded-2xl px-3 py-2">
-          <Dumbbell className="w-4 h-4 text-amber-400 flex-shrink-0" />
+        <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#131626] border border-slate-200/60 dark:border-white/5 rounded-2xl px-3 py-2">
+          <Dumbbell className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
           <div className="flex flex-col min-w-0">
-            <span className="text-[9px] font-mono uppercase text-slate-400 font-bold">Material</span>
-            <span className="text-xs font-mono font-black text-white truncate">{routine.equipment || "Libre"}</span>
+            <span className="text-[9px] font-mono uppercase text-slate-600 dark:text-slate-400 font-bold">Material</span>
+            <span className="text-xs font-mono font-black text-slate-900 dark:text-white truncate">{routine.equipment || "Libre"}</span>
           </div>
         </div>
       </div>
@@ -125,7 +125,7 @@ export default function HeroWorkoutCard({
       {/* Visual Exercise Thumbnails Row */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
             Ejercicios Incluidos ({routine.exercises.length})
           </span>
           <button
@@ -133,7 +133,7 @@ export default function HeroWorkoutCard({
               haptics.selection();
               setIsDrawerOpen(!isDrawerOpen);
             }}
-            className="text-[11px] font-mono font-bold text-primary hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+            className="text-[11px] font-mono font-bold text-emerald-600 dark:text-primary hover:underline flex items-center gap-1 transition-colors cursor-pointer"
           >
             {isDrawerOpen ? (
               <>
@@ -161,7 +161,7 @@ export default function HeroWorkoutCard({
               className="flex-shrink-0 flex flex-col items-center gap-1 group/thumb cursor-pointer"
               title={`${ex.name} (${ex.sets} series)`}
             >
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-black/60 border-2 border-white/10 group-hover/thumb:border-primary transition-all relative shadow-md">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-black/60 border-2 border-slate-200 dark:border-white/10 group-hover/thumb:border-primary transition-all relative shadow-md">
                 {ex.image ? (
                   <ExerciseImage
                     src={ex.image}
@@ -180,7 +180,7 @@ export default function HeroWorkoutCard({
                   #{idx + 1}
                 </span>
               </div>
-              <span className="text-[9px] font-mono font-bold text-slate-300 max-w-[58px] truncate group-hover/thumb:text-primary transition-colors text-center">
+              <span className="text-[9px] font-mono font-bold text-slate-700 dark:text-slate-300 max-w-[58px] truncate group-hover/thumb:text-primary transition-colors text-center">
                 {ex.name}
               </span>
             </div>
@@ -201,7 +201,7 @@ export default function HeroWorkoutCard({
             {routine.exercises.map((ex, idx) => (
               <div
                 key={ex.id || idx}
-                className="flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-[#141828] border border-white/10 hover:border-primary/40 transition-all"
+                className="flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-white dark:bg-[#141828] border border-slate-200 dark:border-white/10 hover:border-primary/40 transition-all shadow-sm"
               >
                 <div className="w-11 h-11 rounded-full overflow-hidden bg-black/60 border border-white/15 flex-shrink-0">
                   {ex.image ? (
@@ -221,13 +221,13 @@ export default function HeroWorkoutCard({
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <span className="font-mono text-xs font-bold text-white block truncate">
+                  <span className="font-mono text-xs font-bold text-slate-900 dark:text-white block truncate">
                     {idx + 1}. {ex.name}
                   </span>
-                  <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono text-slate-300">
-                    <span className="text-white font-bold">{ex.sets} series × {ex.reps}</span>
+                  <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono text-slate-600 dark:text-slate-300">
+                    <span className="text-slate-900 dark:text-white font-bold">{ex.sets} series × {ex.reps}</span>
                     <span>•</span>
-                    <span className="text-cyan-400 font-semibold">{ex.restSeconds}s desc</span>
+                    <span className="text-cyan-700 dark:text-cyan-400 font-semibold">{ex.restSeconds}s desc</span>
                   </div>
                 </div>
 
@@ -238,7 +238,7 @@ export default function HeroWorkoutCard({
                       onStartExercise(idx);
                     }}
                     title="Entrenar sólo este ejercicio"
-                    className="w-8 h-8 rounded-xl bg-white/5 hover:bg-primary hover:text-black text-primary border border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0"
+                    className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-black text-emerald-700 dark:text-primary border border-slate-200 dark:border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0"
                   >
                     <Play className="w-3 h-3 fill-current ml-0.5" />
                   </button>
@@ -267,10 +267,10 @@ export default function HeroWorkoutCard({
             haptics.selection();
             onOpenDetails?.();
           }}
-          className="h-13 w-13 rounded-2xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-white/10 flex items-center justify-center active:scale-95 transition-all cursor-pointer flex-shrink-0"
+          className="h-13 w-13 rounded-2xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10 flex items-center justify-center active:scale-95 transition-all cursor-pointer flex-shrink-0"
           title="Ver ficha completa"
         >
-          <Sparkles className="w-5 h-5 text-cyan-400" />
+          <Sparkles className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
         </button>
       </div>
     </div>

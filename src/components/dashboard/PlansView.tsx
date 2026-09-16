@@ -32,11 +32,11 @@ interface PlansViewProps {
 }
 
 const goalLabels: Record<TrainingGoal, { label: string; icon: string; color: string }> = {
-  strength: { label: "Fuerza", icon: "💪", color: "text-amber-400 border-amber-500/30 bg-amber-500/10" },
-  hypertrophy: { label: "Hipertrofia", icon: "🏋️", color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" },
-  fat_loss: { label: "Pérdida de grasa", icon: "🔥", color: "text-rose-400 border-rose-500/30 bg-rose-500/10" },
-  endurance: { label: "Resistencia", icon: "🏃", color: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10" },
-  mobility: { label: "Movilidad", icon: "🧘", color: "text-purple-400 border-purple-500/30 bg-purple-500/10" },
+  strength: { label: "Fuerza", icon: "💪", color: "text-amber-800 dark:text-amber-400 border-amber-300 dark:border-amber-500/30 bg-amber-100 dark:bg-amber-500/10" },
+  hypertrophy: { label: "Hipertrofia", icon: "🏋️", color: "text-emerald-800 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/30 bg-emerald-100 dark:bg-emerald-500/10" },
+  fat_loss: { label: "Pérdida de grasa", icon: "🔥", color: "text-rose-800 dark:text-rose-400 border-rose-300 dark:border-rose-500/30 bg-rose-100 dark:bg-rose-500/10" },
+  endurance: { label: "Resistencia", icon: "🏃", color: "text-cyan-800 dark:text-cyan-400 border-cyan-300 dark:border-cyan-500/30 bg-cyan-100 dark:bg-cyan-500/10" },
+  mobility: { label: "Movilidad", icon: "🧘", color: "text-purple-800 dark:text-purple-400 border-purple-300 dark:border-purple-500/30 bg-purple-100 dark:bg-purple-500/10" },
 };
 
 const levelLabels: Record<ExperienceLevel, string> = {

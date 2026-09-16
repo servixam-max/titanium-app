@@ -68,14 +68,14 @@ export default function ExerciseGridCard({
 
         {/* Badges on top of image */}
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-1 pointer-events-none">
-          <span className="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[9px] font-mono font-black text-primary uppercase tracking-wider">
+          <span className="px-2 py-0.5 rounded-full bg-white/95 dark:bg-black/70 backdrop-blur-md border border-slate-200 dark:border-white/15 text-[9px] font-mono font-black text-emerald-800 dark:text-primary uppercase tracking-wider shadow-sm">
             {muscle}
           </span>
           <span
-            className={`px-2 py-0.5 rounded-full text-[8px] font-mono font-bold uppercase tracking-wider ${
+            className={`px-2 py-0.5 rounded-full text-[8px] font-mono font-bold uppercase tracking-wider shadow-sm ${
               isDumbbell
-                ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                : "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
+                ? "bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30"
+                : "bg-cyan-100 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-500/30"
             }`}
           >
             {isDumbbell ? "Mancuernas" : "Corporal"}
@@ -84,23 +84,23 @@ export default function ExerciseGridCard({
 
         {/* Sets / Reps pill hovering bottom of photo */}
         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px] font-mono text-zinc-300 font-bold pointer-events-none">
-          <span className="px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-sm border border-white/10">
+          <span className="px-2 py-0.5 rounded-lg bg-white/95 dark:bg-black/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 text-slate-900 dark:text-zinc-300 shadow-sm">
             {exercise.sets} series × {exercise.reps}
           </span>
-          <span className="px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-sm border border-white/10 text-cyan-300">
+          <span className="px-2 py-0.5 rounded-lg bg-white/95 dark:bg-black/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 text-cyan-700 dark:text-cyan-300 shadow-sm">
             {exercise.restSeconds}s desc
           </span>
         </div>
       </div>
 
       {/* Bottom Info & Action Button */}
-      <div className="p-3 flex flex-col gap-2 flex-1 justify-between bg-[#131626]">
+      <div className="p-3 flex flex-col gap-2 flex-1 justify-between bg-white dark:bg-[#131626]">
         <div onClick={onSelect} className="cursor-pointer">
-          <h4 className="font-mono text-xs sm:text-sm font-bold text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
+          <h4 className="font-mono text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
             {exercise.name}
           </h4>
           {exercise.description && (
-            <p className="text-[10px] text-zinc-400 font-mono mt-1 line-clamp-2 leading-relaxed">
+            <p className="text-[10px] text-slate-600 dark:text-zinc-400 font-mono mt-1 line-clamp-2 leading-relaxed">
               {exercise.description}
             </p>
           )}

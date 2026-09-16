@@ -11,7 +11,7 @@ export function Skeleton({ className, rounded = "xl" }: SkeletonProps) {
   return (
     <div
       className={cn(
-        "animate-pulse bg-gradient-to-r from-[#131726] via-[#1a2236] to-[#131726] bg-[length:200%_100%] animate-shimmer",
+        "animate-pulse bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 dark:from-[#131726] dark:via-[#1a2236] dark:to-[#131726] bg-[length:200%_100%] animate-shimmer",
         `rounded-${rounded}`,
         className
       )}

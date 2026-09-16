@@ -44,8 +44,8 @@ html.light {
   --surface-600: #94A3B8;
   --surface-500: #64748B;
   --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-tertiary: #64748B;
+  --text-secondary: #334155;
+  --text-tertiary: #475569;
   --primary-500: #059669;
   --primary-600: #047857;
   --accent-cyan: #0284C7;
@@ -69,7 +69,12 @@ html.light .bg-\[\#0A0B10\],
 html.light .bg-\[\#0d101a\],
 html.light .bg-\[\#161310\],
 html.light .bg-\[\#161c28\],
-html.light .bg-\[\#1e2738\] {
+html.light .bg-\[\#1e2738\],
+html.light .bg-\[\#131726\],
+html.light .bg-\[\#1a2236\],
+html.light .bg-\[\#101420\],
+html.light .bg-\[\#0e1a17\],
+html.light .bg-\[\#0d141e\] {
   background-color: #FFFFFF !important;
   background-image: none !important;
 }
@@ -91,13 +96,19 @@ html.light .to-\[\#0D101A\] {
 }
 
 /* Inset chips & tracks */
+html.light .bg-black\/10,
+html.light .bg-black\/20,
 html.light .bg-black\/30,
+html.light .bg-black\/35,
 html.light .bg-black\/40,
 html.light .bg-black\/50,
+html.light .bg-black\/60,
 html.light .bg-white\/5 {
   background-color: #F1F5F9 !important;
 }
-html.light .bg-white\/10 {
+html.light .bg-white\/10,
+html.light .bg-white\/15,
+html.light .bg-white\/20 {
   background-color: #E2E8F0 !important;
 }
 
@@ -108,41 +119,78 @@ html.light input[type="date"],
 html.light input[type="search"] {
   background-color: #F8FAFC !important;
   color: #0F172A !important;
-  border-color: rgba(15, 23, 42, 0.12) !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
 }
 
 /* Borders in light mode */
-html.light .border-white\/10,
 html.light .border-white\/5,
-html.light .border-white\/20 {
-  border-color: rgba(15, 23, 42, 0.09) !important;
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20,
+html.light .border-white\/30,
+html.light .border-white\/40 {
+  border-color: rgba(15, 23, 42, 0.12) !important;
 }
 html.light .divide-white\/5 > :not([hidden]) ~ :not([hidden]),
 html.light .divide-white\/10 > :not([hidden]) ~ :not([hidden]) {
-  border-color: rgba(15, 23, 42, 0.08) !important;
+  border-color: rgba(15, 23, 42, 0.10) !important;
 }
 
 /* High contrast typography in light mode */
 html.light .text-white {
   color: #0F172A !important;
 }
-html.light .text-zinc-300,
-html.light .text-zinc-400,
+
+/* Light gray / white-adjacent texts mapped to deep legible slate */
+html.light .text-slate-100,
+html.light .text-zinc-100,
+html.light .text-gray-100,
+html.light .text-slate-200,
+html.light .text-zinc-200,
+html.light .text-gray-200,
 html.light .text-slate-300,
-html.light .text-slate-400 {
-  color: #475569 !important;
-}
-html.light .text-zinc-500,
-html.light .text-slate-500 {
-  color: #64748B !important;
+html.light .text-zinc-300,
+html.light .text-gray-300 {
+  color: #1E293B !important; /* Deep Slate-800, ~13.5:1 contrast */
 }
 
-/* Preserve black text on Volt/Emerald CTA buttons */
+html.light .text-slate-400,
+html.light .text-zinc-400,
+html.light .text-gray-400 {
+  color: #334155 !important; /* Slate-700, ~9.0:1 contrast */
+}
+
+html.light .text-slate-500,
+html.light .text-zinc-500,
+html.light .text-gray-500 {
+  color: #475569 !important; /* Slate-600, ~5.9:1 contrast (sharp and readable) */
+}
+
+/* Translucent white text mapped to dark slate */
+html.light .text-white\/40,
+html.light .text-white\/50,
+html.light .text-white\/60 {
+  color: #475569 !important;
+}
+html.light .text-white\/70,
+html.light .text-white\/80,
+html.light .text-white\/90 {
+  color: #1E293B !important;
+}
+
+/* Placeholders in light mode */
+html.light ::placeholder,
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #64748B !important;
+  opacity: 1 !important;
+}
+
+/* Preserve black text on Volt/Emerald CTA buttons and badges */
 html.light .btn-primary,
 html.light .btn-primary *,
-html.light [class*="from-primary"] .text-black,
-html.light .bg-primary .text-black,
-html.light .text-black {
+html.light .text-black,
+html.light .text-black * {
   color: #000000 !important;
 }
 
@@ -150,14 +198,98 @@ html.light .text-black {
 html.light .text-primary:not(.text-black):not(.btn-primary) {
   color: #047857 !important;
 }
-html.light .text-cyan-400 {
-  color: #0284C7 !important;
-}
+
+/* Saturated colored badge text in light mode (no pale pastels) */
+html.light .text-amber-300,
 html.light .text-amber-400 {
-  color: #D97706 !important;
+  color: #B45309 !important; /* Amber-700 (> 6.5:1 contrast) */
 }
+html.light .text-cyan-300,
+html.light .text-cyan-400 {
+  color: #0369A1 !important; /* Sky-700 (> 6.5:1 contrast) */
+}
+html.light .text-emerald-300,
 html.light .text-emerald-400 {
-  color: #059669 !important;
+  color: #047857 !important; /* Emerald-700 (> 7:1 contrast) */
+}
+html.light .text-rose-300,
+html.light .text-rose-400 {
+  color: #BE123C !important; /* Rose-700 (> 7.2:1 contrast) */
+}
+html.light .text-violet-300,
+html.light .text-violet-400,
+html.light .text-purple-300,
+html.light .text-purple-400 {
+  color: #6D28D9 !important; /* Violet-700 (> 7:1 contrast) */
+}
+html.light .text-sky-300,
+html.light .text-sky-400 {
+  color: #0369A1 !important;
+}
+html.light .text-orange-300,
+html.light .text-orange-400 {
+  color: #C2410C !important;
+}
+
+/* Colored badge backgrounds in light mode */
+html.light .bg-amber-500\/10,
+html.light .bg-amber-500\/15,
+html.light .bg-amber-500\/20,
+html.light .bg-amber-500\/25 {
+  background-color: #FEF3C7 !important;
+  border-color: #FCD34D !important;
+}
+html.light .bg-emerald-500\/10,
+html.light .bg-emerald-500\/15,
+html.light .bg-emerald-500\/20,
+html.light .bg-emerald-500\/25 {
+  background-color: #D1FAE5 !important;
+  border-color: #6EE7B7 !important;
+}
+html.light .bg-cyan-400\/10,
+html.light .bg-cyan-400\/20,
+html.light .bg-cyan-500\/10,
+html.light .bg-cyan-500\/15,
+html.light .bg-cyan-500\/20,
+html.light .bg-cyan-500\/25 {
+  background-color: #E0F2FE !important;
+  border-color: #7DD3FC !important;
+}
+html.light .bg-rose-500\/10,
+html.light .bg-rose-500\/15,
+html.light .bg-rose-500\/20,
+html.light .bg-rose-500\/25 {
+  background-color: #FFE4E6 !important;
+  border-color: #FDA4AF !important;
+}
+html.light .bg-violet-500\/10,
+html.light .bg-violet-500\/15,
+html.light .bg-purple-500\/10,
+html.light .bg-purple-500\/15 {
+  background-color: #EDE9FE !important;
+  border-color: #C4B5FD !important;
+}
+html.light .bg-sky-500\/15 {
+  background-color: #E0F2FE !important;
+  border-color: #7DD3FC !important;
+}
+html.light .bg-orange-500\/15 {
+  background-color: #FFEDD5 !important;
+  border-color: #FDBA74 !important;
+}
+
+/* Skeletons in light mode */
+html.light .from-\[\#131726\],
+html.light .from-\[\#161c28\] {
+  --tw-gradient-from: #E2E8F0 !important;
+}
+html.light .via-\[\#1a2236\],
+html.light .via-\[\#1e2738\] {
+  --tw-gradient-stops: #E2E8F0, #CBD5E1, #E2E8F0 !important;
+}
+html.light .to-\[\#131726\],
+html.light .to-\[\#161c28\] {
+  --tw-gradient-to: #E2E8F0 !important;
 }
 
 /* Shadows in light mode */

@@ -59,4 +59,15 @@ describe("Theme Management Engine", () => {
     applyTheme("system");
     expect(document.documentElement.classList.contains("dark")).toBe(true);
   });
+
+  it("ensures theme switching properly transitions html class for high contrast", () => {
+    applyTheme("light");
+    expect(document.documentElement.classList.contains("light")).toBe(true);
+    expect(document.documentElement.classList.contains("dark")).toBe(false);
+
+    applyTheme("dark");
+    expect(document.documentElement.classList.contains("dark")).toBe(true);
+    expect(document.documentElement.classList.contains("light")).toBe(false);
+  });
 });
+

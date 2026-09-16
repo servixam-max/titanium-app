@@ -90,7 +90,7 @@ export default function DashboardHeader({
                     }}
                   />
                 </div>
-                <span className="text-[10px] font-mono text-slate-200 font-bold whitespace-nowrap">
+                <span className="text-[10px] font-mono text-slate-700 dark:text-slate-200 font-bold whitespace-nowrap">
                   {totalXP} XP
                 </span>
               </div>
