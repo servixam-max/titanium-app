@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { ArrowLeft, Settings, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowLeft, Settings, Volume2, VolumeX, X, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { useAppStore } from "@/lib/store";
+import { haptics } from "@/lib/haptics";
 
 const SettingsModal = dynamic(() => import("./SettingsModal"), { ssr: false });
 
@@ -44,8 +45,20 @@ export default function TopAppBar({
   withSpacer = true,
   className = "",
 }: TopAppBarProps) {
-  const { audioEnabled, toggleAudio, currentUser } = useAppStore();
+  const { audioEnabled, toggleAudio, currentUser, theme, setTheme } = useAppStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const isDark =
+    theme === "dark" ||
+    (theme === "system" &&
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+  const handleToggleTheme = () => {
+    haptics.selection();
+    setTheme(isDark ? "light" : "dark");
+  };
 
   return (
     <>
@@ -73,11 +86,11 @@ export default function TopAppBar({
           )}
         </div>
 
-        <h1 className="font-display text-title-sm font-bold tracking-wider text-white text-center flex-1">
+        <h1 className="font-display text-title-sm font-bold tracking-wider text-white text-center flex-1 truncate px-2">
           {title}
         </h1>
 
-        <div className="w-20 flex items-center justify-end gap-1">
+        <div className="min-w-20 flex items-center justify-end gap-1">
           {currentUser && (
             <button
               onClick={() => setSettingsOpen(true)}
@@ -86,6 +99,20 @@ export default function TopAppBar({
               title={`Perfil de ${currentUser.username}`}
             >
               {currentUser.username.slice(0, 1).toUpperCase()}
+            </button>
+          )}
+          {showSettings && (
+            <button
+              onClick={handleToggleTheme}
+              className="flex items-center justify-center w-8 h-12 text-slate-300 hover:text-white transition-all active:scale-95 cursor-pointer"
+              aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+              title={isDark ? "Modo Claro" : "Modo Oscuro"}
+            >
+              {isDark ? (
+                <Sun className="w-5 h-5 text-amber-400 hover:scale-110 transition-transform" />
+              ) : (
+                <Moon className="w-5 h-5 text-indigo-500 hover:scale-110 transition-transform" />
+              )}
             </button>
           )}
           {showVolume && (

@@ -15,6 +15,7 @@ import { logger } from "@/lib/logger";
 import { getActiveUser, getActiveUserId, logoutUser } from "./auth";
 import { UserAccount } from "@/lib/types";
 import { calculateAdaptiveRest } from "./workout";
+import { AppTheme, applyTheme, getStoredTheme } from "./theme";
 
 interface AppState {
   // Authentication & Profile
@@ -76,6 +77,8 @@ interface AppState {
   dbError: string | null;
 
   // Global Preferences
+  theme: AppTheme;
+  setTheme: (theme: AppTheme) => void;
   equipmentPreference: EquipmentPreference;
   setEquipmentPreference: (pref: EquipmentPreference) => void;
   audioEnabled: boolean;
@@ -254,6 +257,11 @@ export const useAppStore = create<AppState>()(
       },
 
       // Global Preferences
+      theme: "dark" as AppTheme,
+      setTheme: (theme) => {
+        applyTheme(theme);
+        set({ theme });
+      },
       equipmentPreference: "dumbbells" as EquipmentPreference,
       setEquipmentPreference: (pref) => {
         set({ equipmentPreference: pref });
@@ -1073,10 +1081,14 @@ export const useAppStore = create<AppState>()(
           recentExerciseIds: state.recentExerciseIds,
           onboardingComplete: state.onboardingComplete,
           lastAudioMode: state.lastAudioMode,
+          theme: state.theme,
         };
       },
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+        // Apply theme immediately on rehydration
+        const storedTheme = state.theme || getStoredTheme();
+        applyTheme(storedTheme);
         // Ensure transient flags are never resumed from storage
         if (state.activeWorkout.routine) {
           state.activeWorkout.isResting = false;

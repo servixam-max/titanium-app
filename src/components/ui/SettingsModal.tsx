@@ -28,8 +28,12 @@ import {
   LogOut,
   Upload,
   RotateCcw,
+  Sun,
+  Moon,
+  Laptop,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
+import { haptics } from "@/lib/haptics";
 import { AudioMode } from "@/lib/types";
 import {
   setAudioMode as setGlobalAudioMode,
@@ -68,6 +72,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     loadSessions,
     currentUser,
     logout,
+    theme,
+    setTheme,
   } = useAppStore();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -352,6 +358,63 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <LogOut className="w-3.5 h-3.5" />
                     <span>Cerrar Sesión</span>
                   </button>
+                </section>
+
+                {/* Visual Theme */}
+                <section className="flex flex-col gap-stack-gap">
+                  <SectionHeader
+                    icon={<Sun className="w-4 h-4" />}
+                    label="Tema Visual"
+                  />
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      {
+                        value: "dark" as const,
+                        label: "Oscuro",
+                        icon: <Moon className="w-4 h-4" />,
+                        desc: "Volt Pro",
+                      },
+                      {
+                        value: "light" as const,
+                        label: "Claro",
+                        icon: <Sun className="w-4 h-4" />,
+                        desc: "Titanium Day",
+                      },
+                      {
+                        value: "system" as const,
+                        label: "Sistema",
+                        icon: <Laptop className="w-4 h-4" />,
+                        desc: "Automático",
+                      },
+                    ].map((opt) => {
+                      const isSelected = theme === opt.value;
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => {
+                            haptics.selection();
+                            setTheme(opt.value);
+                          }}
+                          className={`flex flex-col items-center justify-center gap-1.5 h-[76px] rounded-2xl border-2 transition-all active:scale-95 cursor-pointer ${
+                            isSelected
+                              ? "border-primary bg-primary/10 text-primary shadow-neon"
+                              : "border-white/10 bg-[#131626] text-zinc-400 hover:text-white"
+                          }`}
+                        >
+                          <span className={isSelected ? "text-primary scale-110 transition-transform" : "text-zinc-400"}>
+                            {opt.icon}
+                          </span>
+                          <span className="font-mono text-xs font-bold leading-none">
+                            {opt.label}
+                          </span>
+                          <span className="text-[10px] font-mono opacity-70 leading-none">
+                            {opt.desc}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </section>
 
                 {/* Audio */}

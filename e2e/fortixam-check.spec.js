@@ -23,7 +23,7 @@ test.describe('FORTIXAM — PWA estática', () => {
 
     await expect(
       page.locator('meta[name="theme-color"]').first()
-    ).toHaveAttribute('content', '#05090C');
+    ).toHaveAttribute('content', /#0A0B10|#05090C/);
 
     // CSS cargado
     const cssCount = await page.locator('link[rel="stylesheet"]').count();
@@ -78,5 +78,39 @@ test.describe('FORTIXAM — PWA estática', () => {
     await page.goto('/');
     await page.waitForTimeout(1500);
     expect(errores, `Errores de página: ${errores.join(' | ')}`).toEqual([]);
+  });
+
+  test('Alternar entre Modo Oscuro y Modo Claro', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('fortixam_server_user', JSON.stringify({
+        id: 'e2e-user',
+        username: 'E2E',
+        email: 'e2e@fortixam.local',
+      }));
+      localStorage.setItem('fortixam_active_user_id', 'e2e-user');
+      localStorage.setItem(
+        'titanium-storage',
+        JSON.stringify({ state: { onboardingComplete: true }, version: 0 })
+      );
+    });
+
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    // Check initial dark mode
+    await expect(page.locator('html')).toHaveClass(/dark/);
+
+    // Toggle to light mode
+    const themeBtn = page.locator('button[aria-label="Cambiar a modo claro"]');
+    await expect(themeBtn).toBeVisible({ timeout: 5000 });
+    await themeBtn.click({ force: true });
+    await expect(page.locator('html')).toHaveClass(/light/);
+    await expect(page.locator('html')).not.toHaveClass(/dark/);
+
+    // Toggle back to dark mode
+    const darkBtn = page.locator('button[aria-label="Cambiar a modo oscuro"]');
+    await expect(darkBtn).toBeVisible({ timeout: 5000 });
+    await darkBtn.click({ force: true });
+    await expect(page.locator('html')).toHaveClass(/dark/);
   });
 });

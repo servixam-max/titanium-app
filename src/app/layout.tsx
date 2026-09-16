@@ -34,7 +34,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#05090C",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0A0B10" },
+    { media: "(prefers-color-scheme: light)", color: "#F8FAFC" },
+  ],
 };
 
 export default function RootLayout({
@@ -43,10 +46,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" className="dark" suppressHydrationWarning>
       <head>
+        {/* Anti-FOUC zero-flash synchronous theme script */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var t = localStorage.getItem('fortixam-theme') || 'dark';
+                  var isDark = t === 'dark' || (t === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  var root = document.documentElement;
+                  if (isDark) {
+                    root.classList.add('dark');
+                    root.classList.remove('light');
+                    root.style.colorScheme = 'dark';
+                  } else {
+                    root.classList.add('light');
+                    root.classList.remove('dark');
+                    root.style.colorScheme = 'light';
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#05090C" />
+        <meta name="theme-color" content="#0A0B10" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"

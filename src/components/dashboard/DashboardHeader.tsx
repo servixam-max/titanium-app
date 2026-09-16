@@ -60,8 +60,8 @@ export default function DashboardHeader({
 
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
-            <GreetingIcon className="h-4 w-4 text-primary" />
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <GreetingIcon className="h-4 w-4 text-emerald-600 dark:text-primary" />
             <span>{greetingText}</span>
           </div>
           <h2 className="mt-0.5 truncate text-xl font-black text-white tracking-tight">
@@ -99,13 +99,13 @@ export default function DashboardHeader({
         </div>
 
         {/* Streak Counter with Solar Flame */}
-        <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl border border-amber-500/30 bg-[#161310] px-3.5 py-2 shadow-lg">
-          <Flame className="h-5 w-5 animate-pulse text-amber-400 fill-amber-400" />
+        <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl border border-amber-500/30 bg-amber-50 dark:bg-[#161310] px-3.5 py-2 shadow-lg">
+          <Flame className="h-5 w-5 animate-pulse text-amber-500 dark:text-amber-400 fill-amber-500 dark:fill-amber-400" />
           <div className="flex flex-col text-right">
-            <span className="font-mono text-lg font-black leading-none text-amber-400">
+            <span className="font-mono text-lg font-black leading-none text-amber-600 dark:text-amber-400">
               {streak}
             </span>
-            <span className="text-[9px] font-bold uppercase tracking-wider text-amber-200/80 mt-0.5">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-200/80 mt-0.5">
               {streak === 1 ? "Día racha" : "Días racha"}
             </span>
           </div>
@@ -126,7 +126,7 @@ export default function DashboardHeader({
                     ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon font-black scale-105 border border-white/20"
                     : isToday
                     ? "border-2 border-primary bg-primary/20 text-primary font-black"
-                    : "border border-white/10 bg-[#131626] text-slate-400 font-bold"
+                    : "border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#131626] text-slate-500 dark:text-slate-400 font-bold"
                 }`}
               >
                 {label}
@@ -135,14 +135,14 @@ export default function DashboardHeader({
           })}
         </div>
 
-        <div className="flex items-center gap-2 pl-2 text-[11px] text-slate-200">
+        <div className="flex items-center gap-2 pl-2 text-[11px] text-slate-700 dark:text-slate-200">
           <span className="flex items-center gap-1.5 rounded-xl border border-cyan-400/25 bg-cyan-400/10 px-2.5 py-1">
-            <Zap className="h-3.5 w-3.5 text-cyan-400" />
-            <strong className="text-white font-mono">{totalWorkouts}</strong>
+            <Zap className="h-3.5 w-3.5 text-cyan-500 dark:text-cyan-400" />
+            <strong className="text-slate-900 dark:text-white font-mono">{totalWorkouts}</strong>
           </span>
           <span className="flex items-center gap-1.5 rounded-xl border border-primary/25 bg-primary/10 px-2.5 py-1">
-            <Clock className="h-3.5 w-3.5 text-primary" />
-            <strong className="text-white font-mono">{totalMinutes}m</strong>
+            <Clock className="h-3.5 w-3.5 text-emerald-600 dark:text-primary" />
+            <strong className="text-slate-900 dark:text-white font-mono">{totalMinutes}m</strong>
           </span>
         </div>
       </div>
