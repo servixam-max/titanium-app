@@ -58,10 +58,10 @@ export default function DayCarouselSelector({
               }}
               className={`relative flex-shrink-0 min-w-[74px] h-[64px] rounded-2xl flex flex-col items-center justify-center p-2 transition-all duration-200 cursor-pointer active:scale-95 select-none ${
                 isSelected
-                  ? "bg-primary text-black shadow-neon-strong border-2 border-primary-300 font-black scale-[1.04]"
+                  ? "bg-primary text-black shadow-neon-strong border-2 border-white/60 font-black scale-[1.04]"
                   : isCompleted
-                  ? "bg-emerald-950/50 text-emerald-300 border border-emerald-400/40"
-                  : "bg-[#0F1522] hover:bg-[#151D30] text-slate-300 border border-white/10 hover:border-white/20"
+                  ? "bg-emerald-950/40 text-emerald-300 border border-emerald-400/50"
+                  : "bg-[#121522] hover:bg-[#181C2E] text-slate-300 border border-white/10 hover:border-white/20"
               }`}
             >
               {/* Day header tag */}

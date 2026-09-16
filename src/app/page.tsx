@@ -3,9 +3,11 @@
 import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { SlidersHorizontal, ChevronRight } from "lucide-react";
 import {
   DashboardHeader,
   ActiveWorkoutBanner,
+  HeroWorkoutCard,
   WarmupLink,
   CategoryFilter,
   ViewSwitcher,
@@ -124,8 +126,6 @@ export default function Dashboard() {
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentFilter>("all");
   const [activePlan, setActivePlan] = useState<Plan | null>(null);
   const [savedPlans, setSavedPlans] = useState<Plan[]>([]);
-
-  const [showAllRoutines, setShowAllRoutines] = useState(false);
 
   const allDays = useMemo(() => routines.map((r) => r.day), []);
   const completeCatalog = useMemo(() => getCompleteExerciseCatalog(), []);
@@ -280,22 +280,43 @@ export default function Dashboard() {
         />
 
         {activeTab === "routines" && (
-          <div className="flex flex-col gap-4">
-            <WarmupLink exerciseCount={warmUpExercises.length} />
-
-            {/* Day Selector Hub */}
+          <div className="flex flex-col gap-5">
+            {/* 1. Hero Workout Card: Today's mission / active day */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between px-1">
-                <div>
-                  <span className="text-xs font-black uppercase tracking-wider text-slate-200">
-                    Elige tu Día
-                  </span>
-                  <p className="text-[10px] text-slate-400 font-medium">
-                    Toca un día para ver su sesión y desplegar ejercicios
-                  </p>
-                </div>
-                <span className="text-xs font-black font-mono px-2.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
-                  {selectedDay === 18 ? "Día 18 · Extra" : `Día ${selectedDay}`}
+                <span className="text-xs font-black uppercase tracking-wider text-slate-300">
+                  Tu Misión de Hoy
+                </span>
+                <span className="text-[10px] font-mono font-bold text-primary flex items-center gap-1.5 bg-primary/10 border border-primary/30 px-2.5 py-0.5 rounded-full">
+                  {selectedDay === 18 ? "Día 18 · Sesión Libre" : `Día ${selectedDay} de 18`}
+                </span>
+              </div>
+
+              <HeroWorkoutCard
+                key={`hero-workout-${activeSelectedRoutine.day}`}
+                routine={activeSelectedRoutine}
+                isCompletedToday={completedTodayRoutineIds.has(activeSelectedRoutine.day)}
+                isRecommended={selectedDay === recommendedRoutine?.day}
+                onStartRoutine={() => {
+                  setSelectedRoutine(activeSelectedRoutine);
+                }}
+                onStartExercise={(exerciseIndex) =>
+                  handleStartRoutineExercise(activeSelectedRoutine, exerciseIndex)
+                }
+                onOpenDetails={() => {
+                  setSelectedRoutine(activeSelectedRoutine);
+                }}
+              />
+            </div>
+
+            {/* 2. Interactive Day Selector Hub */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-xs font-black uppercase tracking-wider text-white">
+                  Selector de Días (1 al 18)
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  Toca para enfocar la sesión
                 </span>
               </div>
               <DayCarouselSelector
@@ -308,99 +329,70 @@ export default function Dashboard() {
               />
             </div>
 
-            {/* Focused Active Routine Hero Card */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between px-1">
-                <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
-                  Sesión Seleccionada
-                </span>
-                {selectedDay === recommendedRoutine?.day && (
-                  <span className="text-[10px] font-mono font-bold text-primary flex items-center gap-1.5 bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    Recomendada para ti
-                  </span>
-                )}
-              </div>
+            {/* 3. Quick Prep & Custom Bento Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <WarmupLink exerciseCount={warmUpExercises.length} />
 
-              <RoutineCard
-                key={`focused-routine-${activeSelectedRoutine.day}`}
-                routine={activeSelectedRoutine}
-                defaultExpanded={true}
-                isCompletedToday={completedTodayRoutineIds.has(activeSelectedRoutine.day)}
+              <button
                 onClick={() => {
-                  haptics.light();
-                  setSelectedRoutine(activeSelectedRoutine);
+                  haptics.selection();
+                  setActiveTab("custom");
                 }}
-                onStartExercise={(exerciseIndex) => handleStartRoutineExercise(activeSelectedRoutine, exerciseIndex)}
-              />
-            </div>
-
-            {selectedDay === 18 && (
-              <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-primary/15 to-cyan-500/15 border border-primary/30 p-3.5 shadow-lg">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-primary">
+                className="group flex h-[52px] items-center gap-3 rounded-2xl border border-white/10 bg-[#121522] px-4 shadow-lg transition-all hover:border-primary/50 active:scale-[0.98] text-left cursor-pointer"
+              >
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors group-hover:bg-primary group-hover:text-black">
+                  <SlidersHorizontal className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="block truncate text-xs font-bold text-white transition-colors group-hover:text-primary">
                     Constructor Personalizado
                   </span>
-                  <span className="text-xs font-bold text-white">
-                    ¿Quieres diseñar tu entrenamiento por series o intervalos HIIT?
-                  </span>
                 </div>
-                <button
-                  onClick={() => {
-                    haptics.selection();
-                    setActiveTab("custom");
-                  }}
-                  className="rounded-xl bg-primary text-black px-3.5 py-1.5 text-xs font-black uppercase tracking-wider shadow-neon hover:brightness-110 active:scale-95 transition-all cursor-pointer"
-                >
-                  Abrir Creador
-                </button>
-              </div>
-            )}
+                <span className="text-[11px] text-slate-300 font-mono font-medium">
+                  Series / HIIT
+                </span>
+                <ChevronRight className="h-4 w-4 flex-shrink-0 text-slate-400 transition-colors group-hover:text-white" />
+              </button>
+            </div>
 
-            {/* Collapsible Section: Browse All Routines */}
-            <div className="mt-1 rounded-3xl border border-white/10 bg-[#0D131F]/80 backdrop-blur-xl p-4 shadow-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-xs font-black uppercase tracking-wider text-white">
+            {/* 4. Complete Routine Catalog Gallery (Directly visible, clean, filtered by objective) */}
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-white">
                     Explorar Todas las Rutinas
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-medium">
-                    Consulta el plan completo y filtra por grupos musculares
-                  </span>
+                  </h3>
+                  <p className="text-[10px] text-slate-400 font-medium">
+                    Filtra por objetivo y consulta las 18 sesiones del programa
+                  </p>
                 </div>
-                <button
-                  onClick={() => {
-                    haptics.selection();
-                    setShowAllRoutines(!showAllRoutines);
-                  }}
-                  className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-white/10 text-xs font-bold font-mono transition-all cursor-pointer"
-                >
-                  {showAllRoutines ? "Ocultar" : `Ver todas (${filteredRoutines.length})`}
-                </button>
+                <span className="text-[10px] font-mono font-bold text-slate-300 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full">
+                  {filteredRoutines.length} rutinas
+                </span>
               </div>
 
-              {showAllRoutines && (
-                <div className="mt-4 flex flex-col gap-3 pt-3 border-t border-white/5">
-                  <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
+              {/* Category Filter Pills */}
+              <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
 
-                  <div className="flex flex-col gap-3">
-                    {filteredRoutines.map((routine, index) => (
-                      <RoutineCard
-                        key={routine.day}
-                        routine={routine}
-                        index={index}
-                        defaultExpanded={false}
-                        isCompletedToday={completedTodayRoutineIds.has(routine.day)}
-                        onClick={() => {
-                          haptics.light();
-                          setSelectedRoutine(routine);
-                        }}
-                        onStartExercise={(exerciseIndex) => handleStartRoutineExercise(routine, exerciseIndex)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Grid of Filtered Routines */}
+              <div className="flex flex-col gap-3">
+                {filteredRoutines.map((routine, index) => (
+                  <RoutineCard
+                    key={routine.day}
+                    routine={routine}
+                    index={index}
+                    defaultExpanded={false}
+                    isCompletedToday={completedTodayRoutineIds.has(routine.day)}
+                    onClick={() => {
+                      haptics.light();
+                      setSelectedRoutine(routine);
+                    }}
+                    onStartExercise={(exerciseIndex) =>
+                      handleStartRoutineExercise(routine, exerciseIndex)
+                    }
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )}

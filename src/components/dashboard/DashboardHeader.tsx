@@ -45,43 +45,43 @@ export default function DashboardHeader({
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="glass-panel p-4 shadow-xl"
+      className="glass-panel p-4 shadow-2xl relative overflow-hidden border border-white/10"
     >
-      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent rounded-t-3xl" />
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
 
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <div className="flex items-center gap-1.5 text-caption font-medium text-text-secondary">
-            <GreetingIcon className="h-3.5 w-3.5 text-primary" />
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
+            <GreetingIcon className="h-4 w-4 text-primary" />
             <span>{greetingText}</span>
           </div>
-          <h2 className="mt-0.5 truncate text-title-md text-white">
+          <h2 className="mt-0.5 truncate text-xl font-black text-white tracking-tight">
             {user?.username || "Atleta"}
           </h2>
 
           {athleteInfo && (
-            <div className="mt-1 flex items-center gap-2">
+            <div className="mt-1.5 flex items-center gap-2">
               <span
-                className="text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded-md border"
+                className="text-[10px] font-mono font-black uppercase px-2.5 py-0.5 rounded-full border shadow-sm"
                 style={{
                   color: athleteInfo.currentLevel.badgeColor,
-                  borderColor: `${athleteInfo.currentLevel.badgeColor}40`,
-                  backgroundColor: `${athleteInfo.currentLevel.badgeColor}15`,
+                  borderColor: `${athleteInfo.currentLevel.badgeColor}60`,
+                  backgroundColor: `${athleteInfo.currentLevel.badgeColor}20`,
                 }}
               >
                 Nv. {athleteInfo.currentLevel.level} · {athleteInfo.currentLevel.title}
               </span>
               <div className="flex items-center gap-1.5 flex-1 max-w-[130px]">
-                <div className="w-full bg-[#161c28] h-1.5 rounded-full overflow-hidden border border-white/5">
+                <div className="w-full bg-[#181C2C] h-1.5 rounded-full overflow-hidden border border-white/10">
                   <div
-                    className="h-full rounded-full transition-all duration-500"
+                    className="h-full rounded-full transition-all duration-500 shadow-sm"
                     style={{
                       width: `${athleteInfo.progressPercent}%`,
                       backgroundColor: athleteInfo.currentLevel.badgeColor,
                     }}
                   />
                 </div>
-                <span className="text-[9px] font-mono text-zinc-400 font-bold whitespace-nowrap">
+                <span className="text-[10px] font-mono text-slate-200 font-bold whitespace-nowrap">
                   {totalXP} XP
                 </span>
               </div>
@@ -89,20 +89,22 @@ export default function DashboardHeader({
           )}
         </div>
 
-        <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl border border-white/10 bg-[#0e121a] px-3 py-1.5 shadow-md">
-          <Flame className="h-4 w-4 animate-pulse text-primary fill-primary/30" />
+        {/* Streak Counter with Solar Flame */}
+        <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl border border-amber-500/30 bg-[#161310] px-3.5 py-2 shadow-lg">
+          <Flame className="h-5 w-5 animate-pulse text-amber-400 fill-amber-400" />
           <div className="flex flex-col text-right">
-            <span className="font-mono text-base font-black leading-none text-primary">
+            <span className="font-mono text-lg font-black leading-none text-amber-400">
               {streak}
             </span>
-            <span className="text-[9px] font-medium text-text-secondary">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-amber-200/80 mt-0.5">
               {streak === 1 ? "Día racha" : "Días racha"}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
+      {/* Activity strip */}
+      <div className="mt-3.5 flex items-center justify-between border-t border-white/10 pt-3">
         <div className="flex items-center gap-1.5">
           {DAY_LABELS.map((label, idx) => {
             const trained = weeklyDays[idx];
@@ -112,10 +114,10 @@ export default function DashboardHeader({
                 key={label}
                 className={`flex h-7 w-7 items-center justify-center rounded-xl text-[10px] font-black transition-all sm:h-8 sm:w-8 sm:text-xs ${
                   trained
-                    ? "bg-primary text-black shadow-neon font-black"
+                    ? "bg-primary text-black shadow-neon font-black scale-105"
                     : isToday
-                    ? "border-2 border-primary bg-primary/20 text-primary"
-                    : "border border-white/10 bg-[#121826] text-slate-400"
+                    ? "border-2 border-primary bg-primary/20 text-primary font-black"
+                    : "border border-white/10 bg-[#141824] text-slate-400 font-bold"
                 }`}
               >
                 {label}
@@ -124,12 +126,12 @@ export default function DashboardHeader({
           })}
         </div>
 
-        <div className="flex items-center gap-2 pl-2 text-[11px] text-slate-300">
-          <span className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-2.5 py-1">
+        <div className="flex items-center gap-2 pl-2 text-[11px] text-slate-200">
+          <span className="flex items-center gap-1.5 rounded-xl border border-cyan-400/25 bg-cyan-400/10 px-2.5 py-1">
             <Zap className="h-3.5 w-3.5 text-cyan-400" />
             <strong className="text-white font-mono">{totalWorkouts}</strong>
           </span>
-          <span className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-2.5 py-1">
+          <span className="flex items-center gap-1.5 rounded-xl border border-primary/25 bg-primary/10 px-2.5 py-1">
             <Clock className="h-3.5 w-3.5 text-primary" />
             <strong className="text-white font-mono">{totalMinutes}m</strong>
           </span>

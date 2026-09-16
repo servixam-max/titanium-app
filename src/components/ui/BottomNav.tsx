@@ -32,9 +32,9 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex flex-col items-center justify-center h-12 w-16 gap-1 transition-colors duration-200 ${
+              className={`relative flex-col items-center justify-center h-12 w-16 gap-1 transition-colors duration-200 flex ${
                 isActive
-                  ? "text-primary font-black drop-shadow-[0_0_8px_rgba(0,245,155,0.7)]"
+                  ? "text-primary font-black drop-shadow-[0_0_10px_rgba(212,255,0,0.75)]"
                   : "text-slate-400 hover:text-white"
               }`}
             >
