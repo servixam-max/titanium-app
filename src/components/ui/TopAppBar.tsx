@@ -73,7 +73,7 @@ export default function TopAppBar({
           )}
         </div>
 
-        <h1 className="font-display text-title-sm text-white text-center flex-1">
+        <h1 className="font-display text-title-sm font-bold tracking-wider text-white text-center flex-1">
           {title}
         </h1>
 
@@ -82,7 +82,7 @@ export default function TopAppBar({
             <button
               onClick={() => setSettingsOpen(true)}
               className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-black text-xs font-mono shadow-sm active:scale-90 transition-all"
-              style={{ backgroundColor: currentUser.avatarColor || "#10B981" }}
+              style={{ backgroundColor: currentUser.avatarColor || "#00F59B" }}
               title={`Perfil de ${currentUser.username}`}
             >
               {currentUser.username.slice(0, 1).toUpperCase()}
@@ -104,7 +104,7 @@ export default function TopAppBar({
           {showSettings && (
             <button
               onClick={() => setSettingsOpen(true)}
-              className="flex items-center justify-center w-8 h-12 text-zinc-400 hover:opacity-80 transition-opacity active:scale-95"
+              className="flex items-center justify-center w-8 h-12 text-slate-300 hover:text-white transition-opacity active:scale-95"
               aria-label="Ajustes"
             >
               <Settings className="w-6 h-6" />

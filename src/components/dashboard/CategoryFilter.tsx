@@ -30,10 +30,10 @@ export default function CategoryFilter({ value, onChange }: CategoryFilterProps)
               haptics.selection();
               onChange(cat.id);
             }}
-            className={`relative whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all duration-200 active:scale-95 ${
+            className={`relative whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all duration-200 active:scale-95 cursor-pointer ${
               selected
-                ? "border border-primary/40 bg-primary text-black shadow-neon"
-                : "border border-white/10 bg-[#121620] text-zinc-400 hover:text-white hover:bg-[#161e2e]"
+                ? "border border-primary/40 bg-primary text-black font-black shadow-neon"
+                : "border border-white/10 bg-[#111724] text-slate-300 hover:text-white hover:bg-[#162032]"
             }`}
           >
             {cat.label}

@@ -15,7 +15,7 @@ interface ViewSwitcherProps {
 
 export default function ViewSwitcher({ value, onChange, routinesCount, plansCount: _plansCount, catalogCount: _catalogCount }: ViewSwitcherProps) {
   return (
-    <div className="flex items-center gap-1 rounded-2xl border border-white/10 bg-gradient-to-br from-[#121620] to-[#151b28] p-1.5 shadow-lg">
+    <div className="flex items-center gap-1 rounded-2xl border border-white/10 bg-[#0E1422]/90 backdrop-blur-xl p-1.5 shadow-lg">
       <button
         onClick={() => {
           haptics.selection();
@@ -24,7 +24,7 @@ export default function ViewSwitcher({ value, onChange, routinesCount, plansCoun
         className={`flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl px-1 text-[11px] font-bold uppercase tracking-wider transition-all min-w-0 ${
           value === "routines"
             ? "border border-primary/30 bg-primary text-black shadow-neon font-black"
-            : "text-zinc-400 hover:bg-white/5 hover:text-white"
+            : "text-slate-400 hover:bg-white/5 hover:text-white font-bold"
         }`}
       >
         <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
@@ -39,7 +39,7 @@ export default function ViewSwitcher({ value, onChange, routinesCount, plansCoun
         className={`flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl px-1 text-[11px] font-bold uppercase tracking-wider transition-all min-w-0 ${
           value === "plans"
             ? "border border-primary/30 bg-primary text-black shadow-neon font-black"
-            : "text-zinc-400 hover:bg-white/5 hover:text-white"
+            : "text-slate-400 hover:bg-white/5 hover:text-white font-bold"
         }`}
       >
         <Sparkles className="h-3.5 w-3.5 flex-shrink-0" />
@@ -54,7 +54,7 @@ export default function ViewSwitcher({ value, onChange, routinesCount, plansCoun
         className={`flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl px-1 text-[11px] font-bold uppercase tracking-wider transition-all min-w-0 ${
           value === "custom"
             ? "border border-primary/30 bg-primary text-black shadow-neon font-black"
-            : "text-zinc-400 hover:bg-white/5 hover:text-white"
+            : "text-slate-400 hover:bg-white/5 hover:text-white font-bold"
         }`}
       >
         <SlidersHorizontal className="h-3.5 w-3.5 flex-shrink-0" />
@@ -69,7 +69,7 @@ export default function ViewSwitcher({ value, onChange, routinesCount, plansCoun
         className={`flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl px-1 text-[11px] font-bold uppercase tracking-wider transition-all min-w-0 ${
           value === "catalog"
             ? "border border-primary/30 bg-primary text-black shadow-neon font-black"
-            : "text-zinc-400 hover:bg-white/5 hover:text-white"
+            : "text-slate-400 hover:bg-white/5 hover:text-white font-bold"
         }`}
       >
         <Grid className="h-3.5 w-3.5 flex-shrink-0" />

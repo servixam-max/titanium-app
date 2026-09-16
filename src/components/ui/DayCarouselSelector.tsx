@@ -58,16 +58,16 @@ export default function DayCarouselSelector({
               }}
               className={`relative flex-shrink-0 min-w-[74px] h-[64px] rounded-2xl flex flex-col items-center justify-center p-2 transition-all duration-200 cursor-pointer active:scale-95 select-none ${
                 isSelected
-                  ? "bg-[#00D68F] text-black shadow-[0_0_22px_rgba(0,214,143,0.4)] border-2 border-emerald-300 font-black scale-[1.03]"
+                  ? "bg-primary text-black shadow-neon-strong border-2 border-primary-300 font-black scale-[1.04]"
                   : isCompleted
-                  ? "bg-[#0c2217] text-emerald-300 border border-emerald-500/40"
-                  : "bg-[#131824] hover:bg-[#182030] text-zinc-300 border border-white/15"
+                  ? "bg-emerald-950/50 text-emerald-300 border border-emerald-400/40"
+                  : "bg-[#0F1522] hover:bg-[#151D30] text-slate-300 border border-white/10 hover:border-white/20"
               }`}
             >
               {/* Day header tag */}
               <span
                 className={`font-mono text-[9px] uppercase tracking-wider ${
-                  isSelected ? "text-black/80 font-black" : isCompleted ? "text-emerald-400 font-bold" : "text-zinc-400 font-bold"
+                  isSelected ? "text-black font-black" : isCompleted ? "text-emerald-400 font-bold" : "text-slate-400 font-bold"
                 }`}
               >
                 {isExtra ? "LIBRE" : "DÍA"}
@@ -99,7 +99,7 @@ export default function DayCarouselSelector({
                     ? "text-black font-black"
                     : isCompleted
                     ? "text-emerald-400 font-bold"
-                    : "text-zinc-400 font-medium"
+                    : "text-slate-400 font-medium"
                 }`}
               >
                 {isSelected ? "Activo" : isCompleted ? "Hecho" : isExtra ? "Catálogo" : "Rutina"}

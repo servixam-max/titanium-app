@@ -3,27 +3,27 @@
 @tailwind utilities;
 
 :root {
-  /* === v8 Titanium Energy tokens === */
-  --background: #05090C;
-  --foreground: #F1F5F9;
-  --surface-950: #05090C;
-  --surface-900: #0A0F14;
-  --surface-800: #111820;
-  --surface-700: #1A2530;
-  --surface-600: #253240;
+  /* === v8 Titanium Obsidian & Electric Emerald tokens === */
+  --background: #080C14;
+  --foreground: #FFFFFF;
+  --surface-950: #080C14;
+  --surface-900: #0D131F;
+  --surface-800: #121826;
+  --surface-700: #1A2234;
+  --surface-600: #253046;
   --surface-500: #334155;
-  --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
-  --text-tertiary: #64748B;
-  --primary: #00D68F;
-  --primary-rgb: 0, 214, 143;
-  --primary-500: #00D68F;
-  --primary-600: #059669;
-  --primary-400: #34D399;
-  --accent-cyan: #00E1FF;
-  --accent-violet: #7C3AED;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CBD5E1;
+  --text-tertiary: #94A3B8;
+  --primary: #00F59B;
+  --primary-rgb: 0, 245, 155;
+  --primary-500: #00F59B;
+  --primary-600: #00D68F;
+  --primary-400: #34F5B0;
+  --accent-cyan: #00E5FF;
+  --accent-violet: #8B5CF6;
   --accent-amber: #F59E0B;
-  --accent-rose: #FF007A;
+  --accent-rose: #FF2E7E;
 
   /* Legacy compatibility */
   --font-inter: "Inter", system-ui, sans-serif;
@@ -99,12 +99,12 @@ body {
 
 /* === v8 Glass & surfaces === */
 .glass-panel {
-  background: rgba(17, 24, 32, 0.72);
+  background: rgba(18, 24, 38, 0.78);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.45);
 }
 
 html.light .glass-panel {
@@ -114,17 +114,17 @@ html.light .glass-panel {
 }
 
 .glass-titanium {
-  background: rgba(17, 24, 32, 0.78);
+  background: rgba(14, 19, 31, 0.84);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-modal {
-  background: rgba(10, 15, 20, 0.92);
+  background: rgba(10, 15, 24, 0.94);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 html.light .glass-modal {
@@ -133,29 +133,30 @@ html.light .glass-modal {
 }
 
 .glow-neon-box {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(0, 214, 143, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 245, 155, 0.22);
+  border: 1px solid rgba(0, 245, 155, 0.35);
 }
 
 .glow-card-hover:hover {
-  border-color: rgba(0, 214, 143, 0.40);
-  box-shadow: 0 8px 32px rgba(0, 214, 143, 0.12);
+  border-color: rgba(0, 245, 155, 0.45);
+  box-shadow: 0 8px 32px rgba(0, 245, 155, 0.16);
 }
 
 /* === v8 buttons === */
 .btn-primary {
-  @apply h-12 px-6 rounded-2xl font-semibold text-white;
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-400));
-  box-shadow: 0 4px 16px rgba(0, 214, 143, 0.25);
-  transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+  @apply h-12 px-6 rounded-2xl font-black text-black;
+  background: linear-gradient(135deg, #00F59B, #34F5B0);
+  box-shadow: 0 4px 18px rgba(0, 245, 155, 0.32);
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out, filter 150ms ease-out;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 6px 24px rgba(0, 214, 143, 0.35);
+  box-shadow: 0 6px 26px rgba(0, 245, 155, 0.45);
+  filter: brightness(1.05);
 }
 
 .btn-primary:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .btn-secondary {

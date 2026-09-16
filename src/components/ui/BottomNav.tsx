@@ -34,8 +34,8 @@ export default function BottomNav() {
               href={item.href}
               className={`relative flex flex-col items-center justify-center h-12 w-16 gap-1 transition-colors duration-200 ${
                 isActive
-                  ? "text-primary font-bold drop-shadow-[0_0_6px_rgba(0,245,155,0.6)]"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "text-primary font-black drop-shadow-[0_0_8px_rgba(0,245,155,0.7)]"
+                  : "text-slate-400 hover:text-white"
               }`}
             >
               {isActive && (

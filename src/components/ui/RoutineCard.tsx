@@ -68,8 +68,8 @@ export default function RoutineCard({
       }}
       className={`group relative ${
         isCompletedToday
-          ? "bg-[#0b1512]/95 border-emerald-500/50 shadow-[0_0_20px_rgba(0,245,155,0.15)]"
-          : `bg-gradient-to-br from-[#121620] via-[#141b2a] to-[#111522] border-white/10 ${style.border}`
+          ? "bg-[#0B1713]/95 border-emerald-400/50 shadow-[0_0_24px_rgba(0,245,155,0.18)]"
+          : `bg-gradient-to-br from-[#101624] via-[#12192A] to-[#0D1320] border-white/10 ${style.border}`
       } backdrop-blur-xl rounded-3xl border transition-all duration-300 shadow-xl overflow-hidden`}
     >
       {/* Subtle top ambient glow strip */}
@@ -98,7 +98,7 @@ export default function RoutineCard({
         {/* Center Info */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] font-black tracking-wider px-2.5 py-0.5 rounded-full bg-[#00D68F] text-black border border-emerald-300 shadow-sm">
+            <span className="font-mono text-[10px] font-black tracking-wider px-2.5 py-0.5 rounded-full bg-primary text-black border border-primary-300 shadow-sm">
               {dayBadge}
             </span>
             <span
@@ -118,13 +118,13 @@ export default function RoutineCard({
             {routine.title}
           </h3>
 
-          <div className="flex items-center gap-3 text-xs text-zinc-400 font-mono">
-            <span className="flex items-center gap-1">
+          <div className="flex items-center gap-3 text-xs text-slate-300 font-mono font-medium">
+            <span className="flex items-center gap-1 text-slate-200">
               <Clock className="w-3.5 h-3.5 text-cyan-400" />
               {routine.duration}
             </span>
-            <span className="text-zinc-600">•</span>
-            <span className="flex items-center gap-1">
+            <span className="text-slate-500">•</span>
+            <span className="flex items-center gap-1 text-slate-200">
               <Layers className="w-3.5 h-3.5 text-primary" />
               {routine.exercises.length} ej ({totalSets} series)
             </span>
@@ -137,7 +137,7 @@ export default function RoutineCard({
             className={`w-10 h-10 rounded-2xl ${
               isCompletedToday
                 ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
-                : "bg-white/5 border-white/10 group-hover:bg-primary group-hover:text-black text-zinc-300"
+                : "bg-white/5 border-white/10 group-hover:bg-primary group-hover:text-black text-slate-200"
             } border flex items-center justify-center transition-all duration-300 shadow-sm`}
           >
             {isCompletedToday ? (
@@ -157,7 +157,7 @@ export default function RoutineCard({
             haptics.selection();
             setIsExpanded(!isExpanded);
           }}
-          className="h-9 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white font-mono text-xs font-bold flex items-center gap-1.5 border border-white/10 transition-colors cursor-pointer"
+          className="h-9 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white font-mono text-xs font-bold flex items-center gap-1.5 border border-white/10 transition-colors cursor-pointer"
         >
           {isExpanded ? (
             <>
@@ -178,7 +178,7 @@ export default function RoutineCard({
             haptics.impact();
             onClick?.();
           }}
-          className="h-9 px-4 rounded-xl bg-[#00D68F] hover:bg-[#05f5a4] text-black font-mono font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-black/40 border border-emerald-300 active:scale-95 transition-all cursor-pointer"
+          className="h-9 px-4 rounded-xl bg-primary hover:brightness-110 text-black font-mono font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-neon border border-primary-300 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Comenzar</span>
@@ -193,14 +193,14 @@ export default function RoutineCard({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: "easeInOut" }}
-            className="overflow-hidden bg-black/40 border-t border-white/10"
+            className="overflow-hidden bg-[#0A0F1A]/80 border-t border-white/10"
           >
             <div className="p-3.5 flex flex-col gap-2.5">
               <div className="flex items-center justify-between px-1">
-                <span className="font-mono text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                <span className="font-mono text-[10px] font-black uppercase tracking-wider text-slate-400">
                   Lista de Ejercicios del Día
                 </span>
-                <span className="font-mono text-[10px] text-zinc-500">
+                <span className="font-mono text-[10px] text-slate-400">
                   Toca ▶ para entrenar uno suelto
                 </span>
               </div>
@@ -208,7 +208,7 @@ export default function RoutineCard({
               {routine.exercises.map((ex, idx) => (
                 <div
                   key={ex.id || `${routine.day}-${idx}`}
-                  className="flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-[#131926]/90 border border-white/5 hover:border-primary/30 transition-all group/item"
+                  className="flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-[#121A2A]/90 border border-white/10 hover:border-primary/40 transition-all group/item"
                 >
                   {/* Photo */}
                   <div className="w-12 h-12 rounded-full overflow-hidden bg-black/50 border border-white/15 flex-shrink-0 relative">
@@ -222,7 +222,7 @@ export default function RoutineCard({
                         className="object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                      <div className="w-full h-full flex items-center justify-center text-zinc-500">
                         <Dumbbell className="w-5 h-5" />
                       </div>
                     )}
@@ -233,12 +233,12 @@ export default function RoutineCard({
                     <span className="font-mono text-xs font-bold text-white block truncate group-hover/item:text-primary transition-colors">
                       {idx + 1}. {ex.name}
                     </span>
-                    <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono text-zinc-400">
-                      <span className="text-zinc-300 font-bold">
+                    <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono text-slate-300">
+                      <span className="text-white font-bold">
                         {ex.sets} series × {ex.reps}
                       </span>
                       <span>•</span>
-                      <span className="text-cyan-300">{ex.restSeconds}s desc</span>
+                      <span className="text-cyan-300 font-semibold">{ex.restSeconds}s desc</span>
                     </div>
                   </div>
 
@@ -254,7 +254,7 @@ export default function RoutineCard({
                       }
                     }}
                     title="Entrenar este ejercicio en modo individual"
-                    className="w-9 h-9 rounded-xl bg-white/5 hover:bg-primary hover:text-black text-primary border border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0 shadow-sm"
+                    className="w-9 h-9 rounded-xl bg-white/5 hover:bg-primary hover:text-black text-primary border border-primary/40 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0 shadow-sm"
                   >
                     <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                   </button>

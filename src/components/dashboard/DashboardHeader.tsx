@@ -112,10 +112,10 @@ export default function DashboardHeader({
                 key={label}
                 className={`flex h-7 w-7 items-center justify-center rounded-xl text-[10px] font-black transition-all sm:h-8 sm:w-8 sm:text-xs ${
                   trained
-                    ? "bg-[#00D68F] text-black shadow-md font-black"
+                    ? "bg-primary text-black shadow-neon font-black"
                     : isToday
-                    ? "border-2 border-[#00D68F] bg-[#00D68F]/20 text-[#00D68F]"
-                    : "border border-white/10 bg-[#141a24] text-zinc-400"
+                    ? "border-2 border-primary bg-primary/20 text-primary"
+                    : "border border-white/10 bg-[#121826] text-slate-400"
                 }`}
               >
                 {label}
@@ -124,14 +124,14 @@ export default function DashboardHeader({
           })}
         </div>
 
-        <div className="flex items-center gap-2 pl-2 text-[11px] text-zinc-400">
-          <span className="flex items-center gap-1.5 rounded-xl border border-white/5 bg-white/5 px-2.5 py-1">
+        <div className="flex items-center gap-2 pl-2 text-[11px] text-slate-300">
+          <span className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-2.5 py-1">
             <Zap className="h-3.5 w-3.5 text-cyan-400" />
-            <strong className="text-white">{totalWorkouts}</strong>
+            <strong className="text-white font-mono">{totalWorkouts}</strong>
           </span>
-          <span className="flex items-center gap-1.5 rounded-xl border border-white/5 bg-white/5 px-2.5 py-1">
+          <span className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-2.5 py-1">
             <Clock className="h-3.5 w-3.5 text-primary" />
-            <strong className="text-white">{totalMinutes}m</strong>
+            <strong className="text-white font-mono">{totalMinutes}m</strong>
           </span>
         </div>
       </div>

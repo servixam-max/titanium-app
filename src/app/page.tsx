@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import {
   DashboardHeader,
   ActiveWorkoutBanner,
-  RecommendedRoutineCard,
   WarmupLink,
   CategoryFilter,
   ViewSwitcher,
@@ -126,6 +125,8 @@ export default function Dashboard() {
   const [activePlan, setActivePlan] = useState<Plan | null>(null);
   const [savedPlans, setSavedPlans] = useState<Plan[]>([]);
 
+  const [showAllRoutines, setShowAllRoutines] = useState(false);
+
   const allDays = useMemo(() => routines.map((r) => r.day), []);
   const completeCatalog = useMemo(() => getCompleteExerciseCatalog(), []);
 
@@ -177,6 +178,10 @@ export default function Dashboard() {
     const nextDay = (lastRoutineId % 17) + 1;
     return routines.find((r) => r.day === nextDay) || routines[0];
   }, [sessionsList, activePlan]);
+
+  const activeSelectedRoutine = useMemo(() => {
+    return routines.find((r) => r.day === selectedDay) || recommendedRoutine || routines[0];
+  }, [selectedDay, recommendedRoutine]);
 
   useEffect(() => {
     if (recommendedRoutine) setSelectedDay(recommendedRoutine.day);
@@ -276,29 +281,21 @@ export default function Dashboard() {
 
         {activeTab === "routines" && (
           <div className="flex flex-col gap-4">
-            {!activeWorkout.routine && recommendedRoutine && (
-              <RecommendedRoutineCard
-                routine={recommendedRoutine}
-                onOpen={() => {
-                  haptics.selection();
-                  setSelectedRoutine(recommendedRoutine);
-                }}
-                onStart={() => {
-                  haptics.impact();
-                  setSelectedRoutine(recommendedRoutine);
-                }}
-              />
-            )}
-
             <WarmupLink exerciseCount={warmUpExercises.length} />
 
+            {/* Day Selector Hub */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-black uppercase tracking-wider text-zinc-400">
-                  Seleccionar Día (1 al 18)
-                </span>
-                <span className="text-[11px] font-bold text-primary">
-                  Día activo: {selectedDay === 18 ? "Libre (Extra)" : `Día ${selectedDay}`}
+                <div>
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-200">
+                    Elige tu Día
+                  </span>
+                  <p className="text-[10px] text-slate-400 font-medium">
+                    Toca un día para ver su sesión y desplegar ejercicios
+                  </p>
+                </div>
+                <span className="text-xs font-black font-mono px-2.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+                  {selectedDay === 18 ? "Día 18 · Extra" : `Día ${selectedDay}`}
                 </span>
               </div>
               <DayCarouselSelector
@@ -306,21 +303,46 @@ export default function Dashboard() {
                 selectedDay={selectedDay}
                 onSelectDay={(day) => {
                   setSelectedDay(day);
-                  const routine = routines.find((r) => r.day === day);
-                  if (routine) setSelectedRoutine(routine);
                 }}
                 completedDayIds={completedTodayRoutineIds}
               />
             </div>
 
+            {/* Focused Active Routine Hero Card */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+                  Sesión Seleccionada
+                </span>
+                {selectedDay === recommendedRoutine?.day && (
+                  <span className="text-[10px] font-mono font-bold text-primary flex items-center gap-1.5 bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    Recomendada para ti
+                  </span>
+                )}
+              </div>
+
+              <RoutineCard
+                key={`focused-routine-${activeSelectedRoutine.day}`}
+                routine={activeSelectedRoutine}
+                defaultExpanded={true}
+                isCompletedToday={completedTodayRoutineIds.has(activeSelectedRoutine.day)}
+                onClick={() => {
+                  haptics.light();
+                  setSelectedRoutine(activeSelectedRoutine);
+                }}
+                onStartExercise={(exerciseIndex) => handleStartRoutineExercise(activeSelectedRoutine, exerciseIndex)}
+              />
+            </div>
+
             {selectedDay === 18 && (
-              <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-primary/15 to-cyan-500/15 border border-primary/30 p-3 shadow-lg">
+              <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-primary/15 to-cyan-500/15 border border-primary/30 p-3.5 shadow-lg">
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black uppercase tracking-wider text-primary">
                     Constructor Personalizado
                   </span>
                   <span className="text-xs font-bold text-white">
-                    ¿Quieres crear tu entrenamiento por series y tiempos?
+                    ¿Quieres diseñar tu entrenamiento por series o intervalos HIIT?
                   </span>
                 </div>
                 <button
@@ -328,44 +350,57 @@ export default function Dashboard() {
                     haptics.selection();
                     setActiveTab("custom");
                   }}
-                  className="rounded-xl bg-primary text-black px-3 py-1.5 text-xs font-black uppercase tracking-wider shadow-neon hover:brightness-110 active:scale-95 transition-all"
+                  className="rounded-xl bg-primary text-black px-3.5 py-1.5 text-xs font-black uppercase tracking-wider shadow-neon hover:brightness-110 active:scale-95 transition-all cursor-pointer"
                 >
                   Abrir Creador
                 </button>
               </div>
             )}
 
-            <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
-
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between px-1">
-                <h3 className="border-l-2 border-primary pl-2 text-xs font-bold uppercase tracking-wider text-white">
-                  Rutinas del Plan ({filteredRoutines.length})
-                </h3>
-                {selectedCategory !== "all" && (
-                  <button
-                    onClick={() => setSelectedCategory("all")}
-                    className="cursor-pointer text-[11px] font-bold text-cyan-400 hover:underline"
-                  >
-                    Ver todas
-                  </button>
-                )}
+            {/* Collapsible Section: Browse All Routines */}
+            <div className="mt-1 rounded-3xl border border-white/10 bg-[#0D131F]/80 backdrop-blur-xl p-4 shadow-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-xs font-black uppercase tracking-wider text-white">
+                    Explorar Todas las Rutinas
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-medium">
+                    Consulta el plan completo y filtra por grupos musculares
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    haptics.selection();
+                    setShowAllRoutines(!showAllRoutines);
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-white/10 text-xs font-bold font-mono transition-all cursor-pointer"
+                >
+                  {showAllRoutines ? "Ocultar" : `Ver todas (${filteredRoutines.length})`}
+                </button>
               </div>
 
-              {filteredRoutines.map((routine, index) => (
-                <RoutineCard
-                  key={routine.day}
-                  routine={routine}
-                  index={index}
-                  defaultExpanded={routine.day === selectedDay}
-                  isCompletedToday={completedTodayRoutineIds.has(routine.day)}
-                  onClick={() => {
-                    haptics.light();
-                    setSelectedRoutine(routine);
-                  }}
-                  onStartExercise={(exerciseIndex) => handleStartRoutineExercise(routine, exerciseIndex)}
-                />
-              ))}
+              {showAllRoutines && (
+                <div className="mt-4 flex flex-col gap-3 pt-3 border-t border-white/5">
+                  <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
+
+                  <div className="flex flex-col gap-3">
+                    {filteredRoutines.map((routine, index) => (
+                      <RoutineCard
+                        key={routine.day}
+                        routine={routine}
+                        index={index}
+                        defaultExpanded={false}
+                        isCompletedToday={completedTodayRoutineIds.has(routine.day)}
+                        onClick={() => {
+                          haptics.light();
+                          setSelectedRoutine(routine);
+                        }}
+                        onStartExercise={(exerciseIndex) => handleStartRoutineExercise(routine, exerciseIndex)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

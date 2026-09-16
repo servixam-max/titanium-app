@@ -22,13 +22,13 @@ export default function PrimaryButton({
 }: PrimaryButtonProps) {
   const variants = {
     primary:
-      "bg-[#00D68F] hover:bg-[#05f5a4] text-black border-[#00D68F] shadow-[0_0_20px_rgba(0,214,143,0.35)]",
+      "bg-primary hover:brightness-110 text-black border-primary-300 shadow-neon-strong font-black",
     secondary:
-      "bg-gradient-to-br from-[#121620] to-[#151b28] text-white border-white/10 hover:border-primary/30 shadow-md",
+      "bg-[#111724] text-white border-white/10 hover:border-white/20 hover:bg-[#162032] shadow-md",
     danger:
       "bg-gradient-to-br from-[#2a1515] to-[#1a1010] text-red-400 border-red-500/20 shadow-md",
     ghost:
-      "bg-transparent text-zinc-400 border-transparent hover:text-white hover:bg-white/5",
+      "bg-transparent text-slate-300 border-transparent hover:text-white hover:bg-white/5",
   };
 
   const sizes = {
