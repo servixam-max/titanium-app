@@ -2,11 +2,16 @@
 set -e
 
 VERSION=$(node -e "console.log(require('./ota_server/version.json').version)")
+VERSION_CODE=$(node -e "console.log(require('./ota_server/version.json').versionCode)")
 APK=$(node -e "console.log(require('./ota_server/version.json').apkName)")
 URL=$(node -e "console.log(require('./ota_server/version.json').url || '')")
 
 if [ -z "$APK" ]; then
   APK="FORTIXAM-${VERSION}.apk"
+fi
+
+if [ ! -f "$APK" ] && [ -f "android/app/build/outputs/apk/release/app-release.apk" ]; then
+  cp "android/app/build/outputs/apk/release/app-release.apk" "$APK"
 fi
 
 if [ ! -f "$APK" ]; then
@@ -22,7 +27,7 @@ else
   echo "Creando nuevo release v${VERSION} en GitHub..."
   gh release create "v${VERSION}" "$APK" \
     --title "FORTIXAM v${VERSION}" \
-    --notes "Actualización global de FORTIXAM v${VERSION}."
+    --notes "Actualización global de FORTIXAM v${VERSION}. versionCode: ${VERSION_CODE}"
 fi
 
 echo "¡Release v${VERSION} disponible públicamente en GitHub!"

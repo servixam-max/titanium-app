@@ -8,8 +8,8 @@ export interface AppVersion {
 
 // canonical current version: bump versionCode when releasing a new APK
 export const APP_VERSION: AppVersion = {
-  version: "8.4.6",
-  versionCode: 8020009,
+  version: "8.4.7",
+  versionCode: 8020010,
   buildType: "release",
 };
 const CANDIDATE_IPS = [
@@ -149,103 +149,150 @@ export async function checkOtaUpdate(): Promise<{
   downloadUrl: string;
   serverUrl: string;
 }> {
-  // 1. Primary: Global GitHub Raw version.json (instant raw file with versionCode)
+  type Candidate = {
+    version: string;
+    versionCode?: number;
+    downloadUrl: string;
+    serverUrl: string;
+  };
+
+  const candidates: Candidate[] = [];
+
+  // Query GitHub Releases API & GitHub Raw in parallel
+  const [releaseApiResult, rawResult] = await Promise.allSettled([
+    // 1. GitHub Releases API (authoritative release data, zero CDN delay)
+    (async (): Promise<Candidate | null> => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      try {
+        const res = await fetch(GITHUB_API_RELEASE_URL, {
+          signal: controller.signal,
+          headers: { Accept: "application/vnd.github.v3+json" },
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        const tagName = String(data.tag_name || "").replace(/^v/, "").trim();
+        const bodyText = typeof data.body === "string" ? data.body : "";
+        const matchCode = bodyText.match(/versionCode:\s*(\d+)/i);
+        const remoteVersionCode = matchCode ? parseInt(matchCode[1], 10) : undefined;
+        const apkAsset = data.assets?.find(
+          (a: { name?: string; browser_download_url?: string }) =>
+            a.name?.toLowerCase().endsWith(".apk"),
+        );
+        const downloadUrl = apkAsset?.browser_download_url || "";
+        if (tagName && downloadUrl) {
+          return {
+            version: tagName,
+            versionCode: remoteVersionCode,
+            downloadUrl,
+            serverUrl: "GitHub Cloud (Global)",
+          };
+        }
+        return null;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    })(),
+
+    // 2. GitHub Raw version.json
+    (async (): Promise<Candidate | null> => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      try {
+        const res = await fetch(`${GITHUB_RAW_VERSION_URL}?t=${Date.now()}`, {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+        if (!res.ok) return null;
+        const data = (await res.json()) as RemoteVersion;
+        const latestVersion = String(data.version || "").trim();
+        const downloadUrl =
+          data.url ||
+          `https://github.com/servixam-max/titanium-app/releases/download/v${latestVersion}/${data.apkName || `FORTIXAM-${latestVersion}.apk`}`;
+        if (latestVersion && downloadUrl) {
+          return {
+            version: latestVersion,
+            versionCode: parseVersionCode(data.versionCode) ?? undefined,
+            downloadUrl,
+            serverUrl: "GitHub Cloud (Global)",
+          };
+        }
+        return null;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    })(),
+  ]);
+
+  if (releaseApiResult.status === "fulfilled" && releaseApiResult.value) {
+    candidates.push(releaseApiResult.value);
+  }
+  if (rawResult.status === "fulfilled" && rawResult.value) {
+    candidates.push(rawResult.value);
+  }
+
+  // If we found any valid GitHub candidate:
+  if (candidates.length > 0) {
+    // Pick the most recent candidate across sources
+    let bestCandidate = candidates[0];
+    for (let i = 1; i < candidates.length; i++) {
+      const cand = candidates[i];
+      if (
+        isRemoteNewer(
+          { version: bestCandidate.version, versionCode: bestCandidate.versionCode ?? 0 },
+          { version: cand.version, versionCode: cand.versionCode },
+        )
+      ) {
+        bestCandidate = cand;
+      }
+    }
+
+    const hasUpdate = isRemoteNewer(APP_VERSION, {
+      version: bestCandidate.version,
+      versionCode: bestCandidate.versionCode,
+    });
+
+    return {
+      hasUpdate,
+      latestVersion: bestCandidate.version,
+      downloadUrl: bestCandidate.downloadUrl,
+      serverUrl: bestCandidate.serverUrl,
+    };
+  }
+
+  // 3. Fallback: Local PC server (Tailscale / WiFi) if GitHub was unreachable
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-    const res = await fetch(`${GITHUB_RAW_VERSION_URL}?t=${Date.now()}`, {
-      signal: controller.signal,
+    const serverUrl = await findWorkingServer();
+    const res = await fetch(`${serverUrl}/version.json?t=${Date.now()}`, {
       cache: "no-store",
     });
-    clearTimeout(timeoutId);
+    if (!res.ok) throw new Error("Error al leer version.json del servidor");
+    const data = (await res.json()) as RemoteVersion;
 
-    if (res.ok) {
-      const data = (await res.json()) as RemoteVersion;
-      const latestVersion = String(data.version || "").trim();
-      const hasUpdate = isRemoteNewer(APP_VERSION, {
-        version: latestVersion,
-        versionCode: parseVersionCode(data.versionCode) ?? undefined,
-      });
-      const downloadUrl =
-        data.url ||
-        `https://github.com/servixam-max/titanium-app/releases/download/v${latestVersion}/${data.apkName || `FORTIXAM-${latestVersion}.apk`}`;
-
-      if (latestVersion && downloadUrl) {
-        return {
-          hasUpdate,
-          latestVersion,
-          downloadUrl,
-          serverUrl: "GitHub Cloud (Global)",
-        };
-      }
-    }
-  } catch (err) {
-    logger.warn("GitHub Raw check failed, trying GitHub Releases API:", err);
-  }
-
-  // 2. Secondary: GitHub Releases API (instantaneous, global, zero cache delay)
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
-    const res = await fetch(GITHUB_API_RELEASE_URL, {
-      signal: controller.signal,
-      headers: { Accept: "application/vnd.github.v3+json" },
+    const latestVersion = String(data.version || "").trim();
+    const hasUpdate = isRemoteNewer(APP_VERSION, {
+      version: latestVersion,
+      versionCode: parseVersionCode(data.versionCode) ?? undefined,
     });
-    clearTimeout(timeoutId);
 
-    if (res.ok) {
-      const data = await res.json();
-      const tagName = String(data.tag_name || "").replace(/^v/, "").trim();
-      const remoteVersionCode = parseVersionCode(data.versionCode);
-      const apkAsset = data.assets?.find(
-        (a: { name?: string; browser_download_url?: string }) =>
-          a.name?.toLowerCase().endsWith(".apk"),
-      );
-      const downloadUrl = apkAsset?.browser_download_url || "";
+    const apkFileName =
+      data.apkName || `FORTIXAM-${latestVersion || "latest"}.apk`;
+    const downloadUrl = data.url?.startsWith("http")
+      ? data.url
+      : `${serverUrl}/${apkFileName}?t=${Date.now()}`;
 
-      if (tagName && downloadUrl) {
-        const remote: RemoteVersion = {
-          version: tagName,
-          versionCode: remoteVersionCode ?? undefined,
-        };
-        return {
-          hasUpdate: isRemoteNewer(APP_VERSION, remote),
-          latestVersion: tagName,
-          downloadUrl,
-          serverUrl: "GitHub Cloud (Global)",
-        };
-      }
-    }
+    return {
+      hasUpdate,
+      latestVersion,
+      downloadUrl,
+      serverUrl,
+    };
   } catch (err) {
-    logger.warn("GitHub Releases API check failed, trying local server fallback:", err);
+    logger.warn("All update sources failed:", err);
+    throw new Error(
+      "No se pudo conectar con el servidor de actualizaciones. Comprueba tu conexión a Internet.",
+    );
   }
-
-  // 3. Fallback: Local PC server (Tailscale / WiFi)
-  const serverUrl = await findWorkingServer();
-  const res = await fetch(`${serverUrl}/version.json?t=${Date.now()}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error("Error al leer version.json del servidor");
-  const data = (await res.json()) as RemoteVersion;
-
-  const latestVersion = String(data.version || "").trim();
-  const hasUpdate = isRemoteNewer(APP_VERSION, {
-    version: latestVersion,
-    versionCode: parseVersionCode(data.versionCode) ?? undefined,
-  });
-
-  const apkFileName =
-    data.apkName || `FORTIXAM-${latestVersion || "latest"}.apk`;
-  const downloadUrl = data.url?.startsWith("http")
-    ? data.url
-    : `${serverUrl}/${apkFileName}?t=${Date.now()}`;
-
-  return {
-    hasUpdate,
-    latestVersion,
-    downloadUrl,
-    serverUrl,
-  };
 }
 
 export async function syncToServer(data: unknown): Promise<boolean> {
