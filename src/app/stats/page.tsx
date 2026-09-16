@@ -453,7 +453,7 @@ export default function StatsPage() {
                 <h3 className="text-xs font-mono font-black text-white uppercase tracking-wider flex items-center gap-1.5">
                   Escenario Anatómico 3D
                   <span className="px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/30 rounded text-[9px] font-mono font-bold">
-                    v8.4.9
+                    v8.5.0
                   </span>
                 </h3>
                 <span className="text-[10px] font-mono text-zinc-400">
