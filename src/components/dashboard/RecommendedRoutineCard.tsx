@@ -25,12 +25,12 @@ export default function RecommendedRoutineCard({
       transition={{ duration: 0.35, delay: 0.05 }}
       className="group relative overflow-hidden rounded-3xl border border-primary/40 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-4 shadow-xl active:scale-[0.99] transition-transform"
     >
-      <BorderBeam size={200} duration={6} colorFrom="#A3E635" colorTo="#10B981" borderWidth={2} borderRadius={24} />
+      <BorderBeam size={200} duration={6} colorFrom="#10B981" colorTo="#059669" borderWidth={2} borderRadius={24} />
       <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
 
       <div className="mb-2.5 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary shadow-[0_0_10px_#10B981]" />
+          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary shadow-[0_0_8px_#059669]" />
           <span className="text-xs font-black uppercase tracking-wider text-primary">
             Siguiente sesión recomendada
           </span>

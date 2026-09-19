@@ -8,8 +8,8 @@ export interface AppVersion {
 
 // canonical current version: bump versionCode when releasing a new APK
 export const APP_VERSION: AppVersion = {
-  version: "8.5.2",
-  versionCode: 8020015,
+  version: "8.5.3",
+  versionCode: 8020016,
   buildType: "release",
 };
 const CANDIDATE_IPS = [

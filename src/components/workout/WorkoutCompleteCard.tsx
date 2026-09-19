@@ -253,8 +253,8 @@ export default function WorkoutCompleteCard({
           <BorderBeam
             size={180}
             duration={6}
-            colorFrom="#A3E635"
-            colorTo="#10B981"
+            colorFrom="#10B981"
+            colorTo="#059669"
             borderWidth={1.5}
             borderRadius={24}
           />

@@ -79,7 +79,7 @@ export default function ExerciseStage({
             <Zap className="w-3.5 h-3.5 text-primary animate-pulse" />
             {isTimedSet ? "TIEMPO" : "REPETICIONES"}
           </span>
-          <span className="font-mono font-black text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-400 dark:drop-shadow-[0_0_12px_rgba(163,230,53,0.35)] drop-shadow-none my-1">
+          <span className="font-mono font-black text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-400 dark:drop-shadow-[0_0_10px_rgba(16,185,129,0.25)] drop-shadow-none my-1">
             {isTimedSet ? `${timedSeconds}s` : exercise.reps}
           </span>
           <span className="text-[10px] font-label-caps text-zinc-400 font-bold uppercase">

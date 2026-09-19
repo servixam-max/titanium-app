@@ -211,7 +211,7 @@ export default function SetLogger({
 
       {/* PR badge — shown when current values beat the existing record */}
       {(prStatus.isBest1RM || prStatus.isBestWeight) && (Number(localWeight) || 0) > 0 && (Number(localReps) || 0) > 0 && (
-        <div className="flex items-center justify-center gap-1.5 py-1 px-3 bg-gradient-to-r from-primary/20 to-emerald-500/20 border border-primary/40 rounded-full shadow-[0_0_12px_rgba(163,230,53,0.25)]">
+        <div className="flex items-center justify-center gap-1.5 py-1 px-3 bg-gradient-to-r from-primary/20 to-emerald-500/20 border border-primary/40 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.2)]">
           <span className="text-base">🏆</span>
           <span className="text-primary text-xs font-mono font-black uppercase tracking-wider">¡Nuevo Récord!</span>
         </div>

@@ -16,8 +16,8 @@ export default function AudioWaveform({
   active = true,
   barCount = 18,
   className,
-  color = "#A3E635",
-  secondaryColor = "#10B981",
+  color = "#10B981",
+  secondaryColor = "#059669",
   height = 36,
 }: AudioWaveformProps) {
   const bars = Array.from({ length: barCount }, (_, i) => i);

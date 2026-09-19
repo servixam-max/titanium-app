@@ -197,8 +197,8 @@ export default function RestOverlay() {
         <AudioWaveform
           active={timeLeft > 0}
           barCount={22}
-          color={restUrgent ? "#EF4444" : "#A3E635"}
-          secondaryColor={restUrgent ? "#F87171" : "#10B981"}
+          color={restUrgent ? "#EF4444" : "#10B981"}
+          secondaryColor={restUrgent ? "#F87171" : "#059669"}
           className="mb-5"
         />
 
