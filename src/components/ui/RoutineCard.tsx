@@ -193,7 +193,7 @@ export default function RoutineCard({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: "easeInOut" }}
-            className="overflow-hidden bg-[#0d101a]/90 border-t border-white/10"
+            className="overflow-hidden bg-slate-100/90 dark:bg-[#0d101a]/90 border-t border-slate-200 dark:border-white/10"
           >
             <div className="p-3.5 flex flex-col gap-2.5">
               <div className="flex items-center justify-between px-1">

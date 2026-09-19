@@ -737,8 +737,8 @@ export default function ThreeMuscleViewer({
             <span className="text-primary font-bold">Óptimo</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#D4FF00] shadow-[0_0_8px_#D4FF00]" />
-            <span className="text-[#D4FF00] font-black">Hipertrofia</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34D399]" />
+            <span className="text-emerald-400 font-black">Hipertrofia</span>
           </div>
         </div>
       </div>
@@ -836,7 +836,7 @@ export default function ThreeMuscleViewer({
               <span
                 className={`inline-block px-3 py-1 rounded-full text-[10px] font-mono font-black uppercase tracking-wider ${
                   selectedStat.intensityLevel === "peak"
-                    ? "bg-[#D4FF00]/20 text-[#D4FF00] border border-[#D4FF00]/40 shadow-[0_0_12px_rgba(212,255,0,0.35)]"
+                    ? "bg-primary/20 text-primary border border-primary/40 shadow-neon"
                     : selectedStat.intensityLevel === "high"
                     ? "bg-primary/20 text-primary border border-primary/40 shadow-neon"
                     : selectedStat.intensityLevel === "moderate"

@@ -111,7 +111,7 @@ function TwoDimensionalViewer({
     if (!isTrained) {
       return {
         fill: isSelected ? "rgba(0, 214, 143, 0.28)" : "#1c2536",
-        stroke: isSelected ? "#D4FF00" : "rgba(255, 255, 255, 0.15)",
+        stroke: isSelected ? "#A3E635" : "rgba(255, 255, 255, 0.15)",
         strokeWidth: isSelected ? 2 : 0.8,
         opacity: isSelected ? 1 : 0.7,
         className: "transition-all duration-300 cursor-pointer hover:opacity-90",
@@ -121,7 +121,7 @@ function TwoDimensionalViewer({
     if (stat.intensityLevel === "peak") {
       return {
         fill: "#ffaa00",
-        stroke: isSelected ? "#FFFFFF" : "#CCFF00",
+        stroke: isSelected ? "#FFFFFF" : "#A3E635",
         strokeWidth: isSelected ? 2.5 : 1.4,
         opacity: 1,
         className: "transition-all duration-300 cursor-pointer",
@@ -130,8 +130,8 @@ function TwoDimensionalViewer({
 
     if (stat.intensityLevel === "high") {
       return {
-        fill: "#39FF14",
-        stroke: isSelected ? "#FFFFFF" : "#00FF99",
+        fill: "#22C55E",
+        stroke: isSelected ? "#FFFFFF" : "#10B981",
         strokeWidth: isSelected ? 2.2 : 1.2,
         opacity: 0.98,
         className: "transition-all duration-300 cursor-pointer",

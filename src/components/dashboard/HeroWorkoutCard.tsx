@@ -38,7 +38,7 @@ export default function HeroWorkoutCard({
     : `DÍA ${dayNumber}`;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#151928] via-[#111422] to-[#0C0E18] p-5 shadow-2xl transition-all duration-300">
+    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-5 shadow-2xl transition-all duration-300">
       {/* Top Ambient Glow Strip */}
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
       <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-[80px]" />

@@ -34,7 +34,7 @@ export default function BottomNav() {
               href={item.href}
               className={`relative flex-col items-center justify-center h-12 w-16 gap-1 transition-colors duration-200 flex ${
                 isActive
-                  ? "text-primary font-black drop-shadow-[0_0_10px_rgba(212,255,0,0.75)]"
+                  ? "text-primary font-black dark:drop-shadow-[0_0_8px_rgba(163,230,53,0.35)] drop-shadow-none"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium"
               }`}
             >

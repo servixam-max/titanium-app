@@ -188,15 +188,15 @@ export default function AchievementsList({ achievements, className }: Achievemen
                   <BorderBeam
                     size={160}
                     duration={5}
-                    colorFrom="#D4FF00"
-                    colorTo="#00F59B"
+                    colorFrom="#A3E635"
+                    colorTo="#10B981"
                     borderWidth={2}
                     borderRadius={24}
                   />
                 )}
 
                 <div className="relative z-10">
-                  <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-tr from-black/80 to-white/5 border border-primary/30 flex items-center justify-center shadow-[0_0_24px_rgba(212,255,0,0.25)]">
+                  <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-tr from-black/80 to-white/5 border border-primary/30 flex items-center justify-center shadow-[0_0_24px_rgba(163,230,53,0.22)]">
                     <span className="text-5xl block select-none">
                       {selectedAchievement.icon}
                     </span>
