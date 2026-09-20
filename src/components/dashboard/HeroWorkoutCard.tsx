@@ -38,45 +38,44 @@ export default function HeroWorkoutCard({
     : `DÍA ${dayNumber}`;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-5 shadow-2xl transition-all duration-300">
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-5 shadow-lg dark:shadow-2xl transition-all duration-300">
       {/* Top Ambient Glow Strip */}
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
       <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-[80px]" />
 
-      {/* Header Tag Row */}
+      {/* Header Tag Row: Clean & Serene */}
       <div className="flex items-center justify-between gap-2 flex-wrap mb-3">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-mono text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon border border-white/20">
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-primary/20 text-emerald-700 dark:text-primary border border-primary/30">
             {dayBadge}
           </span>
-          <span className="font-mono text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
-            {routine.categoryTag || "Fuerza"}
+          <span className="font-mono text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+            {routine.duration}
           </span>
-          {isRecommended && (
-            <span className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full bg-primary/15 text-primary border border-primary/30 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              HOY TE TOCA
-            </span>
-          )}
         </div>
 
-        {isCompletedToday && (
-          <span className="font-mono text-[10px] font-bold tracking-wider px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
+        {isCompletedToday ? (
+          <span className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
             <CheckCircle2 className="w-3.5 h-3.5" />
             COMPLETADO HOY
           </span>
-        )}
+        ) : isRecommended ? (
+          <span className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-primary/15 text-emerald-700 dark:text-primary border border-primary/30 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            HOY TE TOCA
+          </span>
+        ) : null}
       </div>
 
       {/* Title & Muscle Focus */}
-      <div className="mb-4">
+      <div className="mb-3">
         <h3
           onClick={onOpenDetails}
-          className="text-2xl font-black text-white tracking-tight cursor-pointer hover:text-primary transition-colors flex items-center justify-between group"
+          className="text-xl font-black text-slate-900 dark:text-white tracking-tight cursor-pointer hover:text-primary transition-colors flex items-center justify-between group"
         >
-          <span>{routine.title}</span>
+          <span className="truncate">{routine.title}</span>
           {routine.coverImage && (
-            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-black/40 border border-white/15 flex-shrink-0 relative shadow-md group-hover:border-primary/50 transition-colors ml-3">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-black/40 border border-slate-200 dark:border-white/15 flex-shrink-0 relative shadow-sm group-hover:border-primary/50 transition-colors ml-3">
               <ExerciseImage
                 src={routine.coverImage}
                 alt={routine.title}
@@ -89,36 +88,27 @@ export default function HeroWorkoutCard({
           )}
         </h3>
         {routine.subtitle && (
-          <p className="text-xs text-slate-600 dark:text-slate-300 font-medium mt-1 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1 line-clamp-1 leading-relaxed">
             {routine.subtitle}
           </p>
         )}
       </div>
 
-      {/* High-Contrast Metrics Strip */}
-      <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-200 dark:border-white/10 my-3">
-        <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#131626] border border-slate-200/60 dark:border-white/5 rounded-2xl px-3 py-2">
-          <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400 flex-shrink-0" />
-          <div className="flex flex-col min-w-0">
-            <span className="text-[9px] font-mono uppercase text-slate-600 dark:text-slate-400 font-bold">Tiempo</span>
-            <span className="text-xs font-mono font-black text-slate-900 dark:text-white truncate">{routine.duration}</span>
-          </div>
+      {/* Clean Unified Metrics Strip */}
+      <div className="flex items-center justify-between text-xs font-mono text-slate-600 dark:text-slate-300 py-2.5 px-3.5 rounded-2xl bg-slate-50 dark:bg-[#131626] border border-slate-200/80 dark:border-white/10 my-3">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-primary flex-shrink-0" />
+          <span className="font-bold text-slate-900 dark:text-white truncate">{routine.duration}</span>
         </div>
-
-        <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#131626] border border-slate-200/60 dark:border-white/5 rounded-2xl px-3 py-2">
-          <Layers className="w-4 h-4 text-emerald-600 dark:text-primary flex-shrink-0" />
-          <div className="flex flex-col min-w-0">
-            <span className="text-[9px] font-mono uppercase text-slate-600 dark:text-slate-400 font-bold">Volumen</span>
-            <span className="text-xs font-mono font-black text-slate-900 dark:text-white truncate">{routine.exercises.length} ej · {totalSets} ser</span>
-          </div>
+        <div className="h-3 w-px bg-slate-300 dark:bg-white/10 flex-shrink-0" />
+        <div className="flex items-center gap-1.5 min-w-0">
+          <Layers className="w-3.5 h-3.5 text-emerald-600 dark:text-primary flex-shrink-0" />
+          <span className="font-bold text-slate-900 dark:text-white truncate">{routine.exercises.length} ej · {totalSets} ser</span>
         </div>
-
-        <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#131626] border border-slate-200/60 dark:border-white/5 rounded-2xl px-3 py-2">
-          <Dumbbell className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-          <div className="flex flex-col min-w-0">
-            <span className="text-[9px] font-mono uppercase text-slate-600 dark:text-slate-400 font-bold">Material</span>
-            <span className="text-xs font-mono font-black text-slate-900 dark:text-white truncate">{routine.equipment || "Libre"}</span>
-          </div>
+        <div className="h-3 w-px bg-slate-300 dark:bg-white/10 flex-shrink-0" />
+        <div className="flex items-center gap-1.5 min-w-0 truncate">
+          <Dumbbell className="w-3.5 h-3.5 text-emerald-600 dark:text-primary flex-shrink-0" />
+          <span className="font-bold text-slate-900 dark:text-white truncate">{routine.equipment || "Libre"}</span>
         </div>
       </div>
 
@@ -249,14 +239,14 @@ export default function HeroWorkoutCard({
         )}
       </AnimatePresence>
 
-      {/* Main High-Visibility CTA Button */}
+      {/* Main Action CTA */}
       <div className="mt-2 flex items-center gap-2.5">
         <button
           onClick={() => {
             haptics.impact();
             onStartRoutine();
           }}
-          className="flex-1 h-13 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-neon-strong active:scale-95 transition-all cursor-pointer border border-white/40"
+          className="flex-1 h-12 py-3 px-6 rounded-2xl bg-primary hover:brightness-105 text-white font-mono font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-md active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-4 h-4 fill-current" />
           <span>Comenzar Entrenamiento</span>
@@ -267,10 +257,10 @@ export default function HeroWorkoutCard({
             haptics.selection();
             onOpenDetails?.();
           }}
-          className="h-13 w-13 rounded-2xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10 flex items-center justify-center active:scale-95 transition-all cursor-pointer flex-shrink-0"
+          className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10 flex items-center justify-center active:scale-95 transition-all cursor-pointer flex-shrink-0"
           title="Ver ficha completa"
         >
-          <Sparkles className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+          <Sparkles className="w-4 h-4 text-emerald-600 dark:text-primary" />
         </button>
       </div>
     </div>

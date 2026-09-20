@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { SlidersHorizontal, ChevronRight } from "lucide-react";
+import { SlidersHorizontal, ChevronRight, ChevronDown } from "lucide-react";
 import {
   DashboardHeader,
   ActiveWorkoutBanner,
@@ -126,6 +126,7 @@ export default function Dashboard() {
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentFilter>("all");
   const [activePlan, setActivePlan] = useState<Plan | null>(null);
   const [savedPlans, setSavedPlans] = useState<Plan[]>([]);
+  const [showAllRoutines, setShowAllRoutines] = useState(false);
 
   const allDays = useMemo(() => routines.map((r) => r.day), []);
   const completeCatalog = useMemo(() => getCompleteExerciseCatalog(), []);
@@ -338,61 +339,76 @@ export default function Dashboard() {
                   haptics.selection();
                   setActiveTab("custom");
                 }}
-                className="group flex h-[52px] items-center gap-3 rounded-2xl border border-white/10 bg-[#131626] px-4 shadow-lg transition-all hover:border-primary/50 active:scale-[0.98] text-left cursor-pointer"
+                className="group flex h-[52px] items-center gap-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#131626] px-4 shadow-sm transition-all hover:border-primary/50 active:scale-[0.98] text-left cursor-pointer"
               >
                 <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors group-hover:bg-primary group-hover:text-black">
                   <SlidersHorizontal className="h-4 w-4" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="block truncate text-xs font-bold text-white transition-colors group-hover:text-primary">
+                  <span className="block truncate text-xs font-bold text-slate-900 dark:text-white transition-colors group-hover:text-primary">
                     Constructor Personalizado
                   </span>
                 </div>
-                <span className="text-[11px] text-slate-300 font-mono font-medium">
+                <span className="text-[11px] text-slate-500 dark:text-slate-300 font-mono font-medium">
                   Series / HIIT
                 </span>
-                <ChevronRight className="h-4 w-4 flex-shrink-0 text-slate-400 transition-colors group-hover:text-white" />
+                <ChevronRight className="h-4 w-4 flex-shrink-0 text-slate-400 transition-colors group-hover:text-slate-900 dark:group-hover:text-white" />
               </button>
             </div>
 
-            {/* 4. Complete Routine Catalog Gallery (Directly visible, clean, filtered by objective) */}
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between px-1">
-                <div>
-                  <h3 className="text-sm font-black uppercase tracking-wider text-white">
-                    Explorar Todas las Rutinas
-                  </h3>
-                  <p className="text-[10px] text-slate-400 font-medium">
-                    Filtra por objetivo y consulta las 18 sesiones del programa
-                  </p>
+            {/* 4. Optional Complete Routine Catalog (Collapsible, no visual overwhelm) */}
+            <div className="pt-1">
+              <button
+                onClick={() => {
+                  haptics.selection();
+                  setShowAllRoutines((prev) => !prev);
+                }}
+                className="w-full py-3 px-4 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 hover:border-primary/50 bg-slate-100/60 dark:bg-white/5 hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all text-xs font-mono font-bold flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              >
+                <span>{showAllRoutines ? "Ocultar catálogo completo" : "Explorar todas las rutinas (18 sesiones)"}</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showAllRoutines ? "rotate-180" : ""}`} />
+              </button>
+
+              {showAllRoutines && (
+                <div className="flex flex-col gap-3 mt-4">
+                  <div className="flex items-center justify-between px-1">
+                    <div>
+                      <h3 className="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-white">
+                        Catálogo Completo
+                      </h3>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                        Filtra por objetivo y consulta las 18 sesiones
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-200/70 dark:bg-white/5 border border-slate-300 dark:border-white/10 px-2.5 py-0.5 rounded-full">
+                      {filteredRoutines.length} rutinas
+                    </span>
+                  </div>
+
+                  {/* Category Filter Pills */}
+                  <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
+
+                  {/* Grid of Filtered Routines */}
+                  <div className="flex flex-col gap-3">
+                    {filteredRoutines.map((routine, index) => (
+                      <RoutineCard
+                        key={routine.day}
+                        routine={routine}
+                        index={index}
+                        defaultExpanded={false}
+                        isCompletedToday={completedTodayRoutineIds.has(routine.day)}
+                        onClick={() => {
+                          haptics.light();
+                          setSelectedRoutine(routine);
+                        }}
+                        onStartExercise={(exerciseIndex) =>
+                          handleStartRoutineExercise(routine, exerciseIndex)
+                        }
+                      />
+                    ))}
+                  </div>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-slate-300 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full">
-                  {filteredRoutines.length} rutinas
-                </span>
-              </div>
-
-              {/* Category Filter Pills */}
-              <CategoryFilter value={selectedCategory} onChange={setSelectedCategory} />
-
-              {/* Grid of Filtered Routines */}
-              <div className="flex flex-col gap-3">
-                {filteredRoutines.map((routine, index) => (
-                  <RoutineCard
-                    key={routine.day}
-                    routine={routine}
-                    index={index}
-                    defaultExpanded={false}
-                    isCompletedToday={completedTodayRoutineIds.has(routine.day)}
-                    onClick={() => {
-                      haptics.light();
-                      setSelectedRoutine(routine);
-                    }}
-                    onStartExercise={(exerciseIndex) =>
-                      handleStartRoutineExercise(routine, exerciseIndex)
-                    }
-                  />
-                ))}
-              </div>
+              )}
             </div>
           </div>
         )}
