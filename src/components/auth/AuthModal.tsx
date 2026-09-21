@@ -27,7 +27,9 @@ import {
   getAllAccounts,
   SEED_USER,
   setActiveUserId,
+  markExplicitlyAuthenticated,
 } from "@/lib/auth";
+import { getServerUrl, detectActiveServer } from "@/lib/api-config";
 import {
   generateVerificationCode,
   saveOtpSession,
@@ -41,6 +43,10 @@ import { syncNow } from "@/lib/sync";
 export default function AuthModal() {
   const { currentUser, setCurrentUser } = useAppStore();
   const [activeTab, setActiveTab] = useState<"login" | "register" | "forgot">("login");
+
+  // Server connectivity status
+  const [serverStatus, setServerStatus] = useState<"checking" | "connected" | "offline">("checking");
+  const [serverDisplayUrl, setServerDisplayUrl] = useState<string>("");
 
   // Form states
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -66,6 +72,25 @@ export default function AuthModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [mounted, setMounted] = useState(false);
+
+  // Auto-detect server on mount
+  useEffect(() => {
+    let alive = true;
+    detectActiveServer().then((url) => {
+      if (!alive) return;
+      if (url) {
+        setServerStatus("connected");
+        setServerDisplayUrl(url.replace(/^https?:\/\//, ""));
+      } else {
+        setServerStatus("offline");
+        const fallback = getServerUrl();
+        setServerDisplayUrl(fallback ? fallback.replace(/^https?:\/\//, "") : "Offline");
+      }
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   // Check active user on mount
   useEffect(() => {
@@ -253,7 +278,7 @@ export default function AuthModal() {
         <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-primary/10 rounded-full blur-[70px] pointer-events-none" />
 
         {/* Brand Header */}
-        <div className="flex flex-col items-center text-center mb-6 relative z-10">
+        <div className="flex flex-col items-center text-center mb-4 relative z-10">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/30 p-0.5 mb-3 shadow-sm flex items-center justify-center text-primary">
             <Zap className="w-7 h-7 fill-primary" />
           </div>
@@ -263,6 +288,47 @@ export default function AuthModal() {
           <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-[280px]">
             Inicia sesión para acceder a tu entrenamiento y progreso.
           </p>
+        </div>
+
+        {/* Server Connectivity Pill */}
+        <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-slate-100/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[11px] mb-4 relative z-10">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <span
+              className={`w-2 h-2 rounded-full shrink-0 ${
+                serverStatus === "connected"
+                  ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]"
+                  : serverStatus === "checking"
+                  ? "bg-amber-400 animate-pulse"
+                  : "bg-zinc-500"
+              }`}
+            />
+            <span className="font-mono text-slate-600 dark:text-zinc-300 truncate">
+              {serverStatus === "connected"
+                ? `Servidor: ${serverDisplayUrl}`
+                : serverStatus === "checking"
+                ? "Buscando servidor..."
+                : "Modo Local / Servidor desconectado"}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={async () => {
+              setServerStatus("checking");
+              const active = await detectActiveServer();
+              if (active) {
+                setServerStatus("connected");
+                setServerDisplayUrl(active.replace(/^https?:\/\//, ""));
+                haptics.success();
+              } else {
+                setServerStatus("offline");
+                haptics.error();
+              }
+            }}
+            className="text-slate-400 hover:text-primary dark:text-zinc-400 dark:hover:text-primary p-1 cursor-pointer transition-colors"
+            title="Reintentar conexión con servidor"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${serverStatus === "checking" ? "animate-spin" : ""}`} />
+          </button>
         </div>
 
         {/* Tab Switcher */}
@@ -373,6 +439,7 @@ export default function AuthModal() {
               onClick={() => {
                 haptics.success();
                 playExerciseStart();
+                markExplicitlyAuthenticated(true);
                 setActiveUserId(SEED_USER.id);
                 setCurrentUser(SEED_USER);
               }}

@@ -14,7 +14,22 @@ const nextConfig = {
   // API routes are excluded from the export build while pages (`page.tsx`
   // and friends) are kept. The APK runs offline-first and talks to the
   // hosted web API when available.
-  ...(isApkBuild ? { pageExtensions: ["tsx", "jsx", "js"] } : {}),
+  ...(isApkBuild
+    ? { pageExtensions: ["tsx", "jsx", "js"] }
+    : {
+        async headers() {
+          return [
+            {
+              source: "/api/:path*",
+              headers: [
+                { key: "Access-Control-Allow-Origin", value: "*" },
+                { key: "Access-Control-Allow-Methods", value: "GET, POST, PUT, PATCH, DELETE, OPTIONS" },
+                { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization, x-refresh-token" },
+              ],
+            },
+          ];
+        },
+      }),
   // Allow the standalone server to serve the PWA at a subpath if needed
   assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX || undefined,
 };

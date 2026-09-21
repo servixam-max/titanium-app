@@ -4,8 +4,11 @@
   "webDir": "dist-apk",
   "server": {
     "androidScheme": "https",
-    "cleartext": false,
+    "cleartext": true,
     "allowNavigation": [
+      "http://192.168.*:*",
+      "http://100.*:*",
+      "http://10.0.2.2:*",
       "https://*.servixam.app",
       "https://*.tail31979d.ts.net",
       "http://localhost:*",
@@ -14,7 +17,7 @@
     ]
   },
   "android": {
-    "allowMixedContent": false
+    "allowMixedContent": true
   },
   "plugins": {
     "SplashScreen": {

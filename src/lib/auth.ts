@@ -2,11 +2,30 @@
 // Hybrid server-first with offline fallback for MVP continuity.
 
 import { UserAccount, UserProfile } from "./types";
+import { buildApiUrl, isNativeApp, detectActiveServer } from "./api-config";
 
 const ACTIVE_USER_ID_KEY = "fortixam_active_user_id";
 const ACCESS_TOKEN_KEY = "fortixam_access_token";
 const REFRESH_TOKEN_KEY = "fortixam_refresh_token";
 const SERVER_USER_KEY = "fortixam_server_user";
+const EXPLICIT_AUTH_KEY = "fortixam_explicit_auth_v1";
+
+export function isExplicitlyAuthenticated(): boolean {
+  if (typeof window === "undefined") return false;
+  return (
+    Boolean(localStorage.getItem(ACCESS_TOKEN_KEY)) ||
+    localStorage.getItem(EXPLICIT_AUTH_KEY) === "true"
+  );
+}
+
+export function markExplicitlyAuthenticated(isAuth: boolean): void {
+  if (typeof window === "undefined") return;
+  if (isAuth) {
+    localStorage.setItem(EXPLICIT_AUTH_KEY, "true");
+  } else {
+    localStorage.removeItem(EXPLICIT_AUTH_KEY);
+  }
+}
 
 // Legacy offline accounts (kept for migration/fallback)
 const ACCOUNTS_STORAGE_KEY = "fortixam_user_accounts";
@@ -97,7 +116,7 @@ export function setServerUser(user: UserAccount | null): void {
 
 export async function isServerAvailable(): Promise<boolean> {
   try {
-    const res = await fetch("/api/health", { method: "GET", cache: "no-store" });
+    const res = await fetch(buildApiUrl("/api/health"), { method: "GET", cache: "no-store" });
     return res.ok;
   } catch {
     return false;
@@ -108,7 +127,7 @@ async function refreshAccessToken(): Promise<string | null> {
   const refreshToken = getRefreshToken();
   if (!refreshToken) return null;
   try {
-    const res = await fetch("/api/auth/refresh", {
+    const res = await fetch(buildApiUrl("/api/auth/refresh"), {
       method: "POST",
       headers: { "x-refresh-token": refreshToken },
     });
@@ -132,12 +151,13 @@ export async function fetchWithAuth(
   const headers = new Headers(init.headers);
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  let res = await fetch(input, { ...init, headers });
+  const target = typeof input === "string" ? buildApiUrl(input) : input;
+  let res = await fetch(target, { ...init, headers });
   if (res.status === 401) {
     token = await refreshAccessToken();
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
-      res = await fetch(input, { ...init, headers });
+      res = await fetch(target, { ...init, headers });
     }
   }
   return res;
@@ -145,11 +165,16 @@ export async function fetchWithAuth(
 
 async function serverLogin(email: string, password: string): Promise<AuthResult> {
   try {
-    const res = await fetch("/api/auth/login", {
+    const url = buildApiUrl("/api/auth/login");
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     const data = await res.json();
     if (!res.ok) return { success: false, error: data.error || "Error de servidor" };
 
@@ -173,6 +198,7 @@ async function serverLogin(email: string, password: string): Promise<AuthResult>
     setActiveUserId(user.id);
     setTokens(data.accessToken, data.refreshToken);
     setServerUser(user);
+    markExplicitlyAuthenticated(true);
     return { success: true, user, accessToken: data.accessToken, refreshToken: data.refreshToken };
   } catch (_err) {
     return { success: false, error: "Sin conexión con el servidor" };
@@ -181,11 +207,16 @@ async function serverLogin(email: string, password: string): Promise<AuthResult>
 
 async function serverRegister(username: string, email: string, password: string): Promise<AuthResult> {
   try {
-    const res = await fetch("/api/auth/register", {
+    const url = buildApiUrl("/api/auth/register");
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     const data = await res.json();
     if (!res.ok) return { success: false, error: data.error || "Error de servidor" };
 
@@ -209,6 +240,7 @@ async function serverRegister(username: string, email: string, password: string)
     setActiveUserId(user.id);
     setTokens(data.accessToken, data.refreshToken);
     setServerUser(user);
+    markExplicitlyAuthenticated(true);
     return { success: true, user, accessToken: data.accessToken, refreshToken: data.refreshToken };
   } catch (_err) {
     return { success: false, error: "Sin conexión con el servidor" };
@@ -247,11 +279,18 @@ function offlineLogin(usernameOrEmail: string, passwordPlain: string): AuthResul
     (a) => a.username.toLowerCase() === cleanInput || a.email.toLowerCase() === cleanInput
   );
   if (!user) return { success: false, error: "No existe cuenta offline con esos datos." };
-  if (user.passwordHash !== hashPassword(passwordPlain)) {
+
+  const isSeed = user.id === SEED_USER.id || user.username.toUpperCase() === "XAM";
+  const passMatch =
+    user.passwordHash === hashPassword(passwordPlain) ||
+    (isSeed && (passwordPlain === "MUSHROOM" || passwordPlain.toLowerCase() === "mushroom"));
+
+  if (!passMatch) {
     return { success: false, error: "Contraseña incorrecta." };
   }
   setActiveUserId(user.id);
   setServerUser(user);
+  markExplicitlyAuthenticated(true);
   return { success: true, user };
 }
 
@@ -282,11 +321,19 @@ function offlineRegister(username: string, email: string, passwordPlain: string)
   saveLegacyAccounts(accounts);
   setActiveUserId(user.id);
   setServerUser(user);
+  markExplicitlyAuthenticated(true);
   return { success: true, user };
 }
 
 export async function loginUser(usernameOrEmail: string, passwordPlain: string): Promise<AuthResult> {
   const cleanInput = usernameOrEmail.trim().toLowerCase();
+
+  // On native mobile app, auto-detect active server if possible
+  if (isNativeApp()) {
+    try {
+      await detectActiveServer();
+    } catch {}
+  }
 
   // 1. Try server login if server endpoint is available
   try {
@@ -307,9 +354,10 @@ export async function loginUser(usernameOrEmail: string, passwordPlain: string):
 
   // 3. If default seed user credentials matched
   if (cleanInput === "xam" || cleanInput === "servixam@gmail.com") {
-    if (passwordPlain === "MUSHROOM") {
+    if (passwordPlain === "MUSHROOM" || passwordPlain.toLowerCase() === "mushroom") {
       setActiveUserId(SEED_USER.id);
       setServerUser(SEED_USER);
+      markExplicitlyAuthenticated(true);
       return { success: true, user: SEED_USER };
     }
     return { success: false, error: "Contraseña incorrecta." };
@@ -345,9 +393,15 @@ export async function fetchMe(): Promise<{ user?: UserAccount; profile?: UserPro
 export function logoutUser(): void {
   clearTokens();
   setActiveUserId(null);
+  markExplicitlyAuthenticated(false);
 }
 
 export function getActiveUser(): UserAccount | null {
+  // If the user has not explicitly authenticated in this app, show login prompt
+  if (!isExplicitlyAuthenticated()) {
+    return null;
+  }
+
   // 1. Check server user
   const serverUser = getServerUser();
   if (serverUser) return serverUser;
@@ -358,13 +412,6 @@ export function getActiveUser(): UserAccount | null {
   if (activeId) {
     const found = accounts.find((a) => a.id === activeId);
     if (found) return found;
-  }
-
-  // 3. Fallback: on initial launch or fresh install of the offline-first app, default to SEED_USER
-  if (typeof window !== "undefined") {
-    const defaultUser = accounts[0] || SEED_USER;
-    setActiveUserId(defaultUser.id);
-    return defaultUser;
   }
 
   return null;
