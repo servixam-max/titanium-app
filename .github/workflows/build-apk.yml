@@ -1,0 +1,115 @@
+name: Build Android APK & Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: "Crear o actualizar GitHub Release con el APK"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Compilar APK de FORTIXAM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Configurar Java 21 (JDK)
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Instalar dependencias web
+        run: npm ci
+
+      - name: Ejecutar pruebas unitarias
+        run: npm test -- --run
+
+      - name: Compilar PWA estática para Android
+        run: |
+          BUILD_MODE=apk npm run build
+          node scripts/generate-sw.js dist-apk
+
+      - name: Sincronizar Capacitor con Android
+        run: npx cap sync android
+
+      - name: Preparar firma de Android
+        run: |
+          mkdir -p ~/.android
+          if [ ! -f ~/.android/debug.keystore ]; then
+            keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+      - name: Dar permisos de ejecución a Gradle
+        run: chmod +x android/gradlew
+
+      - name: Compilar APK Release
+        run: |
+          cd android
+          ./gradlew assembleRelease --no-daemon
+
+      - name: Extraer versión y renombrar APK
+        id: prep
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          APK_NAME="FORTIXAM-${VERSION}.apk"
+          
+          # Localizar el APK generado
+          if [ -f "android/app/build/outputs/apk/release/app-release.apk" ]; then
+            cp "android/app/build/outputs/apk/release/app-release.apk" "$APK_NAME"
+          elif [ -f "android/app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
+            cp "android/app/build/outputs/apk/release/app-release-unsigned.apk" "$APK_NAME"
+          else
+            echo "Error: No se encontró el APK generado" >&2
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "apk_name=$APK_NAME" >> $GITHUB_OUTPUT
+          ls -lh "$APK_NAME"
+
+      - name: Guardar APK como artefacto de GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.prep.outputs.apk_name }}
+          path: ${{ steps.prep.outputs.apk_name }}
+          if-no-files-found: error
+
+      - name: Publicar APK en GitHub Releases
+        if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.create_release == 'true' || github.event.inputs.create_release == true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          if [ -z "$TAG_NAME" ] || [ "$TAG_NAME" = "main" ]; then
+            TAG_NAME="v${{ steps.prep.outputs.version }}"
+          fi
+
+          APK_FILE="${{ steps.prep.outputs.apk_name }}"
+          echo "Subiendo $APK_FILE a la release $TAG_NAME..."
+
+          # Si la release ya existe, subir o reemplazar el APK; si no existe, crearla
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            gh release upload "$TAG_NAME" "$APK_FILE" --clobber
+          else
+            gh release create "$TAG_NAME" "$APK_FILE" \
+              --title "FORTIXAM $TAG_NAME" \
+              --generate-notes
+          fi
