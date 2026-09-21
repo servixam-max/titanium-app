@@ -26,10 +26,10 @@ interface TopAppBarProps {
 }
 
 const variantClasses: Record<TopAppBarVariant, string> = {
-  default: "glass-titanium border-white/10",
-  solid: "bg-surface-900 border-white/10",
+  default: "glass-titanium border-slate-200 dark:border-white/10",
+  solid: "bg-white dark:bg-surface-900 border-slate-200 dark:border-white/10",
   transparent: "bg-transparent border-transparent",
-  workout: "glass-titanium border-white/10",
+  workout: "glass-titanium border-slate-200 dark:border-white/10",
 };
 
 export const topAppBarHeightClass = "h-touch-target-min";
@@ -95,7 +95,7 @@ export default function TopAppBar({
             <button
               onClick={() => setSettingsOpen(true)}
               className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-black text-xs font-mono shadow-sm active:scale-90 transition-all"
-              style={{ backgroundColor: currentUser.avatarColor || "#00F59B" }}
+              style={{ backgroundColor: currentUser.avatarColor || "#10B981" }}
               title={`Perfil de ${currentUser.username}`}
             >
               {currentUser.username.slice(0, 1).toUpperCase()}

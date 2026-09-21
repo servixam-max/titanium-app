@@ -198,40 +198,40 @@ export default function StatsPage() {
         {/* Header with User Info */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-black font-mono tracking-tight text-white uppercase flex items-center gap-2">
+            <h1 className="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white uppercase flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-primary" />
               ESTADÍSTICAS
             </h1>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5">
               Rendimiento global, constancia y métricas de carga
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#131626] border border-white/10 rounded-full">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-full shadow-sm">
             <span
               className="w-2 h-2 rounded-full"
               style={{ backgroundColor: currentUser?.avatarColor || "#10B981" }}
             />
-            <span className="text-[11px] font-mono font-bold text-white uppercase">
+            <span className="text-[11px] font-mono font-bold text-slate-800 dark:text-white uppercase">
               {currentUser?.username || "Atleta"}
             </span>
           </div>
         </div>
 
         {/* Hero Racha Cyber Card */}
-        <section className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/30 rounded-3xl p-5 shadow-2xl relative overflow-hidden group">
+        <section className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-primary/30 rounded-3xl p-5 shadow-sm dark:shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-36 h-36 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-3.5">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary/20 to-cyan-400/20 border border-primary/40 flex items-center justify-center flex-shrink-0 shadow-[0_0_16px_rgba(0,245,155,0.3)]">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center flex-shrink-0 shadow-sm">
                 <Flame className="w-8 h-8 text-primary fill-primary animate-pulse" />
               </div>
               <div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 block">
                   Racha Actual
                 </span>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-3xl font-black font-mono text-white">
+                  <span className="text-3xl font-black font-mono text-slate-900 dark:text-white">
                     {streak}
                   </span>
                   <span className="text-xs font-mono font-bold text-primary uppercase">
@@ -242,7 +242,7 @@ export default function StatsPage() {
             </div>
 
             <div className="text-right">
-              <span className="text-[10px] font-mono font-bold uppercase text-cyan-400 bg-cyan-400/10 border border-cyan-400/30 px-2.5 py-1 rounded-full">
+              <span className="text-[10px] font-mono font-bold uppercase text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-2.5 py-1 rounded-full">
                 {thisWeek} ESTA SEMANA
               </span>
             </div>
@@ -261,27 +261,27 @@ export default function StatsPage() {
           ) : (
             <>
           {/* Card 1: Sesiones */}
-          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
                 Sesiones
               </span>
-              <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+              <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
                 <Dumbbell className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-white tracking-tight">
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
                 {total}
               </span>
-              <p className="text-[10px] text-zinc-400 mt-0.5 font-mono">
+              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5 font-mono">
                 {thisWeek} esta semana
               </p>
             </div>
           </div>
 
           {/* Card 2: Volumen */}
-          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
                 Volumen Total
@@ -291,51 +291,51 @@ export default function StatsPage() {
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-white tracking-tight">
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
                 {(totalVolume / 1000).toFixed(1)}
                 <span className="text-xs font-normal text-primary ml-1">Ton</span>
               </span>
-              <p className="text-[10px] text-zinc-400 mt-0.5 font-mono">
+              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5 font-mono">
                 {totalSets} series totales
               </p>
             </div>
           </div>
 
           {/* Card 3: Tiempo Total */}
-          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                 Tiempo Total
               </span>
-              <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-zinc-300">
+              <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-zinc-300">
                 <Clock className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-white tracking-tight">
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
                 {formatDuration(totalDuration)}
               </span>
-              <p className="text-[10px] text-zinc-400 mt-0.5 font-mono">
+              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5 font-mono">
                 Media: {formatDuration(avgDuration)}
               </p>
             </div>
           </div>
 
           {/* Card 4: Repeticiones */}
-          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                 Repeticiones
               </span>
-              <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-zinc-300">
+              <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-zinc-300">
                 <Award className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-white tracking-tight">
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
                 {totalReps}
               </span>
-              <p className="text-[10px] text-zinc-400 mt-0.5 font-mono">
+              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5 font-mono">
                 Media: {avgReps} reps/ses
               </p>
             </div>
@@ -345,57 +345,57 @@ export default function StatsPage() {
         </section>
 
         {/* Resumen Periódico */}
-        <section className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-4 shadow-lg">
-          <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+        <section className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-4 shadow-sm dark:shadow-lg">
+          <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-primary" />
             Actividad Reciente
           </h3>
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
             <div className="flex justify-between items-center py-2.5 text-xs font-mono">
-              <span className="text-zinc-400">Esta semana</span>
+              <span className="text-slate-500 dark:text-zinc-400">Esta semana</span>
               <span className="font-bold text-primary">{thisWeek} entrenamientos</span>
             </div>
             <div className="flex justify-between items-center py-2.5 text-xs font-mono">
-              <span className="text-zinc-400">Este mes</span>
-              <span className="font-bold text-white">{thisMonth} entrenamientos</span>
+              <span className="text-slate-500 dark:text-zinc-400">Este mes</span>
+              <span className="font-bold text-slate-900 dark:text-white">{thisMonth} entrenamientos</span>
             </div>
             <div className="flex justify-between items-center py-2.5 text-xs font-mono">
-              <span className="text-zinc-400">Última sesión registrada</span>
-              <span className="font-bold text-cyan-400">
+              <span className="text-slate-500 dark:text-zinc-400">Última sesión registrada</span>
+              <span className="font-bold text-cyan-600 dark:text-cyan-400">
                 {lastSession ? safeFormatDate(lastSession, { day: "numeric", month: "short", year: "numeric" }) : "--"}
               </span>
             </div>
           </div>
         </section>
 
-        {/* Volume per Session Cyber Bar Chart */}
+        {/* Volume per Session Bar Chart */}
         {recentSessions.length > 0 && (
-          <section className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-4 shadow-lg">
+          <section className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-4 shadow-sm dark:shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-primary" />
                 Carga por Sesión Reciente
               </h3>
-              <span className="text-[10px] font-mono text-zinc-400">
+              <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400">
                 Últimas {recentSessions.length} sesiones
               </span>
             </div>
 
-            <div className="flex items-end justify-between gap-2 h-36 pt-4 pb-2 px-1 border-b border-white/10">
+            <div className="flex items-end justify-between gap-2 h-36 pt-4 pb-2 px-1 border-b border-slate-200 dark:border-white/10">
               {recentSessions.map((session) => {
                 const heightPercent = Math.max(12, Math.round((session.volumeKg / maxVolumeChart) * 100));
                 return (
                   <div key={session.id} className="flex-1 flex flex-col items-center gap-1 h-full justify-end group">
-                    <span className="text-[9px] font-mono font-bold text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[9px] font-mono font-bold text-slate-500 dark:text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity">
                       {(session.volumeKg / 1000).toFixed(1)}T
                     </span>
-                    <div className="w-full bg-[#0d101a] rounded-t-lg h-full flex items-end overflow-hidden">
+                    <div className="w-full bg-slate-100 dark:bg-[#0d101a] rounded-t-lg h-full flex items-end overflow-hidden">
                       <div
-                        className="w-full bg-gradient-to-t from-primary to-emerald-400 rounded-t-lg transition-all duration-500 group-hover:brightness-125 shadow-[0_0_8px_rgba(0,245,155,0.4)]"
+                        className="w-full bg-primary rounded-t-lg transition-all duration-500 group-hover:brightness-110 shadow-sm"
                         style={{ height: `${heightPercent}%` }}
                       />
                     </div>
-                    <span className="text-[9px] font-mono font-bold text-zinc-400 truncate w-full text-center mt-1">
+                    <span className="text-[9px] font-mono font-bold text-slate-500 dark:text-zinc-400 truncate w-full text-center mt-1">
                       {session.title}
                     </span>
                   </div>
@@ -406,27 +406,27 @@ export default function StatsPage() {
         )}
 
         {/* Mapa Muscular Anatómico 3D de Última Generación */}
-        <section className="bg-gradient-to-br from-[#141828] via-[#111524] to-[#0D101A] border border-primary/30 rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
+        <section className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111524] dark:to-[#0D101A] border border-slate-200 dark:border-primary/30 rounded-3xl p-4 sm:p-5 shadow-sm dark:shadow-2xl relative overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
-              <span className="w-8 h-8 rounded-xl bg-gradient-to-r from-primary to-emerald-400 border border-primary/40 flex items-center justify-center text-black font-black shadow-neon">
+              <span className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-bold shadow-sm">
                 <Activity className="w-4 h-4" />
               </span>
               <div>
-                <h3 className="text-xs font-mono font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="text-xs font-mono font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
                   Escenario Anatómico 3D
                   <span className="px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/30 rounded text-[9px] font-mono font-bold">
                     v8.5.0
                   </span>
                 </h3>
-                <span className="text-[10px] font-mono text-zinc-400">
+                <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400">
                   Telemetría biomecánica, hipertrofia y simetría
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-1 text-[10px] font-mono text-zinc-400 bg-black/40 px-2.5 py-1 rounded-full border border-white/10">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-zinc-300 font-bold">Holograma</span>
+            <div className="flex items-center gap-1 text-[10px] font-mono text-slate-600 dark:text-zinc-400 bg-slate-100 dark:bg-black/40 px-2.5 py-1 rounded-full border border-slate-200 dark:border-white/10">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              <span className="text-slate-700 dark:text-zinc-300 font-bold">Holograma</span>
             </div>
           </div>
 
@@ -438,31 +438,31 @@ export default function StatsPage() {
 
           {/* Quick Insights Highlights */}
           {totalEffectiveVolume > 0 && (
-            <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/5">
+            <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-200 dark:border-white/5">
               {mostTrainedMuscle && (
-                <div className="bg-black/30 border border-primary/30 rounded-xl p-2.5">
-                  <span className="text-[9px] font-mono uppercase text-zinc-400 block mb-0.5">
+                <div className="bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-primary/30 rounded-xl p-2.5">
+                  <span className="text-[9px] font-mono uppercase text-slate-500 dark:text-zinc-400 block mb-0.5">
                     Mayor Estímulo
                   </span>
                   <span className="text-xs font-mono font-black text-primary flex items-center gap-1 truncate">
                     <Flame className="w-3 h-3 fill-primary flex-shrink-0" />
                     {MUSCLE_METADATA[mostTrainedMuscle].name}
                   </span>
-                  <span className="text-[10px] font-mono text-zinc-500 block mt-0.5">
+                  <span className="text-[10px] font-mono text-slate-400 dark:text-zinc-500 block mt-0.5">
                     {Math.round(muscleStats[mostTrainedMuscle].volumeKg)} kg acumulados
                   </span>
                 </div>
               )}
               {leastTrainedMuscle && (
-                <div className="bg-black/30 border border-white/10 rounded-xl p-2.5">
-                  <span className="text-[9px] font-mono uppercase text-zinc-400 block mb-0.5">
+                <div className="bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-white/10 rounded-xl p-2.5">
+                  <span className="text-[9px] font-mono uppercase text-slate-500 dark:text-zinc-400 block mb-0.5">
                     Zona a Fortalecer
                   </span>
-                  <span className="text-xs font-mono font-black text-cyan-400 flex items-center gap-1 truncate">
-                    <Sparkles className="w-3 h-3 text-cyan-400 flex-shrink-0" />
+                  <span className="text-xs font-mono font-black text-cyan-600 dark:text-cyan-400 flex items-center gap-1 truncate">
+                    <Sparkles className="w-3 h-3 text-cyan-600 dark:text-cyan-400 flex-shrink-0" />
                     {MUSCLE_METADATA[leastTrainedMuscle].name}
                   </span>
-                  <span className="text-[10px] font-mono text-zinc-500 block mt-0.5">
+                  <span className="text-[10px] font-mono text-slate-400 dark:text-zinc-500 block mt-0.5">
                     {Math.round(muscleStats[leastTrainedMuscle].volumeKg)} kg acumulados
                   </span>
                 </div>
@@ -472,9 +472,9 @@ export default function StatsPage() {
 
           {/* Major Groups Volume Distribution */}
           {totalEffectiveVolume > 0 && (
-            <div className="mt-4 pt-4 border-t border-white/5 space-y-2.5">
+            <div className="mt-4 pt-4 border-t border-slate-200 dark:border-white/5 space-y-2.5">
               <div className="flex justify-between items-center mb-1">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                   Distribución de Carga por Grupo
                 </span>
                 <span className="text-[10px] font-mono text-primary font-black">
@@ -484,13 +484,13 @@ export default function StatsPage() {
               {majorGroups.map((group) => (
                 <div key={group.key} className="space-y-1">
                   <div className="flex justify-between text-[11px] font-mono">
-                    <span className="text-zinc-300 font-bold">{group.name}</span>
-                    <span className="text-zinc-400">
+                    <span className="text-slate-700 dark:text-zinc-300 font-bold">{group.name}</span>
+                    <span className="text-slate-500 dark:text-zinc-400">
                       {Math.round(group.volume)} kg{" "}
                       <span className="text-primary font-bold">({group.percentage}%)</span>
                     </span>
                   </div>
-                  <div className="w-full bg-[#0d101a] h-2 rounded-full overflow-hidden border border-white/5">
+                  <div className="w-full bg-slate-100 dark:bg-[#0d101a] h-2 rounded-full overflow-hidden border border-slate-200 dark:border-white/5">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
@@ -507,7 +507,7 @@ export default function StatsPage() {
         </section>
 
         {/* Medallas y Logros */}
-        <section className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-4 shadow-lg">
+        <section className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-4 shadow-sm dark:shadow-lg">
           <AchievementsList achievements={achievements} />
         </section>
       </main>

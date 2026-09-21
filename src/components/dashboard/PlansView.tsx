@@ -160,7 +160,7 @@ export default function PlansView({
   return (
     <div className="flex flex-col gap-6">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-5 shadow-[0_0_30px_rgba(0,245,155,0.12)]">
+      <div className="relative overflow-hidden rounded-3xl border border-slate-200 dark:border-primary/30 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-5 shadow-sm dark:shadow-[0_0_30px_rgba(16,185,129,0.12)]">
         <div className="absolute top-0 right-0 h-40 w-40 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col gap-3">
           <div className="flex items-center justify-between">
@@ -173,7 +173,7 @@ export default function PlansView({
                 haptics.selection();
                 setShowCoachModal(true);
               }}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-primary/30 bg-white/5 px-3 py-1.5 text-xs font-bold text-white transition-all hover:bg-primary hover:text-black active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-primary/30 bg-slate-100 dark:bg-white/5 px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-white transition-all hover:bg-primary hover:text-white active:scale-95 cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Personalizar Plan</span>
@@ -181,10 +181,10 @@ export default function PlansView({
           </div>
 
           <div>
-            <h2 className="text-xl font-black uppercase tracking-tight text-white">
+            <h2 className="text-xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
               Planes de Entrenamiento
             </h2>
-            <p className="mt-1 text-xs text-zinc-400 leading-relaxed">
+            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
               Selecciona un plan estructurado o deja que el Coach IA diseñe uno según tus objetivos, tiempo disponible y equipo.
             </p>
           </div>
@@ -193,10 +193,10 @@ export default function PlansView({
 
       {/* Active Plan Spotlight */}
       {activePlan && (
-        <div className="relative overflow-hidden rounded-3xl border-2 border-primary/60 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-5 shadow-neon">
-          <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3 mb-4">
+        <div className="relative overflow-hidden rounded-3xl border-2 border-primary/50 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-5 shadow-sm dark:shadow-md">
+          <div className="flex items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-3 mb-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-black">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white">
                 <CheckCircle2 className="h-4 w-4" />
               </div>
               <span className="text-xs font-black uppercase tracking-wider text-primary">
@@ -214,26 +214,26 @@ export default function PlansView({
             )}
           </div>
 
-          <h3 className="text-lg font-black uppercase text-white tracking-tight">
+          <h3 className="text-lg font-black uppercase text-slate-900 dark:text-white tracking-tight">
             {activePlan.name}
           </h3>
-          <p className="mt-1 text-xs text-zinc-300 line-clamp-2">
+          <p className="mt-1 text-xs text-slate-600 dark:text-zinc-300 line-clamp-2">
             {activePlan.description}
           </p>
 
           {/* Quick Metrics */}
           <div className="mt-4 grid grid-cols-3 gap-2">
-            <div className="rounded-xl border border-white/5 bg-black/30 p-2.5 text-center">
-              <span className="text-[10px] uppercase font-bold text-zinc-400 block">Frecuencia</span>
+            <div className="rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/30 p-2.5 text-center">
+              <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-zinc-400 block">Frecuencia</span>
               <span className="text-sm font-black text-primary">{activePlan.daysPerWeek} días/sem</span>
             </div>
-            <div className="rounded-xl border border-white/5 bg-black/30 p-2.5 text-center">
-              <span className="text-[10px] uppercase font-bold text-zinc-400 block">Duración</span>
-              <span className="text-sm font-black text-cyan-400">{activePlan.weeks} semanas</span>
+            <div className="rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/30 p-2.5 text-center">
+              <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-zinc-400 block">Duración</span>
+              <span className="text-sm font-black text-cyan-600 dark:text-cyan-400">{activePlan.weeks} semanas</span>
             </div>
-            <div className="rounded-xl border border-white/5 bg-black/30 p-2.5 text-center">
-              <span className="text-[10px] uppercase font-bold text-zinc-400 block">Nivel</span>
-              <span className="text-sm font-black text-white">
+            <div className="rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/30 p-2.5 text-center">
+              <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-zinc-400 block">Nivel</span>
+              <span className="text-sm font-black text-slate-900 dark:text-white">
                 {activePlan.level ? levelLabels[activePlan.level] : "Todos"}
               </span>
             </div>
@@ -241,7 +241,7 @@ export default function PlansView({
 
           {/* Routine Sequence */}
           <div className="mt-4 flex flex-col gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
               Rutinas del Ciclo Semanal:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -252,13 +252,13 @@ export default function PlansView({
                     haptics.light();
                     onSelectRoutine(r);
                   }}
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-white transition-colors hover:border-primary/40 hover:bg-primary/10 active:scale-95 cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-white transition-colors hover:border-primary/40 hover:bg-primary/10 active:scale-95 cursor-pointer shadow-xs"
                 >
                   <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/20 text-[11px] font-black text-primary">
                     D{r.day}
                   </span>
                   <span className="truncate max-w-[160px]">{r.title}</span>
-                  <ArrowRight className="h-3 w-3 text-zinc-400" />
+                  <ArrowRight className="h-3 w-3 text-slate-400 dark:text-zinc-400" />
                 </button>
               ))}
             </div>
@@ -268,7 +268,7 @@ export default function PlansView({
 
       {/* Catalog of Plans */}
       <div className="flex flex-col gap-4">
-        <h3 className="border-l-2 border-primary pl-2 text-xs font-bold uppercase tracking-wider text-white">
+        <h3 className="border-l-2 border-primary pl-2 text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
           Todos los Planes Disponibles ({allPlans.length})
         </h3>
 
@@ -281,16 +281,16 @@ export default function PlansView({
             return (
               <div
                 key={planId}
-                className={`relative overflow-hidden rounded-2xl border p-4 transition-all ${
+                className={`relative overflow-hidden rounded-2xl border p-4 transition-all shadow-xs ${
                   isActive
-                    ? "border-primary/60 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] shadow-neon"
-                    : "border-white/10 bg-[#131626] hover:border-white/20"
+                    ? "border-primary/60 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] shadow-sm dark:shadow-md"
+                    : "border-slate-200 dark:border-white/10 bg-white dark:bg-[#131626] hover:border-slate-300 dark:hover:border-white/20"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <h4 className="text-sm font-black uppercase text-white truncate">
+                      <h4 className="text-sm font-black uppercase text-slate-900 dark:text-white truncate">
                         {plan.name}
                       </h4>
                       {plan.recommended && (
@@ -299,30 +299,30 @@ export default function PlansView({
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-zinc-400 line-clamp-2 mb-3">
+                    <p className="text-xs text-slate-500 dark:text-zinc-400 line-clamp-2 mb-3">
                       {plan.description}
                     </p>
 
-                    <div className="flex items-center gap-3 text-[11px] text-zinc-300 font-medium flex-wrap mb-3">
+                    <div className="flex items-center gap-3 text-[11px] text-slate-600 dark:text-zinc-300 font-medium flex-wrap mb-3">
                       <span className="inline-flex items-center gap-1">
                         <Calendar className="h-3.5 w-3.5 text-primary" />
                         {plan.daysPerWeek} días/sem
                       </span>
                       <span className="inline-flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5 text-cyan-400" />
+                        <Clock className="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" />
                         {plan.weeks} semanas
                       </span>
                       {plan.tags?.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-md bg-white/5 px-2 py-0.5 text-[10px] text-zinc-400 uppercase font-bold"
+                          className="rounded-md bg-slate-100 dark:bg-white/5 px-2 py-0.5 text-[10px] text-slate-600 dark:text-zinc-400 uppercase font-bold"
                         >
                           #{tag}
                         </span>
                       ))}
                     </div>
 
-                    {/* Progresión semanal: hace visible qué toca cada semana */}
+                    {/* Progresión semanal */}
                     {plan.weeklyPlan && plan.weeklyPlan.length > 0 && (
                       <div className="mb-3 flex flex-wrap items-center gap-1.5">
                         {plan.weeklyPlan.map((week) => (
@@ -331,12 +331,12 @@ export default function PlansView({
                             title={week.note}
                             className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-mono font-bold ${
                               week.isDeload
-                                ? "border-amber-400/40 bg-amber-400/10 text-amber-300"
-                                : "border-white/10 bg-white/5 text-zinc-300"
+                                ? "border-amber-400/40 bg-amber-400/10 text-amber-600 dark:text-amber-300"
+                                : "border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-zinc-300"
                             }`}
                           >
                             S{week.week}
-                            <span className={week.isDeload ? "text-amber-300" : "text-primary"}>
+                            <span className={week.isDeload ? "text-amber-600 dark:text-amber-300" : "text-primary"}>
                               {week.intensityPct}%
                             </span>
                           </span>
@@ -353,7 +353,7 @@ export default function PlansView({
                             haptics.light();
                             onSelectRoutine(r);
                           }}
-                          className="inline-flex items-center gap-1 rounded-lg border border-white/5 bg-black/40 px-2 py-1 text-[10px] font-medium text-zinc-300 hover:text-white hover:border-white/20 active:scale-95 cursor-pointer"
+                          className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/40 px-2 py-1 text-[10px] font-medium text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20 active:scale-95 cursor-pointer shadow-xs"
                         >
                           <span className="font-bold text-primary">D{r.day}</span>
                           <span className="truncate max-w-[100px]">{r.title}</span>
@@ -372,7 +372,7 @@ export default function PlansView({
                       <button
                         onClick={() => handleActivate(plan)}
                         disabled={isActivatingId === planId}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-gradient-to-r from-primary to-emerald-400 px-3 py-2 text-xs font-black uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 cursor-pointer disabled:opacity-50 shadow-neon"
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-primary/40 bg-primary px-3 py-2 text-xs font-bold uppercase tracking-wider text-white transition-all hover:brightness-105 active:scale-95 cursor-pointer disabled:opacity-50 shadow-sm"
                       >
                         {isActivatingId === planId ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -394,11 +394,11 @@ export default function PlansView({
 
       {/* Modal Coach IA */}
       {showCoachModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-md rounded-3xl border-2 border-primary/50 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] p-6 shadow-[0_0_40px_rgba(0,245,155,0.25)] font-mono max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-md rounded-3xl border border-slate-200 dark:border-primary/50 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-6 shadow-xl dark:shadow-[0_0_40px_rgba(0,245,155,0.25)] font-mono max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowCoachModal(false)}
-              className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-white transition-colors cursor-pointer"
             >
               <X className="h-5 w-5" />
             </button>
@@ -407,17 +407,17 @@ export default function PlansView({
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/20 text-primary border border-primary/40">
                 <Sparkles className="h-4 w-4" />
               </div>
-              <h3 className="text-base font-black uppercase text-white tracking-tight">
+              <h3 className="text-base font-black uppercase text-slate-900 dark:text-white tracking-tight">
                 Generador de Plan Coach IA
               </h3>
             </div>
-            <p className="text-xs text-zinc-400 mb-5">
+            <p className="text-xs text-slate-500 dark:text-zinc-400 mb-5">
               Personaliza los parámetros para calcular tu rutina óptima con el catálogo integrado de FORTIXAM.
             </p>
 
             {/* Goal */}
             <div className="mb-4">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-300 block mb-2">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300 block mb-2">
                 1. Objetivo Principal
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -430,8 +430,8 @@ export default function PlansView({
                     }}
                     className={`flex items-center gap-2 rounded-xl border p-2.5 text-left text-xs font-bold transition-all cursor-pointer ${
                       coachGoal === g
-                        ? "border-primary bg-primary/20 text-white shadow-neon"
-                        : "border-white/10 bg-white/5 text-zinc-400 hover:bg-white/10"
+                        ? "border-primary bg-primary text-white shadow-sm"
+                        : "border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-white/10"
                     }`}
                   >
                     <span className="text-base">{goalLabels[g].icon}</span>
@@ -443,7 +443,7 @@ export default function PlansView({
 
             {/* Level */}
             <div className="mb-4">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-300 block mb-2">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300 block mb-2">
                 2. Nivel de Experiencia
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -456,8 +456,8 @@ export default function PlansView({
                     }}
                     className={`rounded-xl border p-2 text-center text-xs font-bold transition-all cursor-pointer ${
                       coachLevel === l
-                        ? "border-primary bg-primary/20 text-white shadow-neon"
-                        : "border-white/10 bg-white/5 text-zinc-400 hover:bg-white/10"
+                        ? "border-primary bg-primary text-white shadow-sm"
+                        : "border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-white/10"
                     }`}
                   >
                     {levelLabels[l]}
@@ -468,7 +468,7 @@ export default function PlansView({
 
             {/* Days per week */}
             <div className="mb-4">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-300 block mb-2">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300 block mb-2">
                 3. Días por Semana ({coachDays} días)
               </label>
               <div className="flex gap-2">
@@ -481,8 +481,8 @@ export default function PlansView({
                     }}
                     className={`flex-1 h-10 rounded-xl border font-black text-sm transition-all cursor-pointer ${
                       coachDays === d
-                        ? "border-primary bg-primary text-black shadow-neon"
-                        : "border-white/10 bg-white/5 text-zinc-400 hover:bg-white/10"
+                        ? "border-primary bg-primary text-white shadow-sm"
+                        : "border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-white/10"
                     }`}
                   >
                     {d}d
@@ -493,7 +493,7 @@ export default function PlansView({
 
             {/* Equipment */}
             <div className="mb-4">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-300 block mb-2">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300 block mb-2">
                 4. Equipamiento
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -510,11 +510,11 @@ export default function PlansView({
                   }}
                   className={`flex items-center gap-2 rounded-xl border p-2.5 text-xs font-bold transition-all cursor-pointer ${
                     coachEquipment.includes("dumbbells")
-                      ? "border-primary bg-primary/20 text-white"
-                      : "border-white/10 bg-white/5 text-zinc-400"
+                      ? "border-primary bg-primary text-white shadow-sm"
+                      : "border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-zinc-400"
                   }`}
                 >
-                  <Dumbbell className="h-4 w-4 text-primary" />
+                  <Dumbbell className="h-4 w-4" />
                   <span>Mancuernas</span>
                 </button>
                 <button
@@ -530,11 +530,11 @@ export default function PlansView({
                   }}
                   className={`flex items-center gap-2 rounded-xl border p-2.5 text-xs font-bold transition-all cursor-pointer ${
                     coachEquipment.includes("bodyweight")
-                      ? "border-primary bg-primary/20 text-white"
-                      : "border-white/10 bg-white/5 text-zinc-400"
+                      ? "border-primary bg-primary text-white shadow-sm"
+                      : "border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-zinc-400"
                   }`}
                 >
-                  <Target className="h-4 w-4 text-cyan-400" />
+                  <Target className="h-4 w-4" />
                   <span>Peso Corporal</span>
                 </button>
               </div>
@@ -542,7 +542,7 @@ export default function PlansView({
 
             {/* Restrictions */}
             <div className="mb-6">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-300 block mb-2">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300 block mb-2">
                 5. Restricciones o Lesiones (opcional)
               </label>
               <div className="flex gap-2 mb-2">
@@ -561,7 +561,7 @@ export default function PlansView({
                     }
                   }}
                   placeholder="Ej: hombro, rodilla, salto..."
-                  className="flex-1 rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:border-primary focus:outline-none"
+                  className="flex-1 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/40 px-3 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:border-primary focus:outline-none"
                 />
                 <button
                   onClick={() => {
@@ -571,7 +571,7 @@ export default function PlansView({
                       setRestrictionInput("");
                     }
                   }}
-                  className="rounded-xl border border-primary/40 bg-primary/20 px-3 py-2 text-xs font-bold text-primary hover:bg-primary hover:text-black cursor-pointer"
+                  className="rounded-xl border border-primary/40 bg-primary/15 px-3 py-2 text-xs font-bold text-primary hover:bg-primary hover:text-white cursor-pointer"
                 >
                   Añadir
                 </button>
@@ -582,7 +582,7 @@ export default function PlansView({
                     <span
                       key={r}
                       onClick={() => setCoachRestrictions(coachRestrictions.filter((x) => x !== r))}
-                      className="inline-flex items-center gap-1 rounded-lg border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[11px] font-bold text-rose-300 cursor-pointer hover:bg-rose-500/20"
+                      className="inline-flex items-center gap-1 rounded-lg border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[11px] font-bold text-rose-600 dark:text-rose-300 cursor-pointer hover:bg-rose-500/20"
                     >
                       <ShieldAlert className="h-3 w-3" />
                       {r}
@@ -597,7 +597,7 @@ export default function PlansView({
             <button
               onClick={handleCreateCoachPlan}
               disabled={isGenerating}
-              className="w-full h-12 rounded-2xl bg-gradient-to-r from-primary to-emerald-400 font-black text-xs uppercase tracking-wider text-black transition-all hover:brightness-110 active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-neon"
+              className="w-full h-12 rounded-2xl bg-primary font-bold text-xs uppercase tracking-wider text-white transition-all hover:brightness-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-sm border border-primary/40"
             >
               {isGenerating ? (
                 <Loader2 className="h-5 w-5 animate-spin" />

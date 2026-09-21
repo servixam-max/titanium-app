@@ -587,7 +587,7 @@ export function computeMuscleBreakdown(
 
   // Major Groups compilation
   const majorGroupsDict: Record<string, { name: string; color: string; volume: number }> = {
-    chest: { name: "Pecho", color: "#00F59B", volume: 0 },
+    chest: { name: "Pecho", color: "#10B981", volume: 0 },
     back: { name: "Espalda", color: "#00E1FF", volume: 0 },
     shoulders: { name: "Hombros", color: "#9333EA", volume: 0 },
     arms: { name: "Brazos", color: "#F59E0B", volume: 0 },

@@ -71,23 +71,23 @@ export default function InstallPrompt() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-[80px] left-4 right-4 z-50 bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/40 rounded-2xl p-4 shadow-neon animate-in slide-in-from-bottom-4">
+    <div className="fixed bottom-[80px] left-4 right-4 z-50 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-primary/40 rounded-2xl p-4 shadow-xl dark:shadow-md animate-in slide-in-from-bottom-4">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
           <Download className="w-5 h-5 text-primary" />
         </div>
 
         <div className="flex-1">
-          <h4 className="font-body-md text-body-md font-bold text-white">
+          <h4 className="font-body-md text-body-md font-bold text-slate-900 dark:text-white">
             Instalar FORTIXAM
           </h4>
 
           {platform === "ios" ? (
             <>
-              <p className="text-secondary text-sm mt-0.5">
+              <p className="text-slate-600 dark:text-zinc-400 text-sm mt-0.5">
                 Para instalar en iPhone/iPad:
               </p>
-              <ol className="text-secondary text-sm mt-1 space-y-1 ml-4 list-decimal">
+              <ol className="text-slate-600 dark:text-zinc-400 text-sm mt-1 space-y-1 ml-4 list-decimal">
                 <li>
                   Toca el botón <Share2 className="w-3 h-3 inline mx-0.5" />{" "}
                   Compartir
@@ -101,7 +101,7 @@ export default function InstallPrompt() {
               </ol>
             </>
           ) : (
-            <p className="text-secondary text-sm mt-0.5">
+            <p className="text-slate-600 dark:text-zinc-400 text-sm mt-0.5">
               Añade la app a tu pantalla de inicio para acceso rápido y modo
               offline.
             </p>
@@ -111,7 +111,7 @@ export default function InstallPrompt() {
             {platform === "android" && deferredPrompt && (
               <button
                 onClick={handleInstall}
-                className="flex-1 h-[40px] bg-gradient-to-r from-primary to-emerald-400 text-black font-black rounded-lg text-sm active:scale-95 transition-transform shadow-neon"
+                className="flex-1 h-[40px] bg-primary text-white font-bold rounded-lg text-sm active:scale-95 transition-transform shadow-sm border border-primary/40"
               >
                 <PlusSquare className="w-4 h-4 inline mr-1" />
                 Instalar
@@ -121,7 +121,7 @@ export default function InstallPrompt() {
             {platform === "ios" && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 h-[40px] bg-[#131626] text-white font-bold rounded-lg text-sm border border-white/10 active:scale-95 transition-transform"
+                className="flex-1 h-[40px] bg-slate-100 dark:bg-[#131626] text-slate-800 dark:text-white font-bold rounded-lg text-sm border border-slate-200 dark:border-white/10 active:scale-95 transition-transform"
               >
                 Entendido
               </button>
@@ -130,7 +130,7 @@ export default function InstallPrompt() {
             {platform === "other" && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 h-[40px] bg-gradient-to-r from-primary to-emerald-400 text-black font-black rounded-lg text-sm active:scale-95 transition-transform shadow-neon"
+                className="flex-1 h-[40px] bg-primary text-white font-bold rounded-lg text-sm active:scale-95 transition-transform shadow-sm border border-primary/40"
               >
                 OK
               </button>
@@ -138,7 +138,7 @@ export default function InstallPrompt() {
 
             <button
               onClick={handleDismiss}
-              className="h-[40px] px-3 text-zinc-400 hover:text-white active:scale-95"
+              className="h-[40px] px-3 text-slate-400 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-white active:scale-95"
             >
               <X className="w-5 h-5" />
             </button>

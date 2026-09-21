@@ -46,13 +46,13 @@ export default function TimerCircle({
       >
         <defs>
           <linearGradient id="timerNeonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00F0FF" />
-            <stop offset="50%" stopColor="#00F59B" />
-            <stop offset="100%" stopColor="#CCFF00" />
+            <stop offset="0%" stopColor="#06B6D4" />
+            <stop offset="50%" stopColor="#10B981" />
+            <stop offset="100%" stopColor="#059669" />
           </linearGradient>
           <linearGradient id="timerUrgentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FF2A55" />
-            <stop offset="100%" stopColor="#FF708F" />
+            <stop offset="0%" stopColor="#EF4444" />
+            <stop offset="100%" stopColor="#F87171" />
           </linearGradient>
         </defs>
         <circle
@@ -60,7 +60,8 @@ export default function TimerCircle({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#14181f"
+          stroke="currentColor"
+          className="text-slate-200 dark:text-white/10"
           strokeWidth={strokeWidth}
         />
         <circle
@@ -76,8 +77,8 @@ export default function TimerCircle({
           className={cn(
             "transition-all duration-1000 ease-linear",
             urgent
-              ? "drop-shadow-[0_0_16px_rgba(255,42,85,0.6)]"
-              : "drop-shadow-[0_0_16px_rgba(0,245,155,0.5)]"
+              ? "drop-shadow-[0_0_12px_rgba(239,68,68,0.4)]"
+              : "drop-shadow-[0_0_12px_rgba(16,185,129,0.3)]"
           )}
         />
       </svg>
@@ -87,13 +88,13 @@ export default function TimerCircle({
             <span
               className={cn(
                 "font-mono font-black text-6xl leading-none tabular-nums tracking-tight",
-                urgent ? "text-error animate-pulse drop-shadow-[0_0_12px_rgba(255,42,85,0.8)]" : "text-primary drop-shadow-[0_0_16px_rgba(0,245,155,0.6)]",
+                urgent ? "text-red-500 animate-pulse drop-shadow-sm" : "text-primary drop-shadow-sm",
               )}
             >
               {seconds}
             </span>
             {label && (
-              <span className="text-on-surface-variant font-label-caps tracking-[0.2em] text-xs mt-2 uppercase">
+              <span className="text-slate-500 dark:text-zinc-400 font-bold tracking-[0.2em] text-xs mt-2 uppercase">
                 {label}
               </span>
             )}

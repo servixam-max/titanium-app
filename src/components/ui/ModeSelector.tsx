@@ -54,13 +54,13 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
                 "border transition-all duration-200 ease-out",
                 "active:scale-[0.97] cursor-pointer shadow-lg",
                 isSelected
-                  ? "bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-primary shadow-neon ring-1 ring-primary/40"
-                  : "bg-[#131626] border-white/10 hover:border-white/20 hover:bg-[#181d2e]",
+                  ? "bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-primary shadow-sm dark:shadow-md ring-1 ring-primary/40"
+                  : "bg-white dark:bg-[#131626] border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-[#181d2e] shadow-xs",
               ].join(" ")}
             >
               {/* Recommended badge */}
               {badge && (
-                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-emerald-400 text-black px-2.5 py-0.5 rounded-full font-mono text-[9px] font-black shadow-neon whitespace-nowrap">
+                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white px-2.5 py-0.5 rounded-full font-mono text-[9px] font-bold shadow-sm whitespace-nowrap border border-primary/40">
                   {badge.toUpperCase()}
                 </span>
               )}
@@ -70,8 +70,8 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
                 className={[
                   "absolute top-3 right-3 flex items-center justify-center w-5 h-5 rounded-full transition-all duration-200",
                   isSelected
-                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black scale-100 shadow-sm"
-                    : "bg-white/5 text-transparent scale-90",
+                    ? "bg-primary text-white scale-100 shadow-sm"
+                    : "bg-slate-100 dark:bg-white/5 text-transparent scale-90",
                 ].join(" ")}
                 aria-hidden="true"
               >
@@ -83,8 +83,8 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
                 className={[
                   "flex items-center justify-center rounded-2xl p-3 mb-1 transition-colors duration-200",
                   isSelected
-                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
-                    : "bg-white/5 text-zinc-400",
+                    ? "bg-primary/10 text-primary border border-primary/30"
+                    : "bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-zinc-400",
                 ].join(" ")}
               >
                 <Icon className="w-6 h-6" />
@@ -94,14 +94,14 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
               <span
                 className={[
                   "font-mono text-xs font-bold uppercase tracking-wider",
-                  isSelected ? "text-white" : "text-zinc-300",
+                  isSelected ? "text-slate-900 dark:text-white" : "text-slate-700 dark:text-zinc-300",
                 ].join(" ")}
               >
                 {title}
               </span>
 
               {/* Description */}
-              <span className="font-mono text-[10px] text-zinc-400 leading-snug">
+              <span className="font-mono text-[10px] text-slate-500 dark:text-zinc-400 leading-snug">
                 {description}
               </span>
             </button>

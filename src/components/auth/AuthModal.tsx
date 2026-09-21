@@ -244,27 +244,27 @@ export default function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#0A0B10]/95 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-md bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col my-auto">
-        {/* Neon Ambient Background Glows */}
-        <div className="absolute -top-16 -left-16 w-48 h-48 bg-primary/20 rounded-full blur-[70px] pointer-events-none" />
-        <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-emerald-500/20 rounded-full blur-[70px] pointer-events-none" />
+    <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+      <div className="w-full max-w-md bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col my-auto">
+        {/* Ambient Glows */}
+        <div className="absolute -top-16 -left-16 w-48 h-48 bg-primary/10 rounded-full blur-[70px] pointer-events-none" />
+        <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-primary/10 rounded-full blur-[70px] pointer-events-none" />
 
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-6 relative z-10">
-          <div className="w-14 h-14 rounded-2xl bg-[#141828] border border-white/10 p-0.5 mb-3 shadow-neon flex items-center justify-center text-primary">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/30 p-0.5 mb-3 shadow-sm flex items-center justify-center text-primary">
             <Zap className="w-7 h-7 fill-primary" />
           </div>
-          <h1 className="text-2xl font-black tracking-wider text-white uppercase font-mono">
+          <h1 className="text-2xl font-black tracking-wider text-slate-900 dark:text-white uppercase font-mono">
             FORTIXAM
           </h1>
-          <p className="text-xs text-zinc-400 mt-1 max-w-[280px]">
+          <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-[280px]">
             Inicia sesión para acceder a tu entrenamiento y progreso.
           </p>
         </div>
 
         {/* Tab Switcher */}
-        <div className="grid grid-cols-2 bg-[#0d101a] p-1 rounded-xl mb-5 relative z-10 border border-white/10">
+        <div className="grid grid-cols-2 bg-slate-100 dark:bg-[#0d101a] p-1 rounded-xl mb-5 relative z-10 border border-slate-200 dark:border-white/10 shadow-xs">
           <button
             type="button"
             onClick={() => {
@@ -272,10 +272,10 @@ export default function AuthModal() {
               setErrorMsg("");
               setSuccessMsg("");
             }}
-            className={`py-2 text-xs font-black font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`py-2 text-xs font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "login"
-                ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon border border-white/20"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-primary text-white shadow-sm border border-primary/40"
+                : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             <LogIn className="w-3.5 h-3.5" />
@@ -288,10 +288,10 @@ export default function AuthModal() {
               setErrorMsg("");
               setSuccessMsg("");
             }}
-            className={`py-2 text-xs font-black font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`py-2 text-xs font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold ${
               activeTab === "register"
-                ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon border border-white/20"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-primary text-white shadow-sm border border-primary/40"
+                : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             <UserPlus className="w-3.5 h-3.5" />
@@ -301,13 +301,13 @@ export default function AuthModal() {
 
         {/* Notifications */}
         {errorMsg && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-3.5 py-2.5 text-xs flex items-center gap-2 mb-4 animate-fade-in-up">
+          <div className="bg-red-500/10 border border-red-500/30 text-red-500 dark:text-red-400 rounded-xl px-3.5 py-2.5 text-xs flex items-center gap-2 mb-4 animate-fade-in-up">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
         {successMsg && (
-          <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl px-3.5 py-2.5 text-xs flex items-center gap-2 mb-4 animate-fade-in-up">
+          <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-xl px-3.5 py-2.5 text-xs flex items-center gap-2 mb-4 animate-fade-in-up">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
             <span>{successMsg}</span>
           </div>
@@ -317,40 +317,40 @@ export default function AuthModal() {
         {activeTab === "login" && (
           <form onSubmit={handleLogin} className="flex flex-col gap-3.5 relative z-10">
             <div>
-              <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
                 Usuario o Correo
               </label>
               <div className="relative">
-                <User className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <User className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   required
                   value={usernameOrEmail}
                   onChange={(e) => setUsernameOrEmail(e.target.value)}
                   placeholder="Nombre de usuario o correo"
-                  className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
                 Contraseña
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-10 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-10 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-white"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -360,7 +360,7 @@ export default function AuthModal() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+              className="w-full h-12 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
               Iniciar Sesión
@@ -373,7 +373,7 @@ export default function AuthModal() {
                 setErrorMsg("");
                 setSuccessMsg("");
               }}
-              className="text-xs text-zinc-400 hover:text-primary transition-colors text-center mt-2 underline"
+              className="text-xs text-slate-500 hover:text-primary dark:text-zinc-400 dark:hover:text-primary transition-colors text-center mt-2 underline"
             >
               ¿Olvidaste tu contraseña?
             </button>
@@ -384,81 +384,81 @@ export default function AuthModal() {
         {activeTab === "register" && (
           <form onSubmit={handleRegister} className="flex flex-col gap-3 relative z-10">
             <div>
-              <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
                 Nombre de Usuario
               </label>
               <div className="relative">
-                <User className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <User className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   required
                   value={regUsername}
                   onChange={(e) => setRegUsername(e.target.value)}
                   placeholder="Tu nombre o apodo"
-                  className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-10 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
                 Correo Electrónico
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   required
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
                   placeholder="tu@correo.com"
-                  className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-10 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
                 Contraseña
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
                   value={regPassword}
                   onChange={(e) => setRegPassword(e.target.value)}
                   placeholder="Mínimo 4 caracteres"
-                  className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-10 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
                 Confirmar Contraseña
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
                   value={regConfirmPassword}
                   onChange={(e) => setRegConfirmPassword(e.target.value)}
                   placeholder="Repite la contraseña"
-                  className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                  className="w-full h-10 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
                 />
               </div>
             </div>
 
-            <p className="text-[10px] text-zinc-400 mt-1">
+            <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-1">
               Tu cuenta se creará con un perfil limpio (0 entrenamientos y 0 pesos registrados).
             </p>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-11 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
+              className="w-full h-11 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
             >
               <UserPlus className="w-4 h-4" />
               Crear Cuenta Nueva
@@ -473,32 +473,32 @@ export default function AuthModal() {
             {forgotStep === "email" && (
               <form onSubmit={handleRequestCode} className="flex flex-col gap-3.5">
                 <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-2 text-white font-bold text-sm">
-                    <KeyRound className="w-4 h-4 text-emerald-400" />
+                  <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
+                    <KeyRound className="w-4 h-4 text-primary" />
                     <span>Recuperar Contraseña</span>
                   </div>
-                  <span className="text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <span className="text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
                     Paso 1 de 3
                   </span>
                 </div>
 
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
                   Introduce el correo registrado en tu cuenta para enviarte un código de seguridad de 6 dígitos.
                 </p>
 
                 <div>
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+                  <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
                     Correo Registrado
                   </label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Mail className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="email"
                       required
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
                       placeholder="tu@correo.com"
-                      className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                      className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
                     />
                   </div>
                 </div>
@@ -506,7 +506,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                  className="w-full h-12 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   {isSubmitting ? "Enviando..." : "Enviar Código de Seguridad"}
@@ -519,7 +519,7 @@ export default function AuthModal() {
                     setErrorMsg("");
                     setSuccessMsg("");
                   }}
-                  className="text-xs text-zinc-400 hover:text-white transition-colors text-center mt-1 underline"
+                  className="text-xs text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white transition-colors text-center mt-1 underline"
                 >
                   Volver a Iniciar Sesión
                 </button>
@@ -537,7 +537,7 @@ export default function AuthModal() {
                       setErrorMsg("");
                       setSuccessMsg("");
                     }}
-                    className="flex items-center gap-1 text-xs text-zinc-400 hover:text-white transition-colors"
+                    className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white transition-colors"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Cambiar correo</span>
@@ -547,15 +547,15 @@ export default function AuthModal() {
                   </span>
                 </div>
 
-                <div className="bg-[#131626] border border-white/10 rounded-xl p-3">
-                  <div className="text-[10px] font-mono uppercase text-zinc-400">Código enviado a:</div>
+                <div className="bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl p-3">
+                  <div className="text-[10px] font-mono uppercase text-slate-500 dark:text-zinc-400">Código enviado a:</div>
                   <div className="text-xs font-mono font-bold text-primary truncate mt-0.5">
                     {forgotEmail}
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1 text-center">
+                  <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1 text-center">
                     Introduce el Código de 6 Dígitos
                   </label>
                   <input
@@ -567,14 +567,14 @@ export default function AuthModal() {
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ""))}
                     placeholder="••••••"
-                    className="w-full h-14 bg-[#131626] border border-primary/50 rounded-xl text-center text-2xl font-mono font-black tracking-[0.4em] text-primary focus:outline-none focus:border-primary transition-all placeholder:tracking-normal placeholder:text-zinc-600 shadow-neon"
+                    className="w-full h-14 bg-slate-50 dark:bg-[#131626] border border-primary/50 rounded-xl text-center text-2xl font-mono font-black tracking-[0.4em] text-primary focus:outline-none focus:border-primary transition-all placeholder:tracking-normal placeholder:text-slate-300 dark:placeholder:text-zinc-600 shadow-sm"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting || verificationCode.trim().length !== 6}
-                  className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
+                  className="w-full h-12 bg-primary hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   Verificar Código
@@ -585,7 +585,7 @@ export default function AuthModal() {
                     type="button"
                     onClick={handleRequestCode}
                     disabled={isSubmitting}
-                    className="text-xs text-zinc-400 hover:text-emerald-400 transition-colors flex items-center gap-1"
+                    className="text-xs text-slate-500 hover:text-primary dark:text-zinc-400 dark:hover:text-primary transition-colors flex items-center gap-1"
                   >
                     <RefreshCw className="w-3 h-3" />
                     Reenviar código
@@ -599,7 +599,7 @@ export default function AuthModal() {
                       setErrorMsg("");
                       setSuccessMsg("");
                     }}
-                    className="text-xs text-zinc-400 hover:text-white transition-colors underline"
+                    className="text-xs text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white transition-colors underline"
                   >
                     Cancelar
                   </button>
@@ -611,49 +611,49 @@ export default function AuthModal() {
             {forgotStep === "new_password" && (
               <form onSubmit={handleSetNewPassword} className="flex flex-col gap-3.5">
                 <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-2 text-white font-bold text-sm">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
+                    <ShieldCheck className="w-4 h-4 text-primary" />
                     <span>Nueva Contraseña</span>
                   </div>
-                  <span className="text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <span className="text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
                     Paso 3 de 3
                   </span>
                 </div>
 
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  Identidad verificada para <span className="text-emerald-400 font-mono font-bold">{forgotEmail}</span>. Introduce tu nueva contraseña.
+                <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
+                  Identidad verificada para <span className="text-primary font-mono font-bold">{forgotEmail}</span>. Introduce tu nueva contraseña.
                 </p>
 
                 <div>
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+                  <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
                     Nueva Contraseña
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Lock className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="password"
                       required
                       value={forgotNewPassword}
                       onChange={(e) => setForgotNewPassword(e.target.value)}
                       placeholder="Mínimo 4 caracteres"
-                      className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                      className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+                  <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
                     Confirmar Nueva Contraseña
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Lock className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="password"
                       required
                       value={forgotConfirmPassword}
                       onChange={(e) => setForgotConfirmPassword(e.target.value)}
                       placeholder="Repite la nueva contraseña"
-                      className="w-full h-11 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-sm text-white focus:outline-none focus:border-primary transition-all font-sans"
+                      className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
                     />
                   </div>
                 </div>
@@ -661,7 +661,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-sm uppercase tracking-wider rounded-xl shadow-neon-strong border border-white/30 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                  className="w-full h-12 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
                 >
                   <KeyRound className="w-4 h-4" />
                   {isSubmitting ? "Actualizando..." : "Guardar Nueva Contraseña"}
@@ -675,7 +675,7 @@ export default function AuthModal() {
                     setErrorMsg("");
                     setSuccessMsg("");
                   }}
-                  className="text-xs text-zinc-400 hover:text-white transition-colors text-center mt-1 underline"
+                  className="text-xs text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white transition-colors text-center mt-1 underline"
                 >
                   Cancelar
                 </button>

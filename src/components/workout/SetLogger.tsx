@@ -166,24 +166,24 @@ export default function SetLogger({
         <div className="flex items-center justify-between gap-2 rounded-2xl border border-primary/25 bg-primary/[0.06] px-3 py-2">
           <div className="min-w-0 flex flex-col gap-0.5">
             {lastPerformance ? (
-              <p className="text-xs text-zinc-400 leading-tight">
+              <p className="text-xs text-slate-600 dark:text-zinc-400 leading-tight">
                 Última vez:{" "}
-                <span className="font-mono font-bold text-white">
+                <span className="font-mono font-bold text-slate-900 dark:text-white">
                   {lastPerformance.topWeight} kg × {lastPerformance.repsAtTopWeight}
                 </span>
-                <span className="ml-1 text-zinc-500">· {relativeDate(lastPerformance.date)}</span>
+                <span className="ml-1 text-slate-400 dark:text-zinc-500">· {relativeDate(lastPerformance.date)}</span>
               </p>
             ) : (
-              <p className="text-xs text-zinc-400 leading-tight">Primera vez con este ejercicio</p>
+              <p className="text-xs text-slate-600 dark:text-zinc-400 leading-tight">Primera vez con este ejercicio</p>
             )}
 
             {suggestion && (
               <p className="flex items-center gap-1.5 text-xs leading-tight">
                 {suggestion.action === "increase" && <TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-primary" />}
-                {suggestion.action === "down" && <TrendingDown className="h-3.5 w-3.5 flex-shrink-0 text-amber-400" />}
+                {suggestion.action === "down" && <TrendingDown className="h-3.5 w-3.5 flex-shrink-0 text-amber-500" />}
                 {suggestion.action === "start" && <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-accent-cyan" />}
-                {suggestion.action === "hold" && <Weight className="h-3.5 w-3.5 flex-shrink-0 text-zinc-400" />}
-                <span className="truncate text-zinc-300">
+                {suggestion.action === "hold" && <Weight className="h-3.5 w-3.5 flex-shrink-0 text-slate-400" />}
+                <span className="truncate text-slate-700 dark:text-zinc-300">
                   <span className="font-mono font-bold text-primary">
                     {suggestion.weight > 0 ? `${suggestion.weight} kg × ` : ""}
                     {suggestion.reps}
@@ -198,7 +198,7 @@ export default function SetLogger({
             <button
               type="button"
               onClick={applySuggestion}
-              className="flex-shrink-0 rounded-xl border border-primary/40 bg-primary/15 px-3 py-2 text-[11px] font-mono font-bold uppercase tracking-wider text-primary active:scale-95 transition-all"
+              className="flex-shrink-0 rounded-xl border border-primary/40 bg-primary/15 px-3 py-2 text-[11px] font-mono font-bold uppercase tracking-wider text-primary active:scale-95 transition-all cursor-pointer"
             >
               Usar
             </button>
@@ -208,9 +208,9 @@ export default function SetLogger({
 
       <div className="grid grid-cols-2 gap-3">
         {/* Weight input */}
-        <div className="bg-[#131626] border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
+        <div className="bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl p-3 flex flex-col gap-2 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-label-caps text-zinc-400 uppercase tracking-wider flex items-center gap-1">
+            <span className="text-xs font-label-caps text-slate-600 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-1">
               <Weight className="w-3.5 h-3.5 text-primary" />
               Peso (kg)
             </span>
@@ -218,7 +218,7 @@ export default function SetLogger({
           <div className="flex items-center gap-2">
             <button
               onClick={() => adjustWeight(-2.5)}
-              className="w-11 h-11 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
+              className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-[#181d2e] border border-slate-200 dark:border-white/10 hover:border-primary/40 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-all cursor-pointer"
               aria-label="Bajar peso"
             >
               <Minus className="w-4 h-4" />
@@ -230,11 +230,11 @@ export default function SetLogger({
               onChange={(e) => setLocalWeight(e.target.value)}
               onBlur={commitWeight}
               onKeyDown={(e) => e.key === "Enter" && commitWeight()}
-              className="flex-1 min-w-0 h-11 bg-[#0d101a] border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
+              className="flex-1 min-w-0 h-11 bg-slate-50 dark:bg-[#0d101a] border border-slate-200 dark:border-white/10 rounded-xl text-center text-slate-900 dark:text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
             />
             <button
               onClick={() => adjustWeight(2.5)}
-              className="w-11 h-11 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
+              className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-[#181d2e] border border-slate-200 dark:border-white/10 hover:border-primary/40 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-all cursor-pointer"
               aria-label="Subir peso"
             >
               <Plus className="w-4 h-4" />
@@ -243,9 +243,9 @@ export default function SetLogger({
         </div>
 
         {/* Reps input */}
-        <div className="bg-[#131626] border border-white/10 rounded-2xl p-3 flex flex-col gap-2">
+        <div className="bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl p-3 flex flex-col gap-2 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-label-caps text-zinc-400 uppercase tracking-wider flex items-center gap-1">
+            <span className="text-xs font-label-caps text-slate-600 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-1">
               <Hash className="w-3.5 h-3.5 text-primary" />
               Reps
             </span>
@@ -253,7 +253,7 @@ export default function SetLogger({
           <div className="flex items-center gap-2">
             <button
               onClick={() => adjustReps(-1)}
-              className="w-11 h-11 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
+              className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-[#181d2e] border border-slate-200 dark:border-white/10 hover:border-primary/40 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-all cursor-pointer"
               aria-label="Bajar reps"
             >
               <Minus className="w-4 h-4" />
@@ -265,11 +265,11 @@ export default function SetLogger({
               onChange={(e) => setLocalReps(e.target.value)}
               onBlur={commitReps}
               onKeyDown={(e) => e.key === "Enter" && commitReps()}
-              className="flex-1 min-w-0 h-11 bg-[#0d101a] border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
+              className="flex-1 min-w-0 h-11 bg-slate-50 dark:bg-[#0d101a] border border-slate-200 dark:border-white/10 rounded-xl text-center text-slate-900 dark:text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
             />
             <button
               onClick={() => adjustReps(1)}
-              className="w-11 h-11 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
+              className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-[#181d2e] border border-slate-200 dark:border-white/10 hover:border-primary/40 flex items-center justify-center text-slate-900 dark:text-white active:scale-95 transition-all cursor-pointer"
               aria-label="Subir reps"
             >
               <Plus className="w-4 h-4" />
@@ -280,24 +280,24 @@ export default function SetLogger({
 
       {/* 1RM estimate — shown when weight > 0 and reps >= 2 */}
       {estimated1RM > 0 && (Number(localReps) || 0) >= 2 && (
-        <div className="flex items-center justify-center gap-2 py-1.5 px-3 bg-cyan-400/10 border border-cyan-400/20 rounded-xl">
-          <span className="text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">1RM Est.</span>
-          <NumberTicker value={estimated1RM} suffix=" kg" className="text-white font-mono font-black text-sm" />
-          <span className="text-zinc-400 text-[10px] font-mono">(Epley)</span>
+        <div className="flex items-center justify-center gap-2 py-1.5 px-3 bg-cyan-500/10 border border-cyan-500/20 rounded-xl">
+          <span className="text-cyan-600 dark:text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">1RM Est.</span>
+          <NumberTicker value={estimated1RM} suffix=" kg" className="text-slate-900 dark:text-white font-mono font-black text-sm" />
+          <span className="text-slate-500 dark:text-zinc-400 text-[10px] font-mono">(Epley)</span>
         </div>
       )}
 
       {/* PR badge — shown when current values beat the existing record */}
       {(prStatus.isBest1RM || prStatus.isBestWeight) && (Number(localWeight) || 0) > 0 && (Number(localReps) || 0) > 0 && (
-        <div className="flex items-center justify-center gap-1.5 py-1 px-3 bg-gradient-to-r from-primary/20 to-emerald-500/20 border border-primary/40 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+        <div className="flex items-center justify-center gap-1.5 py-1 px-3 bg-emerald-500/15 border border-emerald-500/30 rounded-full shadow-sm">
           <span className="text-base">🏆</span>
-          <span className="text-primary text-xs font-mono font-black uppercase tracking-wider">¡Nuevo Récord!</span>
+          <span className="text-emerald-700 dark:text-primary text-xs font-mono font-black uppercase tracking-wider">¡Nuevo Récord!</span>
         </div>
       )}
 
       {/* Esfuerzo percibido (RPE): opcional, ajusta el descanso y la progresión */}
       <div className="flex items-center justify-between gap-2 px-0.5">
-        <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
+        <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-zinc-500">
           ¿Cómo fue?
         </span>
         <div className="flex items-center gap-1.5">
@@ -311,10 +311,10 @@ export default function SetLogger({
               }}
               aria-pressed={rpe === value}
               aria-label={`Esfuerzo ${value} de 10`}
-              className={`h-9 w-9 rounded-xl font-mono text-xs font-bold transition-all active:scale-95 ${
+              className={`h-9 w-9 rounded-xl font-mono text-xs font-bold transition-all active:scale-95 cursor-pointer ${
                 rpe === value
-                  ? "bg-primary text-black border border-primary"
-                  : "bg-white/5 text-zinc-400 border border-white/10 hover:bg-white/10"
+                  ? "bg-primary text-white border border-primary font-bold shadow-sm"
+                  : "bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/10"
               }`}
             >
               {value}

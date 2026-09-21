@@ -68,9 +68,9 @@ export default function RoutineCard({
       }}
       className={`group relative ${
         isCompletedToday
-          ? "bg-gradient-to-br from-[#0e1a17] via-[#0d141e] to-[#0A0B10] border-emerald-400/50 shadow-neon"
-          : `bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-white/10 ${style.border}`
-      } backdrop-blur-xl rounded-3xl border transition-all duration-300 shadow-xl overflow-hidden`}
+          ? "bg-emerald-500/5 dark:bg-gradient-to-br dark:from-[#0e1a17] dark:via-[#0d141e] dark:to-[#0A0B10] border-emerald-500/40 shadow-sm"
+          : `bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-white/10 ${style.border}`
+      } backdrop-blur-xl rounded-3xl border transition-all duration-300 shadow-sm dark:shadow-xl overflow-hidden`}
     >
       {/* Subtle top ambient glow strip */}
       <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -82,7 +82,7 @@ export default function RoutineCard({
       >
         {/* Cover Thumbnail - Circular 68px */}
         {routine.coverImage && (
-          <div className="w-[68px] h-[68px] rounded-full overflow-hidden bg-black/40 border-2 border-white/15 flex-shrink-0 relative group-hover:border-primary/50 transition-colors shadow-md">
+          <div className="w-[68px] h-[68px] rounded-full overflow-hidden bg-black/40 border-2 border-slate-200 dark:border-white/15 flex-shrink-0 relative group-hover:border-primary/50 transition-colors shadow-md">
             <ExerciseImage
               src={routine.coverImage}
               alt={routine.title}
@@ -98,7 +98,7 @@ export default function RoutineCard({
         {/* Center Info */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] font-black tracking-wider px-2.5 py-0.5 rounded-full bg-gradient-to-r from-primary to-emerald-400 text-black border border-white/20 shadow-neon">
+            <span className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-primary text-white border border-primary shadow-sm">
               {dayBadge}
             </span>
             <span
@@ -107,14 +107,14 @@ export default function RoutineCard({
               {routine.equipment || "MANCUERNAS"}
             </span>
             {isCompletedToday && (
-              <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+              <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" />
                 HECHO HOY
               </span>
             )}
           </div>
 
-          <h3 className="font-mono text-base font-bold text-white tracking-tight truncate group-hover:text-primary transition-colors mt-0.5">
+          <h3 className="font-mono text-base font-bold text-slate-900 dark:text-white tracking-tight truncate group-hover:text-primary transition-colors mt-0.5">
             {routine.title}
           </h3>
 
@@ -137,7 +137,7 @@ export default function RoutineCard({
             className={`w-10 h-10 rounded-2xl ${
               isCompletedToday
                 ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
-                : "bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 group-hover:bg-primary group-hover:text-black text-slate-700 dark:text-slate-200"
+                : "bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 group-hover:bg-primary group-hover:text-white text-slate-700 dark:text-slate-200"
             } border flex items-center justify-center transition-all duration-300 shadow-sm`}
           >
             {isCompletedToday ? (
@@ -178,7 +178,7 @@ export default function RoutineCard({
             haptics.impact();
             onClick?.();
           }}
-          className="h-9 px-4 rounded-xl bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-mono font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-neon-strong border border-white/30 active:scale-95 transition-all cursor-pointer"
+          className="h-9 px-4 rounded-xl bg-primary hover:brightness-105 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm border border-primary/40 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Comenzar</span>
@@ -254,7 +254,7 @@ export default function RoutineCard({
                       }
                     }}
                     title="Entrenar este ejercicio en modo individual"
-                    className="w-9 h-9 rounded-xl bg-white/5 hover:bg-primary hover:text-black text-primary border border-primary/40 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0 shadow-sm"
+                    className="w-9 h-9 rounded-xl bg-primary/10 hover:bg-primary hover:text-white text-emerald-700 dark:text-primary border border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0 shadow-sm"
                   >
                     <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                   </button>

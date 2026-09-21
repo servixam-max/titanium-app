@@ -59,10 +59,10 @@ export default function WorkoutComplete() {
   if (!completedSession || !completedSession.completed) {
     return (
       <div className="h-[100dvh] animate-page-in flex flex-col items-center justify-center bg-background px-6 text-center text-foreground">
-        <p className="text-zinc-400 mb-4">No hay entrenamiento completado.</p>
+        <p className="text-slate-500 dark:text-zinc-400 mb-4">No hay entrenamiento completado.</p>
         <button
           onClick={() => router.push("/")}
-          className="h-[48px] px-6 bg-gradient-to-r from-primary to-emerald-400 text-black font-bold rounded-xl flex items-center gap-2 shadow-[0_0_15px_rgba(204,255,0,0.3)]"
+          className="h-[48px] px-6 bg-primary hover:bg-emerald-600 text-white font-bold rounded-xl flex items-center gap-2 shadow-sm transition-all active:scale-95"
         >
           Volver al inicio
         </button>

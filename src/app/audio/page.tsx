@@ -55,31 +55,31 @@ export default function AudioTestPage() {
       <TopAppBar title="AUDIO & SONIDO" showBack backHref="/" />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 gap-5 max-w-sm mx-auto w-full py-8">
-        {/* Glowing Audio Icon */}
-        <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-tr from-cyan-400/20 to-primary/20 border border-primary/40 flex items-center justify-center shadow-[0_0_25px_rgba(0,245,155,0.3)]">
+        {/* Audio Icon */}
+        <div className="relative w-20 h-20 rounded-3xl bg-emerald-500/10 border border-primary/30 flex items-center justify-center shadow-sm">
           <Volume2 className="w-10 h-10 text-primary animate-pulse" />
         </div>
 
         <div className="text-center">
-          <h1 className="font-mono text-xl font-black text-white uppercase tracking-tight">
+          <h1 className="font-mono text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
             Motor de Audio y Voz IA
           </h1>
-          <p className="text-xs text-zinc-400 mt-1 font-mono">
+          <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1 font-mono">
             Sonidos estilo Apple Watch + locución inteligente de nombres de ejercicios.
           </p>
         </div>
 
         {/* Audio Toggle */}
-        <div className="w-full flex items-center justify-between bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl px-4 py-3.5 shadow-lg">
-          <span className="font-mono text-xs font-bold text-white uppercase">
+        <div className="w-full flex items-center justify-between bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl px-4 py-3.5 shadow-sm dark:shadow-lg">
+          <span className="font-mono text-xs font-bold text-slate-900 dark:text-white uppercase">
             {audioEnabled ? "Audio y Voz Activados" : "Audio Desactivado"}
           </span>
           <button
             onClick={toggleAudio}
-            className={`w-12 h-7 rounded-full p-1 transition-all ${audioEnabled ? "bg-gradient-to-r from-primary to-emerald-400 shadow-neon" : "bg-white/10"}`}
+            className={`w-12 h-7 rounded-full p-1 transition-all cursor-pointer ${audioEnabled ? "bg-primary shadow-sm" : "bg-slate-200 dark:bg-white/10"}`}
           >
             <div
-              className={`w-5 h-5 rounded-full bg-black transition-transform ${audioEnabled ? "translate-x-5" : "translate-x-0"}`}
+              className={`w-5 h-5 rounded-full bg-white transition-transform ${audioEnabled ? "translate-x-5" : "translate-x-0"}`}
             />
           </button>
         </div>
@@ -89,7 +89,7 @@ export default function AudioTestPage() {
           <button
             onClick={testSpeechWithExercise}
             disabled={!audioEnabled || testResult === "testing"}
-            className="w-full h-13 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-neon-strong border border-white/30 disabled:opacity-50 cursor-pointer"
+            className="w-full h-12 bg-primary hover:bg-emerald-600 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm border border-primary disabled:opacity-50 cursor-pointer"
           >
             <Mic className="w-4 h-4" />
             <span>PROBAR LECTURA DE EJERCICIOS</span>
@@ -98,9 +98,9 @@ export default function AudioTestPage() {
           <button
             onClick={testChimes}
             disabled={!audioEnabled || testResult === "testing"}
-            className="w-full h-12 bg-[#131626] hover:bg-[#181d2e] text-zinc-200 font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
+            className="w-full h-12 bg-slate-100 dark:bg-[#131626] hover:bg-slate-200 dark:hover:bg-[#181d2e] text-slate-800 dark:text-zinc-200 font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-slate-200 dark:border-white/10 flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
           >
-            <Bell className="w-4 h-4 text-cyan-400" />
+            <Bell className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
             <span>PROBAR CAMPANADAS Y TICKS TÁCTILES</span>
           </button>
         </div>
@@ -113,18 +113,18 @@ export default function AudioTestPage() {
           </div>
         )}
         {testResult === "partial" && (
-          <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold bg-amber-500/10 border border-amber-500/30 px-4 py-2.5 rounded-xl">
+          <div className="flex items-center gap-2 text-amber-500 dark:text-amber-400 font-mono text-xs font-bold bg-amber-500/10 border border-amber-500/30 px-4 py-2.5 rounded-xl">
             <VolumeX className="w-4 h-4" />
             <span>CAMPANADAS OK (Voz no sintetizada)</span>
           </div>
         )}
 
         {/* Info Box */}
-        <div className="w-full bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] rounded-2xl p-4 border border-white/10 text-left font-mono shadow-lg">
-          <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider mb-2">
+        <div className="w-full bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] rounded-2xl p-4 border border-slate-200 dark:border-white/10 text-left font-mono shadow-sm dark:shadow-lg">
+          <p className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mb-2">
             MEJORAS DE AUDIO v5.9:
           </p>
-          <ul className="space-y-1.5 text-xs text-zinc-400">
+          <ul className="space-y-1.5 text-xs text-slate-600 dark:text-zinc-400">
             <li>• Campana armónica y ticks de madera (sin pitidos molestos).</li>
             <li>• Locución fluida con nombre de cada ejercicio.</li>
             <li>• Desfase secuencial (voz y sonido no se pisan jamás).</li>
@@ -134,10 +134,10 @@ export default function AudioTestPage() {
         {/* Continue */}
         <button
           onClick={() => router.push("/")}
-          className="w-full h-12 bg-[#131626] hover:bg-[#181d2e] text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer mt-1"
+          className="w-full h-12 bg-slate-100 dark:bg-[#131626] hover:bg-slate-200 dark:hover:bg-[#181d2e] text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer mt-1"
         >
           <span>VOLVER A INICIO</span>
-          <ArrowRight className="w-4 h-4 text-cyan-400" />
+          <ArrowRight className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
         </button>
       </main>
     </div>

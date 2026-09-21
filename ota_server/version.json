@@ -1,7 +1,7 @@
 {
-  "version": "8.5.5",
-  "versionCode": 8020018,
+  "version": "8.5.6",
+  "versionCode": 8020019,
   "buildType": "release",
-  "apkName": "FORTIXAM-8.5.5.apk",
-  "url": "https://github.com/servixam-max/titanium-app/releases/download/v8.5.5/FORTIXAM-8.5.5.apk"
+  "apkName": "FORTIXAM-8.5.6.apk",
+  "url": "https://github.com/servixam-max/titanium-app/releases/download/v8.5.6/FORTIXAM-8.5.6.apk"
 }

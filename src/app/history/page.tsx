@@ -164,20 +164,20 @@ export default function HistoryPage() {
         {/* Header Title with User Chip */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-black font-mono tracking-tight text-white uppercase flex items-center gap-2">
+            <h1 className="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white uppercase flex items-center gap-2">
               <Flame className="w-5 h-5 text-primary" />
               HISTORIAL
             </h1>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
               Registro completo de entrenamientos y marcas
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#131626] border border-white/10 rounded-full">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-full shadow-sm">
             <span
               className="w-2 h-2 rounded-full"
               style={{ backgroundColor: currentUser?.avatarColor || "#10B981" }}
             />
-            <span className="text-[11px] font-mono font-bold text-white uppercase">
+            <span className="text-[11px] font-mono font-bold text-slate-800 dark:text-white uppercase">
               {currentUser?.username || "Atleta"}
             </span>
           </div>
@@ -186,26 +186,26 @@ export default function HistoryPage() {
         {/* Hero Cyber Metrics Grid */}
         <section className="grid grid-cols-2 gap-2.5">
           {/* Metric 1: Total Volume */}
-          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg relative overflow-hidden group">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
                 Volumen Total
               </span>
-              <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+              <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
                 <Dumbbell className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-white tracking-tight">
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
                 {(totalVolume / 1000).toFixed(1)}
-                <span className="text-xs font-normal text-cyan-400 ml-1">Ton</span>
+                <span className="text-xs font-normal text-cyan-600 dark:text-cyan-400 ml-1">Ton</span>
               </span>
-              <p className="text-[10px] text-zinc-400 mt-0.5">Carga levantada</p>
+              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5">Carga levantada</p>
             </div>
           </div>
 
           {/* Metric 2: Completed Sessions */}
-          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
                 Entrenos
@@ -215,48 +215,48 @@ export default function HistoryPage() {
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-white tracking-tight">
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
                 {completed.length}
                 <span className="text-xs font-normal text-primary ml-1">sesiones</span>
               </span>
-              <p className="text-[10px] text-zinc-400 mt-0.5">Completados</p>
+              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5">Completados</p>
             </div>
           </div>
 
           {/* Metric 3: Total Time */}
-          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                 Tiempo Total
               </span>
-              <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-zinc-300">
+              <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-zinc-300">
                 <Clock className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-white tracking-tight">
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
                 {formatDurationHoursMins(totalDurationSeconds)}
               </span>
-              <p className="text-[10px] text-zinc-400 mt-0.5">Bajo la barra</p>
+              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5">Bajo la barra</p>
             </div>
           </div>
 
           {/* Metric 4: Total Sets */}
-          <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                 Series Totales
               </span>
-              <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-zinc-300">
+              <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-zinc-300">
                 <Layers className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-white tracking-tight">
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
                 {totalSetsCount}
-                <span className="text-xs font-normal text-zinc-400 ml-1">sets</span>
+                <span className="text-xs font-normal text-slate-500 dark:text-zinc-400 ml-1">sets</span>
               </span>
-              <p className="text-[10px] text-zinc-400 mt-0.5">Series registradas</p>
+              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5">Series registradas</p>
             </div>
           </div>
         </section>
@@ -265,13 +265,13 @@ export default function HistoryPage() {
         <section className="flex flex-col gap-2.5">
           {/* Search Input */}
           <div className="relative">
-            <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por rutina o modo..."
-              className="w-full h-10 bg-[#131626] border border-white/10 rounded-xl pl-10 pr-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-primary transition-all font-sans"
+              className="w-full h-10 bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-primary transition-all font-sans shadow-sm"
             />
           </div>
 
@@ -282,8 +282,8 @@ export default function HistoryPage() {
               onClick={() => setFilterPeriod("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${
                 filterPeriod === "all"
-                  ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
-                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
+                  ? "bg-primary text-white shadow-sm border border-primary/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               Todos
@@ -292,8 +292,8 @@ export default function HistoryPage() {
               onClick={() => setFilterPeriod("week")}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${
                 filterPeriod === "week"
-                  ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
-                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
+                  ? "bg-primary text-white shadow-sm border border-primary/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               Esta Semana
@@ -302,22 +302,22 @@ export default function HistoryPage() {
               onClick={() => setFilterPeriod("month")}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${
                 filterPeriod === "month"
-                  ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
-                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
+                  ? "bg-primary text-white shadow-sm border border-primary/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               Este Mes
             </button>
 
-            <span className="w-[1px] h-4 bg-white/10 mx-1 flex-shrink-0" />
+            <span className="w-[1px] h-4 bg-slate-200 dark:bg-white/10 mx-1 flex-shrink-0" />
 
             {/* Mode Filters */}
             <button
               onClick={() => setFilterMode(filterMode === "guided" ? "all" : "guided")}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
                 filterMode === "guided"
-                  ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-black shadow-[0_0_12px_rgba(0,240,255,0.4)]"
-                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
+                  ? "bg-cyan-600 text-white shadow-sm border border-cyan-500/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               <Zap className="w-3 h-3" />
@@ -327,8 +327,8 @@ export default function HistoryPage() {
               onClick={() => setFilterMode(filterMode === "individual" ? "all" : "individual")}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
                 filterMode === "individual"
-                  ? "bg-gradient-to-r from-primary to-emerald-400 text-black shadow-neon"
-                  : "bg-[#141828] text-zinc-400 border border-white/10 hover:text-white"
+                  ? "bg-primary text-white shadow-sm border border-primary/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               <Dumbbell className="w-3 h-3" />
@@ -346,19 +346,19 @@ export default function HistoryPage() {
               ))}
             </div>
           ) : filteredSessions.length === 0 ? (
-            <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-8 flex flex-col items-center text-center my-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-zinc-400 mb-3">
+            <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-8 flex flex-col items-center text-center my-4 shadow-sm dark:shadow-lg">
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-400 dark:text-zinc-400 mb-3">
                 <Dumbbell className="w-7 h-7" />
               </div>
-              <h3 className="text-base font-bold text-white font-mono">Sin entrenamientos aún</h3>
-              <p className="text-xs text-zinc-400 mt-1 max-w-xs">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white font-mono">Sin entrenamientos aún</h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-xs">
                 {sessions.length === 0
                   ? "Tu historial está completamente limpio para empezar a registrar tus récords."
                   : "No hay sesiones que coincidan con los filtros seleccionados."}
               </p>
               <button
                 onClick={() => router.push("/")}
-                className="mt-4 px-4 py-2 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-bold text-xs rounded-xl shadow-neon flex items-center gap-1.5 active:scale-95 transition-all"
+                className="mt-4 px-4 py-2 bg-primary text-white font-mono font-bold text-xs rounded-xl shadow-sm border border-primary/40 flex items-center gap-1.5 active:scale-95 transition-all"
               >
                 <span>Empezar a Entrenar</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -378,7 +378,7 @@ export default function HistoryPage() {
               return (
                 <div
                   key={session.id}
-                  className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl overflow-hidden transition-all shadow-md hover:border-primary/40"
+                  className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden transition-all shadow-sm dark:shadow-md hover:border-primary/40"
                 >
                   {/* Card Header Summary */}
                   <div
@@ -390,8 +390,8 @@ export default function HistoryPage() {
                       <div
                         className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 ${
                           session.mode === "guided"
-                            ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
-                            : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                            ? "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30"
+                            : "bg-emerald-500/15 text-primary border border-primary/30"
                         }`}
                       >
                         {session.mode === "guided" ? (
@@ -403,7 +403,7 @@ export default function HistoryPage() {
 
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-sm text-white font-mono leading-tight">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white font-mono leading-tight">
                             {routineTitle}
                           </h4>
                           {session.completed && (
@@ -411,19 +411,19 @@ export default function HistoryPage() {
                           )}
                         </div>
 
-                        <span className="text-[11px] text-zinc-400 block mt-1">
+                        <span className="text-[11px] text-slate-500 dark:text-zinc-400 block mt-1">
                           {formatDate(session.startTime)}
                         </span>
 
                         {/* Metric chips */}
                         <div className="flex items-center gap-2 mt-2">
-                          <span className="text-[10px] font-mono font-bold bg-white/5 px-2 py-0.5 rounded-md text-zinc-300">
+                          <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-slate-700 dark:text-zinc-300">
                             ⏱️ {durationMins > 0 ? `${durationMins} min` : "< 1 min"}
                           </span>
-                          <span className="text-[10px] font-mono font-bold bg-white/5 px-2 py-0.5 rounded-md text-zinc-300">
+                          <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-slate-700 dark:text-zinc-300">
                             💪 {session.exercises.length} ejer.
                           </span>
-                          <span className="text-[10px] font-mono font-bold bg-white/5 px-2 py-0.5 rounded-md text-zinc-300">
+                          <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-slate-700 dark:text-zinc-300">
                             ⚡ {totalSets} series
                           </span>
                         </div>
@@ -432,7 +432,7 @@ export default function HistoryPage() {
 
                     <button
                       type="button"
-                      className="text-zinc-400 hover:text-white p-1"
+                      className="text-slate-400 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-white p-1"
                       aria-label="Ver detalles"
                     >
                       {isExpanded ? (
@@ -445,7 +445,7 @@ export default function HistoryPage() {
 
                   {/* Expanded Details Drawer */}
                   {isExpanded && (
-                    <div className="px-4 pb-4 pt-2 border-t border-white/5 bg-[#0d101a]">
+                    <div className="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-white/5 bg-slate-50/70 dark:bg-[#0d101a]">
                       <div className="space-y-3 mb-4">
                         {session.exercises.map((ex, idx) => {
                           const exerciseDef = routine?.exercises.find((e) => e.id === ex.exerciseId);
@@ -453,14 +453,14 @@ export default function HistoryPage() {
                           return (
                             <div
                               key={ex.exerciseId + idx}
-                              className="bg-[#141828] rounded-xl p-2.5 border border-white/10 flex items-center justify-between"
+                              className="bg-white dark:bg-[#141828] rounded-xl p-2.5 border border-slate-200 dark:border-white/10 flex items-center justify-between shadow-xs"
                             >
                               <div>
-                                <span className="text-xs font-bold text-white block">
+                                <span className="text-xs font-bold text-slate-900 dark:text-white block">
                                   {exerciseName}
                                 </span>
                                 <div className="flex items-center gap-2 mt-1">
-                                  <span className="text-[10px] text-zinc-400 font-mono">
+                                  <span className="text-[10px] text-slate-500 dark:text-zinc-400 font-mono">
                                     {ex.sets.length} {ex.sets.length === 1 ? "serie" : "series"}
                                   </span>
                                   {ex.sets.some((s) => s.weight) && (
@@ -479,7 +479,7 @@ export default function HistoryPage() {
                                       className={`w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-mono font-bold ${
                                         set.completed
                                           ? "bg-primary/20 text-primary border border-primary/40"
-                                          : "bg-white/5 text-zinc-400"
+                                          : "bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-zinc-400"
                                       }`}
                                     >
                                       {set.reps || 10}
@@ -491,13 +491,13 @@ export default function HistoryPage() {
                                   <div className="flex items-center gap-1 bg-red-500/20 border border-red-500/40 rounded-lg px-1.5 py-0.5">
                                     <button
                                       onClick={() => setExerciseDeleteConfirm(null)}
-                                      className="text-[10px] text-zinc-400 hover:text-white px-1"
+                                      className="text-[10px] text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white px-1"
                                     >
                                       No
                                     </button>
                                     <button
                                       onClick={() => handleDeleteExercise(session.id, idx)}
-                                      className="text-[10px] font-bold text-red-400 hover:text-red-300 px-1"
+                                      className="text-[10px] font-bold text-red-500 dark:text-red-400 hover:text-red-600 px-1"
                                     >
                                       Borrar
                                     </button>
@@ -505,7 +505,7 @@ export default function HistoryPage() {
                                 ) : (
                                   <button
                                     onClick={() => setExerciseDeleteConfirm(`${session.id}_${idx}`)}
-                                    className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-500 hover:text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
+                                    className="w-6 h-6 rounded-md flex items-center justify-center text-slate-400 dark:text-zinc-500 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                                     title="Eliminar este ejercicio de la sesión"
                                   >
                                     <Trash2 className="w-3 h-3" />
@@ -518,21 +518,21 @@ export default function HistoryPage() {
                       </div>
 
                       {/* Delete Session Action */}
-                      <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                        <span className="text-[11px] text-zinc-500 font-mono">
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-white/5">
+                        <span className="text-[11px] text-slate-400 dark:text-zinc-500 font-mono">
                           ID: {session.id.slice(0, 8)}
                         </span>
                         {deleteConfirm === session.id ? (
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => setDeleteConfirm(null)}
-                              className="px-2.5 py-1 text-[11px] text-zinc-400 hover:text-white"
+                              className="px-2.5 py-1 text-[11px] text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                             >
                               Cancelar
                             </button>
                             <button
                               onClick={() => handleDeleteSession(session.id)}
-                              className="px-3 py-1 bg-red-500 text-white rounded-lg text-[11px] font-bold"
+                              className="px-3 py-1 bg-red-500 text-white rounded-lg text-[11px] font-bold shadow-sm"
                             >
                               Confirmar
                             </button>
@@ -540,7 +540,7 @@ export default function HistoryPage() {
                         ) : (
                           <button
                             onClick={() => setDeleteConfirm(session.id)}
-                            className="flex items-center gap-1 text-[11px] text-zinc-400 hover:text-red-400 transition-colors"
+                            className="flex items-center gap-1 text-[11px] text-slate-400 dark:text-zinc-400 hover:text-red-500 transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             <span>Eliminar sesión</span>

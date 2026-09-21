@@ -193,7 +193,7 @@ function WarmupContent() {
       {phase === "post_rest" ? (
         <div className="flex-1 flex flex-col items-center justify-between p-6 z-20 text-center animate-fade-in-up">
           <div className="w-full flex-1 flex flex-col items-center justify-center gap-4">
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-cyan-400/20 to-primary/20 border-2 border-primary/50 flex items-center justify-center shadow-neon">
+            <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border-2 border-primary/40 flex items-center justify-center shadow-sm">
               <Sparkles className="w-10 h-10 text-primary animate-pulse" />
             </div>
 
@@ -201,10 +201,10 @@ function WarmupContent() {
               <span className="font-mono text-xs font-black uppercase tracking-widest text-primary px-3 py-1 rounded-full bg-primary/10 border border-primary/30">
                 ¡Activación Completada!
               </span>
-              <h2 className="font-mono text-2xl font-black text-white mt-3 uppercase tracking-tight">
+              <h2 className="font-mono text-2xl font-black text-slate-900 dark:text-white mt-3 uppercase tracking-tight">
                 Descanso previo al entreno
               </h2>
-              <p className="font-mono text-xs text-zinc-400 max-w-xs mx-auto mt-1">
+              <p className="font-mono text-xs text-slate-600 dark:text-zinc-400 max-w-xs mx-auto mt-1">
                 Articulaciones listas y flujo sanguíneo activo. Bebe un sorbo de agua y prepárate.
               </p>
             </div>
@@ -217,7 +217,8 @@ function WarmupContent() {
                   cy="80"
                   r="72"
                   fill="none"
-                  stroke="#0d101a"
+                  stroke="currentColor"
+                  className="text-slate-200 dark:text-[#0d101a]"
                   strokeWidth="8"
                 />
                 <circle
@@ -225,19 +226,19 @@ function WarmupContent() {
                   cy="80"
                   r="72"
                   fill="none"
-                  stroke="#00F59B"
+                  stroke="#10B981"
                   strokeWidth="8"
                   strokeLinecap="round"
                   strokeDasharray={`${2 * Math.PI * 72}`}
                   strokeDashoffset={`${2 * Math.PI * 72 * (1 - timeLeft / POST_REST_SECONDS)}`}
-                  className="transition-all duration-1000 shadow-neon"
+                  className="transition-all duration-1000"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-mono text-4xl font-black tabular-nums text-white drop-shadow-[0_0_15px_rgba(0,245,155,0.4)]">
+                <span className="font-mono text-4xl font-black tabular-nums text-slate-900 dark:text-white">
                   {timeLeft}
                 </span>
-                <span className="text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase">
+                <span className="text-cyan-600 dark:text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase">
                   SEG DESCANSO
                 </span>
               </div>
@@ -247,14 +248,14 @@ function WarmupContent() {
           <div className="w-full max-w-sm space-y-3 pb-[env(safe-area-inset-bottom,0px)]">
             <button
               onClick={handleSkipToWorkout}
-              className="w-full h-14 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon-strong hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/20"
+              className="w-full h-14 bg-primary text-white font-mono font-bold text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-md hover:brightness-105 active:scale-95 transition-all cursor-pointer border border-primary/40"
             >
               <Play className="w-5 h-5 fill-current" />
               <span>Empezar Entrenamiento Ya</span>
             </button>
             <button
               onClick={() => setIsPaused((p) => !p)}
-              className="w-full h-10 bg-[#131626] text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase rounded-xl border border-white/10"
+              className="w-full h-10 bg-white dark:bg-[#131626] text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-mono font-bold text-xs uppercase rounded-xl border border-slate-200 dark:border-white/10"
             >
               {isPaused ? "Reanudar cuenta" : "Pausar cuenta"}
             </button>
@@ -272,24 +273,24 @@ function WarmupContent() {
                   </span>
                 )}
                 {phase === "exercise" && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-primary/20 border border-primary/40 text-primary font-mono text-[10px] font-black uppercase tracking-wider shadow-neon">
+                  <span className="px-2.5 py-0.5 rounded-full bg-primary/20 border border-primary/40 text-primary font-mono text-[10px] font-bold uppercase tracking-wider">
                     En curso · Ejercicio {currentExerciseIndex + 1}/{warmUpExercises.length}
                   </span>
                 )}
                 {phase === "transition" && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 font-mono text-[10px] font-black uppercase tracking-wider animate-pulse">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-500 dark:text-amber-300 font-mono text-[10px] font-black uppercase tracking-wider animate-pulse">
                     Descanso / Cambio · {timeLeft}s
                   </span>
                 )}
               </div>
-              <span className="text-zinc-400 font-mono font-bold text-[10px] tracking-widest uppercase">
+              <span className="text-slate-500 dark:text-zinc-400 font-mono font-bold text-[10px] tracking-widest uppercase">
                 {currentExerciseIndex + 1} de {warmUpExercises.length}
               </span>
             </div>
 
-            <div className="w-full h-2 bg-[#0d101a] border border-white/5 rounded-full overflow-hidden p-0.5">
+            <div className="w-full h-2 bg-slate-200 dark:bg-[#0d101a] border border-slate-300 dark:border-white/5 rounded-full overflow-hidden p-0.5">
               <div
-                className="h-full bg-gradient-to-r from-cyan-400 via-emerald-400 to-primary shadow-neon rounded-full transition-all duration-300"
+                className="h-full bg-primary rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -381,7 +382,7 @@ function WarmupContent() {
                       ? "#fbbf24"
                       : timeLeft <= 5
                       ? "#ff5252"
-                      : "#00F59B"
+                      : "#10B981"
                   }
                   strokeWidth="6"
                   strokeLinecap="round"
@@ -389,22 +390,22 @@ function WarmupContent() {
                   strokeDashoffset={`${
                     2 * Math.PI * 48 * (1 - timeLeft / totalPhaseTime)
                   }`}
-                  className="transition-all duration-1000 shadow-neon"
+                  className="transition-all duration-1000"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span
                   className={`font-mono text-3xl font-black tabular-nums ${
                     phase === "transition"
-                      ? "text-amber-400"
+                      ? "text-amber-500 dark:text-amber-400"
                       : timeLeft <= 5
-                      ? "text-red-400 animate-pulse"
-                      : "text-white drop-shadow-[0_0_12px_rgba(0,245,155,0.4)]"
+                      ? "text-red-500 dark:text-red-400 animate-pulse"
+                      : "text-slate-900 dark:text-white"
                   }`}
                 >
                   {timeLeft}
                 </span>
-                <span className="text-zinc-400 font-mono text-[9px] font-bold tracking-widest uppercase">
+                <span className="text-slate-500 dark:text-zinc-400 font-mono text-[9px] font-bold tracking-widest uppercase">
                   {phase === "transition" ? "CAMBIO" : phase === "prep" ? "PREP" : "SEG"}
                 </span>
               </div>
@@ -412,16 +413,16 @@ function WarmupContent() {
 
             {/* Right Information: Replaced tiny reps with clear focus */}
             <div className="text-right flex flex-col items-end gap-1">
-              <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-wider block font-bold">
+              <span className="font-mono text-[10px] text-slate-500 dark:text-zinc-400 uppercase tracking-wider block font-bold">
                 ENFOQUE ARTICULAR
               </span>
-              <span className="font-mono text-xs font-black text-primary uppercase bg-primary/10 border border-primary/30 px-3 py-1 rounded-xl shadow-neon">
+              <span className="font-mono text-xs font-bold text-primary uppercase bg-primary/10 border border-primary/30 px-3 py-1 rounded-xl shadow-sm">
                 Movilidad Continua
               </span>
               {phase === "exercise" && nextExercise && (
-                <div className="mt-1 text-[11px] font-mono text-zinc-400 text-right">
-                  <span className="text-zinc-500">Siguiente:</span>{" "}
-                  <strong className="text-white truncate block max-w-[150px]">
+                <div className="mt-1 text-[11px] font-mono text-slate-500 dark:text-zinc-400 text-right">
+                  <span className="text-slate-400 dark:text-zinc-500">Siguiente:</span>{" "}
+                  <strong className="text-slate-900 dark:text-white truncate block max-w-[150px]">
                     {nextExercise.name}
                   </strong>
                 </div>
@@ -430,11 +431,11 @@ function WarmupContent() {
           </div>
 
           {/* Action Footer */}
-          <footer className="flex-shrink-0 px-4 pb-[env(safe-area-inset-bottom,0px)] pt-2 bg-[#0A0B10] border-t border-white/10">
+          <footer className="flex-shrink-0 px-4 pb-[env(safe-area-inset-bottom,0px)] pt-2 bg-white dark:bg-[#0A0B10] border-t border-slate-200 dark:border-white/10">
             <div className="flex gap-2.5">
               <button
                 onClick={() => setShowExitConfirm(true)}
-                className="h-12 px-4 bg-[#131626] hover:bg-[#181d2e] text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-white/10 flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+                className="h-12 px-4 bg-slate-100 hover:bg-slate-200 dark:bg-[#131626] dark:hover:bg-[#181d2e] text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-slate-200 dark:border-white/10 flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer shadow-xs"
               >
                 <SkipForward className="w-4 h-4" />
                 <span>Saltar</span>
@@ -442,7 +443,7 @@ function WarmupContent() {
 
               <button
                 onClick={() => setIsPaused((p) => !p)}
-                className="h-12 px-4 bg-[#131626] text-zinc-300 font-mono font-bold text-xs uppercase rounded-2xl border border-white/10 flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
+                className="h-12 px-4 bg-slate-100 dark:bg-[#131626] text-slate-700 dark:text-zinc-300 font-mono font-bold text-xs uppercase rounded-2xl border border-slate-200 dark:border-white/10 flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
               >
                 {isPaused ? <Play className="w-4 h-4 text-primary" /> : <Pause className="w-4 h-4" />}
                 <span>{isPaused ? "Reanudar" : "Pausar"}</span>
@@ -451,7 +452,7 @@ function WarmupContent() {
               {phase === "prep" && (
                 <button
                   onClick={() => startExercise(0)}
-                  className="flex-1 h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon-strong active:scale-95 transition-all cursor-pointer border border-white/20"
+                  className="flex-1 h-12 bg-primary text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border border-primary/40"
                 >
                   <span>Empezar ya</span>
                   <ArrowRight className="w-4 h-4" />
@@ -461,7 +462,7 @@ function WarmupContent() {
               {phase === "transition" && (
                 <button
                   onClick={() => startExercise(currentExerciseIndex + 1)}
-                  className="flex-1 h-12 bg-amber-400 text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(251,191,36,0.3)] active:scale-95 transition-all cursor-pointer"
+                  className="flex-1 h-12 bg-amber-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border border-amber-400/40"
                 >
                   <span>Empezar ya</span>
                   <ArrowRight className="w-4 h-4" />
@@ -477,7 +478,7 @@ function WarmupContent() {
                       startTransition(currentExerciseIndex + 1);
                     }
                   }}
-                  className="flex-1 h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-neon-strong active:scale-95 transition-all cursor-pointer border border-white/20"
+                  className="flex-1 h-12 bg-primary text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border border-primary/40"
                 >
                   <span>
                     {currentExerciseIndex >= warmUpExercises.length - 1

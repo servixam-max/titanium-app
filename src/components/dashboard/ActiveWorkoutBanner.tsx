@@ -18,20 +18,20 @@ export default function ActiveWorkoutBanner({ activeWorkout }: ActiveWorkoutBann
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       onClick={() => router.push(`/workout/${activeWorkout.mode}`)}
-      className="flex h-[62px] items-center gap-3 rounded-2xl border border-white/30 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] px-4 text-black shadow-neon-strong active:scale-[0.98] transition-transform cursor-pointer"
+      className="flex h-[62px] items-center gap-3 rounded-2xl border border-primary/40 bg-primary px-4 text-white shadow-md active:scale-[0.98] transition-transform cursor-pointer"
     >
-      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-black/20 text-black">
-        <Play className="h-5 w-5 fill-current text-black" />
+      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white/20 text-white">
+        <Play className="h-5 w-5 fill-current text-white" />
       </div>
       <div className="min-w-0 flex-1 text-left">
-        <span className="block truncate text-xs font-black uppercase tracking-wider text-black">
+        <span className="block truncate text-xs font-bold uppercase tracking-wider text-white">
           Continuar entrenamiento en curso
         </span>
-        <span className="block truncate text-[11px] font-bold text-black/80">
+        <span className="block truncate text-[11px] font-medium text-white/90">
           {activeWorkout.routine.title} · Ejercicio {activeWorkout.currentExerciseIndex + 1}
         </span>
       </div>
-      <ArrowRight className="h-5 w-5 flex-shrink-0 text-black" />
+      <ArrowRight className="h-5 w-5 flex-shrink-0 text-white" />
     </motion.button>
   );
 }

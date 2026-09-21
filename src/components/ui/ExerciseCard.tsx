@@ -62,23 +62,23 @@ export default function ExerciseCard({
     <div
       onClick={onClick}
       className={`
-        group relative bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border rounded-2xl p-3.5
+        group relative bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border rounded-2xl p-3.5
         flex items-center gap-3 min-h-touch-target-min
         transition-all duration-200 overflow-hidden cursor-pointer
-        active:scale-[0.98] shadow-md
+        active:scale-[0.98] shadow-sm dark:shadow-md
         ${
           isIndividual
-            ? "border-white/10 hover:border-primary/40 hover:bg-[#181d2e]"
+            ? "border-slate-200 dark:border-white/10 hover:border-primary/40 hover:bg-slate-50 dark:hover:bg-[#181d2e]"
             : isSelected
-              ? "border-primary shadow-neon bg-[#131626]"
-              : "border-white/10 hover:border-white/20 hover:bg-[#181d2e]"
+              ? "border-primary shadow-sm dark:shadow-md bg-emerald-50/50 dark:bg-[#131626]"
+              : "border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-[#181d2e]"
         }
       `}
     >
       {/* Exercise Image/Icon */}
       <div
         className={`
-        rounded-full bg-black/40 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-white/15 relative
+        rounded-full bg-slate-100 dark:bg-black/40 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-slate-200 dark:border-white/15 relative
         ${compact ? "w-14 h-14" : "w-16 h-16"}
       `}
       >
@@ -98,7 +98,7 @@ export default function ExerciseCard({
           <Dumbbell className="w-7 h-7 text-primary/60" />
         )}
         {index !== undefined && !isIndividual && (
-          <span className="absolute top-0.5 left-0.5 bg-gradient-to-r from-primary to-emerald-400 text-black font-mono text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-neon z-20">
+          <span className="absolute top-0.5 left-0.5 bg-primary text-white font-mono text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm z-20">
             #{index + 1}
           </span>
         )}
@@ -136,12 +136,12 @@ export default function ExerciseCard({
 
       {/* Action CTA on Card */}
       {isIndividual ? (
-        <div className="flex items-center gap-1.5 bg-gradient-to-r from-primary to-emerald-400 text-black px-3 py-1.5 rounded-xl font-mono font-black text-xs shadow-neon group-hover:scale-105 transition-transform flex-shrink-0">
+        <div className="flex items-center gap-1.5 bg-primary text-white px-3 py-1.5 rounded-xl font-mono font-bold text-xs shadow-sm group-hover:scale-105 transition-transform flex-shrink-0 border border-primary/40">
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Iniciar</span>
         </div>
       ) : (
-        <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 group-hover:bg-primary group-hover:text-black group-hover:border-primary flex items-center justify-center text-zinc-400 transition-colors flex-shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 group-hover:bg-primary group-hover:text-white group-hover:border-primary flex items-center justify-center text-slate-400 dark:text-zinc-400 transition-colors flex-shrink-0">
           <ChevronRight className="w-4 h-4" />
         </div>
       )}

@@ -19,7 +19,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 w-full z-30 glass-titanium border-t border-white/10 dark:shadow-[0_-10px_35px_rgba(0,0,0,0.8)] shadow-[0_-4px_25px_rgba(0,0,0,0.06)] max-w-app left-1/2 -translate-x-1/2 pb-[env(safe-area-inset-bottom,0px)]">
+    <nav className="fixed bottom-0 w-full z-30 glass-titanium border-t border-slate-200 dark:border-white/10 dark:shadow-[0_-10px_35px_rgba(0,0,0,0.8)] shadow-[0_-4px_25px_rgba(0,0,0,0.06)] max-w-app left-1/2 -translate-x-1/2 pb-[env(safe-area-inset-bottom,0px)]">
       <div className="flex justify-around items-center h-[70px] px-3 relative">
         {navItems.map((item) => {
           const isActive =
@@ -41,7 +41,7 @@ export default function BottomNav() {
               {isActive && (
                 <motion.div
                   layoutId="active-nav-indicator"
-                  className="absolute -top-1 w-8 h-1 bg-gradient-to-r from-primary to-emerald-400 rounded-full shadow-neon-strong"
+                  className="absolute -top-1 w-8 h-1 bg-primary rounded-full shadow-sm"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}

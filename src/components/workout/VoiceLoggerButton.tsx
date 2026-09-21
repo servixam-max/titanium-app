@@ -155,10 +155,10 @@ export default function VoiceLoggerButton({ onParsed, className }: VoiceLoggerBu
         type="button"
         onClick={toggleListening}
         className={cn(
-          "relative flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer",
+          "relative flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer shadow-sm",
           isListening
-            ? "bg-gradient-to-r from-primary to-emerald-400 text-black border-white/30 shadow-neon-strong animate-pulse font-black"
-            : "bg-[#131626] border-white/10 text-zinc-300 hover:text-white hover:border-primary/40"
+            ? "bg-primary text-white border-primary/50 shadow-md animate-pulse font-bold"
+            : "bg-white dark:bg-[#131626] border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:border-primary/40"
         )}
         title={isListening ? "Detener micrófono" : "Dictar serie por voz (ej. '12 reps con 20 kilos')"}
         aria-label="Dictar por voz"
@@ -170,8 +170,8 @@ export default function VoiceLoggerButton({ onParsed, className }: VoiceLoggerBu
               animate={{ scale: [1, 1.15, 1], opacity: [0.8, 0, 0.8] }}
               transition={{ repeat: Infinity, duration: 1.2 }}
             />
-            <Mic className="w-3.5 h-3.5 animate-bounce text-black" />
-            <span className="tracking-wide">Escuchando...</span>
+            <Mic className="w-3.5 h-3.5 animate-bounce text-white" />
+            <span className="tracking-wide text-white">Escuchando...</span>
           </>
         ) : (
           <>

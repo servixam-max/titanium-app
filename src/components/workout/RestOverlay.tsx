@@ -142,7 +142,7 @@ export default function RestOverlay() {
       <header className="flex-shrink-0 h-[56px] flex items-center justify-between px-2 w-full z-20">
         <button
           onClick={() => setShowExitConfirm(true)}
-          className="flex items-center gap-1 h-10 px-2 text-white hover:text-primary active:scale-95 transition-all"
+          className="flex items-center gap-1 h-10 px-2 text-slate-800 dark:text-white hover:text-primary active:scale-95 transition-all cursor-pointer"
           aria-label="Volver atrás o cancelar"
         >
           <ArrowLeft className="w-6 h-6" />
@@ -153,11 +153,11 @@ export default function RestOverlay() {
         </span>
         <button
           onClick={toggleAudio}
-          className="flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-white active:scale-95"
+          className="flex items-center justify-center w-10 h-10 text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white active:scale-95 cursor-pointer"
           title={audioEnabled ? "Desactivar audio" : "Activar audio"}
         >
           {audioEnabled ? (
-            <Volume2 className="w-5 h-5" />
+            <Volume2 className="w-5 h-5 text-emerald-600 dark:text-primary" />
           ) : (
             <VolumeX className="w-5 h-5" />
           )}
@@ -175,10 +175,10 @@ export default function RestOverlay() {
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto my-auto">
         <div className="flex flex-col items-center mb-4">
-          <span className="text-primary font-label-caps tracking-[0.25em] text-xs uppercase mb-1">
+          <span className="text-primary font-label-caps tracking-[0.25em] text-xs uppercase mb-1 font-bold">
             Intervalo de Recuperación
           </span>
-          <h2 className="font-headline-lg text-headline-lg text-white uppercase">
+          <h2 className="font-headline-lg text-headline-lg text-slate-900 dark:text-white uppercase">
             Recupera
           </h2>
         </div>
@@ -204,11 +204,11 @@ export default function RestOverlay() {
 
         {/* Upcoming Exercise Preview Card */}
         <div className="w-full mb-6">
-          <p className="text-zinc-400 font-label-caps tracking-[0.2em] text-[11px] uppercase mb-2 text-center">
+          <p className="text-slate-500 dark:text-zinc-400 font-label-caps tracking-[0.2em] text-[11px] uppercase mb-2 text-center font-bold">
             {isNewExercise ? "A continuación:" : "Continúas con:"}
           </p>
-          <div className="w-full bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#0d101a] flex-shrink-0 border border-white/10">
+          <div className="w-full bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-sm">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#0d101a] flex-shrink-0 border border-slate-200 dark:border-white/10">
               <ExerciseImage
                 src={currentExercise?.image || ""}
                 alt={currentExercise?.name || "Ejercicio"}
@@ -216,15 +216,15 @@ export default function RestOverlay() {
               />
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <p className="text-white font-headline-md text-headline-md truncate">
+              <p className="text-slate-900 dark:text-white font-headline-md text-headline-md truncate">
                 {currentExercise?.name}
               </p>
-              <div className="flex items-center gap-2 mt-1 text-zinc-400 text-xs flex-wrap">
-                <span className="flex items-center gap-1 font-bold text-white">
+              <div className="flex items-center gap-2 mt-1 text-slate-500 dark:text-zinc-400 text-xs flex-wrap">
+                <span className="flex items-center gap-1 font-bold text-slate-800 dark:text-white">
                   <Dumbbell className="w-3.5 h-3.5 text-primary" />
                   Serie {upcomingSet} de {totalSets}
                 </span>
-                <span className="text-zinc-600">·</span>
+                <span className="text-slate-300 dark:text-zinc-600">·</span>
                 <span>{currentExercise?.reps}</span>
               </div>
             </div>

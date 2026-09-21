@@ -87,39 +87,39 @@ export default function UpdateChecker() {
   };
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-2 border-primary/50 rounded-3xl p-6 w-full max-w-sm shadow-[0_0_40px_rgba(0,245,155,0.25)] animate-fade-in-up relative overflow-hidden font-mono">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+      <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-primary/50 rounded-3xl p-6 w-full max-w-sm shadow-xl dark:shadow-[0_0_40px_rgba(0,245,155,0.25)] animate-fade-in-up relative overflow-hidden font-mono">
         {/* Glow effect */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/20 rounded-full blur-[60px] pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/15 rounded-full blur-[60px] pointer-events-none" />
         
         {!isDownloading && (
           <button 
             onClick={() => setShow(false)}
-            className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"
+            className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-white/50 dark:hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         )}
         
         <div className="flex flex-col items-center text-center">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-400/20 to-primary/20 border border-primary/40 flex items-center justify-center mb-4 text-primary shadow-neon">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center mb-4 text-primary shadow-sm">
             <Sparkles className="w-7 h-7 animate-pulse" />
           </div>
 
-          <h3 className="text-lg font-black text-white uppercase tracking-tight mb-1">
+          <h3 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1">
             Actualización Lista
           </h3>
-          <p className="text-zinc-400 text-xs mb-4">
+          <p className="text-slate-500 dark:text-zinc-400 text-xs mb-4">
             Nueva versión <strong className="text-primary">v{updateInfo.version}</strong> disponible con mejoras y correcciones.
           </p>
 
           {!isDownloading && !hasPermission && (
             <div className="w-full bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 mb-4 text-left">
-              <div className="flex items-center gap-2 text-amber-400 text-xs font-bold mb-1">
+              <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs font-bold mb-1">
                 <AlertTriangle className="w-4 h-4" />
                 <span>Permiso de instalación</span>
               </div>
-              <p className="text-[11px] text-zinc-300 mb-2">
+              <p className="text-[11px] text-slate-600 dark:text-zinc-300 mb-2">
                 Concede permiso para que la app se actualice sola con 1 toque.
               </p>
               <button
@@ -130,7 +130,7 @@ export default function UpdateChecker() {
                     setHasPermission(ok);
                   }, 1500);
                 }}
-                className="w-full h-8 bg-amber-500 text-black font-bold text-[11px] uppercase tracking-wider rounded-lg flex items-center justify-center active:scale-95 cursor-pointer"
+                className="w-full h-8 bg-amber-500 text-white font-bold text-[11px] uppercase tracking-wider rounded-lg flex items-center justify-center active:scale-95 cursor-pointer shadow-sm"
               >
                 Conceder en Ajustes
               </button>
@@ -138,35 +138,35 @@ export default function UpdateChecker() {
           )}
 
           {errorMsg && (
-            <div className="w-full bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 mb-3 text-xs text-rose-300 text-left">
+            <div className="w-full bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 mb-3 text-xs text-rose-600 dark:text-rose-300 text-left">
               {errorMsg}
             </div>
           )}
 
           {isDownloading ? (
-            <div className="w-full bg-[#131626] border border-primary/30 rounded-2xl p-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between text-xs font-bold text-white">
+            <div className="w-full bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-primary/30 rounded-2xl p-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-900 dark:text-white">
                 <span className="flex items-center gap-2 text-primary">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   {progress >= 100 ? "Abriendo instalador..." : "Descargando..."}
                 </span>
-                <span className="text-cyan-400">{progress}%</span>
+                <span className="text-cyan-600 dark:text-cyan-400">{progress}%</span>
               </div>
-              <div className="w-full bg-black/50 rounded-full h-3.5 border border-white/10 overflow-hidden p-0.5">
+              <div className="w-full bg-slate-200 dark:bg-black/50 rounded-full h-3.5 border border-slate-300 dark:border-white/10 overflow-hidden p-0.5">
                 <div
-                  className="bg-gradient-to-r from-cyan-400 to-primary h-full rounded-full transition-all duration-200 shadow-neon"
+                  className="bg-primary h-full rounded-full transition-all duration-200 shadow-sm"
                   style={{ width: `${Math.max(5, Math.min(100, progress))}%` }}
                 />
               </div>
-              <div className="flex items-center justify-between text-[11px] text-zinc-400">
+              <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-zinc-400">
                 <span>{downloadStats.current} / {downloadStats.total}</span>
-                <span className="text-zinc-500">No cierres la app</span>
+                <span className="text-slate-400 dark:text-zinc-500">No cierres la app</span>
               </div>
             </div>
           ) : (
             <button
               onClick={handleStartUpdate}
-              className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] hover:brightness-110 text-black font-black text-xs uppercase tracking-wider rounded-2xl shadow-neon-strong border border-white/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full h-12 bg-primary hover:brightness-105 text-white font-bold text-xs uppercase tracking-wider rounded-2xl shadow-sm border border-primary/40 hover:scale-[1.01] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               Actualizar a v{updateInfo.version}

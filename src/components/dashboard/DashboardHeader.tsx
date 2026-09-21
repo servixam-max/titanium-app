@@ -105,9 +105,9 @@ export default function DashboardHeader({
                 key={label}
                 className={`flex h-7 w-7 items-center justify-center rounded-xl text-[10px] font-bold transition-all sm:h-8 sm:w-8 sm:text-xs ${
                   trained
-                    ? "bg-primary text-black font-black scale-105 shadow-sm"
+                    ? "bg-primary text-white font-bold scale-105 shadow-sm"
                     : isToday
-                    ? "border-2 border-primary bg-primary/15 text-primary font-black"
+                    ? "border-2 border-primary bg-primary/15 text-primary font-bold"
                     : "border border-slate-200 dark:border-white/10 bg-slate-100/80 dark:bg-[#131626] text-slate-500 dark:text-slate-400"
                 }`}
               >

@@ -50,23 +50,23 @@ export default function AchievementsList({ achievements, className }: Achievemen
               <Trophy className="w-4 h-4" />
             </span>
             <div>
-              <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+              <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                 Logros y Medallas
               </h3>
-              <span className="text-[10px] font-mono text-zinc-400">
+              <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400">
                 {unlockedCount} de {totalCount} desbloqueados ({overallPercentage}%)
               </span>
             </div>
           </div>
-          <span className="text-[11px] font-mono font-black text-primary bg-primary/10 border border-primary/30 px-3 py-1 rounded-full shadow-neon">
+          <span className="text-[11px] font-mono font-black text-primary bg-primary/10 border border-primary/30 px-3 py-1 rounded-full shadow-sm">
             {overallPercentage}%
           </span>
         </div>
 
         {/* Global Progress Bar */}
-        <div className="w-full bg-[#0d101a] h-2 rounded-full overflow-hidden border border-white/5">
+        <div className="w-full bg-slate-100 dark:bg-[#0d101a] h-2 rounded-full overflow-hidden border border-slate-200 dark:border-white/5">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-primary to-[#00F59B] transition-all duration-700 shadow-neon"
+            className="h-full rounded-full bg-primary transition-all duration-700 shadow-sm"
             style={{ width: `${overallPercentage}%` }}
           />
         </div>
@@ -92,8 +92,8 @@ export default function AchievementsList({ achievements, className }: Achievemen
             className={cn(
               "flex-shrink-0 px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold uppercase transition-all",
               activeFilter === tab.id
-                ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon border border-white/20"
-                : "bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10"
+                ? "bg-primary text-white font-bold shadow-sm border border-primary/40"
+                : "bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             )}
           >
             {tab.label}
@@ -119,8 +119,8 @@ export default function AchievementsList({ achievements, className }: Achievemen
               className={cn(
                 "p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[115px] cursor-pointer active:scale-98",
                 achievement.isUnlocked
-                  ? "bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-primary/50 shadow-neon hover:border-primary/80"
-                  : "bg-[#131626] border-white/5 opacity-70 hover:opacity-100 hover:border-white/10"
+                  ? "bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-primary/50 shadow-sm dark:shadow-md hover:border-primary/80"
+                  : "bg-slate-50 dark:bg-[#131626] border-slate-200 dark:border-white/5 opacity-70 hover:opacity-100 hover:border-slate-300 dark:hover:border-white/10"
               )}
             >
               {achievement.isUnlocked && (
@@ -240,7 +240,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
                       haptics.tick();
                       setSelectedAchievement(null);
                     }}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-xs uppercase tracking-wider transition-all shadow-neon cursor-pointer active:scale-95 border border-white/20"
+                    className="w-full py-2.5 rounded-xl bg-primary text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer active:scale-95 border border-primary/40"
                   >
                     Entendido
                   </button>

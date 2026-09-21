@@ -107,12 +107,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
       <main className="w-full px-container-padding pt-4 flex flex-col gap-section-gap">
         {/* Header */}
         <section className="flex flex-col gap-2">
-          <h1 className="font-mono text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
+          <h1 className="font-mono text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
             {routine.title}
           </h1>
           {isCompletedToday && (
-            <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-400 text-xs font-mono font-bold shadow-[0_0_15px_rgba(0,245,155,0.2)]">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-600 dark:text-emerald-400 text-xs font-mono font-bold shadow-sm">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
               <span>¡Has completado esta rutina hoy! Puedes repetirla cuando quieras.</span>
             </div>
           )}
@@ -121,16 +121,16 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         {/* Equipment Toggle if routine has alternatives */}
         {hasAlternatives && (
           <div className="flex flex-col gap-2">
-            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
               Equipamiento
             </h2>
-            <div className="flex p-1 bg-[#131626] border border-white/10 rounded-2xl w-full">
+            <div className="flex p-1 bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl w-full shadow-sm">
               <button
                 onClick={() => setEquipmentPreference("dumbbells")}
                 className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${
                   equipmentPreference === "dumbbells"
-                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon"
-                    : "bg-transparent text-zinc-400 hover:text-white"
+                    ? "bg-primary text-white font-bold shadow-sm border border-primary/40"
+                    : "bg-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 🏋️ Mancuernas
@@ -139,8 +139,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                 onClick={() => setEquipmentPreference("bodyweight")}
                 className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${
                   equipmentPreference === "bodyweight"
-                    ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon"
-                    : "bg-transparent text-zinc-400 hover:text-white"
+                    ? "bg-primary text-white font-bold shadow-sm border border-primary/40"
+                    : "bg-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 🤸 Peso Corporal
@@ -156,12 +156,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         {isFreeDay && (
           <section className="flex flex-col gap-stack-gap">
             <div className="flex justify-between items-end">
-              <h2 className="font-headline-md text-headline-md text-white">
+              <h2 className="font-headline-md text-headline-md text-slate-900 dark:text-white">
                 Favoritos
               </h2>
             </div>
             {favoriteExerciseIds.length === 0 ? (
-              <p className="text-zinc-400 text-sm">
+              <p className="text-slate-500 dark:text-zinc-400 text-sm">
                 Aún no tienes favoritos. Aparecerán los ejercicios que más usas.
               </p>
             ) : (
@@ -177,8 +177,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black border-white/20 shadow-neon"
-                          : "bg-[#141828] text-white border-white/10 hover:border-white/20"
+                          ? "bg-primary text-white font-bold border-primary/40 shadow-sm"
+                          : "bg-white dark:bg-[#141828] text-slate-800 dark:text-white border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 shadow-xs"
                       }`}
                     >
                       <span>{ex.name}</span>
@@ -199,12 +199,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
             )}
 
             <div className="flex justify-between items-end mt-2">
-              <h2 className="font-headline-md text-headline-md text-white">
+              <h2 className="font-headline-md text-headline-md text-slate-900 dark:text-white">
                 Recientes
               </h2>
             </div>
             {recentExerciseIds.length === 0 ? (
-              <p className="text-zinc-400 text-sm">
+              <p className="text-slate-500 dark:text-zinc-400 text-sm">
                 Aún no hay ejercicios recientes. Haz algún entrenamiento
                 primero.
               </p>
@@ -221,8 +221,8 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black border-white/20 shadow-neon"
-                          : "bg-[#141828] text-white border-white/10 hover:border-white/20"
+                          ? "bg-primary text-white font-bold border-primary/40 shadow-sm"
+                          : "bg-white dark:bg-[#141828] text-slate-800 dark:text-white border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 shadow-xs"
                       }`}
                     >
                       <span>{ex.name}</span>
@@ -248,12 +248,12 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         <section className="flex flex-col gap-stack-gap">
           <div className="flex justify-between items-end">
             <div>
-              <h2 className="font-headline-md text-headline-md text-white">
+              <h2 className="font-headline-md text-headline-md text-slate-900 dark:text-white">
                 {isFreeDay
                   ? "Ejercicio seleccionado"
                   : `Ejercicios (${exercises.length})`}
               </h2>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
                 {mode === "individual"
                   ? "⚡ Toca cualquier ejercicio para empezar al instante"
                   : "🧭 Flujo secuencial guiado paso a paso"}
@@ -289,7 +289,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         <div className="max-w-app mx-auto px-container-padding pointer-events-auto">
           <button
             onClick={() => handleStart(0)}
-            className="w-full bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-sm uppercase tracking-wider h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-neon-strong hover:brightness-110 border border-white/30 cursor-pointer"
+            className="w-full bg-primary text-white font-mono font-bold text-sm uppercase tracking-wider h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md hover:brightness-105 border border-primary/40 cursor-pointer"
           >
             <Play className="w-5 h-5 fill-current" />
             <span>{mode === "guided" ? "INICIAR MODO GUIADO" : "INICIAR MODO INDIVIDUAL"}</span>

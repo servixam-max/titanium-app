@@ -237,14 +237,24 @@ html.light textarea::placeholder {
 .btn-primary *,
 button.from-primary,
 button.from-primary *,
+button.bg-primary,
+button.bg-primary *,
+.bg-primary.text-white,
+.bg-primary.text-white *,
 .from-primary.text-black,
 .from-primary.text-black *,
 html.light .btn-primary,
 html.light .btn-primary *,
 html.light button.from-primary,
 html.light button.from-primary *,
+html.light button.bg-primary,
+html.light button.bg-primary *,
+html.light .bg-primary.text-white,
+html.light .bg-primary.text-white *,
 html.light span.from-primary,
-html.light span.from-primary * {
+html.light span.from-primary *,
+html.light span.bg-primary,
+html.light span.bg-primary * {
   color: #FFFFFF !important;
 }
 

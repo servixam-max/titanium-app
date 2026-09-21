@@ -40,16 +40,16 @@ export default function AnatomicalMuscleViewer({
     <div className={`flex flex-col gap-3 ${className}`}>
       {/* Visual Engine Mode Switcher: 3D Real 360° vs 2D Diagrama */}
       <div className="flex items-center justify-between px-1">
-        <div className="flex items-center gap-1.5 bg-[#0d101a] border border-white/10 rounded-2xl p-1 shadow-inner">
+        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-[#0d101a] border border-slate-200 dark:border-white/10 rounded-2xl p-1 shadow-inner">
           <button
             onClick={() => {
               haptics.selection();
               setRenderMode("3d");
             }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-black uppercase transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-1.5 ${
               renderMode === "3d"
-                ? "bg-primary text-black font-black shadow-[0_0_12px_rgba(0,214,143,0.45)]"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-primary text-white font-bold shadow-sm"
+                : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             <Box className="w-3.5 h-3.5" />
@@ -62,8 +62,8 @@ export default function AnatomicalMuscleViewer({
             }}
             className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-1.5 ${
               renderMode === "2d"
-                ? "bg-primary text-black font-black shadow-[0_0_12px_rgba(0,214,143,0.45)]"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-primary text-white font-bold shadow-sm"
+                : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -71,7 +71,7 @@ export default function AnatomicalMuscleViewer({
           </button>
         </div>
 
-        <span className="text-[10px] font-mono text-zinc-500 uppercase">
+        <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-500 uppercase">
           {renderMode === "3d" ? "Motor WebGL 3D" : "Esquema Vectorial"}
         </span>
       </div>
@@ -160,14 +160,14 @@ function TwoDimensionalViewer({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center bg-[#0d101a] border border-white/10 rounded-2xl p-1 text-xs font-mono font-bold">
+        <div className="flex items-center bg-slate-100 dark:bg-[#0d101a] border border-slate-200 dark:border-white/10 rounded-2xl p-1 text-xs font-mono font-bold shadow-xs">
           <button
             onClick={() => {
               haptics.selection();
               setActiveView("front");
             }}
             className={`px-3 py-1.5 rounded-xl transition-all ${
-              activeView === "front" ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon" : "text-zinc-400 hover:text-white"
+              activeView === "front" ? "bg-primary text-white font-bold shadow-sm border border-primary/40" : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Frontal
@@ -178,7 +178,7 @@ function TwoDimensionalViewer({
               setActiveView("back");
             }}
             className={`px-3 py-1.5 rounded-xl transition-all ${
-              activeView === "back" ? "bg-gradient-to-r from-primary to-emerald-400 text-black font-black shadow-neon" : "text-zinc-400 hover:text-white"
+              activeView === "back" ? "bg-primary text-white font-bold shadow-sm border border-primary/40" : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Dorsal
@@ -186,7 +186,7 @@ function TwoDimensionalViewer({
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center min-h-[360px] bg-[#0A0B10] rounded-3xl border border-white/10 p-4">
+      <div className="flex flex-col items-center justify-center min-h-[360px] bg-slate-50 dark:bg-[#0A0B10] rounded-3xl border border-slate-200 dark:border-white/10 p-4">
         <svg viewBox="0 0 240 420" className="w-full h-[320px] select-none cursor-pointer">
           {activeView === "front" ? (
             <g id="front-view">

@@ -34,19 +34,19 @@ function StatBox({
   color?: string;
 }) {
   return (
-    <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3 flex flex-col items-center justify-center shadow-lg">
+    <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-3 flex flex-col items-center justify-center shadow-sm">
       <Icon className={`w-4 h-4 ${color} mb-1`} />
-      <span className="text-zinc-400 text-[10px] font-mono uppercase font-bold tracking-wider">
+      <span className="text-slate-500 dark:text-zinc-400 text-[10px] font-mono uppercase font-bold tracking-wider">
         {label}
       </span>
       {numericValue !== undefined ? (
         <NumberTicker
           value={numericValue}
           suffix={suffix}
-          className="text-lg font-black font-mono text-white mt-0.5"
+          className="text-lg font-black font-mono text-slate-900 dark:text-white mt-0.5"
         />
       ) : (
-        <span className="text-lg font-black font-mono text-white mt-0.5">{value}</span>
+        <span className="text-lg font-black font-mono text-slate-900 dark:text-white mt-0.5">{value}</span>
       )}
     </div>
   );
@@ -248,7 +248,7 @@ export default function WorkoutCompleteCard({
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="relative overflow-hidden w-full bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/30 rounded-3xl p-4 text-left shadow-2xl mb-5"
+          className="relative overflow-hidden w-full bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-primary/30 rounded-3xl p-4 text-left shadow-sm mb-5"
         >
           <BorderBeam
             size={180}
@@ -260,15 +260,15 @@ export default function WorkoutCompleteCard({
           />
 
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 animate-pulse" />
               Análisis del entrenamiento
             </span>
             <div className="flex gap-1.5 flex-wrap">
               {aiDebrief.tags.map((t, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase bg-cyan-400/10 text-cyan-300 border border-cyan-400/30"
+                  className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase bg-cyan-400/10 text-cyan-700 dark:text-cyan-300 border border-cyan-400/30"
                 >
                   {t.label}
                 </span>
@@ -276,16 +276,16 @@ export default function WorkoutCompleteCard({
             </div>
           </div>
 
-          <h4 className="text-xs font-mono font-bold text-white mb-1">
+          <h4 className="text-xs font-mono font-bold text-slate-900 dark:text-white mb-1">
             {aiDebrief.headline}
           </h4>
-          <p className="text-[11px] font-mono text-zinc-300 leading-relaxed mb-2.5">
+          <p className="text-[11px] font-mono text-slate-600 dark:text-zinc-300 leading-relaxed mb-2.5">
             {aiDebrief.summary}
           </p>
 
-          <div className="pt-2 border-t border-white/5 flex items-start gap-2">
+          <div className="pt-2 border-t border-slate-100 dark:border-white/5 flex items-start gap-2">
             <span className="text-sm flex-shrink-0">💡</span>
-            <p className="text-[10px] font-mono text-zinc-400 leading-tight">
+            <p className="text-[10px] font-mono text-slate-600 dark:text-zinc-400 leading-tight">
               <strong className="text-primary font-bold">Consejo para mañana: </strong>
               {aiDebrief.recommendationTomorrow}
             </p>
@@ -301,13 +301,13 @@ export default function WorkoutCompleteCard({
       >
         <button
           onClick={() => router.push("/history")}
-          className="w-full h-12 bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black font-mono font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-neon-strong border border-white/30 cursor-pointer"
+          className="w-full h-12 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-md border border-primary/40 cursor-pointer"
         >
           <Calendar className="w-4 h-4" /> Ver Historial Completo
         </button>
         <button
           onClick={() => router.push("/")}
-          className="w-full h-11 bg-[#131626] hover:bg-[#181d2e] text-zinc-300 hover:text-white font-mono font-bold rounded-2xl border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 active:scale-98 transition-all text-xs uppercase tracking-wider cursor-pointer"
+          className="w-full h-11 bg-white dark:bg-[#131626] hover:bg-slate-50 dark:hover:bg-[#181d2e] text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-mono font-bold rounded-2xl border border-slate-200 dark:border-white/10 flex items-center justify-center gap-2 active:scale-98 transition-all text-xs uppercase tracking-wider cursor-pointer shadow-sm"
         >
           <Home className="w-4 h-4" /> Volver al Inicio
         </button>

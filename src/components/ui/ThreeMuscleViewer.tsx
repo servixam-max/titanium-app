@@ -656,10 +656,10 @@ export default function ThreeMuscleViewer({
               haptics.tick();
               setIsAutoRotate(!isAutoRotate);
             }}
-            className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
+            className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
               isAutoRotate
-                ? "bg-primary/20 border-primary text-primary shadow-neon"
-                : "bg-[#0d101a] border-white/10 text-zinc-400 hover:text-zinc-200"
+                ? "bg-primary/20 border-primary text-primary shadow-sm"
+                : "bg-slate-100 dark:bg-[#0d101a] border-slate-200 dark:border-white/10 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200"
             }`}
             title="Giro automático 360°"
           >
@@ -673,10 +673,10 @@ export default function ThreeMuscleViewer({
               haptics.tick();
               setIsScannerActive(!isScannerActive);
             }}
-            className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
+            className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
               isScannerActive
-                ? "bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-[0_0_12px_rgba(0,225,255,0.35)]"
-                : "bg-[#0d101a] border-white/10 text-zinc-400 hover:text-zinc-200"
+                ? "bg-cyan-500/20 border-cyan-400 text-cyan-600 dark:text-cyan-300 shadow-sm"
+                : "bg-slate-100 dark:bg-[#0d101a] border-slate-200 dark:border-white/10 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200"
             }`}
           >
             <Scan className={`w-3.5 h-3.5 ${isScannerActive ? "animate-spin text-cyan-400" : ""}`} />
@@ -757,20 +757,20 @@ export default function ThreeMuscleViewer({
         {/* Heatmap Spectrum Legend */}
         <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2.5 bg-black/40 border-t border-white/5 text-[10px] font-mono z-20 backdrop-blur-sm">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#131626] border border-white/20" />
-            <span className="text-zinc-500">Inactivo</span>
+            <span className="w-2 h-2 rounded-full bg-slate-200 dark:bg-[#131626] border border-slate-300 dark:border-white/20" />
+            <span className="text-slate-500 dark:text-zinc-500">Inactivo</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_6px_#00E1FF]" />
-            <span className="text-zinc-400">Leve</span>
+            <span className="text-slate-600 dark:text-zinc-400">Leve</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-primary shadow-neon" />
+            <span className="w-2 h-2 rounded-full bg-primary" />
             <span className="text-primary font-bold">Óptimo</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34D399]" />
-            <span className="text-emerald-400 font-black">Hipertrofia</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-black">Hipertrofia</span>
           </div>
         </div>
       </div>
@@ -778,16 +778,16 @@ export default function ThreeMuscleViewer({
       {/* Biomechanical Symmetry & Balance Panel */}
       <div className="grid grid-cols-2 gap-2.5">
         {/* Push vs Pull Postural Ratio */}
-        <div className="bg-[#131626] border border-white/10 rounded-2xl p-3 shadow-lg">
+        <div className="bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl p-3 shadow-sm dark:shadow-lg">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
               Empuje vs Tracción
             </span>
             <span className="text-[10px] font-mono text-primary font-black">
               {biomechanics.pushRatio}% / {biomechanics.pullRatio}%
             </span>
           </div>
-          <div className="w-full bg-[#0d101a] h-2 rounded-full overflow-hidden flex">
+          <div className="w-full bg-slate-200 dark:bg-[#0d101a] h-2 rounded-full overflow-hidden flex">
             <div
               className="h-full bg-gradient-to-r from-emerald-500 to-primary transition-all duration-500"
               style={{ width: `${biomechanics.pushRatio}%` }}
@@ -799,7 +799,7 @@ export default function ThreeMuscleViewer({
               title="Tracción (Espalda/Dorsal/Bíceps)"
             />
           </div>
-          <span className="text-[9px] font-mono text-zinc-500 block mt-1.5">
+          <span className="text-[9px] font-mono text-slate-500 dark:text-zinc-500 block mt-1.5">
             {biomechanics.pushRatio >= 45 && biomechanics.pushRatio <= 55
               ? "Equilibrio postural óptimo"
               : biomechanics.pushRatio > 55
@@ -809,16 +809,16 @@ export default function ThreeMuscleViewer({
         </div>
 
         {/* Upper vs Lower Body Ratio */}
-        <div className="bg-[#131626] border border-white/10 rounded-2xl p-3 shadow-lg">
+        <div className="bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl p-3 shadow-sm dark:shadow-lg">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
               Torso vs Piernas
             </span>
-            <span className="text-[10px] font-mono text-cyan-400 font-black">
+            <span className="text-[10px] font-mono text-cyan-600 dark:text-cyan-400 font-black">
               {biomechanics.upperRatio}% / {biomechanics.lowerRatio}%
             </span>
           </div>
-          <div className="w-full bg-[#0d101a] h-2 rounded-full overflow-hidden flex">
+          <div className="w-full bg-slate-200 dark:bg-[#0d101a] h-2 rounded-full overflow-hidden flex">
             <div
               className="h-full bg-gradient-to-r from-cyan-400 to-teal-400 transition-all duration-500"
               style={{ width: `${biomechanics.upperRatio}%` }}
@@ -830,7 +830,7 @@ export default function ThreeMuscleViewer({
               title="Tren Inferior"
             />
           </div>
-          <span className="text-[9px] font-mono text-zinc-500 block mt-1.5">
+          <span className="text-[9px] font-mono text-slate-500 dark:text-zinc-500 block mt-1.5">
             {biomechanics.upperRatio >= 45 && biomechanics.upperRatio <= 55
               ? "Equilibrio tren superior/inferior"
               : biomechanics.upperRatio > 55
@@ -842,7 +842,7 @@ export default function ThreeMuscleViewer({
 
       {/* Detailed Selected Muscle Holographic Card */}
       {selectedStat && (
-        <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-primary/30 rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
+        <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-primary/30 rounded-3xl p-4 sm:p-5 shadow-sm dark:shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none" />
 
           <div className="flex items-start justify-between gap-3 relative z-10">
@@ -851,14 +851,14 @@ export default function ThreeMuscleViewer({
                 <span className="text-[10px] font-mono font-black uppercase tracking-wider text-primary bg-primary/10 border border-primary/30 px-2.5 py-0.5 rounded-full">
                   {selectedStat.info.majorGroup}
                 </span>
-                <span className="text-[10px] font-mono text-zinc-500">
+                <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-500">
                   {selectedStat.info.scientificName}
                 </span>
               </div>
-              <h4 className="text-lg font-black font-mono text-white tracking-tight">
+              <h4 className="text-lg font-black font-mono text-slate-900 dark:text-white tracking-tight">
                 {selectedStat.info.name}
               </h4>
-              <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1 leading-relaxed">
                 {selectedStat.info.description}
               </p>
             </div>
@@ -868,14 +868,14 @@ export default function ThreeMuscleViewer({
               <span
                 className={`inline-block px-3 py-1 rounded-full text-[10px] font-mono font-black uppercase tracking-wider ${
                   selectedStat.intensityLevel === "peak"
-                    ? "bg-primary/20 text-primary border border-primary/40 shadow-neon"
+                    ? "bg-primary/20 text-primary border border-primary/40 shadow-sm"
                     : selectedStat.intensityLevel === "high"
-                    ? "bg-primary/20 text-primary border border-primary/40 shadow-neon"
+                    ? "bg-primary/20 text-primary border border-primary/40 shadow-sm"
                     : selectedStat.intensityLevel === "moderate"
-                    ? "bg-cyan-400/20 text-cyan-300 border border-cyan-400/30"
+                    ? "bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30"
                     : selectedStat.intensityLevel === "light"
-                    ? "bg-blue-400/20 text-blue-300 border border-blue-400/30"
-                    : "bg-white/5 text-zinc-400 border border-white/10"
+                    ? "bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/30"
+                    : "bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-zinc-400 border border-slate-200 dark:border-white/10"
                 }`}
               >
                 {selectedStat.intensityLevel === "peak"

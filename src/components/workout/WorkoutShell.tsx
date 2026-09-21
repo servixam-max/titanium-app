@@ -50,19 +50,19 @@ export default function WorkoutShell({
       {/* Header — can be collapsed in focus mode */}
       <header
         className={cn(
-          "flex-shrink-0 border-b border-white/10 flex items-center justify-between px-4 bg-background/90 backdrop-blur-md z-50 transition-all duration-300",
-          focusMode ? "h-[42px] py-1 bg-black/60" : "h-[56px]"
+          "flex-shrink-0 border-b border-slate-200 dark:border-white/10 flex items-center justify-between px-4 bg-background/90 backdrop-blur-md z-50 transition-all duration-300",
+          focusMode ? "h-[42px] py-1 bg-slate-100/90 dark:bg-black/60" : "h-[56px]"
         )}
       >
         {showBack ? (
           <button
             onClick={onBack}
-            className="flex items-center gap-1 h-9 px-1.5 text-white hover:opacity-80 active:scale-95 cursor-pointer"
+            className="flex items-center gap-1 h-9 px-1.5 text-slate-800 dark:text-white hover:opacity-80 active:scale-95 cursor-pointer"
             aria-label="Volver atrás"
           >
-            <ArrowLeft className={focusMode ? "w-4 h-4 text-zinc-400" : "w-6 h-6"} />
+            <ArrowLeft className={focusMode ? "w-4 h-4 text-slate-500 dark:text-zinc-400" : "w-6 h-6 text-slate-800 dark:text-white"} />
             {focusMode && (
-              <span className="text-[10px] font-mono text-zinc-400 font-bold uppercase">Salir</span>
+              <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400 font-bold uppercase">Salir</span>
             )}
           </button>
         ) : (
@@ -79,7 +79,7 @@ export default function WorkoutShell({
         ) : (
           <SectionTitle
             align="center"
-            className="absolute left-1/2 -translate-x-1/2 m-0"
+            className="absolute left-1/2 -translate-x-1/2 m-0 text-slate-900 dark:text-white"
           >
             {title}
           </SectionTitle>
@@ -92,8 +92,8 @@ export default function WorkoutShell({
             className={cn(
               "flex items-center justify-center w-9 h-9 rounded-xl transition-all active:scale-95 cursor-pointer",
               focusMode
-                ? "bg-primary/20 text-primary border border-primary/40 shadow-neon"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-primary/20 text-emerald-700 dark:text-primary border border-primary/40 shadow-sm"
+                : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             )}
             title={focusMode ? "Salir de modo enfoque" : "Activar modo enfoque sin distracciones"}
             aria-label={focusMode ? "Desactivar modo enfoque" : "Activar modo enfoque"}
@@ -104,11 +104,11 @@ export default function WorkoutShell({
           {onToggleAudio && !focusMode && (
             <button
               onClick={onToggleAudio}
-              className="flex items-center justify-center w-9 h-9 text-zinc-400 hover:text-white active:scale-95 cursor-pointer"
+              className="flex items-center justify-center w-9 h-9 text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white active:scale-95 cursor-pointer"
               title={audioEnabled ? "Desactivar audio" : "Activar audio"}
             >
               {audioEnabled ? (
-                <Volume2 className="w-5 h-5" />
+                <Volume2 className="w-5 h-5 text-emerald-600 dark:text-primary" />
               ) : (
                 <VolumeX className="w-5 h-5" />
               )}
@@ -118,9 +118,9 @@ export default function WorkoutShell({
       </header>
 
       {typeof progress === "number" && (
-        <div className="w-full bg-[#0d101a] h-1.5 relative overflow-hidden flex-shrink-0">
+        <div className="w-full bg-slate-200 dark:bg-[#0d101a] h-1.5 relative overflow-hidden flex-shrink-0">
           <div
-            className="h-full bg-gradient-to-r from-cyan-400 via-emerald-400 to-lime-400 transition-all duration-500 shadow-[0_0_12px_rgba(0,245,155,0.7)]"
+            className="h-full bg-primary transition-all duration-500 shadow-sm"
             style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
           />
         </div>
@@ -131,7 +131,7 @@ export default function WorkoutShell({
       </main>
 
       {footer && (
-        <footer className="flex-shrink-0 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-2 bg-background border-t border-white/10 z-50">
+        <footer className="flex-shrink-0 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-2 bg-background border-t border-slate-200 dark:border-white/10 z-50">
           {footer}
         </footer>
       )}

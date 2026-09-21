@@ -43,7 +43,7 @@ export default function ExerciseStage({
     <div className={`flex flex-col gap-3 ${className ?? ""}`}>
       {/* Name header */}
       <div className="text-center px-2">
-        <h2 className="font-headline-lg text-2xl sm:text-3xl font-extrabold text-white tracking-tight drop-shadow-[0_0_15px_rgba(204,255,0,0.25)]">
+        <h2 className="font-headline-lg text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           {exercise.name}
         </h2>
         {isHIIT && (
@@ -62,7 +62,7 @@ export default function ExerciseStage({
       {/* Exercise image */}
       <div
         key={exercise.id + exerciseIndex}
-        className="flex-1 min-h-[200px] relative rounded-xl overflow-hidden border border-surface-container-highest animate-fade-in-up"
+        className="flex-1 min-h-[200px] relative rounded-xl overflow-hidden border border-slate-200 dark:border-surface-container-highest animate-fade-in-up"
       >
         <ExerciseImage
           src={exercise.image}
@@ -74,29 +74,29 @@ export default function ExerciseStage({
       {/* Metrics grid */}
       <div className="grid grid-cols-3 gap-2.5 w-full">
         {/* Target reps/time */}
-        <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border-2 border-primary/80 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-neon">
+        <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-2 border-primary/80 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-sm">
           <span className="text-xs font-label-caps text-primary uppercase font-bold tracking-wider flex items-center gap-1">
             <Zap className="w-3.5 h-3.5 text-primary animate-pulse" />
             {isTimedSet ? "TIEMPO" : "REPETICIONES"}
           </span>
-          <span className="font-mono font-black text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-400 dark:drop-shadow-[0_0_10px_rgba(16,185,129,0.25)] drop-shadow-none my-1">
+          <span className="font-mono font-black text-3xl sm:text-4xl text-primary my-1">
             {isTimedSet ? `${timedSeconds}s` : exercise.reps}
           </span>
-          <span className="text-[10px] font-label-caps text-zinc-400 font-bold uppercase">
+          <span className="text-[10px] font-label-caps text-slate-500 dark:text-zinc-400 font-bold uppercase">
             {isTimedSet ? "segundos de trabajo" : "repeticiones"}
           </span>
         </div>
 
         {/* Current set */}
-        <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/20 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-lg">
-          <span className="text-xs font-label-caps text-zinc-300 uppercase font-bold tracking-wider">
+        <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/20 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-sm">
+          <span className="text-xs font-label-caps text-slate-600 dark:text-zinc-300 uppercase font-bold tracking-wider">
             SERIE
           </span>
           <div className="flex items-baseline gap-1 my-1">
-            <span className="font-mono font-black text-3xl sm:text-4xl text-white">
+            <span className="font-mono font-black text-3xl sm:text-4xl text-slate-900 dark:text-white">
               {currentSet}
             </span>
-            <span className="font-mono font-bold text-lg text-zinc-500">
+            <span className="font-mono font-bold text-lg text-slate-400 dark:text-zinc-500">
               /{exercise.sets}
             </span>
           </div>
@@ -106,10 +106,10 @@ export default function ExerciseStage({
                 key={i}
                 className={`rounded-full transition-all duration-300 ${
                   i < currentSet - 1
-                    ? "w-2.5 h-2.5 bg-gradient-to-r from-primary to-emerald-400 shadow-neon"
+                    ? "w-2.5 h-2.5 bg-primary shadow-sm"
                     : i === currentSet - 1
-                      ? "w-4 h-2.5 bg-gradient-to-r from-primary to-emerald-400 shadow-neon-strong"
-                      : "w-2.5 h-2.5 bg-white/20"
+                      ? "w-4 h-2.5 bg-primary shadow-sm"
+                      : "w-2.5 h-2.5 bg-slate-200 dark:bg-white/20"
                 }`}
               />
             ))}
@@ -117,15 +117,15 @@ export default function ExerciseStage({
         </div>
 
         {/* Rest duration */}
-        <div className="bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-cyan-400/40 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-lg">
-          <span className="text-xs font-label-caps text-cyan-400 uppercase font-bold tracking-wider flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-cyan-400" />
+        <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-cyan-400/30 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-sm">
+          <span className="text-xs font-label-caps text-cyan-600 dark:text-cyan-400 uppercase font-bold tracking-wider flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
             DESCANSO
           </span>
-          <span className="font-mono font-black text-3xl sm:text-4xl text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)] my-1">
+          <span className="font-mono font-black text-3xl sm:text-4xl text-cyan-600 dark:text-cyan-400 my-1">
             {exercise.restSeconds}s
           </span>
-          <span className="text-[10px] font-label-caps text-zinc-400 font-bold uppercase">
+          <span className="text-[10px] font-label-caps text-slate-500 dark:text-zinc-400 font-bold uppercase">
             recuperación
           </span>
         </div>

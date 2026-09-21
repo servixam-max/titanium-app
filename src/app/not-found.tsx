@@ -6,12 +6,12 @@ export default function NotFound() {
       <h1 className="font-display-timer text-display-timer text-primary mb-4">
         404
       </h1>
-      <p className="font-headline-md text-headline-md text-white mb-8">
+      <p className="font-headline-md text-headline-md text-slate-900 dark:text-white mb-8">
         Página no encontrada
       </p>
       <Link
         href="/"
-        className="bg-gradient-to-r from-primary to-emerald-400 text-black font-headline-md h-touch-target-min px-8 rounded-lg flex items-center justify-center active:scale-95 transition-transform"
+        className="bg-primary hover:bg-emerald-600 text-white font-bold h-touch-target-min px-8 rounded-xl flex items-center justify-center shadow-sm active:scale-95 transition-all"
       >
         Volver al inicio
       </Link>

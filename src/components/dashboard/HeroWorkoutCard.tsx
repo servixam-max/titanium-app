@@ -228,7 +228,7 @@ export default function HeroWorkoutCard({
                       onStartExercise(idx);
                     }}
                     title="Entrenar sólo este ejercicio"
-                    className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-black text-emerald-700 dark:text-primary border border-slate-200 dark:border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0"
+                    className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white text-emerald-700 dark:text-primary border border-slate-200 dark:border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0"
                   >
                     <Play className="w-3 h-3 fill-current ml-0.5" />
                   </button>

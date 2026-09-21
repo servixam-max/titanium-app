@@ -58,16 +58,16 @@ export default function DayCarouselSelector({
               }}
               className={`relative flex-shrink-0 min-w-[74px] h-[64px] rounded-2xl flex flex-col items-center justify-center p-2 transition-all duration-200 cursor-pointer active:scale-95 select-none ${
                 isSelected
-                  ? "bg-gradient-to-r from-primary via-[#85F754] to-[#00F59B] text-black shadow-neon-strong border-2 border-white/60 font-black scale-[1.04]"
+                  ? "bg-primary text-white shadow-md border-2 border-primary/60 font-black scale-[1.03]"
                   : isCompleted
-                  ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-500/50"
-                  : "bg-white dark:bg-[#131626] hover:bg-slate-50 dark:hover:bg-[#181d2e] text-slate-800 dark:text-slate-300 border border-slate-300 dark:border-white/10 shadow-sm hover:border-primary/40"
+                  ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-500/40"
+                  : "bg-white dark:bg-[#131626] hover:bg-slate-50 dark:hover:bg-[#181d2e] text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-white/10 shadow-sm hover:border-primary/40"
               }`}
             >
               {/* Day header tag */}
               <span
                 className={`font-mono text-[9px] uppercase tracking-wider ${
-                  isSelected ? "text-black font-black" : isCompleted ? "text-emerald-600 dark:text-emerald-400 font-bold" : "text-slate-700 dark:text-slate-400 font-bold"
+                  isSelected ? "text-white/90 font-black" : isCompleted ? "text-emerald-600 dark:text-emerald-400 font-bold" : "text-slate-500 dark:text-slate-400 font-bold"
                 }`}
               >
                 {isExtra ? "LIBRE" : "DÍA"}
@@ -77,7 +77,7 @@ export default function DayCarouselSelector({
               <div className="flex items-center gap-1 mt-0.5">
                 <span
                   className={`font-mono text-lg leading-none ${
-                    isSelected ? "text-black font-black text-xl" : isCompleted ? "text-emerald-700 dark:text-emerald-300 font-black" : "text-slate-900 dark:text-white font-black"
+                    isSelected ? "text-white font-black text-xl" : isCompleted ? "text-emerald-700 dark:text-emerald-300 font-black" : "text-slate-900 dark:text-white font-black"
                   }`}
                 >
                   {isExtra ? "18" : day < 10 ? `0${day}` : day}
@@ -86,7 +86,7 @@ export default function DayCarouselSelector({
                 {isCompleted && (
                   <CheckCircle2
                     className={`w-3.5 h-3.5 ${
-                      isSelected ? "text-black" : "text-emerald-600 dark:text-emerald-400"
+                      isSelected ? "text-white" : "text-emerald-600 dark:text-emerald-400"
                     }`}
                   />
                 )}
@@ -96,10 +96,10 @@ export default function DayCarouselSelector({
               <span
                 className={`text-[8px] font-mono mt-0.5 uppercase tracking-tighter ${
                   isSelected
-                    ? "text-black font-black"
+                    ? "text-white/80 font-bold"
                     : isCompleted
                     ? "text-emerald-600 dark:text-emerald-400 font-bold"
-                    : "text-slate-700 dark:text-slate-400 font-bold"
+                    : "text-slate-500 dark:text-slate-400 font-bold"
                 }`}
               >
                 {isSelected ? "Activo" : isCompleted ? "Hecho" : isExtra ? "Catálogo" : "Rutina"}
