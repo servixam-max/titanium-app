@@ -29,6 +29,21 @@ function hashPassword(password: string): string {
   return `h_${Math.abs(hash).toString(36)}_${password.length}`;
 }
 
+export const SEED_USER: UserAccount = {
+  id: "xam-seed-id",
+  clientId: "offline",
+  ownerUserId: "xam-seed-id",
+  username: "XAM",
+  email: "servixam@gmail.com",
+  passwordHash: hashPassword("MUSHROOM"),
+  createdAt: "2026-05-01T00:00:00.000Z",
+  modifiedAt: "2026-05-01T00:00:00.000Z",
+  lastLogin: new Date().toISOString(),
+  version: 1,
+  avatarColor: "#10B981",
+  authProvider: "local",
+};
+
 export function getActiveUserId(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem(ACTIVE_USER_ID_KEY);
@@ -201,14 +216,22 @@ async function serverRegister(username: string, email: string, password: string)
 }
 
 // Legacy offline account helpers (fallback)
-function getLegacyAccounts(): UserAccount[] {
-  if (typeof window === "undefined") return [];
+export function getLegacyAccounts(): UserAccount[] {
+  if (typeof window === "undefined") return [SEED_USER];
   try {
     const raw = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw);
+    if (!raw) {
+      saveLegacyAccounts([SEED_USER]);
+      return [SEED_USER];
+    }
+    const accounts: UserAccount[] = JSON.parse(raw);
+    if (!accounts.some((a) => a.username.toUpperCase() === "XAM")) {
+      accounts.unshift(SEED_USER);
+      saveLegacyAccounts(accounts);
+    }
+    return accounts;
   } catch {
-    return [];
+    return [SEED_USER];
   }
 }
 
@@ -240,7 +263,7 @@ function offlineRegister(username: string, email: string, passwordPlain: string)
   if (exists) return { success: false, error: "Ese usuario o correo ya existe en modo offline." };
 
   const now = new Date().toISOString();
-  const colors = ["#00F59B", "#00E1FF", "#7C3AED", "#FF6B00", "#FF007A"];
+  const colors = ["#10B981", "#00E1FF", "#7C3AED", "#FF6B00", "#FF007A"];
   const user: UserAccount = {
     id: `local_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     clientId: "offline",
@@ -263,24 +286,50 @@ function offlineRegister(username: string, email: string, passwordPlain: string)
 }
 
 export async function loginUser(usernameOrEmail: string, passwordPlain: string): Promise<AuthResult> {
-  const serverResult = await serverLogin(usernameOrEmail, passwordPlain);
-  if (serverResult.success) return serverResult;
+  const cleanInput = usernameOrEmail.trim().toLowerCase();
 
-  // Fallback to offline accounts when server unavailable
+  // 1. Try server login if server endpoint is available
+  try {
+    const serverResult = await serverLogin(usernameOrEmail, passwordPlain);
+    if (serverResult.success) return serverResult;
+
+    // If server rejected with a specific credential error (e.g. wrong password), don't silently ignore if user intended server login
+    if (serverResult.error && serverResult.error !== "Sin conexión con el servidor") {
+      const offline = offlineLogin(usernameOrEmail, passwordPlain);
+      if (offline.success) return offline;
+      return serverResult;
+    }
+  } catch {}
+
+  // 2. Fallback to offline accounts
   const offline = offlineLogin(usernameOrEmail, passwordPlain);
   if (offline.success) return offline;
 
-  return serverResult;
+  // 3. If default seed user credentials matched
+  if (cleanInput === "xam" || cleanInput === "servixam@gmail.com") {
+    if (passwordPlain === "MUSHROOM") {
+      setActiveUserId(SEED_USER.id);
+      setServerUser(SEED_USER);
+      return { success: true, user: SEED_USER };
+    }
+    return { success: false, error: "Contraseña incorrecta." };
+  }
+
+  // 4. Return offline error rather than misleading "Sin conexión con el servidor"
+  return {
+    success: false,
+    error: offline.error || "No existe cuenta offline con esos datos. Pulsa 'CREAR CUENTA' o 'Entrar sin conexión'.",
+  };
 }
 
 export async function registerUser(username: string, email: string, passwordPlain: string): Promise<AuthResult> {
-  const serverResult = await serverRegister(username, email, passwordPlain);
-  if (serverResult.success) return serverResult;
+  try {
+    const serverResult = await serverRegister(username, email, passwordPlain);
+    if (serverResult.success) return serverResult;
+  } catch {}
 
   const offline = offlineRegister(username, email, passwordPlain);
-  if (offline.success) return offline;
-
-  return serverResult;
+  return offline;
 }
 
 export async function fetchMe(): Promise<{ user?: UserAccount; profile?: UserProfile; error?: string }> {
@@ -299,7 +348,26 @@ export function logoutUser(): void {
 }
 
 export function getActiveUser(): UserAccount | null {
-  return getServerUser();
+  // 1. Check server user
+  const serverUser = getServerUser();
+  if (serverUser) return serverUser;
+
+  // 2. Check active user ID in local legacy accounts
+  const activeId = getActiveUserId();
+  const accounts = getLegacyAccounts();
+  if (activeId) {
+    const found = accounts.find((a) => a.id === activeId);
+    if (found) return found;
+  }
+
+  // 3. Fallback: on initial launch or fresh install of the offline-first app, default to SEED_USER
+  if (typeof window !== "undefined") {
+    const defaultUser = accounts[0] || SEED_USER;
+    setActiveUserId(defaultUser.id);
+    return defaultUser;
+  }
+
+  return null;
 }
 
 // Legacy offline account compatibility helpers

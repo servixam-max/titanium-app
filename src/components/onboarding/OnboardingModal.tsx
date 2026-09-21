@@ -102,18 +102,36 @@ export default function OnboardingModal() {
         onboardingComplete: true,
       };
 
-      await fetchWithAuth("/api/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profileData),
-      });
+      let plan = null;
+      try {
+        await fetchWithAuth("/api/profile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profileData),
+        });
 
-      const res = await fetchWithAuth("/api/coach/plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profileData),
-      });
-      const { plan } = await res.json();
+        const res = await fetchWithAuth("/api/coach/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profileData),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          plan = data.plan;
+        }
+      } catch {
+        // Offline mode: proceed with local coach
+      }
+
+      if (!plan) {
+        plan = buildPlan({
+          goal: (goal || undefined) as TrainingGoal | undefined,
+          level: (level || undefined) as ExperienceLevel | undefined,
+          daysPerWeek: days,
+          equipment,
+          restrictions,
+        });
+      }
 
       const fullPlan = {
         ...makeSyncable(currentUser.id),

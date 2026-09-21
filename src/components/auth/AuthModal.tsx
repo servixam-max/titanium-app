@@ -25,6 +25,8 @@ import {
   resetUserPassword,
   getActiveUser,
   getAllAccounts,
+  SEED_USER,
+  setActiveUserId,
 } from "@/lib/auth";
 import {
   generateVerificationCode,
@@ -364,6 +366,20 @@ export default function AuthModal() {
             >
               <LogIn className="w-4 h-4" />
               Iniciar Sesión
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                haptics.success();
+                playExerciseStart();
+                setActiveUserId(SEED_USER.id);
+                setCurrentUser(SEED_USER);
+              }}
+              className="w-full h-11 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-xl border border-slate-200 dark:border-white/10 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer shadow-xs"
+            >
+              <Zap className="w-3.5 h-3.5 text-primary fill-primary" />
+              Entrar en Modo Offline (Sin Servidor)
             </button>
 
             <button
