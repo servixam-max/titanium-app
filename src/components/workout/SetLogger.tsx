@@ -218,7 +218,7 @@ export default function SetLogger({
           <div className="flex items-center gap-2">
             <button
               onClick={() => adjustWeight(-2.5)}
-              className="w-10 h-10 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
+              className="w-11 h-11 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
               aria-label="Bajar peso"
             >
               <Minus className="w-4 h-4" />
@@ -230,11 +230,11 @@ export default function SetLogger({
               onChange={(e) => setLocalWeight(e.target.value)}
               onBlur={commitWeight}
               onKeyDown={(e) => e.key === "Enter" && commitWeight()}
-              className="flex-1 min-w-0 h-10 bg-[#0d101a] border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
+              className="flex-1 min-w-0 h-11 bg-[#0d101a] border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
             />
             <button
               onClick={() => adjustWeight(2.5)}
-              className="w-10 h-10 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
+              className="w-11 h-11 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
               aria-label="Subir peso"
             >
               <Plus className="w-4 h-4" />
@@ -253,7 +253,7 @@ export default function SetLogger({
           <div className="flex items-center gap-2">
             <button
               onClick={() => adjustReps(-1)}
-              className="w-10 h-10 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
+              className="w-11 h-11 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
               aria-label="Bajar reps"
             >
               <Minus className="w-4 h-4" />
@@ -265,11 +265,11 @@ export default function SetLogger({
               onChange={(e) => setLocalReps(e.target.value)}
               onBlur={commitReps}
               onKeyDown={(e) => e.key === "Enter" && commitReps()}
-              className="flex-1 min-w-0 h-10 bg-[#0d101a] border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
+              className="flex-1 min-w-0 h-11 bg-[#0d101a] border border-white/10 rounded-xl text-center text-white font-mono font-bold text-lg focus:outline-none focus:border-primary"
             />
             <button
               onClick={() => adjustReps(1)}
-              className="w-10 h-10 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
+              className="w-11 h-11 rounded-xl bg-[#181d2e] border border-white/10 hover:border-primary/40 flex items-center justify-center text-white active:scale-95 transition-all"
               aria-label="Subir reps"
             >
               <Plus className="w-4 h-4" />
@@ -311,7 +311,7 @@ export default function SetLogger({
               }}
               aria-pressed={rpe === value}
               aria-label={`Esfuerzo ${value} de 10`}
-              className={`h-8 w-8 rounded-xl font-mono text-xs font-bold transition-all active:scale-95 ${
+              className={`h-9 w-9 rounded-xl font-mono text-xs font-bold transition-all active:scale-95 ${
                 rpe === value
                   ? "bg-primary text-black border border-primary"
                   : "bg-white/5 text-zinc-400 border border-white/10 hover:bg-white/10"

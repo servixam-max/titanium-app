@@ -156,7 +156,7 @@ export default function WorkTimer() {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] bg-[#0a0a0a]/98 backdrop-blur-md flex flex-col justify-between p-4 overflow-hidden">
+    <div className="fixed inset-0 z-[60] bg-background/98 backdrop-blur-md flex flex-col justify-between p-4 overflow-hidden">
       {/* Top Navigation Bar */}
       <header className="flex-shrink-0 h-[56px] flex items-center justify-between px-2 w-full z-20">
         <button

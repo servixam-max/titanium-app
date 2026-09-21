@@ -781,7 +781,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <p className="text-xs text-zinc-400">{otaError}</p>
                         <button
                           onClick={() => setOtaStatus("idle")}
-                          className="w-full h-10 mt-1 bg-[#181d2e] hover:bg-[#1f253a] border border-white/10 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-xs active:scale-95 transition-all cursor-pointer"
+                          className="w-full h-10 mt-1 bg-[#181d2e] hover:bg-white/10 border border-white/10 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-xs active:scale-95 transition-all cursor-pointer"
                         >
                           <RefreshCw className="w-4 h-4" />
                           Reintentar

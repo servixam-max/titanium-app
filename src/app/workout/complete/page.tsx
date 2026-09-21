@@ -49,7 +49,7 @@ export default function WorkoutComplete() {
 
   if (isChecking && !completedSession) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center bg-[#080808] px-6 text-center text-white">
+      <div className="h-[100dvh] flex flex-col items-center justify-center bg-background px-6 text-center text-foreground">
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-3" />
         <p className="text-zinc-400 text-xs font-mono">Guardando y cargando resumen...</p>
       </div>
@@ -58,7 +58,7 @@ export default function WorkoutComplete() {
 
   if (!completedSession || !completedSession.completed) {
     return (
-      <div className="h-[100dvh] animate-page-in flex flex-col items-center justify-center bg-[#080808] px-6 text-center text-white">
+      <div className="h-[100dvh] animate-page-in flex flex-col items-center justify-center bg-background px-6 text-center text-foreground">
         <p className="text-zinc-400 mb-4">No hay entrenamiento completado.</p>
         <button
           onClick={() => router.push("/")}
@@ -71,7 +71,7 @@ export default function WorkoutComplete() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden bg-[#080808] text-white relative select-none">
+    <div className="h-[100dvh] flex flex-col overflow-hidden bg-background text-foreground relative select-none">
       <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[140px] pointer-events-none" />
 
