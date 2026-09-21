@@ -302,6 +302,80 @@ export function bumpVersion(entity: { version: number; modifiedAt: string }) {
 }
 
 // =========================================================
+// Adopción de datos huérfanos (una sola vez por dispositivo)
+// =========================================================
+
+const ORPHAN_ADOPTION_FLAG = "fortixam_orphans_adopted_v1";
+
+function hasAdoptedOrphans(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    return localStorage.getItem(ORPHAN_ADOPTION_FLAG) === "1";
+  } catch {
+    return true;
+  }
+}
+
+function markOrphansAdopted(): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(ORPHAN_ADOPTION_FLAG, "1");
+  } catch {
+    // sin localStorage: la adopción se reintentará, es idempotente
+  }
+}
+
+/**
+ * Reasigna a `activeUser` los registros sin dueño (de instalaciones previas).
+ * Antes se ejecutaba en CADA lectura de sesiones/pesos y re-encolaba sync en
+ * bucle; ahora corre una vez por dispositivo y marca la bandera.
+ */
+function adoptOrphansOnce(activeUser: string): void {
+  if (hasAdoptedOrphans()) return;
+  markOrphansAdopted();
+
+  void (async () => {
+    try {
+      const sessions = await db.sessions.toArray();
+      const orphanSessions = sessions.filter(
+        (s) => !s.deleted && s.ownerUserId !== activeUser && (!s.ownerUserId || s.ownerUserId === "xam-seed-id"),
+      );
+      if (orphanSessions.length > 0) {
+        const adopted = orphanSessions.map((s) => ({
+          ...s,
+          ownerUserId: activeUser,
+          modifiedAt: nowIso(),
+          version: (s.version || 1) + 1,
+        }));
+        await db.sessions.bulkPut(adopted);
+        for (const item of adopted) {
+          await enqueueSync("WorkoutSession", item.id, "update", item);
+        }
+      }
+
+      const weights = await db.weights.toArray();
+      const orphanWeights = weights.filter(
+        (w) => !w.deleted && w.ownerUserId !== activeUser && (!w.ownerUserId || w.ownerUserId === "xam-seed-id"),
+      );
+      if (orphanWeights.length > 0) {
+        const adopted = orphanWeights.map((w) => ({
+          ...w,
+          ownerUserId: activeUser,
+          modifiedAt: nowIso(),
+          version: (w.version || 1) + 1,
+        }));
+        await db.weights.bulkPut(adopted);
+        for (const item of adopted) {
+          await enqueueSync("WeightEntry", item.id, "update", item);
+        }
+      }
+    } catch (err) {
+      console.error("Error adoptando registros huérfanos:", err);
+    }
+  })();
+}
+
+// =========================================================
 // Sessions
 // =========================================================
 
@@ -341,20 +415,8 @@ export async function getSessions(targetUserId?: string): Promise<WorkoutSession
         !s.ownerUserId
       );
 
-      // Auto-adopt orphans to the active user in background
-      const orphans = matching.filter((s) => s.ownerUserId !== activeUser);
-      if (orphans.length > 0) {
-        const adopted = orphans.map((s) => ({
-          ...s,
-          ownerUserId: activeUser,
-          modifiedAt: nowIso(),
-          version: (s.version || 1) + 1,
-        }));
-        db.sessions.bulkPut(adopted).catch(console.error);
-        for (const item of adopted) {
-          enqueueSync("WorkoutSession", item.id, "update", item).catch(() => {});
-        }
-      }
+      // Reasigna huérfanos de instalaciones previas, una sola vez por dispositivo.
+      adoptOrphansOnce(activeUser);
     } else {
       matching = nonDeleted;
     }
@@ -455,20 +517,7 @@ export async function getWeights(targetUserId?: string): Promise<WeightEntry[]> 
         !w.ownerUserId
       );
 
-      // Auto-adopt orphans to the active user in background
-      const orphans = matching.filter((w) => w.ownerUserId !== activeUser);
-      if (orphans.length > 0) {
-        const adopted = orphans.map((w) => ({
-          ...w,
-          ownerUserId: activeUser,
-          modifiedAt: nowIso(),
-          version: (w.version || 1) + 1,
-        }));
-        db.weights.bulkPut(adopted).catch(console.error);
-        for (const item of adopted) {
-          enqueueSync("WeightEntry", item.id, "update", item).catch(() => {});
-        }
-      }
+      adoptOrphansOnce(activeUser);
     } else {
       matching = nonDeleted;
     }

@@ -49,6 +49,25 @@ CREATE TABLE IF NOT EXISTS workout_sessions (
   total_volume NUMERIC DEFAULT 0,
   completed BOOLEAN DEFAULT FALSE,
   notes TEXT,
+  -- Detalle del entrenamiento (ejercicios → series) como documento JSONB.
+  -- Es la fuente que usa /api/sync; las tablas normalizadas de abajo se
+  -- mantienen para analítica futura.
+  exercises JSONB NOT NULL DEFAULT '[]'::jsonb,
+  version INT DEFAULT 1,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  modified_at TIMESTAMPTZ DEFAULT NOW(),
+  deleted BOOLEAN DEFAULT FALSE
+);
+
+-- Documentos de usuario genéricos (Routine, Exercise, PlannedSession,
+-- Achievement, UserProfile...) para que cualquier entidad nueva del cliente
+-- pueda sincronizar sin exigir una tabla nueva.
+CREATE TABLE IF NOT EXISTS user_documents (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  entity_type TEXT NOT NULL,
+  client_id TEXT,
+  data JSONB NOT NULL,
   version INT DEFAULT 1,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   modified_at TIMESTAMPTZ DEFAULT NOW(),
@@ -148,3 +167,4 @@ CREATE INDEX IF NOT EXISTS idx_set_logs_exercise ON set_logs(exercise_log_id);
 CREATE INDEX IF NOT EXISTS idx_weights_user_date ON weight_entries(user_id, date);
 CREATE INDEX IF NOT EXISTS idx_plans_user ON plans(user_id);
 CREATE INDEX IF NOT EXISTS idx_achievements_user ON achievements(user_id, key);
+CREATE INDEX IF NOT EXISTS idx_user_documents_user ON user_documents(user_id, entity_type, modified_at);

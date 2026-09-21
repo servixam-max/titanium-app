@@ -9,7 +9,6 @@ import {
   ActiveWorkoutState,
   AudioMode,
 } from "@/lib/types";
-import { apiUrl, isApiEnabled } from "@/lib/api-config";
 import { saveSession, getSessions, clearAllSessions, generateId, nowIso, makeSyncable } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { getActiveUser, getActiveUserId, logoutUser } from "./auth";
@@ -121,6 +120,12 @@ const initialActiveWorkout: ActiveWorkoutState = {
   dbSessionId: undefined,
   justFinished: false,
 };
+
+// Guard contra dobles llamadas a finishWorkout (tap del usuario y
+// auto-finish del último set pueden coincidir): la segunda espera a la primera.
+let finishPromise: Promise<
+  { sessionId: string; completedSession: WorkoutSession } | undefined
+> | null = null;
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -764,6 +769,8 @@ export const useAppStore = create<AppState>()(
       },
 
       finishWorkout: async () => {
+        if (finishPromise) return finishPromise;
+        finishPromise = (async () => {
         const { activeWorkout } = get();
         if (!activeWorkout.session) {
           const latest = get().sessions.find((s) => s.completed);
@@ -809,93 +816,15 @@ export const useAppStore = create<AppState>()(
           lastExerciseWeights: updatedLastWeights,
         });
 
-        // Best-effort sync to PostgreSQL (only if an API base URL is configured)
-        if (!isApiEnabled()) {
-          set({ dbError: null });
-          return { sessionId: completedSession.id, completedSession };
-        }
-
-        try {
-          const routine = activeWorkout.routine;
-          if (!routine) return { sessionId: completedSession.id, completedSession };
-
-          const totalSets = completedSession.exercises.reduce(
-            (sum, ex) => sum + ex.sets.length,
-            0,
-          );
-          const totalReps = completedSession.exercises.reduce(
-            (sum, ex) =>
-              sum + ex.sets.reduce((s, set) => s + (set.reps || 0), 0),
-            0,
-          );
-          const totalVolume = completedSession.exercises.reduce(
-            (sum, ex) =>
-              sum +
-              ex.sets.reduce(
-                (s, set) => s + (set.weight || 0) * (set.reps || 0),
-                0,
-              ),
-            0,
-          );
-          const durationSeconds = completedSession.endTime
-            ? Math.round(
-                (new Date(completedSession.endTime).getTime() -
-                  new Date(completedSession.startTime).getTime()) /
-                  1000,
-              )
-            : 0;
-
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-          const response = await fetch(apiUrl("sessions"), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              routine_id: completedSession.routineId,
-              routine_name: routine.title,
-              mode: completedSession.mode,
-              start_time: completedSession.startTime,
-              end_time: completedSession.endTime,
-              duration_seconds: durationSeconds,
-              total_sets: totalSets,
-              total_reps: totalReps,
-              total_volume: totalVolume,
-              completed: true,
-              exercises: completedSession.exercises.map((ex, idx) => ({
-                exercise_id: ex.exerciseId,
-                exercise_name: routine.exercises[idx]?.name || ex.exerciseId,
-                exercise_order: idx + 1,
-                target_sets: routine.exercises[idx]?.sets || 0,
-                target_reps: routine.exercises[idx]?.reps || "",
-                rest_seconds: routine.exercises[idx]?.restSeconds || 60,
-                sets: ex.sets.map((set) => ({
-                  set_number: set.setNumber,
-                  weight: set.weight,
-                  reps: set.reps,
-                  duration_seconds: set.duration,
-                  completed: set.completed,
-                })),
-              })),
-            }),
-            signal: controller.signal,
-          });
-          clearTimeout(timeoutId);
-
-          if (!response.ok) {
-            logger.error("Failed to sync session to server");
-            set({ dbError: "Sin sincronización con servidor" });
-          } else {
-            set({ dbError: null });
-          }
-        } catch (error) {
-          logger.error("Error syncing session:", error);
-          set({
-            dbError: "Sin conexión con servidor (datos guardados localmente)",
-          });
-        }
-
+        // El envío al servidor lo hace el motor de sync (cola en IndexedDB):
+        // una sola vía, con el detalle del entrenamiento incluido.
         return { sessionId: completedSession.id, completedSession };
+        })();
+        try {
+          return await finishPromise;
+        } finally {
+          finishPromise = null;
+        }
       },
 
       cancelWorkout: () => {
@@ -914,105 +843,9 @@ export const useAppStore = create<AppState>()(
           completed: false,
         });
 
-        // Optional server sync only if API is configured
-        if (!isApiEnabled()) {
-          set({ dbError: null });
-          return;
-        }
-
-        const session = activeWorkout.session;
-        const routine = activeWorkout.routine;
-
-        const totalSets = session.exercises.reduce(
-          (sum, ex) => sum + ex.sets.length,
-          0,
-        );
-        const totalReps = session.exercises.reduce(
-          (sum, ex) => sum + ex.sets.reduce((s, set) => s + (set.reps || 0), 0),
-          0,
-        );
-        const totalVolume = session.exercises.reduce(
-          (sum, ex) =>
-            sum +
-            ex.sets.reduce(
-              (s, set) => s + (set.weight || 0) * (set.reps || 0),
-              0,
-            ),
-          0,
-        );
-        const durationSeconds = Math.round(
-          (Date.now() - new Date(session.startTime).getTime()) / 1000,
-        );
-
-        const payload = {
-          routine_id: session.routineId,
-          routine_name: routine.title,
-          mode: session.mode,
-          start_time: session.startTime,
-          end_time: nowIso(),
-          duration_seconds: durationSeconds,
-          total_sets: totalSets,
-          total_reps: totalReps,
-          total_volume: totalVolume,
-          completed: false,
-          exercises: session.exercises.map((ex, idx) => ({
-            exercise_id: ex.exerciseId,
-            exercise_name: routine.exercises[idx]?.name || ex.exerciseId,
-            exercise_order: idx + 1,
-            target_sets: routine.exercises[idx]?.sets || 0,
-            target_reps: routine.exercises[idx]?.reps || "",
-            rest_seconds: routine.exercises[idx]?.restSeconds || 60,
-            sets: ex.sets.map((set) => ({
-              set_number: set.setNumber,
-              weight: set.weight,
-              reps: set.reps,
-              duration_seconds: set.duration,
-              completed: set.completed,
-            })),
-          })),
-        };
-
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5000);
-          let response;
-          const dbSessionId = activeWorkout.dbSessionId;
-
-          if (dbSessionId) {
-            response = await fetch(apiUrl(`sessions/${dbSessionId}`), {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-              signal: controller.signal,
-            });
-          } else {
-            response = await fetch(apiUrl("sessions"), {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-              signal: controller.signal,
-            });
-          }
-          clearTimeout(timeoutId);
-
-          if (response.ok) {
-            const data = await response.json();
-            if (data.session_id && !dbSessionId) {
-              set({
-                activeWorkout: {
-                  ...activeWorkout,
-                  dbSessionId: data.session_id,
-                },
-              });
-            }
-            set({ dbError: null });
-          } else {
-            set({ dbError: "Progreso guardado localmente" });
-          }
-        } catch (error) {
-          logger.error("Error saving progress:", error);
-          set({ dbError: "Progreso guardado localmente" });
-        }
+        // El envío al servidor lo hace el motor de sync (cola en IndexedDB);
+        // aquí solo se persiste en local para no perder progreso.
+        set({ dbError: null });
       },
 
       // History
