@@ -37,7 +37,7 @@ jobs:
           java-version: "21"
 
       - name: Instalar dependencias web
-        run: npm install
+        run: npm ci
 
       - name: Ejecutar pruebas unitarias
         run: npm test -- --run
