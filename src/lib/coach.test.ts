@@ -28,8 +28,11 @@ describe("coach", () => {
     expect(plan.schedule.length).toBeGreaterThan(0);
   });
 
-  it("estimates 1RM", () => {
-    expect(estimateOneRm(80, 10)).toBeCloseTo(106.7, 1);
+  it("estima el 1RM con la definición única (redondeada) de metrics.ts", () => {
+    // 80 kg × 10 reps → Epley 106.7 → 107 redondeado. El coach y los récords
+    // comparten ahora la misma fórmula (antes daban cifras distintas).
+    expect(estimateOneRm(80, 10)).toBe(107);
+    expect(estimateOneRm(80, 1)).toBe(80);
     expect(estimateOneRm(0, 10)).toBe(0);
   });
 

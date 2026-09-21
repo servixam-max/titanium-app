@@ -433,22 +433,10 @@ html.light .glass-titanium {
   box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
 }
 
-.glass-modal {
-  background: rgba(10, 12, 18, 0.96);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
 html.light .glass-modal {
   background: rgba(255, 255, 255, 0.98);
   border-color: rgba(15, 23, 42, 0.12);
   box-shadow: 0 16px 48px rgba(15, 23, 42, 0.12);
-}
-
-.glow-neon-box {
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.20);
-  border: 1px solid rgba(16, 185, 129, 0.30);
 }
 
 .glow-card-hover:hover {
@@ -494,22 +482,10 @@ html.light .btn-primary:hover {
 }
 
 /* === Noise texture overlay === */
-.noise-overlay::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.04;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
 
 /* Custom animations */
 .neon-glow {
   text-shadow: 0 0 18px rgba(0, 214, 143, 0.35);
-}
-
-.neon-glow-strong {
-  text-shadow: 0 0 28px rgba(0, 214, 143, 0.55);
 }
 
 /* Fade in slide up (entrada de tarjetas/ejercicios) */
@@ -560,23 +536,6 @@ html.light .btn-primary:hover {
   animation: breathe 2.2s ease-in-out infinite;
 }
 
-/* Urgencia: countdown últimos segundos */
-@keyframes urgent-beat {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  35% {
-    transform: scale(1.12);
-  }
-}
-
-.animate-urgent {
-  animation: urgent-beat 1s ease-in-out infinite;
-  color: #ffb4ab !important;
-  text-shadow: 0 0 14px rgba(255, 180, 171, 0.55);
-}
-
 /* Pulso ambiental de fondo (halo neón) */
 @keyframes ambient-pulse {
   0%,
@@ -609,27 +568,6 @@ html.light .btn-primary:hover {
   animation: flash 0.6s ease-out forwards;
 }
 
-/* Confetti */
-@keyframes confetti-fall {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100dvh) rotate(720deg);
-    opacity: 0;
-  }
-}
-
-.animate-confetti {
-  animation-name: confetti-fall;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-}
-
 /* Touch targets */
 .touch-target {
   min-height: 48px;
@@ -652,20 +590,6 @@ html.light .btn-primary:hover {
   transform-origin: 50% 50%;
 }
 
-/* Exercise animation frames */
-@keyframes toggle-image {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-
-.exercise-anim {
-  animation: toggle-image 1.5s infinite step-end;
-}
 
 /* Tabular nums for timers */
 .tabular-nums {
@@ -758,40 +682,7 @@ nav {
   animation: shimmer 1.8s ease-in-out infinite;
 }
 
-/* === 3D Cyber Hologram & Biometric Scanner === */
-@keyframes laser-sweep {
-  0% {
-    top: 4%;
-    opacity: 0;
-  }
-  12% {
-    opacity: 1;
-  }
-  88% {
-    opacity: 1;
-  }
-  100% {
-    top: 94%;
-    opacity: 0;
-  }
-}
-.animate-laser-sweep {
-  animation: laser-sweep 2.8s ease-in-out infinite;
-}
 
-@keyframes cyber-pulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 4px #059669) drop-shadow(0 0 10px rgba(5, 150, 105, 0.35));
-    opacity: 0.95;
-  }
-  50% {
-    filter: drop-shadow(0 0 6px #10B981) drop-shadow(0 0 14px rgba(16, 185, 129, 0.4));
-    opacity: 1;
-  }
-}
-.animate-cyber-pulse {
-  animation: cyber-pulse 2.2s ease-in-out infinite;
-}
 
 @keyframes hologram-scanline {
   0% {
@@ -800,11 +691,5 @@ nav {
   100% {
     background-position: 0 100%;
   }
-}
-.hologram-grid-floor {
-  background-image:
-    linear-gradient(rgba(0, 214, 143, 0.18) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 214, 143, 0.18) 1px, transparent 1px);
-  background-size: 24px 24px;
 }
 

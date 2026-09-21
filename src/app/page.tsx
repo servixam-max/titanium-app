@@ -35,78 +35,9 @@ import { preloadVoices } from "@/lib/speech";
 import { haptics } from "@/lib/haptics";
 import { Routine, WorkoutSession, Exercise, Plan } from "@/lib/types";
 import { calculateTotalXP } from "@/lib/gamification";
+import { calculateStreak, buildWeeklyStats, sameDay } from "@/lib/metrics";
 
 const InstallPrompt = dynamic(() => import("@/components/ui/InstallPrompt"), { ssr: false });
-
-function sameDay(a: Date, b: Date) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
-
-function calculateStreak(sessions: WorkoutSession[]) {
-  if (!sessions || sessions.length === 0) return 0;
-  const completed = sessions.filter((s) => s.completed && s.endTime);
-  const dates = Array.from(
-    new Set(completed.map((s) => new Date(s.endTime!).toDateString()))
-  ).map((d) => new Date(d));
-  dates.sort((a, b) => b.getTime() - a.getTime());
-  if (dates.length === 0) return 0;
-
-  const today = new Date();
-  let streak = 0;
-  const check = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  if (!dates.some((d) => sameDay(d, check))) {
-    check.setDate(check.getDate() - 1);
-  }
-  for (const d of dates) {
-    if (sameDay(d, check)) {
-      streak++;
-      check.setDate(check.getDate() - 1);
-    } else if (d < check) {
-      break;
-    }
-  }
-  return streak;
-}
-
-function buildWeeklyStats(sessions: WorkoutSession[]) {
-  const completed = sessions.filter((s) => s.completed && s.endTime);
-  const totalWorkouts = completed.length;
-  const totalMinutes = Math.round(
-    completed.reduce((sum, s) => {
-      const dur =
-        s.endTime && s.startTime
-          ? (new Date(s.endTime).getTime() - new Date(s.startTime).getTime()) / 60000
-          : 0;
-      return sum + Math.max(0, dur);
-    }, 0)
-  );
-
-  const now = new Date();
-  const currentDay = now.getDay();
-  const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay;
-  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset);
-  monday.setHours(0, 0, 0, 0);
-
-  const weeklyDays = [false, false, false, false, false, false, false];
-  let weeklyCount = 0;
-  completed.forEach((s) => {
-    const d = new Date(s.endTime!);
-    const diffDays = Math.floor((d.getTime() - monday.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays >= 0 && diffDays < 7) {
-      if (!weeklyDays[diffDays]) {
-        weeklyDays[diffDays] = true;
-        weeklyCount++;
-      }
-    }
-  });
-
-  const todayIndex = currentDay === 0 ? 6 : currentDay - 1;
-  return { totalWorkouts, totalMinutes, weeklyDays, todayIndex, weeklyCount };
-}
 
 export default function Dashboard() {
   const router = useRouter();
@@ -131,23 +62,34 @@ export default function Dashboard() {
   const allDays = useMemo(() => routines.map((r) => r.day), []);
   const completeCatalog = useMemo(() => getCompleteExerciseCatalog(), []);
 
+  // Audio: solo depende de la configuración
   useEffect(() => {
     preloadVoices();
     setAudioMode(audioMode);
     setVoiceRate(voiceRate);
+  }, [audioMode, voiceRate]);
 
-    getSessions(currentUser?.id).then((sessions) => {
-      const allSessions = sessions?.length > 0 ? sessions : storeSessions;
-      setSessionsList(allSessions);
-    });
-
-    getActivePlan(currentUser?.id).then((plan) => {
-      if (plan) setActivePlan(plan);
-    });
-    getPlans(currentUser?.id).then((plans) => {
-      if (plans?.length) setSavedPlans(plans);
-    });
-  }, [audioMode, voiceRate, storeSessions, currentUser]);
+  // Datos: se leen al cambiar de usuario, no cada vez que cambian las sesiones
+  // (antes este efecto releía IndexedDB en cascada en cada cambio).
+  useEffect(() => {
+    let alive = true;
+    Promise.all([
+      getSessions(currentUser?.id),
+      getActivePlan(currentUser?.id),
+      getPlans(currentUser?.id),
+    ])
+      .then(([sessions, plan, plans]) => {
+        if (!alive) return;
+        setSessionsList(sessions?.length ? sessions : storeSessions);
+        if (plan) setActivePlan(plan);
+        if (plans?.length) setSavedPlans(plans);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?.id]);
 
   const stats = useMemo(() => buildWeeklyStats(sessionsList), [sessionsList]);
   const streakCount = useMemo(() => calculateStreak(sessionsList), [sessionsList]);
@@ -263,8 +205,6 @@ export default function Dashboard() {
         <DashboardHeader
           user={currentUser}
           streak={streakCount}
-          totalWorkouts={stats.totalWorkouts}
-          totalMinutes={stats.totalMinutes}
           weeklyDays={stats.weeklyDays}
           todayIndex={stats.todayIndex}
           totalXP={totalXP}

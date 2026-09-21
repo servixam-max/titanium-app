@@ -1,4 +1,9 @@
 import { getSessions } from "./db";
+import { estimate1RM } from "./metrics";
+
+// Definición única de 1RM: vive en metrics.ts y se reexporta aquí para no
+// romper imports existentes.
+export { estimate1RM };
 
 export interface ExerciseRecord {
   exerciseId: string;
@@ -9,13 +14,6 @@ export interface ExerciseRecord {
   totalSets: number;
   totalReps: number;
   lastDate: string;
-}
-
-// Epley formula for estimated 1RM
-export function estimate1RM(weight: number, reps: number): number {
-  if (reps === 0 || weight === 0) return 0;
-  if (reps === 1) return weight;
-  return Math.round(weight * (1 + reps / 30));
 }
 
 export async function getAllRecords(userId?: string): Promise<Map<string, ExerciseRecord>> {

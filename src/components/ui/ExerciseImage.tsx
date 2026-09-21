@@ -120,7 +120,7 @@ export default function ExerciseImage({
             ref={setImgRef}
             src={currentSrc}
             alt={alt}
-            loading={priority ? "eager" : "eager"}
+            loading={priority ? "eager" : "lazy"}
             decoding="async"
             onLoad={() => setIsLoaded(true)}
             onError={handleError}

@@ -3,6 +3,7 @@
 
 import { Routine, Plan, TrainingGoal, ExperienceLevel, EquipmentType, WeekPlan } from "./types";
 import { routines as seedRoutines } from "./data";
+import { estimate1RM } from "./metrics";
 
 export interface CoachProfileInput {
   goal?: TrainingGoal;
@@ -183,8 +184,9 @@ export function buildPlan(input: CoachProfileInput): Plan {
 }
 
 export function estimateOneRm(weight: number, reps: number): number {
-  if (reps <= 0 || weight <= 0) return 0;
-  return weight * (1 + reps / 30);
+  // Delegado en la definición única (src/lib/metrics.ts) para que el coach y
+  // los récords no den cifras distintas del mismo levantamiento.
+  return estimate1RM(weight, reps);
 }
 
 export function recommendLoad(

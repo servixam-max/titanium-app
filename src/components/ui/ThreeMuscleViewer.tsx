@@ -449,9 +449,16 @@ export default function ThreeMuscleViewer({
     let animationFrameId: number;
     let scanY = 0.48;
     let scanDir = -1;
+    // Fuera de pantalla el bucle se detiene por completo (antes seguía a 60 fps
+    // aunque el usuario estuviera en otra pestaña o sección).
+    let isPaused = false;
 
     const animate = () => {
       if (isDisposed) return;
+      if (isPaused) {
+        animationFrameId = 0;
+        return;
+      }
       animationFrameId = requestAnimationFrame(animate);
 
       controls.update();
@@ -496,10 +503,35 @@ export default function ThreeMuscleViewer({
 
     window.addEventListener("resize", handleResize);
 
+    // Pausa el render cuando el visor no está visible
+    const visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries[0]?.isIntersecting ?? true;
+        isPaused = !visible;
+        if (visible && !animationFrameId && !isDisposed) {
+          animate();
+        }
+      },
+      { threshold: 0.05 },
+    );
+    visibilityObserver.observe(canvas);
+
+    // Pausa también cuando la pestaña pasa a segundo plano
+    const handleVisibilityChange = () => {
+      const hidden = document.visibilityState === "hidden";
+      isPaused = hidden;
+      if (!hidden && !animationFrameId && !isDisposed) {
+        animate();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
       isDisposed = true;
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      visibilityObserver.disconnect();
       canvas.removeEventListener("click", handleCanvasClick);
       renderer.dispose();
       controls.dispose();

@@ -2,15 +2,13 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Sunrise, Sun, Moon, Flame, Zap, Clock } from "lucide-react";
+import { Sunrise, Sun, Moon, Flame } from "lucide-react";
 import { UserAccount } from "@/lib/types";
 import { getAthleteLevel } from "@/lib/gamification";
 
 interface DashboardHeaderProps {
   user: UserAccount | null;
   streak: number;
-  totalWorkouts: number;
-  totalMinutes: number;
   weeklyDays: boolean[];
   todayIndex: number;
   totalXP?: number;
@@ -37,8 +35,6 @@ function useGreeting() {
 export default function DashboardHeader({
   user,
   streak,
-  totalWorkouts,
-  totalMinutes,
   weeklyDays,
   todayIndex,
   totalXP,

@@ -21,6 +21,7 @@ import {
   MuscleTimeframe,
   MUSCLE_METADATA,
 } from "@/lib/muscle-engine";
+import { calculateStreak } from "@/lib/metrics";
 import AchievementsList from "@/components/ui/AchievementsList";
 import { getSessions, LocalSession } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
@@ -46,44 +47,6 @@ function safeFormatDate(dateStr: string | Date, options?: Intl.DateTimeFormatOpt
   } catch {
     return "?";
   }
-}
-
-function sameDay(a: Date, b: Date) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
-
-function calculateStreak(sessions: LocalSession[]) {
-  if (sessions.length === 0) return 0;
-  const completed = sessions.filter((s) => s.completed && s.endTime);
-  const dates = Array.from(
-    new Set(completed.map((s) => new Date(s.endTime!).toDateString())),
-  ).map((d) => new Date(d));
-  dates.sort((a, b) => b.getTime() - a.getTime());
-  if (dates.length === 0) return 0;
-
-  const today = new Date();
-  let streak = 0;
-  const check = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-  );
-  if (!dates.some((d) => sameDay(d, check))) {
-    check.setDate(check.getDate() - 1);
-  }
-  for (const d of dates) {
-    if (sameDay(d, check)) {
-      streak++;
-      check.setDate(check.getDate() - 1);
-    } else if (d < check) {
-      break;
-    }
-  }
-  return streak;
 }
 
 export default function StatsPage() {

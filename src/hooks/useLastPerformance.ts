@@ -41,6 +41,9 @@ export function useLastPerformance(exercise?: Exercise): UseLastPerformanceResul
     return () => {
       alive = false;
     };
+    // Solo se recarga al cambiar de ejercicio (el objeto Exercise se recrea en
+    // cada render del workout y recargar por él sería un bucle).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exercise?.id]);
 
   const last = useMemo(
