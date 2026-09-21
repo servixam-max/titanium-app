@@ -7,8 +7,8 @@ android {
         applicationId "com.servixam.titanium"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8020019
-        versionName "8.5.6"
+        versionCode 8020020
+        versionName "8.5.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -35,6 +35,8 @@ android {
                 keyAlias 'androiddebugkey'
                 keyPassword 'android'
             }
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
     }
     buildTypes {

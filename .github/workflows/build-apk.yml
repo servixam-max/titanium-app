@@ -50,10 +50,16 @@ jobs:
       - name: Sincronizar Capacitor con Android
         run: npx cap sync android
 
-      - name: Preparar firma de Android
+      - name: Preparar firma oficial fija de Android
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
           mkdir -p ~/.android
-          if [ ! -f ~/.android/debug.keystore ]; then
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > ~/.android/debug.keystore
+            echo "✓ Keystore oficial de FORTIXAM restaurado con éxito."
+          else
+            echo "Aviso: ANDROID_KEYSTORE_BASE64 no encontrado, generando fallback temporal"
             keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           fi
 
@@ -64,6 +70,14 @@ jobs:
         run: |
           cd android
           ./gradlew assembleRelease --no-daemon
+
+      - name: Verificar firma del APK
+        run: |
+          APK_FILE="android/app/build/outputs/apk/release/app-release.apk"
+          if [ -f "$APK_FILE" ]; then
+            echo "Verificando firma con apksigner..."
+            $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose "$APK_FILE" || true
+          fi
 
       - name: Extraer versión y renombrar APK
         id: prep
