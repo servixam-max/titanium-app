@@ -17,11 +17,6 @@ export interface MergeResult<T> {
   reason?: string;
 }
 
-function asRecord(value: unknown): Record<string, unknown> | null {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
-}
 
 function timeOf(entity: Record<string, unknown> | null): number {
   const raw = entity?.modifiedAt;
