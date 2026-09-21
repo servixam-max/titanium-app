@@ -4,19 +4,23 @@ App de fitness PWA + Android con entrenamientos guiados e individuales, seguimie
 
 ---
 
-## 🚀 Características v8
+## 🚀 Características
 
 - **13 rutinas especializadas** (fuerza, HIIT Tabata, full body, movilidad, libre) + catálogo completo de ejercicios con búsqueda por músculo y equipamiento.
-- **Cuentas y sync**: registro/login con JWT (bcrypt) contra PostgreSQL; cola de sincronización offline-first con resolución de conflictos last-write-wins. El APK funciona sin conexión y sincroniza cuando hay red.
-- **Coach inteligente**: onboarding de 5 pasos (objetivo, nivel, días/semana, equipo, limitaciones) y generación automática de un plan personalizado.
+- **Progresión de cargas**: al abrir cada ejercicio la app muestra tu última marca ("45 kg × 10, hace 3 días") y propone la de hoy con el motivo — sube peso al llegar al tope del rango, mantiene si el esfuerzo fue máximo, baja si te quedaste corto. Con precarga automática.
+- **Plan que progresa**: semanas de acumulación con subidas de carga y semana de descarga cada 4 (6 en principiantes), visible como tira de semanas con su porcentaje.
+- **Esfuerzo percibido (RPE)**: selector rápido al completar la serie que ajusta el descanso de verdad.
+- **Cuentas y sync**: registro/login con JWT (bcrypt) contra PostgreSQL; cola de sincronización offline-first con merge por versión. El detalle del entrenamiento (series, pesos, RPE) viaja con la sesión. El APK funciona sin conexión y sincroniza cuando hay red.
+- **Coach**: onboarding de 5 pasos (objetivo, nivel, días/semana, equipo, limitaciones) y generación automática de un plan personalizado.
 - **Constructor de entrenamientos** (pestaña Creador): compón tu rutina desde el catálogo, define series por repeticiones o segundos HIIT, y arráncala en modo guiado o individual.
 - **Cuerpo anatómico 3D interactivo** (WebGL/Three.js): mapa muscular con heatmap de volumen por grupos, escáner holográfico y fallback 2D sin WebGL.
 - **Motor biomecánico**: volumen efectivo por músculo (primarios + sinergistas), equivalente de carga para peso corporal y stats por timeframe.
-- **Gamificación y records**: logros con progreso, récords personales por ejercicio (1RM, peso, reps) y resumen IA del entrenamiento.
-- **Temporizador adaptativo**: el descanso se ajusta por tipo de ejercicio y duración de la serie; supersets detectados y señalados en la UI.
-- **HUD de alta visibilidad** con estética Titanium Energy (`#05090C` / `#00D68F`), modos claro y alto contraste.
+- **Gamificación y récords**: logros con progreso y récords personales por ejercicio (1RM, peso, reps) con una única definición de 1RM en toda la app.
+- **Análisis del entrenamiento**: resumen post-entreno por reglas deterministas (volumen vs. media reciente, músculos trabajados, descanso sugerido). No usa ningún modelo de lenguaje.
+- **Temporizador adaptativo**: el descanso se ajusta por tipo de ejercicio, duración y RPE; supersets detectados y señalados en la UI.
+- **Modo claro y oscuro** con cambio sin parpadeo (zero-FOUC); todas las pantallas respetan el tema.
 - **OTA**: distribución del APK vía GitHub Releases.
-- **Testing**: Vitest (35 unit) + Playwright (24 e2e contra el export estático, desktop + móvil).
+- **Testing**: Vitest (78 unit) + Playwright (16 e2e contra el export estático, incluidos contraste de modo claro y flujos de entreno).
 
 ## 🏗️ Arquitectura
 
@@ -53,6 +57,28 @@ npm run build:web
 docker compose up -d       # http://localhost:3000
 ```
 
+## 🔄 Migración de base de datos (obligatoria en instalaciones existentes)
+
+La corrección de sincronización cambió el esquema. Si ya tenías Postgres en marcha, aplica la migración **antes** de desplegar el código nuevo:
+
+```bash
+psql -h localhost -U titanium -d titanium -f server/migrations/001_sync_v2.sql
+```
+
+Es idempotente (se puede ejecutar varias veces) y hace dos cosas:
+
+1. **`workout_sessions.exercises` (JSONB)** — el detalle del entrenamiento (ejercicios → series) viaja dentro de la sesión. Antes el endpoint de sync no lo devolvía, y el cliente guardaba sesiones vacías encima de las locales: eso es lo que borraba las series del historial. La migración además **rellena** el detalle de las sesiones ya guardadas desde `exercise_logs`/`set_logs`.
+2. **`user_documents`** — tabla genérica para rutinas, ejercicios, planes planificados, logros y perfil, que antes se encolaban para sincronizar y el servidor descartaba en silencio.
+
+Si la migración no se aplica, el endpoint `/api/sync` responde 500 (no encuentra la columna) y el cliente muestra error de sincronización. **No hay pérdida de datos**: el merge aplica solo lo que viene del servidor, así que el historial local queda intacto mientras se resuelve.
+
+Para comprobar que quedó bien:
+
+```bash
+psql "$DATABASE_URL" -c "\d workout_sessions" | grep exercises
+psql "$DATABASE_URL" -c "\d user_documents"
+```
+
 ## 🔨 Builds de producción
 
 ```bash
@@ -69,13 +95,16 @@ node scripts/optimize-assets.mjs --compress  # re-encode de imágenes >120KB a W
 ## 🧪 Tests
 
 ```bash
-npm test              # Vitest (unit: coach, auth server, workout)
-npm run test:e2e      # Playwright contra dist-apk (requiere export: npm run build:apk)
+npm test              # Vitest: sync-merge y sync-mapping, progresión, coach,
+                      # biomecánica, gamificación, récords, voz, theme, auth server
+npm run test:e2e      # Playwright contra dist-apk (requiere el export: npm run build:apk)
 npm run lint          # ESLint
 npx tsc --noEmit      # TypeScript
 ```
 
-Los e2e siembran un usuario en localStorage (`fortixam_server_user`) para saltar AuthModal y cubren el flujo real: rutina → modal de calentamiento → modo guiado/individual.
+Los e2e siembran un usuario en localStorage (`fortixam_server_user`) para saltar AuthModal y cubren: el humo de la PWA, el flujo real de entreno (rutina → modal de calentamiento → guiado/individual), el constructor personalizado y el contraste del modo claro con estilos calculados.
+
+Nota: el merge de la sincronización tiene tests de regresión específicos (un payload del servidor sin detalle **no** debe borrar las series locales), y el filtrado por `user_id` de las consultas está cubierto en `sync-mapping`.
 
 ## 📦 Publicar una versión
 
