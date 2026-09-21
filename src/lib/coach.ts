@@ -1,7 +1,7 @@
 // FORTIXAM v8 — lightweight rule-based coach
 // Generates personalized plans from profile and the built-in routine catalog.
 
-import { Routine, Plan, TrainingGoal, ExperienceLevel, EquipmentType } from "./types";
+import { Routine, Plan, TrainingGoal, ExperienceLevel, EquipmentType, WeekPlan } from "./types";
 import { routines as seedRoutines } from "./data";
 
 export interface CoachProfileInput {
@@ -70,6 +70,54 @@ function scoreRoutine(
   return score;
 }
 
+/**
+ * Periodización simple pero real: acumulación con subidas semanales y una
+ * semana de descarga cada 4 (6 en principiantes), que es donde se consolida
+ * el progreso y se evita el estancamiento.
+ */
+export function buildWeeklyPlan(
+  weeks: number,
+  level: ExperienceLevel = "intermediate",
+  goal: TrainingGoal = "hypertrophy",
+): WeekPlan[] {
+  const deloadEvery = level === "beginner" ? 6 : 4;
+  const stepPct = level === "advanced" ? 7.5 : level === "beginner" ? 4 : 5;
+  const deloadPct = goal === "strength" ? 75 : 70;
+
+  const plan: WeekPlan[] = [];
+  let intensity = 100;
+
+  for (let week = 1; week <= weeks; week += 1) {
+    const isDeload = week % deloadEvery === 0;
+
+    if (isDeload) {
+      plan.push({
+        week,
+        intensityPct: deloadPct,
+        setDelta: -1,
+        isDeload: true,
+        note: `Descarga: baja al ${deloadPct}% del peso y deja una serie menos por ejercicio. Es donde se consolida el progreso.`,
+      });
+      intensity = 100;
+      continue;
+    }
+
+    plan.push({
+      week,
+      intensityPct: Math.round(intensity),
+      setDelta: 0,
+      isDeload: false,
+      note:
+        week === 1
+          ? "Semana de referencia: busca el esfuerzo correcto (RPE 7-8) sin llegar al fallo."
+          : `Sube el ${Math.round(intensity - 100)}% respecto a la semana 1. Si no llegas al rango de repeticiones, repite la semana anterior.`,
+    });
+    intensity += stepPct;
+  }
+
+  return plan;
+}
+
 export function buildPlan(input: CoachProfileInput): Plan {
   const goal = input.goal || "hypertrophy";
   const level = input.level || "intermediate";
@@ -109,6 +157,7 @@ export function buildPlan(input: CoachProfileInput): Plan {
 
   const weeks = level === "beginner" ? 4 : level === "advanced" ? 8 : 6;
   const schedule = Array.from({ length: weeks }, () => selected.map((r) => r.day));
+  const weeklyPlan = buildWeeklyPlan(weeks, level, goal);
 
   const goalLabels: Record<TrainingGoal, string> = {
     strength: "Fuerza total",
@@ -120,12 +169,13 @@ export function buildPlan(input: CoachProfileInput): Plan {
 
   return {
     name: `${goalLabels[goal]} — ${daysPerWeek} días/semana`,
-    description: `Plan generado por el coach para objetivo "${goalLabels[goal]}" con nivel ${level}. Equipamiento: ${equipment.join(", ")}.`,
+    description: `${weeks} semanas con progresión semanal y descarga cada ${level === "beginner" ? 6 : 4} semanas. Objetivo: ${goalLabels[goal]}. Nivel ${level}. Equipamiento: ${equipment.join(", ")}.`,
     goal,
     level,
     daysPerWeek,
     weeks,
     schedule: schedule.flat(), // legacy flat schedule: week1 day numbers, week2 day numbers...
+    weeklyPlan,
     active: true,
     recommended: true,
     tags: [goal, level, "auto"],
@@ -142,6 +192,8 @@ export function recommendLoad(
   previousReps?: number,
   targetReps?: number,
   goal: TrainingGoal = "hypertrophy",
+  /** % de carga de la semana actual del plan (100 = semana de referencia). */
+  intensityPct = 100,
 ): { weight: number; reps: number } {
   const reps = targetReps || previousReps || 10;
   let weight = previousWeight || 0;
@@ -149,6 +201,9 @@ export function recommendLoad(
     const oneRm = estimateOneRm(previousWeight, previousReps);
     const factor = goal === "strength" ? 0.85 : goal === "endurance" ? 0.65 : 0.75;
     weight = Math.round(oneRm * factor * 2) / 2;
+  }
+  if (weight > 0 && intensityPct !== 100) {
+    weight = Math.round(weight * (intensityPct / 100) * 2) / 2;
   }
   return { weight, reps };
 }

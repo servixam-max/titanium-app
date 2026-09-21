@@ -19,6 +19,7 @@ import {
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
 import { getAllRecords, ExerciseRecord } from "@/lib/records";
+import { useLastPerformance } from "@/hooks/useLastPerformance";
 import {
   WorkoutShell,
   ExerciseStage,
@@ -64,6 +65,7 @@ export default function GuidedWorkout() {
   const currentRound = activeWorkout.currentRound ?? 1;
   const totalRounds = routine?.rounds ?? 1;
   const currentExercise = routine?.exercises[currentExerciseIndex];
+  const { last: lastPerformance, suggestion } = useLastPerformance(currentExercise);
   const isHIIT = routine?.type === "hiit";
   const timedSeconds =
     currentExercise?.workSeconds ??
@@ -194,7 +196,7 @@ export default function GuidedWorkout() {
     haptics.tick();
   };
 
-  const handleComplete = async () => {
+  const handleComplete = async (rpe?: number) => {
     if (isFinishing) return;
     setIsFinishing(true);
     if (activeWorkout.isWorking) skipWork();
@@ -209,7 +211,7 @@ export default function GuidedWorkout() {
     triggerFeedback();
 
     if (isWorkoutFinishing) {
-      completeSet(currentExerciseIndex, currentSet, undefined, reps);
+      completeSet(currentExerciseIndex, currentSet, undefined, reps, undefined, rpe);
       if (audioEnabled) announceWorkoutComplete();
       await finishWorkout();
       router.push("/workout/complete");
@@ -233,7 +235,7 @@ export default function GuidedWorkout() {
       }
     }
 
-    completeSet(currentExerciseIndex, currentSet, undefined, reps);
+    completeSet(currentExerciseIndex, currentSet, undefined, reps, undefined, rpe);
   };
 
   const handleRepeatLastSet = () => {
@@ -285,6 +287,8 @@ export default function GuidedWorkout() {
       reps={activeWorkout.exerciseReps[currentExercise.id] || 0}
       showRepeat={currentSet > 1}
       existingRecord={recordsMap.get(currentExercise.id)}
+      lastPerformance={lastPerformance}
+      suggestion={suggestion}
       onWeightChange={(w) => setExerciseWeight(currentExercise.id, w)}
       onRepsChange={(r) => setExerciseReps(currentExercise.id, r)}
       onComplete={handleComplete}

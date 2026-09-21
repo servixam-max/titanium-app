@@ -87,6 +87,17 @@ export interface Routine extends Partial<SyncableEntity> {
   planId?: string;
 }
 
+export interface WeekPlan {
+  /** Semana (1-based). */
+  week: number;
+  /** % de la carga base de la primera semana. */
+  intensityPct: number;
+  /** Series extra (+) o menos (-) por ejercicio respecto a la rutina. */
+  setDelta: number;
+  isDeload: boolean;
+  note: string;
+}
+
 export interface Plan extends Partial<SyncableEntity> {
   name: string;
   description: string;
@@ -95,6 +106,8 @@ export interface Plan extends Partial<SyncableEntity> {
   daysPerWeek: number;
   weeks: number;
   schedule: number[]; // routine day numbers per week, in order (legacy plans)
+  /** Progresión semana a semana (intensidad, descargas). */
+  weeklyPlan?: WeekPlan[];
   active?: boolean;
   recommended?: boolean;
   tags: string[];

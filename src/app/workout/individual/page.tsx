@@ -17,6 +17,7 @@ import {
 import { haptics } from "@/lib/haptics";
 import { detectSupersetGroups } from "@/lib/workout";
 import { getAllRecords, ExerciseRecord } from "@/lib/records";
+import { useLastPerformance } from "@/hooks/useLastPerformance";
 import {
   WorkoutShell,
   ExerciseStage,
@@ -58,6 +59,7 @@ export default function IndividualWorkout() {
   const currentRound = activeWorkout.currentRound ?? 1;
   const totalRounds = routine?.rounds ?? 1;
   const currentExercise = routine?.exercises[currentExerciseIndex];
+  const { last: lastPerformance, suggestion } = useLastPerformance(currentExercise);
   const supersetGroups = useMemo(() => (routine ? detectSupersetGroups(routine) : []), [routine]);
 
   // Read exercise query param once if provided
@@ -133,7 +135,7 @@ export default function IndividualWorkout() {
     haptics.tick();
   };
 
-  const handleComplete = async () => {
+  const handleComplete = async (rpe?: number) => {
     if (isFinishing) return;
     setIsFinishing(true);
     const targetMatch = currentExercise.reps.match(/\d+/g);
@@ -167,7 +169,7 @@ export default function IndividualWorkout() {
     }
 
     if (isWorkoutFinishing) {
-      completeSet(currentExerciseIndex, currentSet, undefined, reps);
+      completeSet(currentExerciseIndex, currentSet, undefined, reps, undefined, rpe);
       if (audioEnabled) announceWorkoutComplete();
       haptics.complete();
       await finishWorkout();
@@ -176,7 +178,7 @@ export default function IndividualWorkout() {
     }
     setIsFinishing(false);
 
-    completeSet(currentExerciseIndex, currentSet, undefined, reps);
+    completeSet(currentExerciseIndex, currentSet, undefined, reps, undefined, rpe);
 
     if (!isLastSet && audioEnabled) {
       setTimeout(() => announceRest(currentExercise.restSeconds), 800);
@@ -239,6 +241,8 @@ export default function IndividualWorkout() {
             reps={activeWorkout.exerciseReps[currentExercise.id] || 0}
             showRepeat={currentSet > 1}
             existingRecord={recordsMap.get(currentExercise.id)}
+            lastPerformance={lastPerformance}
+            suggestion={suggestion}
             onWeightChange={(w) => setExerciseWeight(currentExercise.id, w)}
             onRepsChange={(r) => setExerciseReps(currentExercise.id, r)}
             onComplete={handleComplete}

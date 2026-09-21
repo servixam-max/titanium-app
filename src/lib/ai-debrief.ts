@@ -1,7 +1,7 @@
 import { WorkoutSession } from "./types";
 import { getExerciseById } from "./data";
 
-export interface AIDebriefResult {
+export interface WorkoutDebriefResult {
   headline: string;
   summary: string;
   volumeDeltaPercent: number;
@@ -23,11 +23,11 @@ const MUSCLE_SPANISH_NAMES: Record<string, string> = {
   hiit: "Cardio y Resistencia",
 };
 
-export function generateAIDebrief(
+export function generateWorkoutDebrief(
   currentSession: WorkoutSession,
   historicalSessions: WorkoutSession[] = [],
   athleteName: string = "Atleta"
-): AIDebriefResult {
+): WorkoutDebriefResult {
   const currentVol =
     currentSession.totalVolume ??
     (currentSession.exercises || []).reduce(
@@ -82,7 +82,7 @@ export function generateAIDebrief(
 
   // 3. Formulate headline and summary
   let headline = `¡Excelente sesión, ${athleteName}!`;
-  const tags: AIDebriefResult["tags"] = [];
+  const tags: WorkoutDebriefResult["tags"] = [];
 
   if (volumeDeltaPercent > 5) {
     headline = `🔥 ¡Sobrecarga progresiva lograda, ${athleteName}!`;

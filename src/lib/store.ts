@@ -40,6 +40,7 @@ interface AppState {
     weight?: number,
     reps?: number,
     duration?: number,
+    rpe?: number,
   ) => void;
   previousExercise: () => void;
   goToExercise: (index: number) => void;
@@ -338,7 +339,7 @@ export const useAppStore = create<AppState>()(
         set({ activeWorkout: { ...get().activeWorkout, justFinished: false } });
       },
 
-      completeSet: (exerciseIndex, setNumber, weight, reps, duration) => {
+      completeSet: (exerciseIndex, setNumber, weight, reps, duration, rpe) => {
         const { activeWorkout } = get();
         if (!activeWorkout.session) return;
 
@@ -367,6 +368,7 @@ export const useAppStore = create<AppState>()(
             weight: setWeight,
             reps: setReps,
             duration,
+            rpe,
             completed: true,
             timestamp: nowIso(),
           };
@@ -377,6 +379,7 @@ export const useAppStore = create<AppState>()(
             weight: setWeight,
             reps: setReps,
             duration,
+            rpe,
             completed: true,
             timestamp: nowIso(),
           });
@@ -405,6 +408,7 @@ export const useAppStore = create<AppState>()(
           ? 0
           : calculateAdaptiveRest({
               baseRestSeconds: currentExercise.restSeconds || 75,
+              lastSetRpe: rpe,
               lastSetDuration,
               exerciseType,
               goal: "hypertrophy",

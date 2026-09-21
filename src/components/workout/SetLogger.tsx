@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Minus, Plus, CheckCircle, Hash, Weight, RotateCcw } from "lucide-react";
+import { Minus, Plus, CheckCircle, Hash, Weight, RotateCcw, TrendingUp, TrendingDown, Sparkles } from "lucide-react";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { Exercise } from "@/lib/types";
 import { haptics } from "@/lib/haptics";
 import { estimate1RM, checkNewSetRecord, ExerciseRecord } from "@/lib/records";
+import { LastPerformance, LoadSuggestion } from "@/lib/progression";
 import VoiceLoggerButton from "./VoiceLoggerButton";
 import NumberTicker from "@/components/ui/NumberTicker";
 import { ParsedVoiceWorkout } from "@/lib/voice-parser";
@@ -18,15 +19,32 @@ interface SetLoggerProps {
   reps: number;
   showRepeat?: boolean;
   existingRecord?: ExerciseRecord;
+  lastPerformance?: LastPerformance;
+  suggestion?: LoadSuggestion;
   onWeightChange: (weight: number) => void;
   onRepsChange: (reps: number) => void;
-  onComplete: () => void;
+  onComplete: (rpe?: number) => void;
   onRepeatLastSet?: () => void;
   className?: string;
 }
 
 function clamp(value: number, min = 0, max = 9999): number {
   return Math.max(min, Math.min(max, value));
+}
+
+/** "hace 3 días" / "ayer" / "hoy", para dar contexto a la última marca. */
+function relativeDate(iso: string): string {
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return "";
+  const days = Math.floor((Date.now() - then) / 86_400_000);
+  if (days <= 0) return "hoy";
+  if (days === 1) return "ayer";
+  if (days < 7) return `hace ${days} días`;
+  const weeks = Math.floor(days / 7);
+  if (weeks === 1) return "hace 1 semana";
+  if (weeks < 5) return `hace ${weeks} semanas`;
+  const months = Math.floor(days / 30);
+  return months <= 1 ? "hace 1 mes" : `hace ${months} meses`;
 }
 
 export default function SetLogger({
@@ -37,6 +55,8 @@ export default function SetLogger({
   reps,
   showRepeat = false,
   existingRecord,
+  lastPerformance,
+  suggestion,
   onWeightChange,
   onRepsChange,
   onComplete,
@@ -45,6 +65,8 @@ export default function SetLogger({
 }: SetLoggerProps) {
   const [localWeight, setLocalWeight] = useState(String(weight || ""));
   const [localReps, setLocalReps] = useState(String(reps || ""));
+  // RPE opcional: si se marca, el descanso se ajusta al esfuerzo real.
+  const [rpe, setRpe] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     setLocalWeight(weight > 0 ? String(weight) : "");
@@ -94,6 +116,17 @@ export default function SetLogger({
     haptics.tick();
   };
 
+  const applySuggestion = () => {
+    if (!suggestion) return;
+    if (suggestion.weight > 0) {
+      setLocalWeight(String(suggestion.weight));
+      onWeightChange(suggestion.weight);
+    }
+    setLocalReps(String(suggestion.reps));
+    onRepsChange(suggestion.reps);
+    haptics.selection();
+  };
+
   const handleVoiceParsed = (data: ParsedVoiceWorkout) => {
     if (data.weight !== undefined) {
       setLocalWeight(String(data.weight));
@@ -127,6 +160,51 @@ export default function SetLogger({
         )}
         <VoiceLoggerButton onParsed={handleVoiceParsed} />
       </div>
+
+      {/* Última marca + sugerencia de progresión: la app deja de preguntar y propone */}
+      {(lastPerformance || suggestion) && (
+        <div className="flex items-center justify-between gap-2 rounded-2xl border border-primary/25 bg-primary/[0.06] px-3 py-2">
+          <div className="min-w-0 flex flex-col gap-0.5">
+            {lastPerformance ? (
+              <p className="text-xs text-zinc-400 leading-tight">
+                Última vez:{" "}
+                <span className="font-mono font-bold text-white">
+                  {lastPerformance.topWeight} kg × {lastPerformance.repsAtTopWeight}
+                </span>
+                <span className="ml-1 text-zinc-500">· {relativeDate(lastPerformance.date)}</span>
+              </p>
+            ) : (
+              <p className="text-xs text-zinc-400 leading-tight">Primera vez con este ejercicio</p>
+            )}
+
+            {suggestion && (
+              <p className="flex items-center gap-1.5 text-xs leading-tight">
+                {suggestion.action === "increase" && <TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-primary" />}
+                {suggestion.action === "down" && <TrendingDown className="h-3.5 w-3.5 flex-shrink-0 text-amber-400" />}
+                {suggestion.action === "start" && <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-accent-cyan" />}
+                {suggestion.action === "hold" && <Weight className="h-3.5 w-3.5 flex-shrink-0 text-zinc-400" />}
+                <span className="truncate text-zinc-300">
+                  <span className="font-mono font-bold text-primary">
+                    {suggestion.weight > 0 ? `${suggestion.weight} kg × ` : ""}
+                    {suggestion.reps}
+                  </span>{" "}
+                  · {suggestion.reason}
+                </span>
+              </p>
+            )}
+          </div>
+
+          {suggestion && (suggestion.weight !== weight || suggestion.reps !== reps) && (
+            <button
+              type="button"
+              onClick={applySuggestion}
+              className="flex-shrink-0 rounded-xl border border-primary/40 bg-primary/15 px-3 py-2 text-[11px] font-mono font-bold uppercase tracking-wider text-primary active:scale-95 transition-all"
+            >
+              Usar
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         {/* Weight input */}
@@ -217,9 +295,37 @@ export default function SetLogger({
         </div>
       )}
 
+      {/* Esfuerzo percibido (RPE): opcional, ajusta el descanso y la progresión */}
+      <div className="flex items-center justify-between gap-2 px-0.5">
+        <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
+          ¿Cómo fue?
+        </span>
+        <div className="flex items-center gap-1.5">
+          {[6, 7, 8, 9, 10].map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => {
+                setRpe(rpe === value ? undefined : value);
+                haptics.selection();
+              }}
+              aria-pressed={rpe === value}
+              aria-label={`Esfuerzo ${value} de 10`}
+              className={`h-8 w-8 rounded-xl font-mono text-xs font-bold transition-all active:scale-95 ${
+                rpe === value
+                  ? "bg-primary text-black border border-primary"
+                  : "bg-white/5 text-zinc-400 border border-white/10 hover:bg-white/10"
+              }`}
+            >
+              {value}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <PrimaryButton
         leftIcon={<CheckCircle className="w-6 h-6" />}
-        onClick={onComplete}
+        onClick={() => onComplete(rpe)}
       >
         {isLastSet && isLastExercise ? "FINALIZAR" : "COMPLETAR SERIE"}
       </PrimaryButton>

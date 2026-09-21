@@ -10,7 +10,7 @@ import { routines } from "@/lib/data";
 import { playVictoryFanfare } from "@/lib/audio";
 import NumberTicker from "@/components/ui/NumberTicker";
 import BorderBeam from "@/components/ui/BorderBeam";
-import { generateAIDebrief } from "@/lib/ai-debrief";
+import { generateWorkoutDebrief } from "@/lib/ai-debrief";
 
 interface WorkoutCompleteCardProps {
   session?: WorkoutSession | null;
@@ -98,7 +98,7 @@ export default function WorkoutCompleteCard({
   }, []);
 
   const aiDebrief = useMemo(
-    () => (safeSession ? generateAIDebrief(safeSession, safeSessions) : null),
+    () => (safeSession ? generateWorkoutDebrief(safeSession, safeSessions) : null),
     [safeSession, safeSessions]
   );
 
@@ -242,7 +242,7 @@ export default function WorkoutCompleteCard({
         />
       </motion.div>
 
-      {/* AI Workout Debrief Card */}
+      {/* Análisis del entrenamiento (reglas deterministas, sin modelo) */}
       {aiDebrief && (
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -262,7 +262,7 @@ export default function WorkoutCompleteCard({
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-              Coach IA · Debrief Biomecánico
+              Análisis del entrenamiento
             </span>
             <div className="flex gap-1.5 flex-wrap">
               {aiDebrief.tags.map((t, idx) => (

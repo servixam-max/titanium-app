@@ -322,6 +322,28 @@ export default function PlansView({
                       ))}
                     </div>
 
+                    {/* Progresión semanal: hace visible qué toca cada semana */}
+                    {plan.weeklyPlan && plan.weeklyPlan.length > 0 && (
+                      <div className="mb-3 flex flex-wrap items-center gap-1.5">
+                        {plan.weeklyPlan.map((week) => (
+                          <span
+                            key={week.week}
+                            title={week.note}
+                            className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-mono font-bold ${
+                              week.isDeload
+                                ? "border-amber-400/40 bg-amber-400/10 text-amber-300"
+                                : "border-white/10 bg-white/5 text-zinc-300"
+                            }`}
+                          >
+                            S{week.week}
+                            <span className={week.isDeload ? "text-amber-300" : "text-primary"}>
+                              {week.intensityPct}%
+                            </span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Preview routines */}
                     <div className="flex flex-wrap gap-1.5">
                       {planRoutines.map((r) => (

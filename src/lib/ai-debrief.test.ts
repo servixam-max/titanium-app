@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateAIDebrief } from "./ai-debrief";
+import { generateWorkoutDebrief } from "./ai-debrief";
 import { WorkoutSession } from "./types";
 
 describe("ai-debrief (Smart Post-Workout Analysis)", () => {
@@ -20,7 +20,7 @@ describe("ai-debrief (Smart Post-Workout Analysis)", () => {
   };
 
   it("generates headline and summary for solo session", () => {
-    const debrief = generateAIDebrief(mockCurrentSession, [], "Xam");
+    const debrief = generateWorkoutDebrief(mockCurrentSession, [], "Xam");
     expect(debrief.headline).toContain("Xam");
     expect(debrief.summary).toBeDefined();
     expect(debrief.suggestedRestHours).toBeGreaterThanOrEqual(24);
@@ -34,7 +34,7 @@ describe("ai-debrief (Smart Post-Workout Analysis)", () => {
       totalVolume: 4000, // current 5000 is +25%
     };
 
-    const debrief = generateAIDebrief(mockCurrentSession, [pastSession], "Xam");
+    const debrief = generateWorkoutDebrief(mockCurrentSession, [pastSession], "Xam");
     expect(debrief.volumeDeltaPercent).toBe(25);
     expect(debrief.headline).toContain("Sobrecarga progresiva");
   });
