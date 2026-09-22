@@ -116,6 +116,50 @@ cp android/app/build/outputs/apk/release/app-release.apk FORTIXAM-<version>.apk
 ./scripts/publish-release.sh   # GitHub Releases (OTA)
 ```
 
+### Publicación automática (vía tag + GitHub Actions)
+
+`./scripts/publish-release.sh` compila y publica en local, así que necesita el
+Android SDK y el keystore a mano. El camino recomendado hoy es dejar que CI lo
+haga: si empujas un tag `vX.Y.Z`, [GitHub Actions](./.github/workflows/build-apk.yml)
+compila el APK, lo firma con `ANDROID_KEYSTORE_BASE64` y lo sube a la release de
+ese tag — que es exactamente el canal que consulta el OTA de la app.
+
+## 🔁 Mejora diaria automática
+
+El proyecto tiene un circuito para publicar **una mejora pequeña y verificada
+cada día** sin intervención manual: un cron de Hermes revisa qué tarea toca, la
+implementa, pasa las puertas de calidad y publica una versión nueva.
+
+```bash
+scripts/next-improvement.sh           # imprime la siguiente tarea pendiente del plan
+
+scripts/daily-improve.sh "feat(ui): resumen corto" "Motivo y alcance del cambio"
+```
+
+`daily-improve.sh` es el único punto de publicación y hace, en este orden:
+
+1. valida que la rama es `main` y que el árbol está limpio (aborta si no);
+2. `npm test -- --run` — si hay rojo, no se publica;
+3. `BUILD_MODE=apk npm run build` — si el export estático falla, no se publica;
+4. commitea el cambio del día;
+5. sube la versión patch con `node scripts/release.mjs patch` (unifica
+   `package.json`, `version.json`, `ota_server/version.json`, `src/lib/ota-sync.ts`
+   y `android/app/build.gradle`) y lo commitea;
+6. empuja `main`;
+7. crea y empuja el tag `vX.Y.Z` → GitHub Actions compila y publica el APK.
+
+El trabajo del día se define en [`docs/plan-mejora-diaria.md`](./docs/plan-mejora-diaria.md):
+fases ordenadas por prioridad, una casilla por día, y una bitácora con la versión
+en que se publicó cada una. Un día que no se marca casilla es un día que no se
+publicó.
+
+Para comprobar que la release quedó bien (el nombre del asset debe coincidir con
+`apkName` de `version.json`):
+
+```bash
+gh release view vX.Y.Z --json tagName,assets
+```
+
 ## 🤖 Guía para desarrolladores e IA
 
 👉 **[AI_MAINTENANCE_GUIDE.md](./AI_MAINTENANCE_GUIDE.md)**
