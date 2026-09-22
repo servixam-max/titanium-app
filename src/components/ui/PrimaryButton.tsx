@@ -10,6 +10,11 @@ interface PrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   rightIcon?: React.ReactNode;
 }
 
+/**
+ * Botón del sistema: texto en caja baja y tipografía normal (antes iba en
+ * monoespaciada mayúscula con tracking amplio, que es lo que daba el aire de
+ * panel de control). Sin borde: la jerarquía la marca el relleno.
+ */
 export default function PrimaryButton({
   variant = "primary",
   size = "lg",
@@ -21,26 +26,22 @@ export default function PrimaryButton({
   ...props
 }: PrimaryButtonProps) {
   const variants = {
-    primary:
-      "bg-primary hover:brightness-105 text-white border-primary/40 shadow-sm font-bold",
-    secondary:
-      "bg-white dark:bg-[#131626] text-slate-800 dark:text-white border-slate-200 dark:border-white/10 hover:border-primary/40 hover:bg-slate-50 dark:hover:bg-[#181d2e] shadow-sm",
-    danger:
-      "bg-red-50 dark:bg-gradient-to-br dark:from-[#2a1515] dark:to-[#1a1010] text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/20 shadow-sm",
-    ghost:
-      "bg-transparent text-slate-700 dark:text-slate-300 border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5",
+    primary: "bg-primary text-black font-semibold",
+    secondary: "fx-inset text-foreground font-semibold",
+    danger: "bg-red-500/12 text-red-600 dark:text-red-400 font-semibold",
+    ghost: "bg-transparent text-[color:var(--text-secondary)] hover:text-foreground font-medium",
   };
 
   const sizes = {
-    sm: "h-[44px] text-sm",
-    md: "h-[52px] text-base",
-    lg: "h-[64px] text-lg",
+    sm: "h-[44px] text-[15px]",
+    md: "h-[50px] text-[16px]",
+    lg: "h-[54px] text-[17px]",
   };
 
   return (
     <button
       className={cn(
-        "font-mono font-black uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100 border",
+        "fx-press flex items-center justify-center gap-2 rounded-[var(--fx-radius-control)] disabled:opacity-50",
         variants[variant],
         sizes[size],
         fullWidth && "w-full",
