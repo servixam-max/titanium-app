@@ -36,6 +36,7 @@ import { haptics } from "@/lib/haptics";
 import { Routine, WorkoutSession, Exercise, Plan } from "@/lib/types";
 import { calculateTotalXP } from "@/lib/gamification";
 import { calculateStreak, buildWeeklyStats, sameDay } from "@/lib/metrics";
+import { filterCatalog } from "@/lib/catalog-filter";
 
 const InstallPrompt = dynamic(() => import("@/components/ui/InstallPrompt"), { ssr: false });
 
@@ -144,30 +145,16 @@ export default function Dashboard() {
     return routines.filter((r) => r.categoryTag === selectedCategory);
   }, [selectedCategory]);
 
-  const filteredCatalog = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
-    return completeCatalog.filter((ex) => {
-      if (q) {
-        const matchName = ex.name.toLowerCase().includes(q);
-        const matchDesc = ex.description?.toLowerCase().includes(q);
-        const matchCat = ex.category?.toLowerCase().includes(q);
-        if (!matchName && !matchDesc && !matchCat) return false;
-      }
-      if (selectedMuscle !== "all") {
-        if (selectedMuscle === "core") {
-          if (ex.category !== "core") return false;
-        } else if (selectedMuscle === "full_body") {
-          if (ex.category !== "full_body" && ex.category !== "hiit") return false;
-        } else {
-          if (ex.category !== selectedMuscle) return false;
-        }
-      }
-      if (selectedEquipment !== "all") {
-        if (ex.equipment !== selectedEquipment && ex.equipment !== "both") return false;
-      }
-      return true;
-    });
-  }, [completeCatalog, searchQuery, selectedMuscle, selectedEquipment]);
+  const filteredCatalog = useMemo(
+    () =>
+      filterCatalog({
+        exercises: completeCatalog,
+        query: searchQuery,
+        muscle: selectedMuscle,
+        equipment: selectedEquipment,
+      }),
+    [completeCatalog, searchQuery, selectedMuscle, selectedEquipment],
+  );
 
   const handleStartSingleExercise = (exercise: Exercise) => {
     const singleRoutine: Routine = {

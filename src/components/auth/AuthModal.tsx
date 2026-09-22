@@ -340,6 +340,7 @@ export default function AuthModal() {
               setErrorMsg("");
               setSuccessMsg("");
             }}
+            role="tab"
             aria-selected={activeTab === "login"}
             className="fx-segmented-item"
           >
@@ -352,6 +353,7 @@ export default function AuthModal() {
               setErrorMsg("");
               setSuccessMsg("");
             }}
+            role="tab"
             aria-selected={activeTab === "register"}
             className="fx-segmented-item"
           >

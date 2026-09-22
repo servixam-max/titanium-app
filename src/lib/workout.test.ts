@@ -3,14 +3,27 @@ import { calculateAdaptiveRest, detectSupersetGroups, isInSuperset, getSupersetP
 import { Routine } from "./types";
 
 describe("workout helpers", () => {
-  it("adapts rest based on RPE and goal", () => {
-    const rest = calculateAdaptiveRest({ baseRestSeconds: 60, lastSetRpe: 9, exerciseType: "compound", goal: "strength" });
-    expect(rest).toBeGreaterThan(60);
+  it("respeta el descanso prescrito cuando no hay RPE", () => {
+    // Los días de fuerza prescriben 75 s y deben quedarse en 75 s.
+    expect(calculateAdaptiveRest({ baseRestSeconds: 75 })).toBe(75);
+    expect(calculateAdaptiveRest({ baseRestSeconds: 60 })).toBe(60);
   });
 
-  it("caps rest between 15 and 300 seconds", () => {
-    expect(calculateAdaptiveRest({ baseRestSeconds: 5, exerciseType: "isolation" })).toBe(15);
-    expect(calculateAdaptiveRest({ baseRestSeconds: 400, exerciseType: "isolation" })).toBe(300);
+  it("alarga el descanso si el esfuerzo fue máximo", () => {
+    expect(calculateAdaptiveRest({ baseRestSeconds: 75, lastSetRpe: 9 })).toBe(95);
+  });
+
+  it("acorta el descanso si la serie fue cómoda", () => {
+    expect(calculateAdaptiveRest({ baseRestSeconds: 75, lastSetRpe: 5 })).toBe(60);
+  });
+
+  it("suma recuperación en series largas por tiempo", () => {
+    expect(calculateAdaptiveRest({ baseRestSeconds: 20, lastSetDuration: 40 })).toBe(40);
+  });
+
+  it("acota el resultado entre 15 y 300 segundos", () => {
+    expect(calculateAdaptiveRest({ baseRestSeconds: 5 })).toBe(15);
+    expect(calculateAdaptiveRest({ baseRestSeconds: 400 })).toBe(300);
   });
 
   it("detects push/pull supersets", () => {

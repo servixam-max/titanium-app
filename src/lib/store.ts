@@ -396,22 +396,15 @@ export const useAppStore = create<AppState>()(
         const currentRound = activeWorkout.currentRound ?? 1;
         const isLastRound = currentRound >= rounds;
         const isWorkoutFinishing = isLastSet && isLastExercise && isLastRound;
+        // El descanso prescrito manda; solo se adapta por esfuerzo real (RPE)
+        // y por series largas por tiempo.
         const lastSetDuration = duration || (currentExercise.workSeconds ? currentExercise.workSeconds : undefined);
-        const category = currentExercise.category;
-        const exerciseType =
-          category === "chest" || category === "back" || category === "legs" || category === "shoulders"
-            ? "compound"
-            : category === "biceps" || category === "triceps" || category === "core"
-            ? "isolation"
-            : "compound";
         const nextRestSeconds = isWorkoutFinishing
           ? 0
           : calculateAdaptiveRest({
               baseRestSeconds: currentExercise.restSeconds || 75,
               lastSetRpe: rpe,
               lastSetDuration,
-              exerciseType,
-              goal: "hypertrophy",
             });
 
         const nextActiveWorkout: ActiveWorkoutState = {

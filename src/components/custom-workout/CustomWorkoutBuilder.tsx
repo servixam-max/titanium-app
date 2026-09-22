@@ -24,6 +24,7 @@ import { Exercise, Routine, TrainingMode, MuscleCategory, EquipmentType } from "
 import { useAppStore } from "@/lib/store";
 import { saveRoutine, getRoutines, deleteRoutine, nowIso } from "@/lib/db";
 import { haptics } from "@/lib/haptics";
+import { filterCatalog } from "@/lib/catalog-filter";
 import ExerciseImage from "@/components/ui/ExerciseImage";
 
 export interface CustomExerciseItem {
@@ -103,30 +104,16 @@ export default function CustomWorkoutBuilder({
   }, [loadSavedRoutines]);
 
   // Filter exercises
-  const filteredCatalog = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
-    return catalog.filter((ex) => {
-      if (q) {
-        const matchName = ex.name.toLowerCase().includes(q);
-        const matchDesc = ex.description?.toLowerCase().includes(q);
-        const matchCat = ex.category?.toLowerCase().includes(q);
-        if (!matchName && !matchDesc && !matchCat) return false;
-      }
-      if (activeMuscle !== "all") {
-        if (activeMuscle === "core") {
-          if (ex.category !== "core") return false;
-        } else if (activeMuscle === "full_body") {
-          if (ex.category !== "full_body" && ex.category !== "hiit") return false;
-        } else {
-          if (ex.category !== activeMuscle) return false;
-        }
-      }
-      if (equipmentFilter !== "all") {
-        if (ex.equipment !== equipmentFilter && ex.equipment !== "both") return false;
-      }
-      return true;
-    });
-  }, [catalog, searchQuery, activeMuscle, equipmentFilter]);
+  const filteredCatalog = useMemo(
+    () =>
+      filterCatalog({
+        exercises: catalog,
+        query: searchQuery,
+        muscle: activeMuscle,
+        equipment: equipmentFilter,
+      }),
+    [catalog, searchQuery, activeMuscle, equipmentFilter],
+  );
 
   // Check how many times an exercise is added
   const itemCounts = useMemo(() => {

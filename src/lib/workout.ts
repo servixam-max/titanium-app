@@ -3,34 +3,34 @@
 import { Routine, Exercise, ExerciseGroup } from "./types";
 
 export interface AdaptiveRestInput {
+  /** Descanso prescrito en la rutina (es la base que manda). */
   baseRestSeconds: number;
+  /** Esfuerzo percibido de la serie recién completada (opcional). */
   lastSetRpe?: number;
+  /** Duración de la serie en segundos, para series por tiempo. */
   lastSetDuration?: number;
-  exerciseType?: "compound" | "isolation" | "hiit";
-  goal?: "strength" | "hypertrophy" | "fat_loss" | "endurance" | "mobility";
 }
 
+/**
+ * Descanso de la serie siguiente.
+ *
+ * El descanso prescrito en la rutina manda: NO se ajusta por tipo de ejercicio
+ * (eso desviaba los 75 s del catálogo a 90 s en los compuestos). Solo se adapta
+ * cuando hay información real del esfuerzo:
+ *  - RPE registrado: más descanso si fue muy duro, menos si fue cómodo.
+ *  - Series por tiempo largas (HIIT): recuperación proporcional al trabajo.
+ */
 export function calculateAdaptiveRest(input: AdaptiveRestInput): number {
   let rest = input.baseRestSeconds;
-  const { lastSetRpe, lastSetDuration, exerciseType = "compound", goal = "hypertrophy" } = input;
+  const { lastSetRpe, lastSetDuration } = input;
 
-  // Base by goal
-  if (goal === "strength") rest = Math.max(rest, 150);
-  if (goal === "endurance" || goal === "fat_loss") rest = Math.min(rest, 60);
-  if (goal === "mobility") rest = Math.min(rest, 45);
-
-  // Compound movements need more rest than isolation
-  if (exerciseType === "compound") rest += 15;
-  if (exerciseType === "isolation") rest -= 10;
-
-  // Higher RPE = more rest; lower RPE = less rest
   if (lastSetRpe) {
     if (lastSetRpe >= 9) rest += 20;
     else if (lastSetRpe >= 7) rest += 10;
     else if (lastSetRpe <= 5) rest -= 15;
   }
 
-  // Long sets (e.g. HIIT 45s work) need more recovery
+  // Series largas por tiempo (p. ej. HIIT de 45 s) necesitan más recuperación
   if (lastSetDuration && lastSetDuration > 30) {
     rest += Math.round(lastSetDuration * 0.5);
   }

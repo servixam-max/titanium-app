@@ -156,8 +156,17 @@ interface LegacyWeight {
 export const db = new FortixamDatabase();
 
 // Migrate historical data from previous database versions (e.g. titanium-db)
+const LEGACY_MIGRATION_FLAG = "fortixam_legacy_migration_v1";
+
 export async function migrateLegacyDatabases(): Promise<void> {
   if (typeof window === "undefined") return;
+  // Migración de una sola vez por dispositivo: antes se ejecutaba en cada
+  // carga de página, abriendo y recorriendo bases antiguas sin necesidad.
+  try {
+    if (localStorage.getItem(LEGACY_MIGRATION_FLAG) === "1") return;
+  } catch {
+    // sin localStorage: se ejecuta igualmente (es idempotente)
+  }
   try {
     const candidateNames = ["titanium-db", "titanium", "fortixam", "fortixam-db"];
 
@@ -253,6 +262,12 @@ export async function migrateLegacyDatabases(): Promise<void> {
     }
   } catch (err) {
     console.warn("[DB Migration] Overall migration notice:", err);
+  } finally {
+    try {
+      localStorage.setItem(LEGACY_MIGRATION_FLAG, "1");
+    } catch {
+      // sin localStorage no se puede marcar; se reintentará (idempotente)
+    }
   }
 }
 
@@ -577,10 +592,12 @@ export async function saveProfile(profile: UserProfile): Promise<void> {
 }
 
 export async function getProfile(userId?: string): Promise<UserProfile | undefined> {
-  const target = userId || getActiveUserId() || "xam-seed-id";
-  const profile = await db.profiles.where("userId").equals(target).first();
-  if (profile) return profile;
-  return db.profiles.toCollection().first();
+  const target = userId || getActiveUserId();
+  if (!target) return undefined;
+  // Solo el perfil del usuario indicado: antes, si no existía, devolvía el
+  // primero de la base — es decir, el de OTRA cuenta en un dispositivo
+  // compartido. Nunca se cruzan perfiles entre cuentas.
+  return db.profiles.where("userId").equals(target).first();
 }
 
 // =========================================================

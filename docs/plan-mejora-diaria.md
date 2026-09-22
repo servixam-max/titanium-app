@@ -36,8 +36,9 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   cron, tag → CI → release) para que cualquiera entienda el circuito. *(v8.5.10)*
 - [x] **F0.4** Añadir `npm run verify` (lint + test + build apk) para tener las
   tres puertas de calidad en un solo comando. *(v8.5.11)*
-- [ ] **F0.5** Documentar el keystore de firma (`ANDROID_KEYSTORE_BASE64`) y qué
+- [x] **F0.5** Documentar el keystore de firma (`ANDROID_KEYSTORE_BASE64`) y qué
   hacer si CI genera un APK con firma distinta (la app no instalaría encima).
+  *(v8.5.13 · `docs/firma-apk.md`)*
 
 ## Fase 1 — Novedades dentro de la app (visibilidad del avance)
 
@@ -97,3 +98,5 @@ justo debajo y se documenta el motivo.
 | v8.5.9 | — | Punto de partida: CI de APK, modo claro/oscuro, progresión de cargas. |
 | v8.5.10 | F0.3 | Circuito de mejora diaria: `daily-improve.sh`, `next-improvement.sh`, plan con fases y bitácora, y sección en el README. |
 | v8.5.11 | F0.4 | `npm run verify` (scripts/verify.mjs): lint + tests + build del APK en un solo comando, parando en la primera puerta que falle; `daily-improve.sh` y la documentación usan esa única ruta. |
+| v8.5.12 | — | Sistema visual limpio (estilo Apple) en todas las pantallas, tests e2e del sistema de diseño y de la pantalla de acceso; descansos de los días a los 75 s prescritos. |
+| v8.5.13 | F0.5 | `docs/firma-apk.md`: cómo firma la CI (certificado del secreto, estable → OTA sin desinstalar), qué pasa si se borra el secreto y por qué un APK compilado a mano no instala encima. |
