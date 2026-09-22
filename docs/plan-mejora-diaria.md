@@ -34,8 +34,8 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   retirar la copia manual de `next.config.apk.mjs`. *(v8.5.9)*
 - [x] **F0.3** Añadir al README la sección de automatización diaria (script,
   cron, tag → CI → release) para que cualquiera entienda el circuito. *(v8.5.10)*
-- [ ] **F0.4** Añadir `npm run verify` (lint + test + build apk) para tener las
-  tres puertas de calidad en un solo comando.
+- [x] **F0.4** Añadir `npm run verify` (lint + test + build apk) para tener las
+  tres puertas de calidad en un solo comando. *(v8.5.11)*
 - [ ] **F0.5** Documentar el keystore de firma (`ANDROID_KEYSTORE_BASE64`) y qué
   hacer si CI genera un APK con firma distinta (la app no instalaría encima).
 
