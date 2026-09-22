@@ -96,3 +96,4 @@ justo debajo y se documenta el motivo.
 |---|---|---|
 | v8.5.9 | — | Punto de partida: CI de APK, modo claro/oscuro, progresión de cargas. |
 | v8.5.10 | F0.3 | Circuito de mejora diaria: `daily-improve.sh`, `next-improvement.sh`, plan con fases y bitácora, y sección en el README. |
+| v8.5.11 | F0.4 | `npm run verify` (scripts/verify.mjs): lint + tests + build del APK en un solo comando, parando en la primera puerta que falle; `daily-improve.sh` y la documentación usan esa única ruta. |
