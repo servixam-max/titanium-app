@@ -32,8 +32,8 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   con una única fuente de verdad vía `scripts/release.mjs`. *(v8.5.9)*
 - [x] **F0.2** Unificar el build del APK en una sola ruta (`BUILD_MODE=apk`) y
   retirar la copia manual de `next.config.apk.mjs`. *(v8.5.9)*
-- [ ] **F0.3** Añadir al README la sección de automatización diaria (script,
-  cron, tag → CI → release) para que cualquiera entienda el circuito.
+- [x] **F0.3** Añadir al README la sección de automatización diaria (script,
+  cron, tag → CI → release) para que cualquiera entienda el circuito. *(v8.5.10)*
 - [ ] **F0.4** Añadir `npm run verify` (lint + test + build apk) para tener las
   tres puertas de calidad en un solo comando.
 - [ ] **F0.5** Documentar el keystore de firma (`ANDROID_KEYSTORE_BASE64`) y qué
@@ -95,3 +95,4 @@ justo debajo y se documenta el motivo.
 | Versión | Tarea | Qué cambió |
 |---|---|---|
 | v8.5.9 | — | Punto de partida: CI de APK, modo claro/oscuro, progresión de cargas. |
+| v8.5.10 | F0.3 | Circuito de mejora diaria: `daily-improve.sh`, `next-improvement.sh`, plan con fases y bitácora, y sección en el README. |
