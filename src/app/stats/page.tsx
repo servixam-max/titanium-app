@@ -198,7 +198,7 @@ export default function StatsPage() {
         {/* Header with User Info */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-black font-mono tracking-tight text-slate-900 dark:text-white uppercase flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-[28px] leading-tight font-semibold tracking-[-0.02em] text-foreground">
               <BarChart3 className="w-5 h-5 text-primary" />
               ESTADÍSTICAS
             </h1>

@@ -1,25 +1,10 @@
 const { test, expect } = require('@playwright/test');
+const { seedSession } = require('./helpers/session');
 
 // FORTIXAM — el modo claro no debe quedarse con superficies oscuras fijas.
-// Estos tests comprueban estilos calculados reales (no solo que exista el toggle).
+// Se comprueban estilos calculados reales, no solo que exista el interruptor.
 
-const E2E_USER = {
-  id: 'e2e-user-id',
-  clientId: 'e2e',
-  ownerUserId: 'e2e-user-id',
-  username: 'E2E',
-  email: 'e2e@fortixam.local',
-  passwordHash: '',
-  avatarColor: '#00D68F',
-  createdAt: new Date().toISOString(),
-  modifiedAt: new Date().toISOString(),
-  lastLogin: new Date().toISOString(),
-  version: 1,
-  authProvider: 'local',
-  serverUserId: 'e2e-user-id',
-};
-
-/** Luminancia relativa para comparar si un color es claro u oscuro. */
+/** Luminancia relativa (0 = negro, 1 = blanco) para decidir si algo es claro. */
 function luminance(rgb) {
   const [r, g, b] = rgb.match(/\d+/g).slice(0, 3).map(Number);
   return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
@@ -30,29 +15,15 @@ async function fondoDe(page, selector) {
 }
 
 test.describe('Modo claro sin superficies oscuras', () => {
+  // Se arranca ya en modo claro: así también cubrimos pantallas sin
+  // interruptor de tema (p. ej. la de fin de entreno).
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript((user) => {
-      localStorage.setItem('fortixam_server_user', JSON.stringify(user));
-      localStorage.setItem('fortixam_active_user_id', user.id);
-      localStorage.setItem(
-        'titanium-storage',
-        JSON.stringify({ state: { onboardingComplete: true, theme: 'light' }, version: 0 })
-      );
-      // El store rehidrata su propio tema y es el que manda tras montar;
-      // la clave suelta la usa el script de arranque (zero-FOUC).
-      localStorage.setItem('fortixam-theme', 'light');
-    }, E2E_USER);
+    await seedSession(page, { theme: 'light' });
   });
 
   test('el fondo del documento es claro en modo claro', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-
-    const html = await page.locator('html').getAttribute('class');
-    if (!html || !html.includes('light')) {
-      // Si el tema arranca en oscuro, se cambia con el botón de la cabecera
-      await page.locator('button[aria-label="Cambiar a modo claro"]').first().click({ force: true });
-    }
 
     await expect(page.locator('html')).toHaveClass(/light/);
 
@@ -64,23 +35,20 @@ test.describe('Modo claro sin superficies oscuras', () => {
     await page.goto('/workout/complete');
     await page.waitForLoadState('networkidle');
 
-    const html = await page.locator('html').getAttribute('class');
-    if (!html || !html.includes('light')) {
-      await page.locator('button[aria-label="Cambiar a modo claro"]').first().click({ force: true });
-    }
+    await expect(page.locator('html')).toHaveClass(/light/);
 
     const bg = await fondoDe(page, 'body');
     // Antes esta pantalla forzaba #080808: en modo claro seguía siendo negra.
-    expect(luminance(bg), `la pantalla de fin de entreno no debe ser negra en modo claro (${bg})`).toBeGreaterThan(0.6);
+    expect(
+      luminance(bg),
+      `la pantalla de fin de entreno no debe ser negra en modo claro (${bg})`,
+    ).toBeGreaterThan(0.6);
   });
 
   test('las páginas de datos no tienen contenedores oscuros sueltos', async ({ page }) => {
     for (const ruta of ['/stats', '/history', '/weight']) {
       await page.goto(ruta);
       await page.waitForLoadState('networkidle');
-
-      const html = await page.locator('html').getAttribute('class');
-      if (!html || !html.includes('light')) continue;
 
       const oscuros = await page.evaluate(() => {
         const malos = [];
@@ -93,7 +61,7 @@ test.describe('Modo claro sin superficies oscuras', () => {
           if (alpha < 0.5) return; // translúcidos decorativos
           const lum = (0.2126 * Number(r) + 0.7152 * Number(g) + 0.0722 * Number(b)) / 255;
           const rect = el.getBoundingClientRect();
-          // Solo superficies grandes: las oscuras pequeñas suelen ser chips/botones intencionales
+          // Solo superficies grandes: las oscuras pequeñas suelen ser chips intencionales
           if (lum < 0.25 && rect.width > 200 && rect.height > 80) {
             malos.push(`${el.tagName}.${el.className.toString().slice(0, 40)} → ${bg}`);
           }

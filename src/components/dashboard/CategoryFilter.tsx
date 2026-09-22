@@ -11,16 +11,20 @@ interface CategoryFilterProps {
 
 const CATEGORIES: { id: CategoryFilter; label: string }[] = [
   { id: "all", label: "Todas" },
-  { id: "full_body", label: "Full Body" },
+  { id: "full_body", label: "Full body" },
   { id: "fuerza", label: "Fuerza" },
   { id: "hiit", label: "HIIT" },
   { id: "movilidad", label: "Movilidad" },
   { id: "personalizado", label: "Libre" },
 ];
 
+/**
+ * Filtros discretos: sin bordes por pastilla. El seleccionado se distingue por
+ * superficie y color, no por un borde que compita con el resto de la pantalla.
+ */
 export default function CategoryFilter({ value, onChange }: CategoryFilterProps) {
   return (
-    <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 no-scrollbar">
+    <div className="no-scrollbar flex items-center gap-2 overflow-x-auto py-0.5">
       {CATEGORIES.map((cat) => {
         const selected = value === cat.id;
         return (
@@ -30,10 +34,11 @@ export default function CategoryFilter({ value, onChange }: CategoryFilterProps)
               haptics.selection();
               onChange(cat.id);
             }}
-            className={`relative whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all duration-200 active:scale-95 cursor-pointer ${
+            aria-pressed={selected}
+            className={`fx-press whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] transition-colors ${
               selected
-                ? "border border-primary/40 bg-primary text-white shadow-sm font-bold"
-                : "border border-slate-200 dark:border-white/10 bg-white dark:bg-[#131626] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#181d2e] shadow-sm"
+                ? "bg-primary font-semibold text-black"
+                : "fx-inset font-medium text-[color:var(--text-secondary)]"
             }`}
           >
             {cat.label}

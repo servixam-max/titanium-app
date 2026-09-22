@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { seedSession } = require('./helpers/session');
 
 // FORTIXAM v8 — flujo real de inicio de entreno sobre el export estático.
 //
@@ -10,31 +11,8 @@ const { test, expect } = require('@playwright/test');
 // - La página de rutina anima su entrada (framer-motion) y React hidrata
 //   tras cargar los chunks: esperamos hidratación y usamos force:true.
 
-const E2E_USER = {
-  id: 'e2e-user-id',
-  clientId: 'e2e',
-  ownerUserId: 'e2e-user-id',
-  username: 'E2E',
-  email: 'e2e@fortixam.local',
-  passwordHash: '',
-  avatarColor: '#00D68F',
-  createdAt: new Date().toISOString(),
-  modifiedAt: new Date().toISOString(),
-  lastLogin: new Date().toISOString(),
-  version: 1,
-  authProvider: 'local',
-  serverUserId: 'e2e-user-id',
-};
-
 async function sembrarUsuario(page) {
-  await page.addInitScript((user) => {
-    localStorage.setItem('fortixam_server_user', JSON.stringify(user));
-    localStorage.setItem('fortixam_active_user_id', user.id);
-    localStorage.setItem(
-      'titanium-storage',
-      JSON.stringify({ state: { onboardingComplete: true }, version: 0 })
-    );
-  }, E2E_USER);
+  await seedSession(page);
 }
 
 async function esperarHidratacion(page) {
@@ -44,7 +22,7 @@ async function esperarHidratacion(page) {
 
 test.describe('Flujo de entreno', () => {
   test.beforeEach(async ({ page }) => {
-    await sembrarUsuario(page);
+    await seedSession(page);
   });
 
   test('Modo individual: rutina → entreno directo', async ({ page }) => {

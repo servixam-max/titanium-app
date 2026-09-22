@@ -1,46 +1,24 @@
 const { test, expect } = require('@playwright/test');
+const { seedSession } = require('./helpers/session');
 
 // FORTIXAM v8.4 — constructor de entrenamientos personalizados.
 // Requiere usuario sembrado (AuthModal cubre la app sin sesión) y
 // force:true por las animaciones de entrada del dashboard.
 
-const E2E_USER = {
-  id: 'e2e-user-id',
-  clientId: 'e2e',
-  ownerUserId: 'e2e-user-id',
-  username: 'E2E',
-  email: 'e2e@fortixam.local',
-  passwordHash: '',
-  avatarColor: '#00D68F',
-  createdAt: new Date().toISOString(),
-  modifiedAt: new Date().toISOString(),
-  lastLogin: new Date().toISOString(),
-  version: 1,
-  authProvider: 'local',
-  serverUserId: 'e2e-user-id',
-};
-
 test.describe('Constructor personalizado', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript((user) => {
-      localStorage.setItem('fortixam_server_user', JSON.stringify(user));
-      localStorage.setItem('fortixam_active_user_id', user.id);
-      localStorage.setItem(
-        'titanium-storage',
-        JSON.stringify({ state: { onboardingComplete: true }, version: 0 })
-      );
-    }, E2E_USER);
+    await seedSession(page);
   });
 
-  test('Pestaña Creador abre el constructor y añade un ejercicio', async ({ page }) => {
+  test('Pestaña Crear abre el constructor y añade un ejercicio', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(600);
 
-    // Abrir la pestaña del constructor
-    const tabCreador = page.locator('button:has-text("Creador")').first();
-    await expect(tabCreador).toBeVisible({ timeout: 8000 });
-    await tabCreador.click({ force: true });
+    // Abrir la pestaña del constructor (control segmentado de la home)
+    const tabCrear = page.locator('[role="tab"]:has-text("Crear")').first();
+    await expect(tabCrear).toBeVisible({ timeout: 8000 });
+    await tabCrear.click({ force: true });
 
     // El input del título del entrenamiento es visible
     await expect(

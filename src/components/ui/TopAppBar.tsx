@@ -26,10 +26,10 @@ interface TopAppBarProps {
 }
 
 const variantClasses: Record<TopAppBarVariant, string> = {
-  default: "glass-titanium border-slate-200 dark:border-white/10",
-  solid: "bg-white dark:bg-surface-900 border-slate-200 dark:border-white/10",
-  transparent: "bg-transparent border-transparent",
-  workout: "glass-titanium border-slate-200 dark:border-white/10",
+  default: "glass-titanium",
+  solid: "bg-white dark:bg-surface-900",
+  transparent: "bg-transparent",
+  workout: "glass-titanium",
 };
 
 export const topAppBarHeightClass = "h-touch-target-min";
@@ -63,7 +63,7 @@ export default function TopAppBar({
   return (
     <>
       <header
-        className={`fixed top-0 w-full z-50 border-b flex items-center justify-between px-container-padding ${topAppBarHeightClass} max-w-app left-1/2 -translate-x-1/2 safe-top ${variantClasses[variant]} ${className}`}
+        className={`fixed top-0 w-full z-50 flex items-center justify-between px-container-padding ${topAppBarHeightClass} max-w-app left-1/2 -translate-x-1/2 safe-top ${variantClasses[variant]} ${className}`}
       >
         <div className="w-12">
           {showBack && (
@@ -86,7 +86,7 @@ export default function TopAppBar({
           )}
         </div>
 
-        <h1 className="font-display text-title-sm font-bold tracking-wider text-slate-900 dark:text-white text-center flex-1 truncate px-2">
+        <h1 className="font-display text-[16px] font-semibold tracking-[-0.01em] text-foreground text-center flex-1 truncate px-2">
           {title}
         </h1>
 

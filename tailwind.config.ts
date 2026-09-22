@@ -90,8 +90,27 @@ const config: Config = {
         "inverse-primary": "#BDE600",
       },
       fontFamily: {
-        display: ["var(--font-space-grotesk)", "var(--font-geist-sans)", "system-ui", "sans-serif"],
-        sans: ["var(--font-inter)", "var(--font-geist-sans)", "system-ui", "sans-serif"],
+        // Tipografía del sistema: SF Pro en iOS/macOS, Segoe en Windows.
+        // En el móvil es exactamente la letra del sistema, que es la mitad
+        // del "feeling" nativo. Geist/Inter quedan como respaldo.
+        display: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "SF Pro Display",
+          "Segoe UI",
+          "system-ui",
+          "var(--font-geist-sans)",
+          "sans-serif",
+        ],
+        sans: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "SF Pro Text",
+          "Segoe UI",
+          "system-ui",
+          "var(--font-geist-sans)",
+          "sans-serif",
+        ],
         mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
         // Legacy aliases
         montserrat: ["var(--font-geist-sans)", "system-ui", "sans-serif"],

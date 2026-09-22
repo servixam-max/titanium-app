@@ -196,12 +196,11 @@ export default function Dashboard() {
       className="relative flex min-h-[100dvh] flex-col overflow-x-hidden bg-background pb-28 text-foreground select-none"
       onClick={handleFirstInteraction}
     >
-      <div className="pointer-events-none fixed top-[-10%] left-[-10%] h-[60%] w-[60%] rounded-full bg-primary/10 blur-[140px]" />
-      <div className="pointer-events-none fixed right-[-10%] bottom-[-10%] h-[60%] w-[60%] rounded-full bg-cyan-500/10 blur-[140px]" />
+      <div className="pointer-events-none fixed top-[-15%] left-[-15%] h-[55%] w-[55%] rounded-full bg-primary/[0.07] blur-[160px]" />
 
       <TopAppBar title="FORTIXAM" showSettings />
 
-      <main className="relative z-10 flex flex-1 flex-col gap-4 px-4 py-3">
+      <main className="relative z-10 flex flex-1 flex-col gap-7 px-5 pt-4 pb-28">
         <DashboardHeader
           user={currentUser}
           streak={streakCount}
@@ -223,13 +222,11 @@ export default function Dashboard() {
         {activeTab === "routines" && (
           <div className="flex flex-col gap-5">
             {/* 1. Hero Workout Card: Today's mission / active day */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-300">
-                  Tu Misión de Hoy
-                </span>
-                <span className="text-[10px] font-mono font-bold text-primary flex items-center gap-1.5 bg-primary/10 border border-primary/30 px-2.5 py-0.5 rounded-full">
-                  {selectedDay === 18 ? "Día 18 · Sesión Libre" : `Día ${selectedDay} de 18`}
+            <section className="flex flex-col gap-3">
+              <div className="flex items-baseline justify-between px-1">
+                <h2 className="fx-section-title">Hoy</h2>
+                <span className="fx-label-sm">
+                  {selectedDay === 18 ? "Sesión libre" : `Día ${selectedDay} de 18`}
                 </span>
               </div>
 
@@ -248,18 +245,11 @@ export default function Dashboard() {
                   setSelectedRoutine(activeSelectedRoutine);
                 }}
               />
-            </div>
+            </section>
 
             {/* 2. Interactive Day Selector Hub */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-black uppercase tracking-wider text-white">
-                  Selector de Días (1 al 18)
-                </span>
-                <span className="text-[10px] font-mono text-slate-400">
-                  Toca para enfocar la sesión
-                </span>
-              </div>
+            <section className="flex flex-col gap-3">
+              <h2 className="fx-section-title px-1">Elige sesión</h2>
               <DayCarouselSelector
                 days={allDays}
                 selectedDay={selectedDay}
@@ -268,10 +258,10 @@ export default function Dashboard() {
                 }}
                 completedDayIds={completedTodayRoutineIds}
               />
-            </div>
+            </section>
 
-            {/* 3. Quick Prep & Custom Bento Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* 3. Accesos rápidos: dos filas sobrias, sin bordes */}
+            <section className="flex flex-col gap-2">
               <WarmupLink exerciseCount={warmUpExercises.length} />
 
               <button
@@ -279,50 +269,39 @@ export default function Dashboard() {
                   haptics.selection();
                   setActiveTab("custom");
                 }}
-                className="group flex h-[52px] items-center gap-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#131626] px-4 shadow-sm transition-all hover:border-primary/50 active:scale-[0.98] text-left cursor-pointer"
+                className="fx-inset fx-press group flex min-h-[56px] items-center gap-3 px-4 text-left"
               >
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+                <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary transition-colors group-hover:bg-primary group-hover:text-black">
                   <SlidersHorizontal className="h-4 w-4" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <span className="block truncate text-xs font-bold text-slate-900 dark:text-white transition-colors group-hover:text-primary">
-                    Constructor Personalizado
-                  </span>
-                </div>
-                <span className="text-[11px] text-slate-500 dark:text-slate-300 font-mono font-medium">
-                  Series / HIIT
                 </span>
-                <ChevronRight className="h-4 w-4 flex-shrink-0 text-slate-400 transition-colors group-hover:text-slate-900 dark:group-hover:text-white" />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[15px] font-semibold text-foreground">
+                    Crear entrenamiento
+                  </span>
+                </span>
+                <ChevronRight className="h-4 w-4 flex-shrink-0 text-[color:var(--text-tertiary)]" />
               </button>
-            </div>
+            </section>
 
-            {/* 4. Optional Complete Routine Catalog (Collapsible, no visual overwhelm) */}
-            <div className="pt-1">
+            {/* 4. Catálogo completo (plegado por defecto) */}
+            <section className="flex flex-col gap-3">
               <button
                 onClick={() => {
                   haptics.selection();
                   setShowAllRoutines((prev) => !prev);
                 }}
-                className="w-full py-3 px-4 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 hover:border-primary/50 bg-slate-100/60 dark:bg-white/5 hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all text-xs font-mono font-bold flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                aria-expanded={showAllRoutines}
+                className="fx-inset fx-press flex w-full min-h-[48px] items-center justify-center gap-2 px-4 text-[15px] font-semibold text-foreground"
               >
-                <span>{showAllRoutines ? "Ocultar catálogo completo" : "Explorar todas las rutinas (18 sesiones)"}</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showAllRoutines ? "rotate-180" : ""}`} />
+                <span>{showAllRoutines ? "Ocultar rutinas" : "Ver todas las rutinas"}</span>
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showAllRoutines ? "rotate-180" : ""}`} />
               </button>
 
               {showAllRoutines && (
-                <div className="flex flex-col gap-3 mt-4">
-                  <div className="flex items-center justify-between px-1">
-                    <div>
-                      <h3 className="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-white">
-                        Catálogo Completo
-                      </h3>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                        Filtra por objetivo y consulta las 18 sesiones
-                      </p>
-                    </div>
-                    <span className="text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-200/70 dark:bg-white/5 border border-slate-300 dark:border-white/10 px-2.5 py-0.5 rounded-full">
-                      {filteredRoutines.length} rutinas
-                    </span>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-baseline justify-between px-1">
+                    <h2 className="fx-section-title">Todas las rutinas</h2>
+                    <span className="fx-label-sm">{filteredRoutines.length}</span>
                   </div>
 
                   {/* Category Filter Pills */}
@@ -349,7 +328,7 @@ export default function Dashboard() {
                   </div>
                 </div>
               )}
-            </div>
+            </section>
           </div>
         )}
 

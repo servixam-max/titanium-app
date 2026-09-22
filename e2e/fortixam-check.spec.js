@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { seedSession } = require('./helpers/session');
 
 // FORTIXAM v8 — humo del export estático (lo que sirve el APK WebView).
 // Las API requieren auth + PostgreSQL y se cubren con Vitest en src/lib.
@@ -81,18 +82,7 @@ test.describe('FORTIXAM — PWA estática', () => {
   });
 
   test('Alternar entre Modo Oscuro y Modo Claro', async ({ page }) => {
-    await page.addInitScript(() => {
-      localStorage.setItem('fortixam_server_user', JSON.stringify({
-        id: 'e2e-user',
-        username: 'E2E',
-        email: 'e2e@fortixam.local',
-      }));
-      localStorage.setItem('fortixam_active_user_id', 'e2e-user');
-      localStorage.setItem(
-        'titanium-storage',
-        JSON.stringify({ state: { onboardingComplete: true }, version: 0 })
-      );
-    });
+    await seedSession(page);
 
     await page.goto('/');
     await page.waitForLoadState('networkidle');
