@@ -272,7 +272,7 @@ export default function AuthModal() {
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-md bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col my-auto">
+      <div className="fx-card-raised relative my-auto flex w-full max-w-md flex-col overflow-hidden p-6 sm:p-8">
         {/* Ambient Glows */}
         <div className="absolute -top-16 -left-16 w-48 h-48 bg-primary/10 rounded-full blur-[70px] pointer-events-none" />
         <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-primary/10 rounded-full blur-[70px] pointer-events-none" />
@@ -302,7 +302,7 @@ export default function AuthModal() {
                   : "bg-zinc-500"
               }`}
             />
-            <span className="font-mono text-slate-600 dark:text-zinc-300 truncate">
+            <span className="fx-label-sm truncate">
               {serverStatus === "connected"
                 ? `Servidor: ${serverDisplayUrl}`
                 : serverStatus === "checking"
@@ -332,7 +332,7 @@ export default function AuthModal() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="grid grid-cols-2 bg-slate-100 dark:bg-[#0d101a] p-1 rounded-xl mb-5 relative z-10 border border-slate-200 dark:border-white/10 shadow-xs">
+        <div role="tablist" aria-label="Acceso" className="fx-segmented relative z-10 mb-6">
           <button
             type="button"
             onClick={() => {
@@ -340,14 +340,10 @@ export default function AuthModal() {
               setErrorMsg("");
               setSuccessMsg("");
             }}
-            className={`py-2 text-xs font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "login"
-                ? "bg-primary text-white shadow-sm border border-primary/40"
-                : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
+            aria-selected={activeTab === "login"}
+            className="fx-segmented-item"
           >
-            <LogIn className="w-3.5 h-3.5" />
-            INICIAR SESIÓN
+            Entrar
           </button>
           <button
             type="button"
@@ -356,14 +352,10 @@ export default function AuthModal() {
               setErrorMsg("");
               setSuccessMsg("");
             }}
-            className={`py-2 text-xs font-mono tracking-wide rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-bold ${
-              activeTab === "register"
-                ? "bg-primary text-white shadow-sm border border-primary/40"
-                : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
+            aria-selected={activeTab === "register"}
+            className="fx-segmented-item"
           >
-            <UserPlus className="w-3.5 h-3.5" />
-            CREAR CUENTA
+            Crear cuenta
           </button>
         </div>
 
@@ -385,7 +377,7 @@ export default function AuthModal() {
         {activeTab === "login" && (
           <form onSubmit={handleLogin} className="flex flex-col gap-3.5 relative z-10">
             <div>
-              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="fx-label-sm mb-1.5 block">
                 Usuario o Correo
               </label>
               <div className="relative">
@@ -396,13 +388,13 @@ export default function AuthModal() {
                   value={usernameOrEmail}
                   onChange={(e) => setUsernameOrEmail(e.target.value)}
                   placeholder="Nombre de usuario o correo"
-                  className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
+                  className="h-12 w-full rounded-[var(--fx-radius-control)] bg-[var(--fx-inset)] pl-10 pr-3 text-[16px] text-foreground placeholder:text-[color:var(--text-tertiary)] outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="fx-label-sm mb-1.5 block">
                 Contraseña
               </label>
               <div className="relative">
@@ -413,7 +405,7 @@ export default function AuthModal() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-10 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
+                  className="h-12 w-full rounded-[var(--fx-radius-control)] bg-[var(--fx-inset)] pl-10 pr-10 text-[16px] text-foreground placeholder:text-[color:var(--text-tertiary)] outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
                 />
                 <button
                   type="button"
@@ -428,7 +420,7 @@ export default function AuthModal() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-12 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+              className="fx-press flex h-[52px] w-full items-center justify-center gap-2 rounded-[var(--fx-radius-control)] bg-primary text-[17px] font-semibold text-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <LogIn className="w-4 h-4" />
               Iniciar Sesión
@@ -443,7 +435,7 @@ export default function AuthModal() {
                 setActiveUserId(SEED_USER.id);
                 setCurrentUser(SEED_USER);
               }}
-              className="w-full h-11 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-xl border border-slate-200 dark:border-white/10 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer shadow-xs"
+              className="fx-inset fx-press flex h-[50px] w-full items-center justify-center gap-2 text-[15px] font-semibold text-foreground"
             >
               <Zap className="w-3.5 h-3.5 text-primary fill-primary" />
               Entrar en Modo Offline (Sin Servidor)
@@ -467,7 +459,7 @@ export default function AuthModal() {
         {activeTab === "register" && (
           <form onSubmit={handleRegister} className="flex flex-col gap-3 relative z-10">
             <div>
-              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="fx-label-sm mb-1.5 block">
                 Nombre de Usuario
               </label>
               <div className="relative">
@@ -478,13 +470,13 @@ export default function AuthModal() {
                   value={regUsername}
                   onChange={(e) => setRegUsername(e.target.value)}
                   placeholder="Tu nombre o apodo"
-                  className="w-full h-10 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
+                  className="h-12 w-full rounded-[var(--fx-radius-control)] bg-[var(--fx-inset)] pl-10 pr-3 text-[16px] text-foreground placeholder:text-[color:var(--text-tertiary)] outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="fx-label-sm mb-1.5 block">
                 Correo Electrónico
               </label>
               <div className="relative">
@@ -495,13 +487,13 @@ export default function AuthModal() {
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
                   placeholder="tu@correo.com"
-                  className="w-full h-10 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
+                  className="h-12 w-full rounded-[var(--fx-radius-control)] bg-[var(--fx-inset)] pl-10 pr-3 text-[16px] text-foreground placeholder:text-[color:var(--text-tertiary)] outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="fx-label-sm mb-1.5 block">
                 Contraseña
               </label>
               <div className="relative">
@@ -512,13 +504,13 @@ export default function AuthModal() {
                   value={regPassword}
                   onChange={(e) => setRegPassword(e.target.value)}
                   placeholder="Mínimo 4 caracteres"
-                  className="w-full h-10 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
+                  className="h-12 w-full rounded-[var(--fx-radius-control)] bg-[var(--fx-inset)] pl-10 pr-3 text-[16px] text-foreground placeholder:text-[color:var(--text-tertiary)] outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+              <label className="fx-label-sm mb-1.5 block">
                 Confirmar Contraseña
               </label>
               <div className="relative">
@@ -529,7 +521,7 @@ export default function AuthModal() {
                   value={regConfirmPassword}
                   onChange={(e) => setRegConfirmPassword(e.target.value)}
                   placeholder="Repite la contraseña"
-                  className="w-full h-10 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
+                  className="h-12 w-full rounded-[var(--fx-radius-control)] bg-[var(--fx-inset)] pl-10 pr-3 text-[16px] text-foreground placeholder:text-[color:var(--text-tertiary)] outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
                 />
               </div>
             </div>
@@ -541,7 +533,7 @@ export default function AuthModal() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-11 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
+              className="fx-press flex h-[52px] w-full items-center justify-center gap-2 rounded-[var(--fx-radius-control)] bg-primary text-[17px] font-semibold text-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <UserPlus className="w-4 h-4" />
               Crear Cuenta Nueva
@@ -558,7 +550,7 @@ export default function AuthModal() {
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
                     <KeyRound className="w-4 h-4 text-primary" />
-                    <span>Recuperar Contraseña</span>
+                    <span>Recuperar contraseña</span>
                   </div>
                   <span className="text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
                     Paso 1 de 3
@@ -570,7 +562,7 @@ export default function AuthModal() {
                 </p>
 
                 <div>
-                  <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+                  <label className="fx-label-sm mb-1.5 block">
                     Correo Registrado
                   </label>
                   <div className="relative">
@@ -581,7 +573,7 @@ export default function AuthModal() {
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
                       placeholder="tu@correo.com"
-                      className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
+                      className="h-12 w-full rounded-[var(--fx-radius-control)] bg-[var(--fx-inset)] pl-10 pr-3 text-[16px] text-foreground placeholder:text-[color:var(--text-tertiary)] outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
                     />
                   </div>
                 </div>
@@ -589,7 +581,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                  className="fx-press flex h-[52px] w-full items-center justify-center gap-2 rounded-[var(--fx-radius-control)] bg-primary text-[17px] font-semibold text-black disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4" />
                   {isSubmitting ? "Enviando..." : "Enviar Código de Seguridad"}
@@ -657,7 +649,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting || verificationCode.trim().length !== 6}
-                  className="w-full h-12 bg-primary hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-1 cursor-pointer"
+                  className="fx-press flex h-[52px] w-full items-center justify-center gap-2 rounded-[var(--fx-radius-control)] bg-primary text-[17px] font-semibold text-black disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   Verificar Código
@@ -696,7 +688,7 @@ export default function AuthModal() {
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
                     <ShieldCheck className="w-4 h-4 text-primary" />
-                    <span>Nueva Contraseña</span>
+                    <span>Nueva contraseña</span>
                   </div>
                   <span className="text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
                     Paso 3 de 3
@@ -708,7 +700,7 @@ export default function AuthModal() {
                 </p>
 
                 <div>
-                  <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+                  <label className="fx-label-sm mb-1.5 block">
                     Nueva Contraseña
                   </label>
                   <div className="relative">
@@ -719,13 +711,13 @@ export default function AuthModal() {
                       value={forgotNewPassword}
                       onChange={(e) => setForgotNewPassword(e.target.value)}
                       placeholder="Mínimo 4 caracteres"
-                      className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
+                      className="h-12 w-full rounded-[var(--fx-radius-control)] bg-[var(--fx-inset)] pl-10 pr-3 text-[16px] text-foreground placeholder:text-[color:var(--text-tertiary)] outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold tracking-wider block mb-1">
+                  <label className="fx-label-sm mb-1.5 block">
                     Confirmar Nueva Contraseña
                   </label>
                   <div className="relative">
@@ -736,7 +728,7 @@ export default function AuthModal() {
                       value={forgotConfirmPassword}
                       onChange={(e) => setForgotConfirmPassword(e.target.value)}
                       placeholder="Repite la nueva contraseña"
-                      className="w-full h-11 bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary transition-all font-sans shadow-xs"
+                      className="h-12 w-full rounded-[var(--fx-radius-control)] bg-[var(--fx-inset)] pl-10 pr-3 text-[16px] text-foreground placeholder:text-[color:var(--text-tertiary)] outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
                     />
                   </div>
                 </div>
@@ -744,7 +736,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm border border-primary/40 active:scale-95 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                  className="fx-press flex h-[52px] w-full items-center justify-center gap-2 rounded-[var(--fx-radius-control)] bg-primary text-[17px] font-semibold text-black disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <KeyRound className="w-4 h-4" />
                   {isSubmitting ? "Actualizando..." : "Guardar Nueva Contraseña"}
