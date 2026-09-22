@@ -114,3 +114,4 @@ Debe devolver el tag de la nueva versión (ej. `v5.3`) y el enlace de descarga d
 2. **Sin VPN necesaria**: No pedir al usuario que active Tailscale para las actualizaciones; el sistema ya es global vía GitHub Releases.
 3. **Descansos de entrenamiento**: En rutinas de fuerza, mantener los descansos estandarizados en 75 segundos (`restSeconds: 75`).
 4. **Git Workflows**: No añadir archivos bajo `.github/workflows/` a menos que el token de Git tenga permiso explícito de `workflow`; el método estándar y 100% fiable para publicar releases es `./scripts/publish-release.sh`.
+5. **Puertas de calidad**: antes de cualquier commit que publique versión, ejecutar `npm run verify` (lint + tests + build APK en un solo comando). Si una puerta falla, no se publica.

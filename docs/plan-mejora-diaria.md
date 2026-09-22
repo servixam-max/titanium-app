@@ -12,13 +12,13 @@
 1. `git pull` / comprobar que `main` está limpio y al día.
 2. Elegir **la primera** casilla sin marcar de la fase activa (ver `Prioridad`).
 3. Implementar el cambio con el alcance mínimo que cumpla el criterio.
-4. `npm test -- --run` en verde.
-5. `BUILD_MODE=apk npm run build` en verde.
-6. `scripts/daily-improve.sh "tipo(area): resumen" "cuerpo con motivo y alcance"`.
+4. `npm run verify` — las tres puertas de calidad en un solo comando: lint,
+   `npm test -- --run` y `BUILD_MODE=apk npm run build`.
+5. `scripts/daily-improve.sh "tipo(area): resumen" "cuerpo con motivo y alcance"`.
    Ese script valida, commitea, sube versión patch, empuja `main` y crea el tag
    `vX.Y.Z`, que dispara GitHub Actions → APK nuevo en GitHub Releases (canal OTA).
-7. Marcar la casilla aquí con la versión publicada y anotar en la bitácora.
-8. Commitear el plan (`docs: plan diario — <tarea> vX.Y.Z`).
+6. Marcar la casilla aquí con la versión publicada y anotar en la bitácora.
+7. Commitear el plan (`docs: plan diario — <tarea> vX.Y.Z`).
 
 Si un paso falla: **no se publica**. Se arregla, o se deja la casilla sin marcar y
 se reporta el motivo. Nunca se marca una casilla sin release publicado.

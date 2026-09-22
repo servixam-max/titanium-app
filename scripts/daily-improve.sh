@@ -58,23 +58,18 @@ if [ -n "$FORBIDDEN" ]; then
   exit 4
 fi
 
-# ---------------------------------------------------------------- 2. tests
-log "== npm test =="
-if ! npm test -- --run >/tmp/fortixam-daily-test.log 2>&1; then
-  log "FAIL: tests en rojo (ver /tmp/fortixam-daily-test.log)"
-  tail -25 /tmp/fortixam-daily-test.log
+# ------------------------------------------------- 2-3. puertas de calidad
+# Las tres puertas (lint + tests + build APK) viven en `npm run verify`
+# (scripts/verify.mjs). Se detiene en la primera que falle.
+log "== npm run verify (lint + test + build apk) =="
+if ! npm run verify >/tmp/fortixam-daily-verify.log 2>&1; then
+  log "FAIL: puerta de calidad en rojo (ver /tmp/fortixam-daily-verify.log)"
+  grep -E '^(❌|✅|\[[0-9]/[0-9]\])' /tmp/fortixam-daily-verify.log | tail -8
+  tail -25 /tmp/fortixam-daily-verify.log
   exit 6
 fi
-log "OK: tests pasan ($(grep -oE 'Tests +[0-9]+ passed' /tmp/fortixam-daily-test.log | head -1))"
-
-# ------------------------------------------------------- 3. build del APK
-log "== BUILD_MODE=apk npm run build =="
-if ! BUILD_MODE=apk npm run build >/tmp/fortixam-daily-build.log 2>&1; then
-  log "FAIL: el build del APK falla (ver /tmp/fortixam-daily-build.log)"
-  tail -25 /tmp/fortixam-daily-build.log
-  exit 7
-fi
-log "OK: build estático del APK correcto"
+log "OK: tests pasan ($(grep -oE 'Tests +[0-9]+ passed' /tmp/fortixam-daily-verify.log | head -1))"
+log "OK: verify completo (lint + tests + build estático del APK)"
 
 # -------------------------------------------------- 4. commit del cambio
 if git diff --quiet; then
