@@ -71,7 +71,7 @@ export default function InstallPrompt() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-[80px] left-4 right-4 z-50 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-primary/40 rounded-2xl p-4 shadow-xl dark:shadow-md animate-in slide-in-from-bottom-4">
+    <div className="fixed bottom-[80px] left-4 right-4 z-50 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-primary/40 rounded-2xl p-4 shadow-xl dark:shadow-md animate-in slide-in-from-bottom-4">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
           <Download className="w-5 h-5 text-primary" />
@@ -111,7 +111,7 @@ export default function InstallPrompt() {
             {platform === "android" && deferredPrompt && (
               <button
                 onClick={handleInstall}
-                className="flex-1 h-[40px] bg-primary text-white font-bold rounded-lg text-sm active:scale-95 transition-transform shadow-sm border border-primary/40"
+                className="flex-1 h-[40px] bg-primary text-white font-bold rounded-lg text-sm active:scale-95 transition-transform shadow-sm border-primary/40"
               >
                 <PlusSquare className="w-4 h-4 inline mr-1" />
                 Instalar
@@ -121,7 +121,7 @@ export default function InstallPrompt() {
             {platform === "ios" && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 h-[40px] bg-slate-100 dark:bg-[#131626] text-slate-800 dark:text-white font-bold rounded-lg text-sm border border-slate-200 dark:border-white/10 active:scale-95 transition-transform"
+                className="flex-1 h-[40px] bg-slate-100 dark:bg-[#131626] text-slate-800 dark:text-white font-bold rounded-lg text-sm active:scale-95 transition-transform"
               >
                 Entendido
               </button>
@@ -130,7 +130,7 @@ export default function InstallPrompt() {
             {platform === "other" && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 h-[40px] bg-primary text-white font-bold rounded-lg text-sm active:scale-95 transition-transform shadow-sm border border-primary/40"
+                className="flex-1 h-[40px] bg-primary text-white font-bold rounded-lg text-sm active:scale-95 transition-transform shadow-sm border-primary/40"
               >
                 OK
               </button>

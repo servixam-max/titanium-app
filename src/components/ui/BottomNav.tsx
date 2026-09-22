@@ -50,7 +50,7 @@ export default function BottomNav() {
                 fill={isActive ? "currentColor" : "none"}
                 strokeWidth={isActive ? 2.5 : 1.8}
               />
-              <span className="font-label-caps text-[10px] tracking-wide">
+              <span className="font-label-caps text-[12px] tracking-wide">
                 {item.label}
               </span>
             </Link>

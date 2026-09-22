@@ -296,7 +296,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               damping: 30,
               duration: isMobile ? undefined : 0.25,
             }}
-            className="relative w-full h-full md:h-auto md:max-w-app bg-white dark:bg-[#0A0B10] md:rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl md:max-h-[85vh] flex flex-col overflow-hidden"
+            className="relative w-full h-full md:h-auto md:max-w-app bg-white dark:bg-[#0A0B10] md:rounded-3xl shadow-2xl md:max-h-[85vh] flex flex-col overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="settings-title"
@@ -307,7 +307,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 <Settings className="w-5 h-5 text-primary hidden md:block" />
                 <h2
                   id="settings-title"
-                  className="font-mono text-base font-black text-slate-900 dark:text-white uppercase tracking-wider"
+                  className="text-base font-semibold text-slate-900 dark:text-white"
                 >
                   AJUSTES DEL SISTEMA
                 </h2>
@@ -325,20 +325,20 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             <div className="p-container-padding flex-1 overflow-y-auto pb-[10vh]">
               <div className="flex flex-col gap-section-gap">
                 {/* User Profile Card */}
-                <section className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-4 flex items-center justify-between shadow-sm dark:shadow-lg relative overflow-hidden">
+                <section className="fx-card rounded-2xl p-4 flex items-center justify-between shadow-sm dark:shadow-lg relative overflow-hidden">
                   <div className="flex items-center gap-3.5 relative z-10">
                     <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black font-mono text-xl shadow-sm"
+                      className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-semibold text-xl shadow-sm"
                       style={{ backgroundColor: currentUser?.avatarColor || "#10B981" }}
                     >
                       {(currentUser?.username || "A").slice(0, 1).toUpperCase()}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-900 dark:text-white text-base font-mono">
+                        <span className="font-bold text-slate-900 dark:text-white text-base">
                           {currentUser?.username || "Atleta"}
                         </span>
-                        <span className="text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">
+                        <span className="text-[12px] font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">
                           CONECTADO
                         </span>
                       </div>
@@ -352,7 +352,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       logout();
                       onClose();
                     }}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-white/5 hover:bg-red-500/10 text-slate-700 dark:text-zinc-300 hover:text-red-500 dark:hover:text-red-400 border border-slate-200 dark:border-white/10 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-white/5 hover:bg-red-500/10 text-slate-700 dark:text-zinc-300 hover:text-red-500 dark:hover:text-red-400 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
                     title="Cerrar sesión"
                   >
                     <LogOut className="w-3.5 h-3.5" />
@@ -396,7 +396,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             haptics.selection();
                             setTheme(opt.value);
                           }}
-                          className={`flex flex-col items-center justify-center gap-1.5 h-[76px] rounded-2xl border-2 transition-all active:scale-95 cursor-pointer ${
+                          className={`flex flex-col items-center justify-center gap-1.5 h-[76px] rounded-2xl transition-all active:scale-95 cursor-pointer ${
                             isSelected
                               ? "border-primary bg-primary/10 text-primary shadow-sm"
                               : "border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#131626] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
@@ -405,10 +405,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           <span className={isSelected ? "text-primary scale-110 transition-transform" : "text-zinc-400"}>
                             {opt.icon}
                           </span>
-                          <span className="font-mono text-xs font-bold leading-none">
+                          <span className="text-xs font-bold leading-none">
                             {opt.label}
                           </span>
-                          <span className="text-[10px] font-mono opacity-70 leading-none">
+                          <span className="text-[12px] opacity-70 leading-none">
                             {opt.desc}
                           </span>
                         </button>
@@ -425,7 +425,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   />
                   <button
                     onClick={toggleAudio}
-                    className={`w-full h-touch-target-min rounded-2xl border flex items-center justify-between px-4 transition-all active:scale-95 cursor-pointer ${
+                    className={`w-full h-touch-target-min rounded-2xl flex items-center justify-between px-4 transition-all active:scale-95 cursor-pointer ${
                       audioEnabled
                         ? "border-primary/40 bg-primary/10 shadow-sm"
                         : "border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#131626]"
@@ -437,7 +437,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       ) : (
                         <VolumeX className="w-6 h-6 text-zinc-400" />
                       )}
-                      <span className="font-mono text-sm font-bold text-slate-900 dark:text-white">
+                      <span className="text-sm font-bold text-slate-900 dark:text-white">
                         {audioEnabled
                           ? "Efectos y Voz Activados"
                           : "Efectos y Voz Desactivados"}
@@ -467,7 +467,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           key={option.value}
                           onClick={() => handleSetMode(option.value)}
                           disabled={!audioEnabled && option.value !== "silent"}
-                          className={`flex flex-col items-center justify-center gap-1 h-[76px] rounded-xl border-2 transition-all active:scale-95 cursor-pointer ${
+                          className={`flex flex-col items-center justify-center gap-1 h-[76px] rounded-xl transition-all active:scale-95 cursor-pointer ${
                             selected
                               ? "border-primary bg-primary/10 text-primary shadow-sm"
                               : "border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#131626] text-slate-600 dark:text-zinc-400"
@@ -485,7 +485,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           <span className="font-body-sm text-body-sm font-bold">
                             {option.label}
                           </span>
-                          <span className="font-label-caps text-[10px] leading-tight text-center">
+                          <span className="font-label-caps text-[12px] leading-tight text-center">
                             {option.desc}
                           </span>
                         </button>
@@ -494,15 +494,15 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
 
                   {/* Voice Rate */}
-                  <div className="flex flex-col gap-3 bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl p-stack-gap shadow-sm dark:shadow-lg">
+                  <div className="flex flex-col gap-3 fx-card rounded-2xl p-stack-gap shadow-sm dark:shadow-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-slate-900 dark:text-white">
                         <Gauge className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-                        <span className="font-mono text-xs font-bold uppercase tracking-wider">
+                        <span className="text-xs font-bold">
                           Velocidad de Voz IA
                         </span>
                       </div>
-                      <span className="text-xs text-cyan-600 dark:text-cyan-400 font-mono font-bold">
+                      <span className="text-xs text-cyan-600 dark:text-cyan-400 font-bold">
                         {voiceRate.toFixed(2)}x
                       </span>
                     </div>
@@ -521,11 +521,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             type="button"
                             onClick={() => {
                               setVoiceRate(preset.rate);
-                              speak("Velocidad ajustada", 1.0, preset.rate);
-                            }}
-                            className={`py-2 px-2 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
-                              isSelected
-                                ? "bg-primary text-white border-primary shadow-sm font-bold"
+                              speak("Velocidad ajustada", 1.0, preset.rate); }} className={`py-2 px-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${ isSelected ?"bg-primary text-white border-primary shadow-sm font-bold"
                                 : "bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-zinc-400 border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white"
                             }`}
                           >
@@ -550,7 +546,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       }
                     />
 
-                    <div className="flex justify-between items-center text-xs font-mono">
+                    <div className="flex justify-between items-center text-xs">
                       <span className="text-slate-400 dark:text-zinc-500">0.65x</span>
                       <button
                         type="button"
@@ -574,9 +570,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   />
                   <div className="flex gap-2">
                     <button
-                      onClick={() => setEquipmentPreference("bodyweight")}
-                      className={`flex-1 h-12 rounded-2xl border font-mono text-xs font-bold transition-all active:scale-95 cursor-pointer ${
-                        equipmentPreference === "bodyweight"
+                      onClick={() => setEquipmentPreference("bodyweight")} className={`flex-1 h-12 rounded-2xl font-mono text-xs font-bold transition-all active:scale-95 cursor-pointer ${ equipmentPreference ==="bodyweight"
                           ? "border-primary bg-primary/10 text-primary shadow-sm"
                           : "border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#131626] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                       }`}
@@ -584,9 +578,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       SIN MATERIAL
                     </button>
                     <button
-                      onClick={() => setEquipmentPreference("dumbbells")}
-                      className={`flex-1 h-12 rounded-2xl border font-mono text-xs font-bold transition-all active:scale-95 cursor-pointer ${
-                        equipmentPreference === "dumbbells"
+                      onClick={() => setEquipmentPreference("dumbbells")} className={`flex-1 h-12 rounded-2xl font-mono text-xs font-bold transition-all active:scale-95 cursor-pointer ${ equipmentPreference ==="dumbbells"
                           ? "border-primary bg-primary/10 text-primary shadow-sm"
                           : "border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#131626] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                       }`}
@@ -602,10 +594,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     icon={<Download className="w-4 h-4" />}
                     label="Actualizaciones"
                   />
-                  <div className="bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl p-4 flex flex-col gap-3 shadow-sm dark:shadow-lg">
-                    <div className="flex items-center justify-between text-xs text-slate-600 dark:text-zinc-400 pb-2 border-b border-slate-200 dark:border-white/10 font-mono">
+                  <div className="fx-card rounded-2xl p-4 flex flex-col gap-3 shadow-sm dark:shadow-lg">
+                    <div className="flex items-center justify-between text-xs text-slate-600 dark:text-zinc-400 pb-2 border-b border-slate-200 dark:border-white/10">
                       <span>Versión instalada:</span>
-                      <span className="font-black text-cyan-600 dark:text-cyan-400 font-mono text-sm">v{APP_VERSION.version}</span>
+                      <span className="font-semibold text-cyan-600 dark:text-cyan-400 text-sm">v{APP_VERSION.version}</span>
                     </div>
 
                     {otaStatus === "idle" && (
@@ -634,7 +626,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             setOtaError(msg);
                           }
                         }}
-                        className="w-full h-12 bg-primary hover:bg-emerald-600 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm border border-primary cursor-pointer"
+                        className="w-full h-12 bg-primary hover:bg-emerald-600 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm border-primary cursor-pointer"
                       >
                         <RefreshCw className="w-4 h-4" />
                         Comprobar Actualizaciones
@@ -642,29 +634,29 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "checking" && (
-                      <div className="w-full h-12 bg-slate-100 dark:bg-[#131626] border border-cyan-500/30 rounded-2xl flex items-center justify-center gap-3 text-cyan-600 dark:text-cyan-400 font-mono font-bold text-xs uppercase">
+                      <div className="w-full h-12 bg-slate-100 dark:bg-[#131626] border-cyan-500/30 rounded-2xl flex items-center justify-center gap-3 text-cyan-600 dark:text-cyan-400 font-bold text-xs">
                         <Loader2 className="w-4 h-4 animate-spin" />
                         <span>Buscando actualizaciones...</span>
                       </div>
                     )}
 
                     {otaStatus === "update-found" && otaInfo && (
-                      <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-emerald-500/40 rounded-2xl p-4 flex flex-col gap-3 shadow-sm dark:shadow-lg">
-                        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-mono font-black text-sm uppercase">
+                      <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-emerald-500/40 rounded-2xl p-4 flex flex-col gap-3 shadow-sm dark:shadow-lg">
+                        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold text-sm">
                           <Sparkles className="w-5 h-5" />
                           <span>¡Nueva versión v{otaInfo.version} lista!</span>
                         </div>
-                        <p className="text-xs text-slate-600 dark:text-zinc-400 font-mono">
+                        <p className="text-xs text-slate-600 dark:text-zinc-400">
                           Servidor: <strong className="text-slate-900 dark:text-white">{otaInfo.serverUrl}</strong>
                         </p>
 
                         {!hasInstallPermission && (
-                          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 flex flex-col gap-2">
-                            <div className="flex items-center gap-2 text-amber-500 dark:text-amber-400 font-mono text-xs font-bold">
+                          <div className="bg-amber-500/10 border-amber-500/30 rounded-xl p-3 flex flex-col gap-2">
+                            <div className="flex items-center gap-2 text-amber-500 dark:text-amber-400 text-xs font-bold">
                               <AlertTriangle className="w-4 h-4" />
                               <span>Permiso para autoinstalar</span>
                             </div>
-                            <p className="text-[11px] text-slate-700 dark:text-zinc-300 font-mono">
+                            <p className="text-[13px] text-slate-700 dark:text-zinc-300">
                               Para instalar sin salir al navegador, activa el permiso de &ldquo;Instalar apps desconocidas&rdquo; para FORTIXAM (solo se hace una vez).
                             </p>
                             <button
@@ -675,7 +667,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                   setHasInstallPermission(ok);
                                 }, 1500);
                               }}
-                              className="h-8 bg-amber-500 hover:bg-amber-600 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-lg flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-sm"
+                              className="h-8 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-lg flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-sm"
                             >
                               <span>Conceder permiso en Ajustes</span>
                             </button>
@@ -707,7 +699,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               setOtaError(result.error || "Fallo en la descarga interna. Puedes descargar desde el navegador.");
                             }
                           }}
-                          className="w-full h-12 bg-primary hover:bg-emerald-600 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-sm border border-primary hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                          className="w-full h-12 bg-primary hover:bg-emerald-600 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm border-primary hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
                         >
                           <Download className="w-4 h-4" />
                           Descargar e Instalar v{otaInfo.version}
@@ -716,13 +708,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <div className="flex items-center justify-between pt-1">
                           <button
                             onClick={() => openApkDownload(otaInfo.downloadUrl)}
-                            className="text-[11px] text-cyan-600 dark:text-cyan-400 underline hover:text-slate-900 dark:hover:text-white font-mono"
+                            className="text-[13px] text-cyan-600 dark:text-cyan-400 underline hover:text-slate-900 dark:hover:text-white"
                           >
                             Descarga clásica (navegador)
                           </button>
                           <button
                             onClick={() => setOtaStatus("idle")}
-                            className="text-[11px] text-slate-500 dark:text-zinc-400 underline hover:text-slate-900 dark:hover:text-white font-mono"
+                            className="text-[13px] text-slate-500 dark:text-zinc-400 underline hover:text-slate-900 dark:hover:text-white"
                           >
                             Cancelar
                           </button>
@@ -732,7 +724,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                     {otaStatus === "downloading" && otaInfo && (
                       <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-2 border-primary/50 rounded-2xl p-4 flex flex-col gap-3.5 shadow-sm dark:shadow-lg">
-                        <div className="flex items-center justify-between text-slate-900 dark:text-white font-mono text-xs font-bold">
+                        <div className="flex items-center justify-between text-slate-900 dark:text-white text-xs font-bold">
                           <span className="flex items-center gap-2 text-primary font-bold">
                             <Loader2 className="w-4 h-4 animate-spin" />
                             {downloadProgress >= 100
@@ -742,14 +734,14 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           <span className="text-cyan-600 dark:text-cyan-400">{downloadProgress}%</span>
                         </div>
 
-                        <div className="w-full bg-slate-200 dark:bg-black/50 rounded-full h-3.5 border border-slate-300 dark:border-white/10 overflow-hidden p-0.5">
+                        <div className="w-full bg-slate-200 dark:bg-black/50 rounded-full h-3.5 border-slate-300 dark:border-white/10 overflow-hidden p-0.5">
                           <div
                             className="bg-primary h-full rounded-full transition-all duration-200 shadow-sm"
                             style={{ width: `${Math.max(5, Math.min(100, downloadProgress))}%` }}
                           />
                         </div>
 
-                        <div className="flex items-center justify-between text-[11px] text-slate-600 dark:text-zinc-400 font-mono">
+                        <div className="flex items-center justify-between text-[13px] text-slate-600 dark:text-zinc-400">
                           <span>{downloadStats.current} / {downloadStats.total}</span>
                           <span className="text-slate-400 dark:text-zinc-500">No cierres la app</span>
                         </div>
@@ -757,15 +749,15 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "up-to-date" && otaInfo && (
-                      <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-primary/30 rounded-2xl p-4 flex flex-col items-center gap-2 text-center shadow-sm dark:shadow-lg">
+                      <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-primary/30 rounded-2xl p-4 flex flex-col items-center gap-2 text-center shadow-sm dark:shadow-lg">
                         <CheckCircle2 className="w-6 h-6 text-primary" />
-                        <span className="font-mono font-bold text-slate-900 dark:text-white text-xs uppercase">Tu aplicación está al día (v{APP_VERSION.version})</span>
-                        <p className="text-[11px] text-slate-600 dark:text-zinc-400 font-mono">
+                        <span className="font-bold text-slate-900 dark:text-white text-xs">Tu aplicación está al día (v{APP_VERSION.version})</span>
+                        <p className="text-[13px] text-slate-600 dark:text-zinc-400">
                           Última versión en servidor: <strong className="text-slate-900 dark:text-white">v{otaInfo.version}</strong>
                         </p>
                         <button
                           onClick={() => setOtaStatus("idle")}
-                          className="text-xs text-cyan-600 dark:text-cyan-400 underline mt-1 font-mono"
+                          className="text-xs text-cyan-600 dark:text-cyan-400 underline mt-1"
                         >
                           Comprobar de nuevo
                         </button>
@@ -773,7 +765,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "error" && (
-                      <div className="bg-red-500/10 border border-error/30 rounded-2xl p-4 flex flex-col gap-2">
+                      <div className="bg-red-500/10 border-error/30 rounded-2xl p-4 flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-red-400 font-bold text-sm">
                           <AlertTriangle className="w-5 h-5" />
                           <span>No se pudo comprobar</span>
@@ -781,7 +773,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <p className="text-xs text-zinc-400">{otaError}</p>
                         <button
                           onClick={() => setOtaStatus("idle")}
-                          className="w-full h-10 mt-1 bg-[#181d2e] hover:bg-white/10 border border-white/10 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-xs active:scale-95 transition-all cursor-pointer"
+                          className="w-full h-10 mt-1 bg-[#181d2e] hover:bg-white/10 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-xs active:scale-95 transition-all cursor-pointer"
                         >
                           <RefreshCw className="w-4 h-4" />
                           Reintentar
@@ -789,7 +781,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </div>
                     )}
 
-                    <p className="text-[11px] text-zinc-400 text-center">
+                    <p className="text-[13px] text-zinc-400 text-center">
                       Actualizaciones automáticas y seguras a nivel global.
                     </p>
                   </div>
@@ -801,7 +793,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     icon={<Database className="w-4 h-4" />}
                     label="Copias de Seguridad Locales"
                   />
-                  <div className="bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
+                  <div className="fx-card rounded-xl p-4 flex flex-col gap-3 shadow-sm">
                     <p className="text-xs text-slate-600 dark:text-zinc-400">
                       Guarda o restaura tus entrenamientos y pesos directamente en un archivo <strong className="text-slate-900 dark:text-white">.json</strong> en tu móvil.
                     </p>
@@ -809,7 +801,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <button
                       disabled={syncStatus === "syncing"}
                       onClick={handleExportBackup}
-                      className="w-full h-12 bg-slate-50 dark:bg-[#181d2e] border border-primary/30 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-emerald-600 dark:text-primary cursor-pointer"
+                      className="w-full h-12 bg-slate-50 dark:bg-[#181d2e] border-primary/30 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-emerald-600 dark:text-primary cursor-pointer"
                     >
                       <Download className="w-5 h-5" />
                       <span className="font-bold text-sm">
@@ -817,7 +809,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </span>
                     </button>
 
-                    <label className="w-full h-12 bg-slate-50 dark:bg-[#181d2e] border border-slate-200 dark:border-white/10 rounded-xl flex items-center justify-center gap-2 text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
+                    <label className="w-full h-12 bg-slate-50 dark:bg-[#181d2e] rounded-xl flex items-center justify-center gap-2 text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
                       <Upload className="w-4 h-4 text-primary" />
                       <span className="text-sm font-semibold">Restaurar Copia de Seguridad</span>
                       <input
@@ -842,13 +834,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     icon={<RotateCcw className="w-4 h-4" />}
                     label="Zona de Peligro"
                   />
-                  <div className="bg-white dark:bg-[#131626] border border-red-500/20 rounded-2xl p-4 shadow-sm">
+                  <div className="bg-white dark:bg-[#131626] border-red-500/20 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-xs font-mono font-bold text-red-500 dark:text-red-400 block">
+                        <span className="text-xs font-bold text-red-500 dark:text-red-400 block">
                           Restablecer Historial
                         </span>
-                        <span className="text-[11px] font-mono text-slate-500 dark:text-zinc-400">
+                        <span className="text-[13px] text-slate-500 dark:text-zinc-400">
                           Borra todas las sesiones locales de entrenamiento
                         </span>
                       </div>
@@ -857,16 +849,16 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     {!showResetConfirm ? (
                       <button
                         onClick={() => setShowResetConfirm(true)}
-                        className="w-full h-10 bg-slate-50 dark:bg-[#181d2e] border border-red-500/20 flex items-center justify-center gap-2 rounded-lg text-red-500 dark:text-red-400 hover:bg-red-500/10 active:scale-95 transition-all mt-2 cursor-pointer"
+                        className="w-full h-10 bg-slate-50 dark:bg-[#181d2e] border-red-500/20 flex items-center justify-center gap-2 rounded-lg text-red-500 dark:text-red-400 hover:bg-red-500/10 active:scale-95 transition-all mt-2 cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                         <span className="text-xs font-bold">Borrar todos los datos locales</span>
                       </button>
                     ) : (
-                      <div className="bg-red-500/10 border border-error/20 rounded-lg p-3 mt-2">
+                      <div className="bg-red-500/10 border-error/20 rounded-lg p-3 mt-2">
                         <p className="text-xs text-red-500 dark:text-red-400 mb-3 text-center">¿Seguro? Se perderán tus entrenamientos en este dispositivo.</p>
                         <div className="flex gap-2">
-                          <button onClick={() => setShowResetConfirm(false)} className="flex-1 h-10 bg-slate-100 dark:bg-[#131626] rounded-md text-xs font-bold border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white cursor-pointer">Cancelar</button>
+                          <button onClick={() => setShowResetConfirm(false)} className="flex-1 h-10 bg-slate-100 dark:bg-[#131626] rounded-md text-xs font-bold text-slate-700 dark:text-white cursor-pointer">Cancelar</button>
                           <button onClick={handleResetHistory} className="flex-1 h-10 bg-red-500 hover:bg-red-600 text-white rounded-md text-xs font-bold cursor-pointer">Sí, borrar</button>
                         </div>
                       </div>
@@ -881,21 +873,21 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     label="Información y Estadísticas"
                   />
                   <div className="grid grid-cols-2 gap-2.5">
-                    <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-cyan-500/20 rounded-2xl p-4 text-center shadow-sm dark:shadow-lg">
+                    <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-cyan-500/20 rounded-2xl p-4 text-center shadow-sm dark:shadow-lg">
                       <Dumbbell className="w-6 h-6 text-cyan-600 dark:text-cyan-400 mx-auto mb-2" />
-                      <span className="font-mono text-2xl font-black text-slate-900 dark:text-white block">
+                      <span className="fx-num text-2xl font-semibold text-slate-900 dark:text-white block">
                         {sessions.length}
                       </span>
-                      <p className="font-mono text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider mt-1">
+                      <p className="text-[12px] font-bold text-cyan-600 dark:text-cyan-400 mt-1">
                         ENTRENAMIENTOS
                       </p>
                     </div>
-                    <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-primary/20 rounded-2xl p-4 text-center shadow-sm dark:shadow-lg">
+                    <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-primary/20 rounded-2xl p-4 text-center shadow-sm dark:shadow-lg">
                       <Sparkles className="w-6 h-6 text-primary mx-auto mb-2" />
-                      <span className="font-mono text-2xl font-black text-slate-900 dark:text-white block">
+                      <span className="fx-num text-2xl font-semibold text-slate-900 dark:text-white block">
                         v{APP_VERSION.version}
                       </span>
-                      <p className="font-mono text-[10px] font-bold text-primary uppercase tracking-wider mt-1">
+                      <p className="text-[12px] font-bold text-primary mt-1">
                         VERSIÓN ACTUAL
                       </p>
                     </div>
@@ -921,7 +913,7 @@ function SectionHeader({
   return (
     <div className="flex items-center gap-2 text-slate-500 dark:text-zinc-400 mb-1">
       <span className="text-primary">{icon}</span>
-      <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+      <h3 className="text-xs font-bold text-slate-900 dark:text-white">
         {label}
       </h3>
     </div>

@@ -59,7 +59,7 @@ export default function ExerciseSearchBar({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Buscar por ejercicio o músculo (ej. sentadilla, press...)"
-          className="w-full h-12 pl-10 pr-10 rounded-2xl bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 focus:border-primary text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder-zinc-500 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-primary shadow-sm dark:shadow-lg transition-all"
+          className="w-full h-12 pl-10 pr-10 rounded-2xl fx-card focus:border-primary text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder-zinc-500 text-xs focus:outline-none focus:ring-1 focus:ring-primary shadow-sm dark:shadow-lg transition-all"
         />
         {searchQuery.length > 0 && (
           <button
@@ -80,12 +80,9 @@ export default function ExerciseSearchBar({
           <button
             onClick={() => {
               haptics.selection();
-              onSelectEquipment("all");
-            }}
-            className={`px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold transition-all ${
-              selectedEquipment === "all"
-                ? "bg-slate-900 dark:bg-white/20 text-white border border-slate-700 dark:border-white/30 shadow-xs"
-                : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5"
+              onSelectEquipment("all"); }} className={`px-2.5 py-1 rounded-xl text-[13px] font-mono font-bold transition-all ${ selectedEquipment ==="all"
+                ? "bg-slate-900 dark:bg-white/20 text-white border-slate-700 dark:border-white/30"
+                : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
             }`}
           >
             Todo
@@ -93,12 +90,9 @@ export default function ExerciseSearchBar({
           <button
             onClick={() => {
               haptics.selection();
-              onSelectEquipment("dumbbells");
-            }}
-            className={`px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold flex items-center gap-1 transition-all ${
-              selectedEquipment === "dumbbells"
-                ? "bg-primary text-white border border-primary/40 shadow-sm"
-                : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5"
+              onSelectEquipment("dumbbells"); }} className={`px-2.5 py-1 rounded-xl text-[13px] font-mono font-bold flex items-center gap-1 transition-all ${ selectedEquipment ==="dumbbells"
+                ? "bg-primary text-white border-primary/40 shadow-sm"
+                : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
             }`}
           >
             <Dumbbell className="w-3 h-3" />
@@ -107,12 +101,9 @@ export default function ExerciseSearchBar({
           <button
             onClick={() => {
               haptics.selection();
-              onSelectEquipment("bodyweight");
-            }}
-            className={`px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold flex items-center gap-1 transition-all ${
-              selectedEquipment === "bodyweight"
-                ? "bg-cyan-600 text-white border border-cyan-500/40 shadow-sm"
-                : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5"
+              onSelectEquipment("bodyweight"); }} className={`px-2.5 py-1 rounded-xl text-[13px] font-mono font-bold flex items-center gap-1 transition-all ${ selectedEquipment ==="bodyweight"
+                ? "bg-cyan-600 text-white border-cyan-500/40 shadow-sm"
+                : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
             }`}
           >
             <User className="w-3 h-3" />
@@ -120,26 +111,14 @@ export default function ExerciseSearchBar({
           </button>
         </div>
 
-        <span className="font-mono text-[10px] text-slate-500 dark:text-zinc-400 font-bold uppercase tracking-wider">
+        <span className="text-[12px] text-slate-500 dark:text-zinc-400 font-bold">
           {totalCount} {totalCount === 1 ? "ejercicio" : "ejercicios"}
         </span>
       </div>
 
       {/* Muscle Tag Carousel */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5">
-        {MUSCLE_TAGS.map((tag) => {
-          const isSelected = selectedMuscle === tag.id;
-          return (
-            <button
-              key={tag.id}
-              onClick={() => {
-                haptics.selection();
-                onSelectMuscle(tag.id);
-              }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 active:scale-95 cursor-pointer ${
-                isSelected
-                  ? "bg-primary text-white font-bold shadow-sm border border-primary/40"
-                  : "bg-white dark:bg-[#131626] hover:bg-slate-100 dark:hover:bg-[#181d2e] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 shadow-xs"
+      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5"> {MUSCLE_TAGS.map((tag) => { const isSelected = selectedMuscle === tag.id; return ( <button key={tag.id} onClick={() => { haptics.selection(); onSelectMuscle(tag.id); }} className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 active:scale-95 cursor-pointer ${ isSelected ?"bg-primary text-white font-bold shadow-sm border-primary/40"
+                  : "bg-white dark:bg-[#131626] hover:bg-slate-100 dark:hover:bg-[#181d2e] text-slate-600 dark:text-zinc-400"
               }`}
             >
               {tag.label}

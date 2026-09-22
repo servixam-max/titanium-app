@@ -107,11 +107,11 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
       <main className="w-full px-container-padding pt-4 flex flex-col gap-section-gap">
         {/* Header */}
         <section className="flex flex-col gap-2">
-          <h1 className="font-mono text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+          <h1 className="fx-num text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white tracking-tight">
             {routine.title}
           </h1>
           {isCompletedToday && (
-            <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-600 dark:text-emerald-400 text-xs font-mono font-bold shadow-sm">
+            <div className="p-3 bg-emerald-500/15 border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-600 dark:text-emerald-400 text-xs font-bold shadow-sm">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
               <span>¡Has completado esta rutina hoy! Puedes repetirla cuando quieras.</span>
             </div>
@@ -121,25 +121,21 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         {/* Equipment Toggle if routine has alternatives */}
         {hasAlternatives && (
           <div className="flex flex-col gap-2">
-            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+            <h2 className="text-xs font-bold text-slate-500 dark:text-zinc-400">
               Equipamiento
             </h2>
-            <div className="flex p-1 bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl w-full shadow-sm">
+            <div className="flex p-1 fx-card rounded-2xl w-full shadow-sm">
               <button
-                onClick={() => setEquipmentPreference("dumbbells")}
-                className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${
-                  equipmentPreference === "dumbbells"
-                    ? "bg-primary text-white font-bold shadow-sm border border-primary/40"
+                onClick={() => setEquipmentPreference("dumbbells")} className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${ equipmentPreference ==="dumbbells"
+                    ? "bg-primary text-white font-bold shadow-sm border-primary/40"
                     : "bg-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 🏋️ Mancuernas
               </button>
               <button
-                onClick={() => setEquipmentPreference("bodyweight")}
-                className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${
-                  equipmentPreference === "bodyweight"
-                    ? "bg-primary text-white font-bold shadow-sm border border-primary/40"
+                onClick={() => setEquipmentPreference("bodyweight")} className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${ equipmentPreference ==="bodyweight"
+                    ? "bg-primary text-white font-bold shadow-sm border-primary/40"
                     : "bg-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -175,7 +171,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                     <button
                       key={id}
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-bold transition-all ${
                         isSelected
                           ? "bg-primary text-white font-bold border-primary/40 shadow-sm"
                           : "bg-white dark:bg-[#141828] text-slate-800 dark:text-white border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 shadow-xs"
@@ -219,7 +215,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                     <button
                       key={id}
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full border text-sm font-bold transition-all ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-bold transition-all ${
                         isSelected
                           ? "bg-primary text-white font-bold border-primary/40 shadow-sm"
                           : "bg-white dark:bg-[#141828] text-slate-800 dark:text-white border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 shadow-xs"
@@ -259,7 +255,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                   : "🧭 Flujo secuencial guiado paso a paso"}
               </p>
             </div>
-            <span className="font-label-caps text-label-caps text-primary font-bold">
+            <span className="text-[13px] font-semibold text-primary">
               {routine.duration}
             </span>
           </div>
@@ -289,7 +285,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         <div className="max-w-app mx-auto px-container-padding pointer-events-auto">
           <button
             onClick={() => handleStart(0)}
-            className="w-full bg-primary text-white font-mono font-bold text-sm uppercase tracking-wider h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md hover:brightness-105 border border-primary/40 cursor-pointer"
+            className="w-full bg-primary text-white font-bold text-sm h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md hover:brightness-105 border-primary/40 cursor-pointer"
           >
             <Play className="w-5 h-5 fill-current" />
             <span>{mode === "guided" ? "INICIAR MODO GUIADO" : "INICIAR MODO INDIVIDUAL"}</span>

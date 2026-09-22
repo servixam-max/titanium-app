@@ -51,7 +51,7 @@ export default function WorkoutComplete() {
     return (
       <div className="h-[100dvh] flex flex-col items-center justify-center bg-background px-6 text-center text-foreground">
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-3" />
-        <p className="text-zinc-400 text-xs font-mono">Guardando y cargando resumen...</p>
+        <p className="text-zinc-400 text-xs">Guardando y cargando resumen...</p>
       </div>
     );
   }

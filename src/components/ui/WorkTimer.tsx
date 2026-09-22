@@ -165,9 +165,9 @@ export default function WorkTimer() {
           aria-label="Volver atrás o cancelar"
         >
           <ArrowLeft className="w-6 h-6" />
-          <span className="text-xs font-bold font-label-caps uppercase">Salir</span>
+          <span className="text-xs font-bold font-label-caps">Salir</span>
         </button>
-        <span className="text-primary font-label-caps tracking-[0.2em] text-xs uppercase font-bold">
+        <span className="text-primary font-label-caps tracking-[0.2em] text-xs font-bold">
           {isHIIT ? `CIRCUITO ${circuitNumber}/${totalCircuits}` : "TRABAJO"}
         </span>
         <button
@@ -194,7 +194,7 @@ export default function WorkTimer() {
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto my-auto">
         <div className="flex flex-col items-center mb-4">
-          <h2 className="font-headline-lg text-headline-lg text-white uppercase text-center">
+          <h2 className="font-headline-lg text-headline-lg text-white text-center">
             {currentExercise?.name}
           </h2>
           <p className="text-zinc-400 text-sm mt-1">
@@ -213,8 +213,8 @@ export default function WorkTimer() {
         />
 
         <div className="w-full mb-6">
-          <div className="w-full bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3 flex items-center gap-4 shadow-lg">
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#0d101a] flex-shrink-0 border border-white/10">
+          <div className="w-full fx-card-raised rounded-2xl p-3 flex items-center gap-4 shadow-lg">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#0d101a] flex-shrink-0">
               <ExerciseImage
                 src={currentExercise?.image || ""}
                 alt={currentExercise?.name || "Ejercicio"}
@@ -240,7 +240,7 @@ export default function WorkTimer() {
 
       {showExitConfirm && (
         <div className="fixed inset-0 z-[70] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">
-          <div className="w-full max-w-sm bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-3xl p-6 shadow-2xl">
+          <div className="w-full max-w-sm fx-card-raised rounded-3xl p-6 shadow-2xl">
             <SectionTitle align="center" className="mb-2">
               ¿Salir del entreno?
             </SectionTitle>

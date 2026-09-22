@@ -36,7 +36,7 @@ export default function SectionTitle({
         {icon && <span className="text-primary">{icon}</span>}
         <h2
           className={cn(
-            "font-headline-md text-headline-md uppercase tracking-wider",
+            "font-headline-md text-headline-md",
             accent && "text-primary",
           )}
         >

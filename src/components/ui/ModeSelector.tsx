@@ -34,7 +34,7 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
   return (
     <section className="flex flex-col gap-2.5">
       <div className="flex items-center justify-between">
-        <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-zinc-400">
+        <h2 className="text-xs font-bold text-zinc-400">
           Modalidad de Entrenamiento
         </h2>
       </div>
@@ -60,7 +60,7 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
             >
               {/* Recommended badge */}
               {badge && (
-                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white px-2.5 py-0.5 rounded-full font-mono text-[9px] font-bold shadow-sm whitespace-nowrap border border-primary/40">
+                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white px-2.5 py-0.5 rounded-full text-[12px] font-bold shadow-sm whitespace-nowrap border-primary/40">
                   {badge.toUpperCase()}
                 </span>
               )}
@@ -83,7 +83,7 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
                 className={[
                   "flex items-center justify-center rounded-2xl p-3 mb-1 transition-colors duration-200",
                   isSelected
-                    ? "bg-primary/10 text-primary border border-primary/30"
+                    ? "bg-primary/10 text-primary border-primary/30"
                     : "bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-zinc-400",
                 ].join(" ")}
               >
@@ -93,7 +93,7 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
               {/* Title */}
               <span
                 className={[
-                  "font-mono text-xs font-bold uppercase tracking-wider",
+                  "font-mono text-xs font-bold",
                   isSelected ? "text-slate-900 dark:text-white" : "text-slate-700 dark:text-zinc-300",
                 ].join(" ")}
               >
@@ -101,7 +101,7 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
               </span>
 
               {/* Description */}
-              <span className="font-mono text-[10px] text-slate-500 dark:text-zinc-400 leading-snug">
+              <span className="text-[12px] text-slate-500 dark:text-zinc-400 leading-snug">
                 {description}
               </span>
             </button>

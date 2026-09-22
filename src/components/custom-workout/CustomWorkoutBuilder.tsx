@@ -384,21 +384,21 @@ export default function CustomWorkoutBuilder({
   return (
     <div className="flex flex-col gap-5 pb-32">
       {/* Top Banner / Title Header */}
-      <div className="relative overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-5 shadow-sm dark:shadow-2xl backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-5 shadow-sm dark:shadow-2xl backdrop-blur-xl">
         <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-primary/15 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-cyan-400/15 blur-3xl" />
 
         <div className="relative z-10 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/20 text-primary border border-primary/30">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/20 text-primary border-primary/30">
                 <SlidersHorizontal className="h-4 w-4" />
               </span>
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-primary">
+                <span className="text-[12px] font-semibold text-primary">
                   Creador de Rutinas
                 </span>
-                <h2 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">
+                <h2 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
                   Día Personalizado
                 </h2>
               </div>
@@ -410,7 +410,7 @@ export default function CustomWorkoutBuilder({
                   haptics.selection();
                   setViewSavedList(!viewSavedList);
                 }}
-                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all border cursor-pointer ${
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                   viewSavedList
                     ? "bg-primary text-white border-primary font-bold shadow-sm"
                     : "bg-slate-100 dark:bg-[#131626] text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-[#181d2e]"
@@ -424,7 +424,7 @@ export default function CustomWorkoutBuilder({
 
           {/* Routine Name Input */}
           <div className="flex flex-col gap-1 mt-1">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+            <label className="text-[12px] font-bold text-slate-500 dark:text-zinc-400">
               Nombre de la Rutina
             </label>
             <input
@@ -432,41 +432,41 @@ export default function CustomWorkoutBuilder({
               value={routineTitle}
               onChange={(e) => setRoutineTitle(e.target.value)}
               placeholder="Ej: Tabata Quemagrasa 20/10 o Pectoral Máximo"
-              className="w-full rounded-xl border border-slate-200 dark:border-white/15 bg-slate-50 dark:bg-black/40 px-3.5 py-2.5 text-sm font-bold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:border-primary focus:outline-none transition-all"
+              className="w-full rounded-xl border-slate-200 dark:border-white/15 bg-slate-50 dark:bg-black/40 px-3.5 py-2.5 text-sm font-bold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:border-primary focus:outline-none transition-all"
             />
           </div>
 
           {/* Quick Presets Carousel */}
           <div className="flex flex-col gap-1.5 mt-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1">
+            <span className="text-[12px] font-bold text-zinc-400 flex items-center gap-1">
               <Sparkles className="h-3 w-3 text-cyan-400" />
               Plantillas Rápidas de 1 Toque
             </span>
             <div className="flex gap-2 overflow-x-auto no-scrollbar py-0.5">
               <button
                 onClick={() => loadPreset("tabata")}
-                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-rose-500/20 to-orange-500/20 border border-rose-500/30 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-rose-500/30 transition-all active:scale-95"
+                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-rose-500/20 to-orange-500/20 border-rose-500/30 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-rose-500/30 transition-all active:scale-95"
               >
                 <Flame className="h-3.5 w-3.5 text-rose-400" />
                 Tabata 20/10 (Cardio)
               </button>
               <button
                 onClick={() => loadPreset("hiit")}
-                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/30 px-3 py-1.5 text-xs font-bold text-amber-300 hover:bg-amber-500/30 transition-all active:scale-95"
+                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border-amber-500/30 px-3 py-1.5 text-xs font-bold text-amber-300 hover:bg-amber-500/30 transition-all active:scale-95"
               >
                 <Timer className="h-3.5 w-3.5 text-amber-400" />
                 Super HIIT (30/15)
               </button>
               <button
                 onClick={() => loadPreset("push")}
-                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 px-3 py-1.5 text-xs font-bold text-cyan-300 hover:bg-cyan-500/30 transition-all active:scale-95"
+                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-cyan-500/30 px-3 py-1.5 text-xs font-bold text-cyan-300 hover:bg-cyan-500/30 transition-all active:scale-95"
               >
                 <Dumbbell className="h-3.5 w-3.5 text-cyan-400" />
                 Fuerza Empuje
               </button>
               <button
                 onClick={() => loadPreset("legs")}
-                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 px-3 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/30 transition-all active:scale-95"
+                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border-emerald-500/30 px-3 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/30 transition-all active:scale-95"
               >
                 <Layers className="h-3.5 w-3.5 text-emerald-400" />
                 Pierna & Glúteo
@@ -483,12 +483,12 @@ export default function CustomWorkoutBuilder({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden rounded-3xl border border-primary/30 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-4 shadow-sm dark:shadow-xl"
+            className="overflow-hidden rounded-3xl border-primary/30 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-4 shadow-sm dark:shadow-xl"
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10 mb-3">
               <div className="flex items-center gap-2">
                 <FolderHeart className="h-4 w-4 text-primary" />
-                <h3 className="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-white">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                   Tus Rutinas Guardadas ({savedRoutines.length})
                 </h3>
               </div>
@@ -504,10 +504,10 @@ export default function CustomWorkoutBuilder({
               {savedRoutines.map((routine) => (
                 <div
                   key={routine.id || routine.title}
-                  className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 dark:bg-[#131626] border border-slate-200 dark:border-white/5 p-3 hover:border-primary/40 transition-all"
+                  className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 dark:bg-[#131626] p-3 transition-all"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-11 w-11 rounded-xl overflow-hidden bg-black/40 border border-slate-200 dark:border-white/10 flex-shrink-0">
+                    <div className="h-11 w-11 rounded-xl overflow-hidden bg-black/40 flex-shrink-0">
                       <ExerciseImage
                         src={routine.coverImage || routine.exercises[0]?.image}
                         alt={routine.title}
@@ -517,10 +517,10 @@ export default function CustomWorkoutBuilder({
                       />
                     </div>
                     <div className="min-w-0 flex flex-col">
-                      <h4 className="text-xs font-black text-slate-900 dark:text-white truncate">
+                      <h4 className="text-xs font-semibold text-slate-900 dark:text-white truncate">
                         {routine.title}
                       </h4>
-                      <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400">
+                      <span className="text-[12px] text-slate-500 dark:text-zinc-400">
                         {routine.exercises.length} ejercicios · {routine.duration}
                       </span>
                     </div>
@@ -529,7 +529,7 @@ export default function CustomWorkoutBuilder({
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     <button
                       onClick={() => handleLoadSavedRoutine(routine)}
-                      className="rounded-lg bg-primary/15 border border-primary/30 px-2.5 py-1 text-[11px] font-bold text-primary hover:bg-primary/25 transition-all cursor-pointer"
+                      className="rounded-lg bg-primary/15 border-primary/30 px-2.5 py-1 text-[13px] font-bold text-primary hover:bg-primary/25 transition-all cursor-pointer"
                       title="Editar en el constructor"
                     >
                       Cargar
@@ -564,11 +564,11 @@ export default function CustomWorkoutBuilder({
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
-            <h3 className="border-l-2 border-primary pl-2 text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+            <h3 className="border-l-2 border-primary pl-2 text-xs font-bold text-slate-900 dark:text-white">
               Ejercicios Seleccionados ({selectedItems.length})
             </h3>
             {hasHIIT && (
-              <span className="rounded-full bg-rose-500/20 border border-rose-500/30 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-rose-500 dark:text-rose-400 flex items-center gap-1">
+              <span className="rounded-full bg-rose-500/20 border-rose-500/30 px-2 py-0.5 text-[12px] font-semibold text-rose-500 dark:text-rose-400 flex items-center gap-1">
                 <Flame className="h-2.5 w-2.5" /> HIIT/Tabata
               </span>
             )}
@@ -582,7 +582,7 @@ export default function CustomWorkoutBuilder({
                   setSelectedItems([]);
                 }
               }}
-              className="text-[10px] font-bold text-slate-500 dark:text-zinc-400 hover:text-red-500 transition-colors cursor-pointer"
+              className="text-[12px] font-bold text-slate-500 dark:text-zinc-400 hover:text-red-500 transition-colors cursor-pointer"
             >
               Vaciar lista
             </button>
@@ -590,11 +590,11 @@ export default function CustomWorkoutBuilder({
         </div>
 
         {selectedItems.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 dark:border-white/15 bg-white dark:bg-[#131626]/60 p-8 text-center shadow-sm">
+          <div className="flex flex-col items-center justify-center rounded-3xl border-dashed border-slate-300 dark:border-white/15 bg-white dark:bg-[#131626]/60 p-8 text-center shadow-sm">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-zinc-400 mb-3">
               <Dumbbell className="h-7 w-7 opacity-70" />
             </div>
-            <h4 className="text-sm font-black uppercase tracking-tight text-slate-900 dark:text-white mb-1">
+            <h4 className="text-sm font-semibold tracking-tight text-slate-900 dark:text-white mb-1">
               Tu rutina está vacía
             </h4>
             <p className="text-xs text-slate-600 dark:text-zinc-400 max-w-xs mb-4">
@@ -603,7 +603,7 @@ export default function CustomWorkoutBuilder({
             <div className="flex gap-2">
               <button
                 onClick={() => loadPreset("tabata")}
-                className="rounded-xl bg-primary/15 border border-primary/40 px-3.5 py-2 text-xs font-bold text-primary hover:bg-primary/25 transition-all flex items-center gap-1.5 cursor-pointer"
+                className="rounded-xl bg-primary/15 border-primary/40 px-3.5 py-2 text-xs font-bold text-primary hover:bg-primary/25 transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Cargar Circuito Tabata
@@ -624,18 +624,18 @@ export default function CustomWorkoutBuilder({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-3.5 shadow-sm dark:shadow-xl transition-all"
+                  className="relative overflow-hidden rounded-2xl bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-3.5 shadow-sm dark:shadow-xl transition-all"
                 >
                   {/* Top exercise bar */}
                   <div className="flex items-center justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3 min-w-0">
                       {/* Step Number Badge */}
-                      <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-black/50 text-[11px] font-mono font-black text-primary border border-slate-200 dark:border-primary/30">
+                      <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-black/50 text-[13px] font-semibold text-primary">
                         {index + 1}
                       </span>
 
                       {/* Thumbnail */}
-                      <div className="h-12 w-12 rounded-xl overflow-hidden bg-black/40 border border-slate-200 dark:border-white/10 flex-shrink-0">
+                      <div className="h-12 w-12 rounded-xl overflow-hidden bg-black/40 flex-shrink-0">
                         <ExerciseImage
                           src={item.exercise.image}
                           alt={item.exercise.name}
@@ -647,14 +647,14 @@ export default function CustomWorkoutBuilder({
 
                       {/* Name & Muscle info */}
                       <div className="min-w-0 flex flex-col">
-                        <h4 className="text-sm font-black text-slate-900 dark:text-white truncate leading-tight">
+                        <h4 className="text-sm font-semibold text-slate-900 dark:text-white truncate leading-tight">
                           {item.exercise.name}
                         </h4>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                          <span className="text-[12px] font-bold text-primary">
                             {muscle}
                           </span>
-                          <span className="text-[10px] text-slate-500 dark:text-zinc-500 font-mono">
+                          <span className="text-[12px] text-slate-500 dark:text-zinc-500">
                             {item.exercise.equipment === "dumbbells" ? "Mancuernas" : "Peso Corporal"}
                           </span>
                         </div>
@@ -690,7 +690,7 @@ export default function CustomWorkoutBuilder({
                   </div>
 
                   {/* Configuration Controls */}
-                  <div className="flex flex-col gap-3 rounded-xl bg-slate-50 dark:bg-black/35 border border-slate-200 dark:border-white/5 p-3">
+                  <div className="flex flex-col gap-3 rounded-xl bg-slate-50 dark:bg-black/35 p-3">
                     {/* Mode Selector Tabs (Reps vs HIIT) */}
                     <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-200/80 dark:bg-white/5">
                       <button
@@ -733,7 +733,7 @@ export default function CustomWorkoutBuilder({
 
                     {/* Sets controller (applicable to both) */}
                     <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/5 pb-2.5">
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300">
+                      <span className="text-xs font-bold text-slate-700 dark:text-zinc-300">
                         Número de Series:
                       </span>
                       <div className="flex items-center gap-2">
@@ -746,7 +746,7 @@ export default function CustomWorkoutBuilder({
                         >
                           -
                         </button>
-                        <span className="w-8 text-center font-mono text-sm font-black text-primary">
+                        <span className="w-8 text-center text-sm font-semibold text-primary">
                           {item.sets}
                         </span>
                         <button
@@ -767,7 +767,7 @@ export default function CustomWorkoutBuilder({
                       <div className="grid grid-cols-2 gap-3">
                         {/* Reps */}
                         <div className="flex flex-col gap-1.5">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                          <span className="text-[12px] font-bold text-slate-500 dark:text-zinc-400">
                             Reps Objetivo
                           </span>
                           <div className="flex items-center gap-1.5">
@@ -782,7 +782,7 @@ export default function CustomWorkoutBuilder({
                             >
                               -
                             </button>
-                            <span className="flex-1 text-center font-mono text-sm font-black text-slate-900 dark:text-white">
+                            <span className="flex-1 text-center text-sm font-semibold text-slate-900 dark:text-white">
                               {item.targetReps}
                             </span>
                             <button
@@ -801,7 +801,7 @@ export default function CustomWorkoutBuilder({
 
                         {/* Rest */}
                         <div className="flex flex-col gap-1.5">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                          <span className="text-[12px] font-bold text-slate-500 dark:text-zinc-400">
                             Descanso Serie
                           </span>
                           <div className="flex items-center gap-1.5">
@@ -816,7 +816,7 @@ export default function CustomWorkoutBuilder({
                             >
                               -
                             </button>
-                            <span className="flex-1 text-center font-mono text-sm font-black text-cyan-600 dark:text-cyan-400">
+                            <span className="flex-1 text-center text-sm font-semibold text-cyan-600 dark:text-cyan-400">
                               {item.restSeconds}s
                             </span>
                             <button
@@ -843,7 +843,7 @@ export default function CustomWorkoutBuilder({
                               haptics.tick();
                               handleUpdateItem(item.uid, { workSeconds: 20, restSeconds: 10 });
                             }}
-                            className={`flex-shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer ${
+                            className={`flex-shrink-0 px-2.5 py-1 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${
                               item.workSeconds === 20 && item.restSeconds === 10
                                 ? "bg-rose-500 text-white shadow-sm"
                                 : "bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
@@ -856,7 +856,7 @@ export default function CustomWorkoutBuilder({
                               haptics.tick();
                               handleUpdateItem(item.uid, { workSeconds: 30, restSeconds: 15 });
                             }}
-                            className={`flex-shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer ${
+                            className={`flex-shrink-0 px-2.5 py-1 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${
                               item.workSeconds === 30 && item.restSeconds === 15
                                 ? "bg-amber-500 text-white shadow-sm"
                                 : "bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
@@ -869,7 +869,7 @@ export default function CustomWorkoutBuilder({
                               haptics.tick();
                               handleUpdateItem(item.uid, { workSeconds: 45, restSeconds: 15 });
                             }}
-                            className={`flex-shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase transition-all cursor-pointer ${
+                            className={`flex-shrink-0 px-2.5 py-1 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${
                               item.workSeconds === 45 && item.restSeconds === 15
                                 ? "bg-cyan-500 text-white shadow-sm"
                                 : "bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
@@ -883,7 +883,7 @@ export default function CustomWorkoutBuilder({
                         <div className="grid grid-cols-2 gap-3">
                           {/* Work Seconds */}
                           <div className="flex flex-col gap-1.5">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-300">
+                            <span className="text-[12px] font-bold text-rose-600 dark:text-rose-300">
                               Actividad (Trabajo)
                             </span>
                             <div className="flex items-center gap-1.5">
@@ -898,7 +898,7 @@ export default function CustomWorkoutBuilder({
                               >
                                 -
                               </button>
-                              <span className="flex-1 text-center font-mono text-sm font-black text-rose-500 dark:text-rose-400">
+                              <span className="flex-1 text-center text-sm font-semibold text-rose-500 dark:text-rose-400">
                                 {item.workSeconds}s
                               </span>
                               <button
@@ -917,7 +917,7 @@ export default function CustomWorkoutBuilder({
 
                           {/* Rest Seconds */}
                           <div className="flex flex-col gap-1.5">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-300">
+                            <span className="text-[12px] font-bold text-cyan-600 dark:text-cyan-300">
                               Descanso
                             </span>
                             <div className="flex items-center gap-1.5">
@@ -932,7 +932,7 @@ export default function CustomWorkoutBuilder({
                               >
                                 -
                               </button>
-                              <span className="flex-1 text-center font-mono text-sm font-black text-cyan-600 dark:text-cyan-400">
+                              <span className="flex-1 text-center text-sm font-semibold text-cyan-600 dark:text-cyan-400">
                                 {item.restSeconds}s
                               </span>
                               <button
@@ -963,7 +963,7 @@ export default function CustomWorkoutBuilder({
       <div className="flex flex-col gap-3 pt-2">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
-            <h3 className="border-l-2 border-primary pl-2 text-xs font-bold uppercase tracking-wider text-white">
+            <h3 className="border-l-2 border-primary pl-2 text-xs font-bold text-white">
               Explorar Catálogo de Ejercicios ({filteredCatalog.length})
             </h3>
           </div>
@@ -985,7 +985,7 @@ export default function CustomWorkoutBuilder({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar por nombre (ej: Burpee, Press, Salto, Crunch...)"
-                className="w-full rounded-2xl border border-white/10 bg-[#131626] pl-10 pr-4 py-2.5 text-xs font-bold text-white placeholder-zinc-500 focus:border-primary focus:outline-none shadow-md"
+                className="w-full rounded-2xl bg-[#131626] pl-10 pr-4 py-2.5 text-xs font-bold text-white placeholder-zinc-500 focus:border-primary focus:outline-none shadow-md"
               />
               {searchQuery && (
                 <button
@@ -1009,7 +1009,7 @@ export default function CustomWorkoutBuilder({
                   className={`flex-shrink-0 rounded-xl px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                     activeMuscle === tab.id
                       ? "bg-primary text-white font-bold shadow-sm"
-                      : "bg-slate-100 dark:bg-[#131626] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/5"
+                      : "bg-slate-100 dark:bg-[#131626] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   {tab.label}
@@ -1024,7 +1024,7 @@ export default function CustomWorkoutBuilder({
                   haptics.selection();
                   setEquipmentFilter("all");
                 }}
-                className={`flex-1 rounded-xl py-1.5 text-[11px] font-bold border transition-all cursor-pointer ${
+                className={`flex-1 rounded-xl py-1.5 text-[13px] font-bold transition-all cursor-pointer ${
                   equipmentFilter === "all"
                     ? "bg-slate-200 dark:bg-white/15 text-slate-900 dark:text-white border-slate-300 dark:border-white/30"
                     : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-500 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
@@ -1037,7 +1037,7 @@ export default function CustomWorkoutBuilder({
                   haptics.selection();
                   setEquipmentFilter("dumbbells");
                 }}
-                className={`flex-1 rounded-xl py-1.5 text-[11px] font-bold border transition-all cursor-pointer ${
+                className={`flex-1 rounded-xl py-1.5 text-[13px] font-bold transition-all cursor-pointer ${
                   equipmentFilter === "dumbbells"
                     ? "bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/40"
                     : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-500 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
@@ -1050,7 +1050,7 @@ export default function CustomWorkoutBuilder({
                   haptics.selection();
                   setEquipmentFilter("bodyweight");
                 }}
-                className={`flex-1 rounded-xl py-1.5 text-[11px] font-bold border transition-all cursor-pointer ${
+                className={`flex-1 rounded-xl py-1.5 text-[13px] font-bold transition-all cursor-pointer ${
                   equipmentFilter === "bodyweight"
                     ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border-emerald-500/40"
                     : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-500 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
@@ -1072,7 +1072,7 @@ export default function CustomWorkoutBuilder({
                 return (
                   <div
                     key={exercise.id || exercise.name}
-                    className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] ${
+                    className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl transition-all duration-200 bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] ${
                       count > 0
                         ? "border-primary/60 shadow-sm"
                         : "border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/25"
@@ -1090,14 +1090,14 @@ export default function CustomWorkoutBuilder({
 
                       {/* Count badge if added */}
                       {count > 0 && (
-                        <div className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white font-mono text-xs font-bold shadow-sm">
+                        <div className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-xs font-bold shadow-sm">
                           +{count}
                         </div>
                       )}
 
                       {/* HIIT badge */}
                       {isHIIT && (
-                        <div className="absolute top-2 left-2 rounded-md bg-rose-500/90 px-1.5 py-0.5 text-[9px] font-black uppercase text-white shadow">
+                        <div className="absolute top-2 left-2 rounded-md bg-rose-500/90 px-1.5 py-0.5 text-[12px] font-semibold text-white shadow">
                           HIIT
                         </div>
                       )}
@@ -1106,20 +1106,20 @@ export default function CustomWorkoutBuilder({
                     {/* Content & Add button */}
                     <div className="flex flex-col p-2.5 gap-2">
                       <div>
-                        <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-primary">
+                        <span className="text-[12px] font-bold text-primary">
                           {muscle}
                         </span>
-                        <h4 className="text-xs font-black text-slate-900 dark:text-white leading-tight line-clamp-1">
+                        <h4 className="text-xs font-semibold text-slate-900 dark:text-white leading-tight line-clamp-1">
                           {exercise.name}
                         </h4>
                       </div>
 
                       <button
                         onClick={() => handleAddExercise(exercise)}
-                        className={`flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer active:scale-95 ${
+                        className={`flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition-all cursor-pointer active:scale-95 ${
                           count > 0
                             ? "bg-primary text-white shadow-sm font-bold"
-                            : "bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 border border-slate-200 dark:border-white/10"
+                            : "bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20"
                         }`}
                       >
                         <Plus className="h-3.5 w-3.5" />
@@ -1136,20 +1136,20 @@ export default function CustomWorkoutBuilder({
 
       {/* Floating Action Bar (Sticky at bottom) */}
       <div className="fixed bottom-16 left-0 right-0 z-40 p-4 pointer-events-none">
-        <div className="mx-auto max-w-lg pointer-events-auto rounded-3xl border border-slate-200 dark:border-white/15 bg-white/95 dark:bg-[#0d101a]/95 p-3.5 shadow-2xl backdrop-blur-2xl">
+        <div className="mx-auto max-w-lg pointer-events-auto rounded-3xl border-slate-200 dark:border-white/15 bg-white/95 dark:bg-[#0d101a]/95 p-3.5 shadow-2xl backdrop-blur-2xl">
           {/* Summary metrics header */}
           <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-200 dark:border-white/10">
             <div className="flex items-center gap-2">
               <span className="flex h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
-              <span className="text-xs font-mono font-black text-slate-900 dark:text-white">
+              <span className="text-xs font-semibold text-slate-900 dark:text-white">
                 {selectedItems.length} {selectedItems.length === 1 ? "Ejercicio" : "Ejercicios"}
               </span>
               <span className="text-slate-400 dark:text-zinc-600">·</span>
-              <span className="text-xs font-mono font-bold text-slate-600 dark:text-zinc-400">
+              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">
                 {totalSets} Series
               </span>
               <span className="text-slate-400 dark:text-zinc-600">·</span>
-              <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1">
+              <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1">
                 <Clock className="h-3 w-3" /> ~{estimatedMinutes} min
               </span>
             </div>
@@ -1158,7 +1158,7 @@ export default function CustomWorkoutBuilder({
             <button
               onClick={handleSave}
               disabled={isSaving || selectedItems.length === 0}
-              className="flex items-center gap-1 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 px-2.5 py-1 text-[11px] font-bold text-slate-900 dark:text-white transition-all disabled:opacity-40 cursor-pointer"
+              className="flex items-center gap-1 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 px-2.5 py-1 text-[13px] font-bold text-slate-900 dark:text-white transition-all disabled:opacity-40 cursor-pointer"
             >
               <Save className="h-3.5 w-3.5 text-primary" />
               <span>{isSaving ? "Guardando..." : "Guardar"}</span>
@@ -1167,7 +1167,7 @@ export default function CustomWorkoutBuilder({
 
           {/* Feedback banner */}
           {saveFeedback && (
-            <div className="mb-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/30 py-1 px-3 text-center text-xs font-bold text-emerald-700 dark:text-emerald-300">
+            <div className="mb-2.5 rounded-xl bg-emerald-500/20 border-emerald-500/30 py-1 px-3 text-center text-xs font-bold text-emerald-700 dark:text-emerald-300">
               {saveFeedback}
             </div>
           )}
@@ -1177,7 +1177,7 @@ export default function CustomWorkoutBuilder({
             <button
               onClick={() => handleStart("guided")}
               disabled={selectedItems.length === 0}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-emerald-600 py-3 px-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm border border-primary transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+              className="flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-emerald-600 py-3 px-3 text-xs font-bold text-white shadow-sm border-primary transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
             >
               <Play className="h-4 w-4 fill-current" />
               <span>Modo Guiado</span>
@@ -1186,7 +1186,7 @@ export default function CustomWorkoutBuilder({
             <button
               onClick={() => handleStart("individual")}
               disabled={selectedItems.length === 0}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 px-3 text-xs font-black uppercase tracking-wider text-white shadow-lg transition-all hover:brightness-110 active:scale-95 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+              className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 px-3 text-xs font-semibold text-white shadow-lg transition-all hover:brightness-110 active:scale-95 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
             >
               <Dumbbell className="h-4 w-4" />
               <span>Modo Libre</span>

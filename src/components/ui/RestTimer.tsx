@@ -151,9 +151,9 @@ export default function RestTimer() {
           aria-label="Volver atrás o cancelar"
         >
           <ArrowLeft className="w-6 h-6" />
-          <span className="text-xs font-bold font-label-caps uppercase">Salir</span>
+          <span className="text-xs font-bold font-label-caps">Salir</span>
         </button>
-        <span className="text-primary font-label-caps tracking-[0.2em] text-xs uppercase font-bold">
+        <span className="text-primary font-label-caps tracking-[0.2em] text-xs font-bold">
           Descanso
         </span>
         <button
@@ -180,10 +180,10 @@ export default function RestTimer() {
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto my-auto">
         <div className="flex flex-col items-center mb-4">
-          <span className="text-primary font-label-caps tracking-[0.25em] text-xs uppercase mb-1">
+          <span className="text-primary font-label-caps tracking-[0.25em] text-xs mb-1">
             Intervalo de Recuperación
           </span>
-          <h2 className="font-headline-lg text-headline-lg text-white uppercase">
+          <h2 className="font-headline-lg text-headline-lg text-white">
             Recupera
           </h2>
         </div>
@@ -200,11 +200,11 @@ export default function RestTimer() {
 
         {/* Upcoming Exercise Preview Card */}
         <div className="w-full mb-6">
-          <p className="text-zinc-400 font-label-caps tracking-[0.2em] text-[11px] uppercase mb-2 text-center">
+          <p className="text-zinc-400 font-label-caps tracking-[0.2em] text-[13px] mb-2 text-center">
             {isNewExercise ? "A continuación:" : "Continúas con:"}
           </p>
-          <div className="w-full bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#0d101a] flex-shrink-0 border border-white/10">
+          <div className="w-full fx-card-raised rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#0d101a] flex-shrink-0">
               <ExerciseImage
                 src={currentExercise?.image || ""}
                 alt={currentExercise?.name || "Ejercicio"}
@@ -227,10 +227,7 @@ export default function RestTimer() {
                     ? currentExercise.reps
                     : `${currentExercise?.reps} reps`}
                 </span>
-                <span className="text-zinc-600">·</span>
-                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border font-bold ${
-                  isLastSetOfExercise
-                    ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                <span className="text-zinc-600">·</span> <span className={`text-[12px] font-mono px-2 py-0.5 rounded-full font-bold ${ isLastSetOfExercise ?"bg-amber-500/20 text-amber-300 border-amber-500/40"
                     : "bg-primary/15 text-primary border-primary/30"
                 }`}>
                   {isLastSetOfExercise ? "¡Última serie!" : `Quedan ${remainingSets} series`}
@@ -279,7 +276,7 @@ export default function RestTimer() {
 
       {showExitConfirm && (
         <div className="fixed inset-0 z-[70] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">
-          <div className="w-full max-w-sm bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-3xl p-6 shadow-2xl">
+          <div className="w-full max-w-sm fx-card-raised rounded-3xl p-6 shadow-2xl">
             <SectionTitle align="center" className="mb-2">
               ¿Salir del entreno?
             </SectionTitle>

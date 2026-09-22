@@ -20,7 +20,7 @@ export default function ExitConfirmModal({
 
   return (
     <div className="fixed inset-0 z-[70] bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center px-6">
-      <div className="w-full max-w-sm bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 rounded-3xl p-6 shadow-2xl">
+      <div className="w-full max-w-sm fx-card-raised rounded-3xl p-6 shadow-2xl">
         <SectionTitle align="center" className="mb-2">
           ¿Salir del entreno?
         </SectionTitle>

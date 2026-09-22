@@ -46,25 +46,25 @@ export default function AchievementsList({ achievements, className }: Achievemen
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
+            <span className="w-7 h-7 rounded-xl bg-primary/20 border-primary/30 flex items-center justify-center text-primary">
               <Trophy className="w-4 h-4" />
             </span>
             <div>
-              <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+              <h3 className="text-xs font-bold text-slate-900 dark:text-white">
                 Logros y Medallas
               </h3>
-              <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400">
+              <span className="text-[12px] text-slate-500 dark:text-zinc-400">
                 {unlockedCount} de {totalCount} desbloqueados ({overallPercentage}%)
               </span>
             </div>
           </div>
-          <span className="text-[11px] font-mono font-black text-primary bg-primary/10 border border-primary/30 px-3 py-1 rounded-full shadow-sm">
+          <span className="text-[13px] font-semibold text-primary bg-primary/10 border-primary/30 px-3 py-1 rounded-full shadow-sm">
             {overallPercentage}%
           </span>
         </div>
 
         {/* Global Progress Bar */}
-        <div className="w-full bg-slate-100 dark:bg-[#0d101a] h-2 rounded-full overflow-hidden border border-slate-200 dark:border-white/5">
+        <div className="w-full bg-slate-100 dark:bg-[#0d101a] h-2 rounded-full overflow-hidden">
           <div
             className="h-full rounded-full bg-primary transition-all duration-700 shadow-sm"
             style={{ width: `${overallPercentage}%` }}
@@ -90,9 +90,9 @@ export default function AchievementsList({ achievements, className }: Achievemen
               setActiveFilter(tab.id as AchievementFilter);
             }}
             className={cn(
-              "flex-shrink-0 px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold uppercase transition-all",
+              "flex-shrink-0 px-2.5 py-1 rounded-xl text-[12px] font-mono font-bold transition-all",
               activeFilter === tab.id
-                ? "bg-primary text-white font-bold shadow-sm border border-primary/40"
+                ? "bg-primary text-white font-bold shadow-sm border-primary/40"
                 : "bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             )}
           >
@@ -117,7 +117,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
                 setSelectedAchievement(achievement);
               }}
               className={cn(
-                "p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[115px] cursor-pointer active:scale-98",
+                "p-3 rounded-2xl text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[115px] cursor-pointer active:scale-98",
                 achievement.isUnlocked
                   ? "bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-primary/50 shadow-sm dark:shadow-md hover:border-primary/80"
                   : "bg-slate-50 dark:bg-[#131626] border-slate-200 dark:border-white/5 opacity-70 hover:opacity-100 hover:border-slate-300 dark:hover:border-white/10"
@@ -131,7 +131,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-2xl drop-shadow-md">{achievement.icon}</span>
                   {achievement.isUnlocked ? (
-                    <span className="flex items-center gap-0.5 text-[9px] font-mono font-black text-primary uppercase">
+                    <span className="flex items-center gap-0.5 text-[12px] font-semibold text-primary">
                       <CheckCircle2 className="w-3 h-3 text-primary" />
                       OK
                     </span>
@@ -139,17 +139,17 @@ export default function AchievementsList({ achievements, className }: Achievemen
                     <Lock className="w-3 h-3 text-zinc-500" />
                   )}
                 </div>
-                <h4 className="text-xs font-mono font-black text-white leading-tight">
+                <h4 className="text-xs font-semibold text-white leading-tight">
                   {achievement.title}
                 </h4>
-                <p className="text-[10px] font-mono text-zinc-400 line-clamp-2 mt-0.5 leading-snug">
+                <p className="text-[12px] text-zinc-400 line-clamp-2 mt-0.5 leading-snug">
                   {achievement.description}
                 </p>
               </div>
 
               {/* Progress bar */}
               <div className="mt-2 pt-2 border-t border-white/5">
-                <div className="flex justify-between text-[9px] font-mono mb-1">
+                <div className="flex justify-between text-[12px] mb-1">
                   <span className="text-zinc-500">Progreso</span>
                   <span className={achievement.isUnlocked ? "text-primary font-bold" : "text-zinc-400"}>
                     {achievement.progress}/{achievement.target} {achievement.unit}
@@ -183,7 +183,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
             onClick={(e) => e.stopPropagation()}
           >
             <Card3D highlight rotateXMax={14} rotateYMax={14}>
-              <div className="relative overflow-hidden bg-gradient-to-b from-[#141828] via-[#111422] to-[#0d101a] border border-primary/40 rounded-3xl p-6 text-center shadow-2xl">
+              <div className="relative overflow-hidden bg-gradient-to-b from-[#141828] via-[#111422] to-[#0d101a] border-primary/40 rounded-3xl p-6 text-center shadow-2xl">
                 {selectedAchievement.isUnlocked && (
                   <BorderBeam
                     size={160}
@@ -196,29 +196,29 @@ export default function AchievementsList({ achievements, className }: Achievemen
                 )}
 
                 <div className="relative z-10">
-                  <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-tr from-black/80 to-white/5 border border-primary/30 flex items-center justify-center shadow-[0_0_18px_rgba(16,185,129,0.18)]">
+                  <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-tr from-black/80 to-white/5 border-primary/30 flex items-center justify-center shadow-[0_0_18px_rgba(16,185,129,0.18)]">
                     <span className="text-5xl block select-none">
                       {selectedAchievement.icon}
                     </span>
                   </div>
 
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-400 block mb-1">
+                  <span className="text-[12px] font-bold text-zinc-400 block mb-1">
                     {selectedAchievement.category}
                   </span>
-                  <h3 className="text-lg font-mono font-black text-white">
+                  <h3 className="text-lg font-semibold text-white">
                     {selectedAchievement.title}
                   </h3>
-                  <p className="text-xs font-mono text-zinc-300 mt-1 leading-relaxed">
+                  <p className="text-xs text-zinc-300 mt-1 leading-relaxed">
                     {selectedAchievement.description}
                   </p>
 
-                  <div className="my-4 p-3 bg-black/50 rounded-2xl border border-white/5">
-                    <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">
+                  <div className="my-4 p-3 bg-black/50 rounded-2xl border-white/5">
+                    <span className="text-[12px] text-zinc-400 block mb-1">
                       Estado del Logro
                     </span>
                     <span
                       className={cn(
-                        "text-xs font-mono font-black uppercase tracking-wide",
+                        "text-xs font-mono font-semibold tracking-wide",
                         selectedAchievement.isUnlocked
                           ? "text-primary flex items-center justify-center gap-1"
                           : "text-zinc-500"
@@ -240,7 +240,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
                       haptics.tick();
                       setSelectedAchievement(null);
                     }}
-                    className="w-full py-2.5 rounded-xl bg-primary text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer active:scale-95 border border-primary/40"
+                    className="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs transition-all shadow-sm cursor-pointer active:scale-95 border-primary/40"
                   >
                     Entendido
                   </button>

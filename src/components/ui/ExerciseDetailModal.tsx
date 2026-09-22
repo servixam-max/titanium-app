@@ -54,7 +54,7 @@ export default function ExerciseDetailModal({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-t sm:border border-slate-200 dark:border-white/15 rounded-t-[32px] sm:rounded-3xl shadow-xl overflow-hidden z-10 max-h-[90vh] flex flex-col"
+            className="relative w-full max-w-lg bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-t border-[var(--fx-hairline)] rounded-t-[32px] sm:rounded-3xl shadow-xl overflow-hidden z-10 max-h-[90vh] flex flex-col"
           >
             {/* Top Close Button */}
             <button
@@ -62,7 +62,7 @@ export default function ExerciseDetailModal({
                 haptics.selection();
                 onClose();
               }}
-              className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center active:scale-90 transition-transform cursor-pointer"
+              className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border-white/20 text-white flex items-center justify-center active:scale-90 transition-transform cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -85,14 +85,8 @@ export default function ExerciseDetailModal({
 
               {/* Tags overlay */}
               <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between pointer-events-none">
-                <span className="px-3 py-1 rounded-xl bg-primary text-white font-mono font-bold text-xs uppercase tracking-wider border border-primary/40 shadow-sm">
-                  {muscle}
-                </span>
-                <span
-                  className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold uppercase tracking-wider ${
-                    isDumbbell
-                      ? "bg-amber-500/25 text-amber-300 border border-amber-500/40"
-                      : "bg-cyan-500/25 text-cyan-300 border border-cyan-500/40"
+                <span className="px-3 py-1 rounded-xl bg-primary text-white font-bold text-xs border-primary/40 shadow-sm"> {muscle} </span> <span className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold ${ isDumbbell ?"bg-amber-500/25 text-amber-300 border-amber-500/40"
+                      : "bg-cyan-500/25 text-cyan-300 border-cyan-500/40"
                   }`}
                 >
                   {isDumbbell ? "Mancuernas" : "Peso Corporal"}
@@ -103,11 +97,11 @@ export default function ExerciseDetailModal({
             {/* Body Info */}
             <div className="p-5 flex flex-col gap-4 overflow-y-auto">
               <div>
-                <h3 className="font-mono text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                <h3 className="fx-num text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white tracking-tight leading-tight">
                   {exercise.name}
                 </h3>
                 {exercise.difficulty && (
-                  <span className="text-xs font-mono text-slate-600 dark:text-zinc-400 mt-1 block">
+                  <span className="text-xs text-slate-600 dark:text-zinc-400 mt-1 block">
                     Nivel: <strong className="text-primary">{exercise.difficulty}</strong>
                   </span>
                 )}
@@ -115,22 +109,22 @@ export default function ExerciseDetailModal({
 
               {/* Key Specs Pills */}
               <div className="grid grid-cols-3 gap-2 py-1">
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] border border-slate-200 dark:border-white/10 flex flex-col items-center text-center shadow-sm">
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] flex flex-col items-center text-center shadow-sm">
                   <Layers className="w-4 h-4 text-primary mb-1" />
-                  <span className="text-[10px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold">Series</span>
-                  <span className="font-mono text-base font-black text-slate-900 dark:text-white">{exercise.sets}</span>
+                  <span className="text-[12px] text-slate-600 dark:text-zinc-400 font-bold">Series</span>
+                  <span className="text-base font-semibold text-slate-900 dark:text-white">{exercise.sets}</span>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] border border-slate-200 dark:border-white/10 flex flex-col items-center text-center shadow-sm">
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] flex flex-col items-center text-center shadow-sm">
                   <Activity className="w-4 h-4 text-amber-600 dark:text-amber-400 mb-1" />
-                  <span className="text-[10px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold">Reps</span>
-                  <span className="font-mono text-sm font-black text-slate-900 dark:text-white truncate max-w-full">
+                  <span className="text-[12px] text-slate-600 dark:text-zinc-400 font-bold">Reps</span>
+                  <span className="text-sm font-semibold text-slate-900 dark:text-white truncate max-w-full">
                     {exercise.reps}
                   </span>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] border border-slate-200 dark:border-white/10 flex flex-col items-center text-center shadow-sm">
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] flex flex-col items-center text-center shadow-sm">
                   <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400 mb-1" />
-                  <span className="text-[10px] font-mono text-slate-600 dark:text-zinc-400 uppercase font-bold">Descanso</span>
-                  <span className="font-mono text-base font-black text-cyan-600 dark:text-cyan-300">
+                  <span className="text-[12px] text-slate-600 dark:text-zinc-400 font-bold">Descanso</span>
+                  <span className="text-base font-semibold text-cyan-600 dark:text-cyan-300">
                     {exercise.restSeconds}s
                   </span>
                 </div>
@@ -138,11 +132,11 @@ export default function ExerciseDetailModal({
 
               {/* Description */}
               {exercise.description && (
-                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] border border-slate-200 dark:border-white/10 shadow-sm">
-                  <span className="font-mono text-[10px] font-black uppercase text-slate-700 dark:text-zinc-400 block mb-1">
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] shadow-sm">
+                  <span className="text-[12px] font-semibold text-slate-700 dark:text-zinc-400 block mb-1">
                     Técnica y Ejecución
                   </span>
-                  <p className="font-mono text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
+                  <p className="text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
                     {exercise.description}
                   </p>
                 </div>
@@ -150,7 +144,7 @@ export default function ExerciseDetailModal({
 
               {/* Tempo Tip */}
               {exercise.tempo && (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] border border-slate-200 dark:border-white/10 text-xs font-mono shadow-sm">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] text-xs shadow-sm">
                   <span className="text-slate-600 dark:text-zinc-400">Tempo de ejecución:</span>
                   <span className="text-primary font-bold">{exercise.tempo}</span>
                 </div>
@@ -164,7 +158,7 @@ export default function ExerciseDetailModal({
                   haptics.impact();
                   onStartExercise(exercise);
                 }}
-                className="w-full h-14 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-md border border-primary/40 active:scale-98 transition-all cursor-pointer"
+                className="w-full h-14 bg-primary hover:brightness-105 text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-md border-primary/40 active:scale-98 transition-all cursor-pointer"
               >
                 <Play className="w-4 h-4 fill-current" />
                 <span>Entrenar este ejercicio ahora</span>

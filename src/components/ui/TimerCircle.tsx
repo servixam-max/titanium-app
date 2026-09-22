@@ -87,14 +87,14 @@ export default function TimerCircle({
           <>
             <span
               className={cn(
-                "font-mono font-black text-6xl leading-none tabular-nums tracking-tight",
+                "font-mono font-semibold text-6xl leading-none tabular-nums tracking-tight",
                 urgent ? "text-red-500 animate-pulse drop-shadow-sm" : "text-primary drop-shadow-sm",
               )}
             >
               {seconds}
             </span>
             {label && (
-              <span className="text-slate-500 dark:text-zinc-400 font-bold tracking-[0.2em] text-xs mt-2 uppercase">
+              <span className="text-slate-500 dark:text-zinc-400 font-bold tracking-[0.2em] text-xs mt-2">
                 {label}
               </span>
             )}

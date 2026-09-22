@@ -317,11 +317,11 @@ export default function GuidedWorkout() {
         {/* Mini progress line info */}
         <div className="flex-shrink-0">
           <div className="flex items-center justify-between mb-1.5 px-1">
-            <span className="text-primary font-mono font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+            <span className="text-primary font-bold text-[13px] flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               {workoutPercent}% COMPLETADO
             </span>
-            <span className="text-zinc-400 font-mono font-bold uppercase tracking-wider text-[11px]">
+            <span className="text-zinc-400 font-bold text-[13px]">
               SERIE {completedSetsCount}/{totalSetsInRoutine}
             </span>
           </div>
@@ -334,7 +334,7 @@ export default function GuidedWorkout() {
 
         {activeWorkout.isPreparing ? (
           <div className="flex-1 flex flex-col items-center justify-center min-h-0">
-            <h2 className="font-headline-lg text-headline-lg text-white uppercase text-center mb-2">
+            <h2 className="font-headline-lg text-headline-lg text-white text-center mb-2">
               Preparado/a?
             </h2>
             <p className="text-zinc-400 text-sm mb-6 text-center">

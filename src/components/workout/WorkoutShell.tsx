@@ -62,7 +62,7 @@ export default function WorkoutShell({
           >
             <ArrowLeft className={focusMode ? "w-4 h-4 text-slate-500 dark:text-zinc-400" : "w-6 h-6 text-slate-800 dark:text-white"} />
             {focusMode && (
-              <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400 font-bold uppercase">Salir</span>
+              <span className="text-[12px] text-slate-500 dark:text-zinc-400 font-bold">Salir</span>
             )}
           </button>
         ) : (
@@ -70,9 +70,9 @@ export default function WorkoutShell({
         )}
 
         {focusMode ? (
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/15 border border-primary/30">
+          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/15 border-primary/30">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-[10px] font-mono font-bold text-primary tracking-wider uppercase">
+            <span className="text-[12px] font-bold text-primary">
               MODO ENFOQUE
             </span>
           </div>
@@ -92,7 +92,7 @@ export default function WorkoutShell({
             className={cn(
               "flex items-center justify-center w-9 h-9 rounded-xl transition-all active:scale-95 cursor-pointer",
               focusMode
-                ? "bg-primary/20 text-emerald-700 dark:text-primary border border-primary/40 shadow-sm"
+                ? "bg-primary/20 text-emerald-700 dark:text-primary border-primary/40 shadow-sm"
                 : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             )}
             title={focusMode ? "Salir de modo enfoque" : "Activar modo enfoque sin distracciones"}

@@ -222,7 +222,7 @@ export default function OnboardingModal() {
                 <button
                   key={g.value}
                   onClick={() => setGoal(g.value)}
-                  className={`flex items-center gap-4 p-4 rounded-2xl border text-left transition-all ${
+                  className={`flex items-center gap-4 p-4 rounded-2xl text-left transition-all ${
                     goal === g.value
                       ? "border-primary bg-primary/10"
                       : "border-white/10 bg-white/5 hover:bg-white/10"
@@ -257,7 +257,7 @@ export default function OnboardingModal() {
                 <button
                   key={l.value}
                   onClick={() => setLevel(l.value)}
-                  className={`p-4 rounded-2xl border text-left transition-all ${
+                  className={`p-4 rounded-2xl text-left transition-all ${
                     level === l.value
                       ? "border-accent-cyan bg-accent-cyan/10"
                       : "border-white/10 bg-white/5 hover:bg-white/10"
@@ -292,7 +292,7 @@ export default function OnboardingModal() {
                     className={`aspect-square rounded-2xl text-lg font-bold transition-all ${
                       days === d
                         ? "bg-accent-violet text-white shadow-glow-violet"
-                        : "bg-white/5 border border-white/10 text-text-secondary hover:bg-white/10"
+                        : "bg-white/5 text-text-secondary hover:bg-white/10"
                     }`}
                   >
                     {d}
@@ -321,7 +321,7 @@ export default function OnboardingModal() {
                 <button
                   key={e.value}
                   onClick={() => toggleEquipment(e.value)}
-                  className={`flex items-center justify-between p-4 rounded-2xl border text-left transition-all ${
+                  className={`flex items-center justify-between p-4 rounded-2xl text-left transition-all ${
                     equipment.includes(e.value)
                       ? "border-primary bg-primary/10"
                       : "border-white/10 bg-white/5 hover:bg-white/10"
@@ -355,7 +355,7 @@ export default function OnboardingModal() {
                   onChange={(e) => setRestrictionInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addRestriction()}
                   placeholder="Escribe y pulsa añadir"
-                  className="flex-1 h-12 px-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:border-primary focus:outline-none"
+                  className="flex-1 h-12 px-4 rounded-2xl bg-white/5 text-white focus:border-primary focus:outline-none"
                 />
                 <button
                   onClick={addRestriction}
@@ -369,7 +369,7 @@ export default function OnboardingModal() {
                   <button
                     key={r}
                     onClick={() => removeRestriction(r)}
-                    className="px-3 py-1.5 rounded-full bg-accent-rose/10 border border-accent-rose/30 text-accent-rose text-sm"
+                    className="px-3 py-1.5 rounded-full bg-accent-rose/10 border-accent-rose/30 text-accent-rose text-sm"
                   >
                     {r} ×
                   </button>

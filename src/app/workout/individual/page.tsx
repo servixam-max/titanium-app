@@ -252,11 +252,11 @@ export default function IndividualWorkout() {
       >
         <div className="flex-shrink-0">
           <div className="flex items-center justify-between mb-1.5 px-1">
-            <span className="text-primary font-mono font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+            <span className="text-primary font-bold text-[13px] flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               {workoutPercent}% COMPLETADO
             </span>
-            <span className="text-zinc-400 font-mono font-bold uppercase tracking-wider text-[11px]">
+            <span className="text-zinc-400 font-bold text-[13px]">
               SERIE {completedSetsCount}/{totalSetsInRoutine}
             </span>
           </div>

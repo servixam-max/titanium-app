@@ -43,7 +43,7 @@ export default function ExerciseGridCard({
         ease: [0.22, 1, 0.36, 1],
       }}
       whileTap={{ scale: 0.98 }}
-      className="group relative bg-gradient-to-br from-[#141828] via-[#111422] to-[#0D101A] border border-white/10 hover:border-primary/40 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between transition-all duration-300"
+      className="group relative fx-card-raised rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between transition-all duration-300"
     >
       {/* Top Image Box */}
       <div
@@ -68,14 +68,8 @@ export default function ExerciseGridCard({
 
         {/* Badges on top of image */}
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-1 pointer-events-none">
-          <span className="px-2 py-0.5 rounded-full bg-white/95 dark:bg-black/70 backdrop-blur-md border border-slate-200 dark:border-white/15 text-[9px] font-mono font-black text-emerald-800 dark:text-primary uppercase tracking-wider shadow-sm">
-            {muscle}
-          </span>
-          <span
-            className={`px-2 py-0.5 rounded-full text-[8px] font-mono font-bold uppercase tracking-wider shadow-sm ${
-              isDumbbell
-                ? "bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30"
-                : "bg-cyan-100 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-500/30"
+          <span className="px-2 py-0.5 rounded-full bg-white/95 dark:bg-black/70 backdrop-blur-md border-slate-200 dark:border-white/15 text-[12px] font-semibold text-emerald-800 dark:text-primary shadow-sm"> {muscle} </span> <span className={`px-2 py-0.5 rounded-full text-[12px] font-mono font-bold shadow-sm ${ isDumbbell ?"bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-500/30"
+                : "bg-cyan-100 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-300 border-cyan-300 dark:border-cyan-500/30"
             }`}
           >
             {isDumbbell ? "Mancuernas" : "Corporal"}
@@ -83,11 +77,11 @@ export default function ExerciseGridCard({
         </div>
 
         {/* Sets / Reps pill hovering bottom of photo */}
-        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px] font-mono text-zinc-300 font-bold pointer-events-none">
-          <span className="px-2 py-0.5 rounded-lg bg-white/95 dark:bg-black/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 text-slate-900 dark:text-zinc-300 shadow-sm">
+        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[12px] text-zinc-300 font-bold pointer-events-none">
+          <span className="px-2 py-0.5 rounded-lg bg-white/95 dark:bg-black/80 backdrop-blur-sm text-slate-900 dark:text-zinc-300 shadow-sm">
             {exercise.sets} series × {exercise.reps}
           </span>
-          <span className="px-2 py-0.5 rounded-lg bg-white/95 dark:bg-black/80 backdrop-blur-sm border border-slate-200 dark:border-white/10 text-cyan-700 dark:text-cyan-300 shadow-sm">
+          <span className="px-2 py-0.5 rounded-lg bg-white/95 dark:bg-black/80 backdrop-blur-sm text-cyan-700 dark:text-cyan-300 shadow-sm">
             {exercise.restSeconds}s desc
           </span>
         </div>
@@ -96,11 +90,11 @@ export default function ExerciseGridCard({
       {/* Bottom Info & Action Button */}
       <div className="p-3 flex flex-col gap-2 flex-1 justify-between bg-white dark:bg-[#131626]">
         <div onClick={onSelect} className="cursor-pointer">
-          <h4 className="font-mono text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
+          <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
             {exercise.name}
           </h4>
           {exercise.description && (
-            <p className="text-[10px] text-slate-600 dark:text-zinc-400 font-mono mt-1 line-clamp-2 leading-relaxed">
+            <p className="text-[12px] text-slate-600 dark:text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
               {exercise.description}
             </p>
           )}
@@ -113,7 +107,7 @@ export default function ExerciseGridCard({
             haptics.impact();
             onQuickStart();
           }}
-          className="w-full h-10 mt-1 bg-primary hover:brightness-105 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 shadow-sm border border-primary/40 active:scale-95 transition-all cursor-pointer"
+          className="w-full h-10 mt-1 bg-primary hover:brightness-105 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm border-primary/40 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Entrenar</span>

@@ -172,12 +172,12 @@ export default function HistoryPage() {
               Registro completo de entrenamientos y marcas
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-full shadow-sm">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 fx-card rounded-full shadow-sm">
             <span
               className="w-2 h-2 rounded-full"
               style={{ backgroundColor: currentUser?.avatarColor || "#10B981" }}
             />
-            <span className="text-[11px] font-mono font-bold text-slate-800 dark:text-white uppercase">
+            <span className="text-[13px] font-bold text-slate-800 dark:text-white">
               {currentUser?.username || "Atleta"}
             </span>
           </div>
@@ -186,9 +186,9 @@ export default function HistoryPage() {
         {/* Hero Cyber Metrics Grid */}
         <section className="grid grid-cols-2 gap-2.5">
           {/* Metric 1: Total Volume */}
-          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg relative overflow-hidden group">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-cyan-500/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg relative overflow-hidden group">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+              <span className="text-[12px] font-bold text-cyan-600 dark:text-cyan-400">
                 Volumen Total
               </span>
               <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
@@ -196,18 +196,18 @@ export default function HistoryPage() {
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
+              <span className="text-2xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight">
                 {(totalVolume / 1000).toFixed(1)}
                 <span className="text-xs font-normal text-cyan-600 dark:text-cyan-400 ml-1">Ton</span>
               </span>
-              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5">Carga levantada</p>
+              <p className="text-[12px] text-slate-500 dark:text-zinc-400 mt-0.5">Carga levantada</p>
             </div>
           </div>
 
           {/* Metric 2: Completed Sessions */}
-          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg relative overflow-hidden group">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-primary/20 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg relative overflow-hidden group">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
+              <span className="text-[12px] font-bold text-primary">
                 Entrenos
               </span>
               <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
@@ -215,18 +215,18 @@ export default function HistoryPage() {
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
+              <span className="text-2xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight">
                 {completed.length}
                 <span className="text-xs font-normal text-primary ml-1">sesiones</span>
               </span>
-              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5">Completados</p>
+              <p className="text-[12px] text-slate-500 dark:text-zinc-400 mt-0.5">Completados</p>
             </div>
           </div>
 
           {/* Metric 3: Total Time */}
-          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
+          <div className="fx-card rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+              <span className="text-[12px] font-bold text-slate-500 dark:text-zinc-400">
                 Tiempo Total
               </span>
               <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-zinc-300">
@@ -234,17 +234,17 @@ export default function HistoryPage() {
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
+              <span className="text-2xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight">
                 {formatDurationHoursMins(totalDurationSeconds)}
               </span>
-              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5">Bajo la barra</p>
+              <p className="text-[12px] text-slate-500 dark:text-zinc-400 mt-0.5">Bajo la barra</p>
             </div>
           </div>
 
           {/* Metric 4: Total Sets */}
-          <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
+          <div className="fx-card rounded-2xl p-3.5 flex flex-col justify-between shadow-sm dark:shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+              <span className="text-[12px] font-bold text-slate-500 dark:text-zinc-400">
                 Series Totales
               </span>
               <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-zinc-300">
@@ -252,11 +252,11 @@ export default function HistoryPage() {
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tracking-tight">
+              <span className="text-2xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight">
                 {totalSetsCount}
                 <span className="text-xs font-normal text-slate-500 dark:text-zinc-400 ml-1">sets</span>
               </span>
-              <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-0.5">Series registradas</p>
+              <p className="text-[12px] text-slate-500 dark:text-zinc-400 mt-0.5">Series registradas</p>
             </div>
           </div>
         </section>
@@ -271,7 +271,7 @@ export default function HistoryPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por rutina o modo..."
-              className="w-full h-10 bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-xl pl-10 pr-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-primary transition-all font-sans shadow-sm"
+              className="w-full h-10 fx-card rounded-xl pl-10 pr-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-primary transition-all font-sans shadow-sm"
             />
           </div>
 
@@ -279,31 +279,25 @@ export default function HistoryPage() {
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
             {/* Period Filters */}
             <button
-              onClick={() => setFilterPeriod("all")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${
-                filterPeriod === "all"
-                  ? "bg-primary text-white shadow-sm border border-primary/40"
-                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
+              onClick={() => setFilterPeriod("all")} className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${ filterPeriod ==="all"
+                  ? "bg-primary text-white shadow-sm border-primary/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               Todos
             </button>
             <button
-              onClick={() => setFilterPeriod("week")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${
-                filterPeriod === "week"
-                  ? "bg-primary text-white shadow-sm border border-primary/40"
-                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
+              onClick={() => setFilterPeriod("week")} className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${ filterPeriod ==="week"
+                  ? "bg-primary text-white shadow-sm border-primary/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               Esta Semana
             </button>
             <button
-              onClick={() => setFilterPeriod("month")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${
-                filterPeriod === "month"
-                  ? "bg-primary text-white shadow-sm border border-primary/40"
-                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
+              onClick={() => setFilterPeriod("month")} className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${ filterPeriod ==="month"
+                  ? "bg-primary text-white shadow-sm border-primary/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               Este Mes
@@ -313,22 +307,18 @@ export default function HistoryPage() {
 
             {/* Mode Filters */}
             <button
-              onClick={() => setFilterMode(filterMode === "guided" ? "all" : "guided")}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
-                filterMode === "guided"
-                  ? "bg-cyan-600 text-white shadow-sm border border-cyan-500/40"
-                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
+              onClick={() => setFilterMode(filterMode === "guided" ? "all" : "guided")} className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 ${ filterMode ==="guided"
+                  ? "bg-cyan-600 text-white shadow-sm border-cyan-500/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               <Zap className="w-3 h-3" />
               Guiados
             </button>
             <button
-              onClick={() => setFilterMode(filterMode === "individual" ? "all" : "individual")}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 ${
-                filterMode === "individual"
-                  ? "bg-primary text-white shadow-sm border border-primary/40"
-                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white shadow-sm"
+              onClick={() => setFilterMode(filterMode === "individual" ? "all" : "individual")} className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 ${ filterMode ==="individual"
+                  ? "bg-primary text-white shadow-sm border-primary/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
               <Dumbbell className="w-3 h-3" />
@@ -346,11 +336,11 @@ export default function HistoryPage() {
               ))}
             </div>
           ) : filteredSessions.length === 0 ? (
-            <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl p-8 flex flex-col items-center text-center my-4 shadow-sm dark:shadow-lg">
+            <div className="fx-card rounded-2xl p-8 flex flex-col items-center text-center my-4 shadow-sm dark:shadow-lg">
               <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-400 dark:text-zinc-400 mb-3">
                 <Dumbbell className="w-7 h-7" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white font-mono">Sin entrenamientos aún</h3>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Sin entrenamientos aún</h3>
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-xs">
                 {sessions.length === 0
                   ? "Tu historial está completamente limpio para empezar a registrar tus récords."
@@ -358,7 +348,7 @@ export default function HistoryPage() {
               </p>
               <button
                 onClick={() => router.push("/")}
-                className="mt-4 px-4 py-2 bg-primary text-white font-mono font-bold text-xs rounded-xl shadow-sm border border-primary/40 flex items-center gap-1.5 active:scale-95 transition-all"
+                className="mt-4 px-4 py-2 bg-primary text-white font-bold text-xs rounded-xl shadow-sm border-primary/40 flex items-center gap-1.5 active:scale-95 transition-all"
               >
                 <span>Empezar a Entrenar</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -378,7 +368,7 @@ export default function HistoryPage() {
               return (
                 <div
                   key={session.id}
-                  className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden transition-all shadow-sm dark:shadow-md hover:border-primary/40"
+                  className="fx-card rounded-2xl overflow-hidden transition-all shadow-sm dark:shadow-md"
                 >
                   {/* Card Header Summary */}
                   <div
@@ -390,8 +380,8 @@ export default function HistoryPage() {
                       <div
                         className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 ${
                           session.mode === "guided"
-                            ? "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30"
-                            : "bg-emerald-500/15 text-primary border border-primary/30"
+                            ? "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border-cyan-500/30"
+                            : "bg-emerald-500/15 text-primary border-primary/30"
                         }`}
                       >
                         {session.mode === "guided" ? (
@@ -403,7 +393,7 @@ export default function HistoryPage() {
 
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-sm text-slate-900 dark:text-white font-mono leading-tight">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white leading-tight">
                             {routineTitle}
                           </h4>
                           {session.completed && (
@@ -411,19 +401,19 @@ export default function HistoryPage() {
                           )}
                         </div>
 
-                        <span className="text-[11px] text-slate-500 dark:text-zinc-400 block mt-1">
+                        <span className="text-[13px] text-slate-500 dark:text-zinc-400 block mt-1">
                           {formatDate(session.startTime)}
                         </span>
 
                         {/* Metric chips */}
                         <div className="flex items-center gap-2 mt-2">
-                          <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-slate-700 dark:text-zinc-300">
+                          <span className="text-[12px] font-bold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-slate-700 dark:text-zinc-300">
                             ⏱️ {durationMins > 0 ? `${durationMins} min` : "< 1 min"}
                           </span>
-                          <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-slate-700 dark:text-zinc-300">
+                          <span className="text-[12px] font-bold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-slate-700 dark:text-zinc-300">
                             💪 {session.exercises.length} ejer.
                           </span>
-                          <span className="text-[10px] font-mono font-bold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-slate-700 dark:text-zinc-300">
+                          <span className="text-[12px] font-bold bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-slate-700 dark:text-zinc-300">
                             ⚡ {totalSets} series
                           </span>
                         </div>
@@ -453,18 +443,18 @@ export default function HistoryPage() {
                           return (
                             <div
                               key={ex.exerciseId + idx}
-                              className="bg-white dark:bg-[#141828] rounded-xl p-2.5 border border-slate-200 dark:border-white/10 flex items-center justify-between shadow-xs"
+                              className="bg-white dark:bg-[#141828] rounded-xl p-2.5 flex items-center justify-between"
                             >
                               <div>
                                 <span className="text-xs font-bold text-slate-900 dark:text-white block">
                                   {exerciseName}
                                 </span>
                                 <div className="flex items-center gap-2 mt-1">
-                                  <span className="text-[10px] text-slate-500 dark:text-zinc-400 font-mono">
+                                  <span className="text-[12px] text-slate-500 dark:text-zinc-400">
                                     {ex.sets.length} {ex.sets.length === 1 ? "serie" : "series"}
                                   </span>
                                   {ex.sets.some((s) => s.weight) && (
-                                    <span className="text-[10px] text-primary font-mono font-bold">
+                                    <span className="text-[12px] text-primary font-bold">
                                       {Math.max(...ex.sets.map((s) => s.weight || 0))} kg máx
                                     </span>
                                   )}
@@ -472,13 +462,7 @@ export default function HistoryPage() {
                               </div>
 
                               <div className="flex items-center gap-2">
-                                <div className="flex items-center gap-1">
-                                  {ex.sets.map((set, sIdx) => (
-                                    <span
-                                      key={sIdx}
-                                      className={`w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-mono font-bold ${
-                                        set.completed
-                                          ? "bg-primary/20 text-primary border border-primary/40"
+                                <div className="flex items-center gap-1"> {ex.sets.map((set, sIdx) => ( <span key={sIdx} className={`w-6 h-6 rounded-md flex items-center justify-center text-[12px] font-mono font-bold ${ set.completed ?"bg-primary/20 text-primary border-primary/40"
                                           : "bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-zinc-400"
                                       }`}
                                     >
@@ -488,16 +472,16 @@ export default function HistoryPage() {
                                 </div>
 
                                 {exerciseDeleteConfirm === `${session.id}_${idx}` ? (
-                                  <div className="flex items-center gap-1 bg-red-500/20 border border-red-500/40 rounded-lg px-1.5 py-0.5">
+                                  <div className="flex items-center gap-1 bg-red-500/20 border-red-500/40 rounded-lg px-1.5 py-0.5">
                                     <button
                                       onClick={() => setExerciseDeleteConfirm(null)}
-                                      className="text-[10px] text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white px-1"
+                                      className="text-[12px] text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white px-1"
                                     >
                                       No
                                     </button>
                                     <button
                                       onClick={() => handleDeleteExercise(session.id, idx)}
-                                      className="text-[10px] font-bold text-red-500 dark:text-red-400 hover:text-red-600 px-1"
+                                      className="text-[12px] font-bold text-red-500 dark:text-red-400 hover:text-red-600 px-1"
                                     >
                                       Borrar
                                     </button>
@@ -519,20 +503,20 @@ export default function HistoryPage() {
 
                       {/* Delete Session Action */}
                       <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-white/5">
-                        <span className="text-[11px] text-slate-400 dark:text-zinc-500 font-mono">
+                        <span className="text-[13px] text-slate-400 dark:text-zinc-500">
                           ID: {session.id.slice(0, 8)}
                         </span>
                         {deleteConfirm === session.id ? (
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => setDeleteConfirm(null)}
-                              className="px-2.5 py-1 text-[11px] text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
+                              className="px-2.5 py-1 text-[13px] text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                             >
                               Cancelar
                             </button>
                             <button
                               onClick={() => handleDeleteSession(session.id)}
-                              className="px-3 py-1 bg-red-500 text-white rounded-lg text-[11px] font-bold shadow-sm"
+                              className="px-3 py-1 bg-red-500 text-white rounded-lg text-[13px] font-bold shadow-sm"
                             >
                               Confirmar
                             </button>
@@ -540,7 +524,7 @@ export default function HistoryPage() {
                         ) : (
                           <button
                             onClick={() => setDeleteConfirm(session.id)}
-                            className="flex items-center gap-1 text-[11px] text-slate-400 dark:text-zinc-400 hover:text-red-500 transition-colors"
+                            className="flex items-center gap-1 text-[13px] text-slate-400 dark:text-zinc-400 hover:text-red-500 transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             <span>Eliminar sesión</span>

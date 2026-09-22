@@ -82,7 +82,7 @@ export default function RoutineCard({
       >
         {/* Cover Thumbnail - Circular 68px */}
         {routine.coverImage && (
-          <div className="w-[68px] h-[68px] rounded-full overflow-hidden bg-black/40 border-2 border-slate-200 dark:border-white/15 flex-shrink-0 relative group-hover:border-primary/50 transition-colors shadow-md">
+          <div className="w-[68px] h-[68px] rounded-full overflow-hidden bg-black/40 border-2 border-slate-200 dark:border-white/15 flex-shrink-0 relative group- transition-colors shadow-md">
             <ExerciseImage
               src={routine.coverImage}
               alt={routine.title}
@@ -98,27 +98,21 @@ export default function RoutineCard({
         {/* Center Info */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-primary text-white border border-primary shadow-sm">
-              {dayBadge}
-            </span>
-            <span
-              className={`text-[9px] font-mono px-2 py-0.5 rounded-full border ${style.badge} uppercase font-bold tracking-wider`}
-            >
-              {routine.equipment || "MANCUERNAS"}
+            <span className="text-[12px] font-bold px-2.5 py-0.5 rounded-full bg-primary text-white border-primary shadow-sm"> {dayBadge} </span> <span className={`text-[12px] font-mono px-2 py-0.5 rounded-full ${style.badge} font-bold`} > {routine.equipment ||"MANCUERNAS"}
             </span>
             {isCompletedToday && (
-              <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+              <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" />
                 HECHO HOY
               </span>
             )}
           </div>
 
-          <h3 className="font-mono text-base font-bold text-slate-900 dark:text-white tracking-tight truncate group-hover:text-primary transition-colors mt-0.5">
+          <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight truncate group-hover:text-primary transition-colors mt-0.5">
             {routine.title}
           </h3>
 
-          <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300 font-mono font-medium">
+          <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300 font-medium">
             <span className="flex items-center gap-1 text-slate-700 dark:text-slate-200">
               <Clock className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
               {routine.duration}
@@ -138,7 +132,7 @@ export default function RoutineCard({
               isCompletedToday
                 ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
                 : "bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 group-hover:bg-primary group-hover:text-white text-slate-700 dark:text-slate-200"
-            } border flex items-center justify-center transition-all duration-300 shadow-sm`}
+            } flex items-center justify-center transition-all duration-300 shadow-sm`}
           >
             {isCompletedToday ? (
               <CheckCircle2 className="w-5 h-5 text-emerald-400" />
@@ -157,7 +151,7 @@ export default function RoutineCard({
             haptics.selection();
             setIsExpanded(!isExpanded);
           }}
-          className="h-9 px-3 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white font-mono text-xs font-bold flex items-center gap-1.5 border border-slate-200 dark:border-white/10 transition-colors cursor-pointer"
+          className="h-9 px-3 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
         >
           {isExpanded ? (
             <>
@@ -178,7 +172,7 @@ export default function RoutineCard({
             haptics.impact();
             onClick?.();
           }}
-          className="h-9 px-4 rounded-xl bg-primary hover:brightness-105 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm border border-primary/40 active:scale-95 transition-all cursor-pointer"
+          className="h-9 px-4 rounded-xl bg-primary hover:brightness-105 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm border-primary/40 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Comenzar</span>
@@ -197,10 +191,10 @@ export default function RoutineCard({
           >
             <div className="p-3.5 flex flex-col gap-2.5">
               <div className="flex items-center justify-between px-1">
-                <span className="font-mono text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-400">
+                <span className="text-[12px] font-semibold text-slate-700 dark:text-slate-400">
                   Lista de Ejercicios del Día
                 </span>
-                <span className="font-mono text-[10px] text-slate-600 dark:text-slate-400">
+                <span className="text-[12px] text-slate-600 dark:text-slate-400">
                   Toca ▶ para entrenar uno suelto
                 </span>
               </div>
@@ -208,10 +202,10 @@ export default function RoutineCard({
               {routine.exercises.map((ex, idx) => (
                 <div
                   key={ex.id || `${routine.day}-${idx}`}
-                  className="flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-white dark:bg-[#131626] border border-slate-200 dark:border-white/10 hover:border-primary/40 transition-all group/item shadow-sm"
+                  className="flex items-center justify-between gap-3 p-2.5 rounded-2xl fx-card transition-all group/item shadow-sm"
                 >
                   {/* Photo */}
-                  <div className="w-12 h-12 rounded-full overflow-hidden bg-black/50 border border-white/15 flex-shrink-0 relative">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-black/50 border-white/15 flex-shrink-0 relative">
                     {ex.image ? (
                       <ExerciseImage
                         src={ex.image}
@@ -230,10 +224,10 @@ export default function RoutineCard({
 
                   {/* Exercise info */}
                   <div className="min-w-0 flex-1">
-                    <span className="font-mono text-xs font-bold text-slate-900 dark:text-white block truncate group-hover/item:text-primary transition-colors">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block truncate group-hover/item:text-primary transition-colors">
                       {idx + 1}. {ex.name}
                     </span>
-                    <div className="flex items-center gap-2 mt-0.5 text-[10px] font-mono text-slate-600 dark:text-slate-300">
+                    <div className="flex items-center gap-2 mt-0.5 text-[12px] text-slate-600 dark:text-slate-300">
                       <span className="text-slate-900 dark:text-white font-bold">
                         {ex.sets} series × {ex.reps}
                       </span>
@@ -254,7 +248,7 @@ export default function RoutineCard({
                       }
                     }}
                     title="Entrenar este ejercicio en modo individual"
-                    className="w-9 h-9 rounded-xl bg-primary/10 hover:bg-primary hover:text-white text-emerald-700 dark:text-primary border border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0 shadow-sm"
+                    className="w-9 h-9 rounded-xl bg-primary/10 hover:bg-primary hover:text-white text-emerald-700 dark:text-primary border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0 shadow-sm"
                   >
                     <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                   </button>

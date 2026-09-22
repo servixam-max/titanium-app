@@ -37,7 +37,7 @@ export default function WarmupModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="relative z-10 w-full max-w-sm bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border border-slate-200 dark:border-primary/40 rounded-3xl p-6 shadow-xl overflow-hidden"
+            className="relative z-10 w-full max-w-sm bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-primary/40 rounded-3xl p-6 shadow-xl overflow-hidden"
           >
             {/* Ambient top glow */}
             <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/15 rounded-full blur-3xl pointer-events-none" />
@@ -45,7 +45,7 @@ export default function WarmupModal({
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
               aria-label="Cerrar"
             >
               <X className="w-5 h-5" />
@@ -53,24 +53,24 @@ export default function WarmupModal({
 
             {/* Glowing Flame Icon */}
             <div className="relative w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-2xl bg-primary/10 border border-primary/30 animate-pulse" />
+              <div className="absolute inset-0 rounded-2xl bg-primary/10 border-primary/30 animate-pulse" />
               <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-sm">
                 <Flame className="w-7 h-7 text-white fill-white" />
               </div>
             </div>
 
             {/* Title */}
-            <h2 className="font-mono text-lg font-black text-slate-900 dark:text-white uppercase tracking-wider text-center mb-1">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white text-center mb-1">
               ¿Quieres calentar?
             </h2>
 
             {routineTitle && (
-              <p className="text-center text-[11px] font-mono text-cyan-600 dark:text-cyan-400 uppercase font-bold mb-2 tracking-wider">
+              <p className="text-center text-[13px] text-cyan-600 dark:text-cyan-400 font-bold mb-2">
                 {routineTitle}
               </p>
             )}
 
-            <p className="text-slate-600 dark:text-zinc-400 text-center text-xs leading-relaxed mb-6 font-mono">
+            <p className="text-slate-600 dark:text-zinc-400 text-center text-xs leading-relaxed mb-6">
               5 minutos de movilidad articular y activación neuromuscular para prevenir lesiones y mejorar la potencia.
             </p>
 
@@ -79,7 +79,7 @@ export default function WarmupModal({
               <button
                 type="button"
                 onClick={onStartWarmup}
-                className="w-full h-13 bg-primary hover:brightness-105 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-md border border-primary/40 active:scale-95 transition-all cursor-pointer"
+                className="w-full h-13 bg-primary hover:brightness-105 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-md border-primary/40 active:scale-95 transition-all cursor-pointer"
               >
                 <Flame className="w-4 h-4 fill-current" />
                 <span>SÍ, CALENTAR PRIMERO</span>
@@ -88,7 +88,7 @@ export default function WarmupModal({
               <button
                 type="button"
                 onClick={onSkipWarmup}
-                className="w-full h-12 rounded-2xl bg-white dark:bg-[#131626] hover:bg-slate-50 dark:hover:bg-[#181d2e] active:scale-98 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-mono font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
+                className="w-full h-12 rounded-2xl bg-white dark:bg-[#131626] hover:bg-slate-50 dark:hover:bg-[#181d2e] active:scale-98 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
               >
                 <Zap className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                 <span>NO, IR DIRECTO AL ENTRENO</span>

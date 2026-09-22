@@ -198,13 +198,13 @@ function WarmupContent() {
             </div>
 
             <div>
-              <span className="font-mono text-xs font-black uppercase tracking-widest text-primary px-3 py-1 rounded-full bg-primary/10 border border-primary/30">
+              <span className="text-xs font-semibold text-primary px-3 py-1 rounded-full bg-primary/10 border-primary/30">
                 ¡Activación Completada!
               </span>
-              <h2 className="font-mono text-2xl font-black text-slate-900 dark:text-white mt-3 uppercase tracking-tight">
+              <h2 className="fx-num text-2xl font-semibold text-slate-900 dark:text-white mt-3 tracking-tight">
                 Descanso previo al entreno
               </h2>
-              <p className="font-mono text-xs text-slate-600 dark:text-zinc-400 max-w-xs mx-auto mt-1">
+              <p className="text-xs text-slate-600 dark:text-zinc-400 max-w-xs mx-auto mt-1">
                 Articulaciones listas y flujo sanguíneo activo. Bebe un sorbo de agua y prepárate.
               </p>
             </div>
@@ -235,10 +235,10 @@ function WarmupContent() {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-mono text-4xl font-black tabular-nums text-slate-900 dark:text-white">
+                <span className="fx-num text-4xl font-semibold tabular-nums text-slate-900 dark:text-white">
                   {timeLeft}
                 </span>
-                <span className="text-cyan-600 dark:text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase">
+                <span className="text-cyan-600 dark:text-cyan-400 text-[12px] font-bold">
                   SEG DESCANSO
                 </span>
               </div>
@@ -248,14 +248,14 @@ function WarmupContent() {
           <div className="w-full max-w-sm space-y-3 pb-[env(safe-area-inset-bottom,0px)]">
             <button
               onClick={handleSkipToWorkout}
-              className="w-full h-14 bg-primary text-white font-mono font-bold text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-md hover:brightness-105 active:scale-95 transition-all cursor-pointer border border-primary/40"
+              className="w-full h-14 bg-primary text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-md hover:brightness-105 active:scale-95 transition-all cursor-pointer border-primary/40"
             >
               <Play className="w-5 h-5 fill-current" />
               <span>Empezar Entrenamiento Ya</span>
             </button>
             <button
               onClick={() => setIsPaused((p) => !p)}
-              className="w-full h-10 bg-white dark:bg-[#131626] text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-mono font-bold text-xs uppercase rounded-xl border border-slate-200 dark:border-white/10"
+              className="w-full h-10 bg-white dark:bg-[#131626] text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-bold text-xs rounded-xl"
             >
               {isPaused ? "Reanudar cuenta" : "Pausar cuenta"}
             </button>
@@ -268,27 +268,27 @@ function WarmupContent() {
             <div className="flex justify-between items-center mb-1.5">
               <div className="flex items-center gap-2">
                 {phase === "prep" && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-400/20 border border-cyan-400/40 text-cyan-300 font-mono text-[10px] font-black uppercase tracking-wider animate-pulse">
+                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-400/20 border-cyan-400/40 text-cyan-300 text-[12px] font-semibold animate-pulse">
                     Preparación · {timeLeft}s
                   </span>
                 )}
                 {phase === "exercise" && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-primary/20 border border-primary/40 text-primary font-mono text-[10px] font-bold uppercase tracking-wider">
+                  <span className="px-2.5 py-0.5 rounded-full bg-primary/20 border-primary/40 text-primary text-[12px] font-bold">
                     En curso · Ejercicio {currentExerciseIndex + 1}/{warmUpExercises.length}
                   </span>
                 )}
                 {phase === "transition" && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-500 dark:text-amber-300 font-mono text-[10px] font-black uppercase tracking-wider animate-pulse">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 border-amber-400/40 text-amber-500 dark:text-amber-300 text-[12px] font-semibold animate-pulse">
                     Descanso / Cambio · {timeLeft}s
                   </span>
                 )}
               </div>
-              <span className="text-slate-500 dark:text-zinc-400 font-mono font-bold text-[10px] tracking-widest uppercase">
+              <span className="text-slate-500 dark:text-zinc-400 font-bold text-[12px]">
                 {currentExerciseIndex + 1} de {warmUpExercises.length}
               </span>
             </div>
 
-            <div className="w-full h-2 bg-slate-200 dark:bg-[#0d101a] border border-slate-300 dark:border-white/5 rounded-full overflow-hidden p-0.5">
+            <div className="w-full h-2 bg-slate-200 dark:bg-[#0d101a] border-slate-300 dark:border-white/5 rounded-full overflow-hidden p-0.5">
               <div
                 className="h-full bg-primary rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
@@ -300,27 +300,27 @@ function WarmupContent() {
           <div className="flex-shrink-0 px-4 py-2 text-center">
             {phase === "transition" && nextExercise ? (
               <div>
-                <span className="text-amber-400 font-mono text-[11px] font-black uppercase tracking-wider">
+                <span className="text-amber-400 text-[13px] font-semibold">
                   Prepárate para el siguiente:
                 </span>
-                <h2 className="font-mono text-lg sm:text-xl font-black text-white uppercase tracking-tight mt-0.5">
+                <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight mt-0.5">
                   {nextExercise.name}
                 </h2>
-                <p className="text-zinc-400 font-mono text-xs mt-0.5">
+                <p className="text-zinc-400 text-xs mt-0.5">
                   {nextExercise.description}
                 </p>
               </div>
             ) : (
               <div>
                 {phase === "prep" && (
-                  <span className="text-cyan-400 font-mono text-[11px] font-black uppercase tracking-wider block">
+                  <span className="text-cyan-400 text-[13px] font-semibold block">
                     Colócate en posición:
                   </span>
                 )}
-                <h2 className="font-mono text-lg sm:text-xl font-black text-white uppercase tracking-tight mt-0.5">
+                <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight mt-0.5">
                   {currentExercise?.name}
                 </h2>
-                <p className="text-zinc-400 font-mono text-xs mt-0.5">
+                <p className="text-zinc-400 text-xs mt-0.5">
                   {currentExercise?.description}
                 </p>
               </div>
@@ -329,7 +329,7 @@ function WarmupContent() {
 
           {/* Center Visual Media Card */}
           <div className="flex-shrink-0 flex-1 min-h-0 px-4">
-            <div className="w-full h-full rounded-3xl overflow-hidden border border-white/10 relative bg-[#0d101a] shadow-xl">
+            <div className="w-full h-full rounded-3xl overflow-hidden relative bg-[#0d101a] shadow-xl">
               {phase === "transition" && nextExercise ? (
                 <div className="relative w-full h-full">
                   <ExerciseImage
@@ -339,7 +339,7 @@ function WarmupContent() {
                     className="object-contain"
                   />
                   <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center">
-                    <div className="bg-black/80 border border-amber-400/40 px-4 py-2 rounded-2xl flex items-center gap-2 text-amber-300 font-mono font-bold text-xs shadow-lg">
+                    <div className="bg-black/80 border-amber-400/40 px-4 py-2 rounded-2xl flex items-center gap-2 text-amber-300 font-bold text-xs shadow-lg">
                       <Clock className="w-4 h-4 animate-spin" />
                       <span>Cambio en {timeLeft}s</span>
                     </div>
@@ -393,10 +393,7 @@ function WarmupContent() {
                   className="transition-all duration-1000"
                 />
               </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span
-                  className={`font-mono text-3xl font-black tabular-nums ${
-                    phase === "transition"
+              <div className="absolute inset-0 flex flex-col items-center justify-center"> <span className={`font-mono text-3xl font-semibold tabular-nums ${ phase ==="transition"
                       ? "text-amber-500 dark:text-amber-400"
                       : timeLeft <= 5
                       ? "text-red-500 dark:text-red-400 animate-pulse"
@@ -405,7 +402,7 @@ function WarmupContent() {
                 >
                   {timeLeft}
                 </span>
-                <span className="text-slate-500 dark:text-zinc-400 font-mono text-[9px] font-bold tracking-widest uppercase">
+                <span className="text-slate-500 dark:text-zinc-400 text-[12px] font-bold">
                   {phase === "transition" ? "CAMBIO" : phase === "prep" ? "PREP" : "SEG"}
                 </span>
               </div>
@@ -413,14 +410,14 @@ function WarmupContent() {
 
             {/* Right Information: Replaced tiny reps with clear focus */}
             <div className="text-right flex flex-col items-end gap-1">
-              <span className="font-mono text-[10px] text-slate-500 dark:text-zinc-400 uppercase tracking-wider block font-bold">
+              <span className="text-[12px] text-slate-500 dark:text-zinc-400 block font-bold">
                 ENFOQUE ARTICULAR
               </span>
-              <span className="font-mono text-xs font-bold text-primary uppercase bg-primary/10 border border-primary/30 px-3 py-1 rounded-xl shadow-sm">
+              <span className="text-xs font-bold text-primary bg-primary/10 border-primary/30 px-3 py-1 rounded-xl shadow-sm">
                 Movilidad Continua
               </span>
               {phase === "exercise" && nextExercise && (
-                <div className="mt-1 text-[11px] font-mono text-slate-500 dark:text-zinc-400 text-right">
+                <div className="mt-1 text-[13px] text-slate-500 dark:text-zinc-400 text-right">
                   <span className="text-slate-400 dark:text-zinc-500">Siguiente:</span>{" "}
                   <strong className="text-slate-900 dark:text-white truncate block max-w-[150px]">
                     {nextExercise.name}
@@ -435,7 +432,7 @@ function WarmupContent() {
             <div className="flex gap-2.5">
               <button
                 onClick={() => setShowExitConfirm(true)}
-                className="h-12 px-4 bg-slate-100 hover:bg-slate-200 dark:bg-[#131626] dark:hover:bg-[#181d2e] text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl border border-slate-200 dark:border-white/10 flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer shadow-xs"
+                className="h-12 px-4 bg-slate-100 hover:bg-slate-200 dark:bg-[#131626] dark:hover:bg-[#181d2e] text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer"
               >
                 <SkipForward className="w-4 h-4" />
                 <span>Saltar</span>
@@ -443,7 +440,7 @@ function WarmupContent() {
 
               <button
                 onClick={() => setIsPaused((p) => !p)}
-                className="h-12 px-4 bg-slate-100 dark:bg-[#131626] text-slate-700 dark:text-zinc-300 font-mono font-bold text-xs uppercase rounded-2xl border border-slate-200 dark:border-white/10 flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
+                className="h-12 px-4 bg-slate-100 dark:bg-[#131626] text-slate-700 dark:text-zinc-300 font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
               >
                 {isPaused ? <Play className="w-4 h-4 text-primary" /> : <Pause className="w-4 h-4" />}
                 <span>{isPaused ? "Reanudar" : "Pausar"}</span>
@@ -452,7 +449,7 @@ function WarmupContent() {
               {phase === "prep" && (
                 <button
                   onClick={() => startExercise(0)}
-                  className="flex-1 h-12 bg-primary text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border border-primary/40"
+                  className="flex-1 h-12 bg-primary text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border-primary/40"
                 >
                   <span>Empezar ya</span>
                   <ArrowRight className="w-4 h-4" />
@@ -462,7 +459,7 @@ function WarmupContent() {
               {phase === "transition" && (
                 <button
                   onClick={() => startExercise(currentExerciseIndex + 1)}
-                  className="flex-1 h-12 bg-amber-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border border-amber-400/40"
+                  className="flex-1 h-12 bg-amber-500 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border-amber-400/40"
                 >
                   <span>Empezar ya</span>
                   <ArrowRight className="w-4 h-4" />
@@ -478,7 +475,7 @@ function WarmupContent() {
                       startTransition(currentExerciseIndex + 1);
                     }
                   }}
-                  className="flex-1 h-12 bg-primary text-white font-mono font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border border-primary/40"
+                  className="flex-1 h-12 bg-primary text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border-primary/40"
                 >
                   <span>
                     {currentExerciseIndex >= warmUpExercises.length - 1
@@ -509,7 +506,7 @@ export default function WarmupPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-background flex items-center justify-center">
-          <p className="text-white font-mono">Cargando calentamiento...</p>
+          <p className="text-white">Cargando calentamiento...</p>
         </div>
       }
     >

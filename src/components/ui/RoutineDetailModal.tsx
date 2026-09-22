@@ -103,7 +103,7 @@ export default function RoutineDetailModal({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 320 }}
-            className="relative z-10 w-full sm:max-w-lg h-[90dvh] sm:h-[86dvh] bg-white dark:bg-[#0A0B10] border-t sm:border border-slate-200 dark:border-white/15 rounded-t-[32px] sm:rounded-3xl flex flex-col overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_-20px_50px_rgba(0,0,0,0.9)]"
+            className="relative z-10 w-full sm:max-w-lg h-[90dvh] sm:h-[86dvh] bg-white dark:bg-[#0A0B10] border-t border-[var(--fx-hairline)] rounded-t-[32px] sm:rounded-3xl flex flex-col overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_-20px_50px_rgba(0,0,0,0.9)]"
           >
             {/* Grabber bar for mobile feel */}
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-white/20 rounded-full mx-auto mt-3 mb-1 sm:hidden flex-shrink-0" />
@@ -123,7 +123,7 @@ export default function RoutineDetailModal({
               {/* Top Close Button */}
               <button
                 onClick={onClose}
-                className="absolute top-3.5 right-4 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-zinc-300 hover:text-white hover:bg-black/80 active:scale-95 transition-all z-20 cursor-pointer"
+                className="absolute top-3.5 right-4 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-zinc-300 hover:text-white hover:bg-black/80 active:scale-95 transition-all z-20 cursor-pointer"
                 aria-label="Cerrar"
               >
                 <X className="w-5 h-5" />
@@ -132,19 +132,19 @@ export default function RoutineDetailModal({
               {/* Routine Title overlay */}
               <div className="absolute bottom-3 left-4 right-4 z-10">
                 <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary text-white shadow-sm border border-primary/40">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary text-white shadow-sm border-primary/40">
                     DÍA {routine.day < 10 ? `0${routine.day}` : routine.day}
                   </span>
-                  <span className="text-[11px] font-mono text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/15 font-bold">
+                  <span className="text-[13px] text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-white/15 font-bold">
                     <Clock className="w-3.5 h-3.5 text-cyan-400" />
                     {routine.duration}
                   </span>
-                  <span className="text-[11px] font-mono text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/15 font-bold">
+                  <span className="text-[13px] text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-white/15 font-bold">
                     <Layers className="w-3.5 h-3.5 text-primary" />
                     {totalSets} series
                   </span>
                 </div>
-                <h2 className="font-mono text-xl sm:text-2xl text-white font-black tracking-tight truncate drop-shadow-md uppercase">
+                <h2 className="fx-num text-xl sm:text-2xl text-white font-semibold tracking-tight truncate drop-shadow-md">
                   {routine.title}
                 </h2>
               </div>
@@ -152,12 +152,12 @@ export default function RoutineDetailModal({
 
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3.5">
-              <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-mono">
+              <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
                 {routine.subtitle}
               </p>
 
               {isCompletedToday && (
-                <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-700 dark:text-emerald-400 text-xs font-mono font-bold shadow-sm">
+                <div className="p-3 bg-emerald-500/15 border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-700 dark:text-emerald-400 text-xs font-bold shadow-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                   <span>¡Has completado esta rutina hoy! Puedes repetirla o entrenar de nuevo.</span>
                 </div>
@@ -165,12 +165,10 @@ export default function RoutineDetailModal({
 
               {/* Equipment toggle if applicable */}
               {hasAlternatives && (
-                <div className="p-1 bg-slate-100 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl flex gap-1 shadow-inner">
+                <div className="p-1 bg-slate-100 dark:bg-[#131626] rounded-2xl flex gap-1 shadow-inner">
                   <button
                     type="button"
-                    onClick={() => setEquipmentPreference("dumbbells")}
-                    className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                      equipmentPreference === "dumbbells"
+                    onClick={() => setEquipmentPreference("dumbbells")} className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${ equipmentPreference ==="dumbbells"
                         ? "bg-primary text-white shadow-sm"
                         : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                     }`}
@@ -179,9 +177,7 @@ export default function RoutineDetailModal({
                   </button>
                   <button
                     type="button"
-                    onClick={() => setEquipmentPreference("bodyweight")}
-                    className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                      equipmentPreference === "bodyweight"
+                    onClick={() => setEquipmentPreference("bodyweight")} className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${ equipmentPreference ==="bodyweight"
                         ? "bg-primary text-white shadow-sm"
                         : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                     }`}
@@ -193,10 +189,10 @@ export default function RoutineDetailModal({
 
               {/* Mode segmented control */}
               <div className="flex items-center justify-between pt-1">
-                <span className="text-xs font-mono text-slate-700 dark:text-zinc-300 font-bold uppercase tracking-wider">
+                <span className="text-xs text-slate-700 dark:text-zinc-300 font-bold">
                   {exercises.length} Ejercicios
                 </span>
-                <div className="relative flex bg-slate-100 dark:bg-[#131626] border border-slate-200 dark:border-white/10 rounded-2xl p-1 text-[11px] font-mono font-bold">
+                <div className="relative flex bg-slate-100 dark:bg-[#131626] rounded-2xl p-1 text-[13px] font-bold">
                   <button
                     type="button"
                     onClick={() => setMode("guided")}
@@ -258,7 +254,7 @@ export default function RoutineDetailModal({
             <div className="p-4 bg-white/95 dark:bg-[#0d101a]/95 backdrop-blur-md border-t border-slate-200 dark:border-white/10 flex-shrink-0 flex gap-2 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg z-30">
               <button
                 onClick={() => handleStartWorkoutFlow(0)}
-                className="w-full h-14 bg-primary hover:brightness-105 text-white font-mono font-bold text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-md border border-primary/40 active:scale-95 transition-all cursor-pointer"
+                className="w-full h-14 bg-primary hover:brightness-105 text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-md border-primary/40 active:scale-95 transition-all cursor-pointer"
               >
                 <Play className="w-5 h-5 fill-current" />
                 <span>{mode === "guided" ? "INICIAR ENTRENAMIENTO GUIADO" : "INICIAR MODO INDIVIDUAL"}</span>

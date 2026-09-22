@@ -155,7 +155,7 @@ export default function VoiceLoggerButton({ onParsed, className }: VoiceLoggerBu
         type="button"
         onClick={toggleListening}
         className={cn(
-          "relative flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer shadow-sm",
+          "relative flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer shadow-sm",
           isListening
             ? "bg-primary text-white border-primary/50 shadow-md animate-pulse font-bold"
             : "bg-white dark:bg-[#131626] border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:border-primary/40"
@@ -166,7 +166,7 @@ export default function VoiceLoggerButton({ onParsed, className }: VoiceLoggerBu
         {isListening ? (
           <>
             <motion.div
-              className="absolute -inset-1 rounded-xl border border-primary pointer-events-none"
+              className="absolute -inset-1 rounded-xl border-primary pointer-events-none"
               animate={{ scale: [1, 1.15, 1], opacity: [0.8, 0, 0.8] }}
               transition={{ repeat: Infinity, duration: 1.2 }}
             />
@@ -189,7 +189,7 @@ export default function VoiceLoggerButton({ onParsed, className }: VoiceLoggerBu
             initial={{ opacity: 0, y: 6, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.95 }}
-            className="absolute left-0 -top-8 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0d101a] border border-primary/40 shadow-xl text-[11px] font-mono text-white whitespace-nowrap pointer-events-none"
+            className="absolute left-0 -top-8 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0d101a] border-primary/40 shadow-xl text-[13px] text-white whitespace-nowrap pointer-events-none"
           >
             {feedbackMsg ? (
               <>
