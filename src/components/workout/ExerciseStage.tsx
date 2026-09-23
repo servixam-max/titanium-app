@@ -71,63 +71,59 @@ export default function ExerciseStage({
         />
       </div>
 
-      {/* Metrics grid */}
-      <div className="grid grid-cols-3 gap-2.5 w-full">
-        {/* Target reps/time */}
-        <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-2 border-primary/80 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-sm">
-          <span className="text-xs font-label-caps text-primary font-bold flex items-center gap-1">
-            <Zap className="w-3.5 h-3.5 text-primary animate-pulse" />
-            {isTimedSet ? "TIEMPO" : "REPETICIONES"}
+      {/* Métricas: tres superficies sin bordes, el dato manda */}
+      <div className="grid grid-cols-3 gap-3 w-full">
+        {/* Objetivo: reps o tiempo */}
+        <div className="fx-card flex min-h-[104px] flex-col items-center justify-center gap-1.5 p-3">
+          <span className="fx-label-sm flex items-center gap-1">
+            <Zap className="h-3.5 w-3.5 text-primary" />
+            {isTimedSet ? "Tiempo" : "Reps"}
           </span>
-          <span className="fx-num font-semibold text-3xl sm:text-4xl text-primary my-1">
+          <span className="fx-num text-[30px] leading-none font-semibold text-primary">
             {isTimedSet ? `${timedSeconds}s` : exercise.reps}
           </span>
-          <span className="text-[12px] font-label-caps text-slate-500 dark:text-zinc-400 font-bold">
-            {isTimedSet ? "segundos de trabajo" : "repeticiones"}
+          <span className="fx-label-sm opacity-70">
+            {isTimedSet ? "de trabajo" : "objetivo"}
           </span>
         </div>
 
-        {/* Current set */}
-        <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-white/20 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-sm">
-          <span className="text-xs font-label-caps text-slate-600 dark:text-zinc-300 font-bold">
-            SERIE
-          </span>
-          <div className="flex items-baseline gap-1 my-1">
-            <span className="fx-num font-semibold text-3xl sm:text-4xl text-slate-900 dark:text-white">
+        {/* Serie actual */}
+        <div className="fx-card flex min-h-[104px] flex-col items-center justify-center gap-1.5 p-3">
+          <span className="fx-label-sm">Serie</span>
+          <span className="flex items-baseline gap-0.5">
+            <span className="fx-num text-[30px] leading-none font-semibold text-foreground">
               {currentSet}
             </span>
-            <span className="font-bold text-lg text-slate-400 dark:text-zinc-500">
+            <span className="fx-num text-[17px] font-medium text-[color:var(--text-tertiary)]">
               /{exercise.sets}
             </span>
-          </div>
+          </span>
           <div className="flex items-center gap-1.5">
             {Array.from({ length: exercise.sets }).map((_, i) => (
-              <div
+              <span
                 key={i}
                 className={`rounded-full transition-all duration-300 ${
                   i < currentSet - 1
-                    ? "w-2.5 h-2.5 bg-primary shadow-sm"
+                    ? "w-2.5 h-2.5 bg-primary"
                     : i === currentSet - 1
-                      ? "w-4 h-2.5 bg-primary shadow-sm"
-                      : "w-2.5 h-2.5 bg-slate-200 dark:bg-white/20"
+                      ? "w-4 h-2.5 bg-primary"
+                      : "w-2.5 h-2.5 bg-[var(--fx-hairline)]"
                 }`}
               />
             ))}
           </div>
         </div>
 
-        {/* Rest duration */}
-        <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-cyan-400/30 rounded-2xl py-4 px-2 min-h-[110px] flex flex-col items-center justify-between shadow-sm">
-          <span className="text-xs font-label-caps text-cyan-600 dark:text-cyan-400 font-bold flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
-            DESCANSO
+        {/* Descanso */}
+        <div className="fx-card flex min-h-[104px] flex-col items-center justify-center gap-1.5 p-3">
+          <span className="fx-label-sm flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5 text-[color:var(--accent-cyan)]" />
+            Descanso
           </span>
-          <span className="fx-num font-semibold text-3xl sm:text-4xl text-cyan-600 dark:text-cyan-400 my-1">
+          <span className="fx-num text-[30px] leading-none font-semibold text-[color:var(--accent-cyan)]">
             {exercise.restSeconds}s
           </span>
-          <span className="text-[12px] font-label-caps text-slate-500 dark:text-zinc-400 font-bold">
-            recuperación
-          </span>
+          <span className="fx-label-sm opacity-70">recuperación</span>
         </div>
       </div>
     </div>

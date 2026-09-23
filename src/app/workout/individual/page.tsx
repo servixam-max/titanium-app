@@ -18,6 +18,7 @@ import { haptics } from "@/lib/haptics";
 import { detectSupersetGroups } from "@/lib/workout";
 import { getAllRecords, ExerciseRecord } from "@/lib/records";
 import { useLastPerformance } from "@/hooks/useLastPerformance";
+import { useStoreHydrated, hasPersistedWorkout } from "@/hooks/useStoreHydrated";
 import {
   WorkoutShell,
   ExerciseStage,
@@ -47,6 +48,7 @@ export default function IndividualWorkout() {
   const [flashKey, setFlashKey] = useState(0);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [isFinishing, setIsFinishing] = useState(false);
+  const hydrated = useStoreHydrated();
   const [recordsMap, setRecordsMap] = useState<Map<string, ExerciseRecord>>(new Map());
 
   useEffect(() => {
@@ -77,17 +79,23 @@ export default function IndividualWorkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Redirect if workout just finished or no routine
+  // Redirect if workout just finished or no routine.
+  // Se espera a la rehidratación: sin esto, abrir o recargar la URL del
+  // entreno expulsaba a la home antes de que el estado persistido cargara.
   useEffect(() => {
+    if (!hydrated) return;
     if (activeWorkout.justFinished && activeWorkout.session?.completed) {
       router.push("/workout/complete");
       return;
     }
     if (!routine) {
+      // Si el entreno está en el almacenamiento pero aún no en el store
+      // (carrera de hidratación), no se expulsa al usuario: se espera.
+      if (hasPersistedWorkout()) return;
       router.push("/");
       return;
     }
-  }, [routine, activeWorkout.justFinished, activeWorkout.session?.completed, router]);
+  }, [hydrated, routine, activeWorkout.justFinished, activeWorkout.session?.completed, router]);
 
   // Sync audio engine
   useEffect(() => {

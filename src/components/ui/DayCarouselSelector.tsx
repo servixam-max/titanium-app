@@ -11,6 +11,12 @@ interface DayCarouselSelectorProps {
   completedDayIds: Set<number>;
 }
 
+/**
+ * Selector de días: cada ficha muestra solo lo esencial —la etiqueta y el
+ * número— y el estado se lee por color y por el check en la esquina. Antes
+ * llevaba tres líneas dentro de 64 px fijos (etiqueta, número y estado), así
+ * que cualquier cambio en el tamaño del texto hacía que se solaparan.
+ */
 export default function DayCarouselSelector({
   days,
   selectedDay,
@@ -36,11 +42,10 @@ export default function DayCarouselSelector({
   }, [selectedDay]);
 
   return (
-    <div className="w-full relative">
-      {/* Scrollable horizontal strip */}
+    <div className="relative w-full">
       <div
         ref={containerRef}
-        className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1 px-1 scroll-smooth"
+        className="no-scrollbar flex items-center gap-2.5 overflow-x-auto px-1 py-1.5 scroll-smooth"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         {days.map((day) => {
@@ -52,45 +57,36 @@ export default function DayCarouselSelector({
             <button
               key={day}
               data-day={day}
+              aria-pressed={isSelected}
+              aria-label={`${isExtra ? "Sesión libre" : `Día ${day}`}${isCompleted ? ", completado" : ""}`}
               onClick={() => {
                 haptics.selection();
                 onSelectDay(day);
               }}
-              className={`relative flex-shrink-0 min-w-[74px] h-[64px] rounded-2xl flex flex-col items-center justify-center p-2 transition-all duration-200 cursor-pointer active:scale-95 select-none ${
+              className={`fx-press relative flex h-[64px] min-w-[62px] flex-shrink-0 flex-col items-center justify-center gap-1 rounded-2xl px-3 select-none ${
                 isSelected
-                  ? "bg-primary text-white shadow-md border-2 border-primary/60 font-black scale-[1.03]"
+                  ? "bg-primary text-black"
                   : isCompleted
-                  ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-500/40"
-                  : "bg-white dark:bg-[#131626] hover:bg-slate-50 dark:hover:bg-[#181d2e] text-slate-800 dark:text-slate-300 shadow-sm"
+                    ? "bg-emerald-500/12 text-foreground"
+                    : "fx-inset text-[color:var(--text-secondary)]"
               }`}
             >
-              {/* Day header tag */}
-              <span
-                className={`font-mono text-[12px] ${
-                  isSelected ? "text-white/90 font-black" : isCompleted ? "text-emerald-600 dark:text-emerald-400 font-bold" : "text-slate-500 dark:text-slate-400 font-bold"
-                }`}
-              >
-                {isExtra ? "LIBRE" : "DÍA"}
+              <span className="text-[12px] leading-none font-medium opacity-80">
+                {isExtra ? "Libre" : "Día"}
               </span>
 
-              {/* Day number / icon */}
-              <div className="flex items-center gap-1 mt-0.5"> <span className={`font-mono text-lg leading-none ${ isSelected ?"text-white font-black text-xl" : isCompleted ? "text-emerald-700 dark:text-emerald-300 font-black" : "text-slate-900 dark:text-white font-black"
+              <span className="fx-num text-[21px] leading-none">
+                {isExtra ? "18" : day < 10 ? `0${day}` : day}
+              </span>
+
+              {isCompleted && (
+                <CheckCircle2
+                  aria-hidden="true"
+                  className={`absolute top-1.5 right-1.5 h-3.5 w-3.5 ${
+                    isSelected ? "text-black/70" : "text-emerald-500"
                   }`}
-                >
-                  {isExtra ? "18" : day < 10 ? `0${day}` : day}
-                </span>
-
-                {isCompleted && (
-                  <CheckCircle2
-                    className={`w-3.5 h-3.5 ${
-                      isSelected ? "text-white" : "text-emerald-600 dark:text-emerald-400"}`} /> )} </div> {/* Status micro pill */} <span className={`text-[12px] font-mono mt-0.5 tracking-tighter ${ isSelected ?"text-white/80 font-bold"
-                    : isCompleted
-                    ? "text-emerald-600 dark:text-emerald-400 font-bold"
-                    : "text-slate-500 dark:text-slate-400 font-bold"
-                }`}
-              >
-                {isSelected ? "Activo" : isCompleted ? "Hecho" : isExtra ? "Catálogo" : "Rutina"}
-              </span>
+                />
+              )}
             </button>
           );
         })}
