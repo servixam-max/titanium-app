@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -31,6 +31,7 @@ import {
   Sun,
   Moon,
   Laptop,
+  History as HistoryIcon,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { haptics } from "@/lib/haptics";
@@ -51,6 +52,8 @@ import {
   startInAppUpdate,
 } from "@/lib/app-updater";
 import { getSessions, saveSession, getWeights, saveWeight } from "@/lib/db";
+import ChangelogList from "@/components/ui/ChangelogList";
+import { ChangelogEntry, fetchChangelog } from "@/lib/changelog";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -99,6 +102,31 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   // Sync / Backup state
   const [syncStatus, setSyncStatus] = useState<"idle" | "syncing" | "success" | "error">("idle");
   const [syncMsg, setSyncMsg] = useState("");
+
+  // Novedades (changelog) state
+  const [changelog, setChangelog] = useState<ChangelogEntry[]>([]);
+  const [changelogLoading, setChangelogLoading] = useState(false);
+  const [changelogError, setChangelogError] = useState("");
+  const [changelogFromCache, setChangelogFromCache] = useState(false);
+
+  const loadChangelog = useCallback(async (force = false) => {
+    setChangelogLoading(true);
+    setChangelogError("");
+    try {
+      const { entries, cached } = await fetchChangelog({ force });
+      setChangelog(entries);
+      setChangelogFromCache(cached);
+    } catch {
+      setChangelogError("Comprueba tu conexión a Internet e inténtalo de nuevo.");
+    } finally {
+      setChangelogLoading(false);
+    }
+  }, []);
+
+  // Se cargan al abrir Ajustes: si hay copia fresca es instantáneo y sin red.
+  useEffect(() => {
+    if (isOpen) loadChangelog();
+  }, [isOpen, loadChangelog]);
 
   const handleExportBackup = async () => {
     try {
@@ -785,6 +813,21 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       Actualizaciones automáticas y seguras a nivel global.
                     </p>
                   </div>
+                </section>
+
+                {/* Novedades (changelog) */}
+                <section className="flex flex-col gap-stack-gap">
+                  <SectionHeader
+                    icon={<HistoryIcon className="w-4 h-4" />}
+                    label="Novedades"
+                  />
+                  <ChangelogList
+                    entries={changelog}
+                    loading={changelogLoading && changelog.length === 0}
+                    error={changelogError}
+                    fromCache={changelogFromCache}
+                    onRetry={() => loadChangelog(true)}
+                  />
                 </section>
 
                 {/* Local Backup and Restore */}
