@@ -20,7 +20,7 @@ App de fitness PWA + Android con entrenamientos guiados e individuales, seguimie
 - **Temporizador adaptativo**: el descanso se ajusta por tipo de ejercicio, duración y RPE; supersets detectados y señalados en la UI.
 - **Modo claro y oscuro** con cambio sin parpadeo (zero-FOUC); todas las pantallas respetan el tema.
 - **OTA**: distribución del APK vía GitHub Releases.
-- **Testing**: Vitest (78 unit) + Playwright (16 e2e contra el export estático, incluidos contraste de modo claro y flujos de entreno).
+- **Testing**: Vitest (125 unit) + Playwright (16 e2e contra el export estático, incluidos contraste de modo claro y flujos de entreno).
 
 ## 🏗️ Arquitectura
 

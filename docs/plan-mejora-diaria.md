@@ -42,9 +42,11 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
 
 ## Fase 1 — Novedades dentro de la app (visibilidad del avance)
 
-- [ ] **F1.1** Changelog en la app: leer las notas de las últimas releases desde
+- [x] **F1.1** Changelog en la app: leer las notas de las últimas releases desde
   la API de GitHub (ya se consulta en `ota-sync.ts`) y mostrarlas en Ajustes bajo
-  "Novedades", con la versión instalada marcada.
+  "Novedades", con la versión instalada marcada. *(v8.5.14 · `src/lib/changelog.ts`
+  + `ChangelogList.tsx`; cuando una release no trae notas, se rellenan con los
+  mensajes de commit del rango vía la API de compare)*
 - [ ] **F1.2** Badge "Novedades" cuando la versión instalada es más nueva que la
   última leída (guardar en `localStorage`) y pantalla de bienvenida corta tras
   actualizar.
@@ -100,3 +102,4 @@ justo debajo y se documenta el motivo.
 | v8.5.11 | F0.4 | `npm run verify` (scripts/verify.mjs): lint + tests + build del APK en un solo comando, parando en la primera puerta que falle; `daily-improve.sh` y la documentación usan esa única ruta. |
 | v8.5.12 | — | Sistema visual limpio (estilo Apple) en todas las pantallas, tests e2e del sistema de diseño y de la pantalla de acceso; descansos de los días a los 75 s prescritos. |
 | v8.5.13 | F0.5 | `docs/firma-apk.md`: cómo firma la CI (certificado del secreto, estable → OTA sin desinstalar), qué pasa si se borra el secreto y por qué un APK compilado a mano no instala encima. |
+| v8.5.14 | F1.1 | Changelog dentro de la app: Ajustes → Novedades lista las últimas versiones con sus cambios y marca la instalada. `src/lib/changelog.ts` (lectura de la API de GitHub, relleno con los commits del rango cuando la release no trae notas, caché de 6 h en localStorage) y `src/components/ui/ChangelogList.tsx`. |
