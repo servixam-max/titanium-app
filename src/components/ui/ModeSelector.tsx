@@ -60,7 +60,7 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
             >
               {/* Recommended badge */}
               {badge && (
-                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-white px-2.5 py-0.5 rounded-full text-[12px] font-bold shadow-sm whitespace-nowrap border-primary/40">
+                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-black px-2.5 py-0.5 rounded-full text-[12px] font-bold shadow-sm whitespace-nowrap border-primary/40">
                   {badge.toUpperCase()}
                 </span>
               )}
@@ -70,7 +70,7 @@ export default function ModeSelector({ mode, onChange }: ModeSelectorProps) {
                 className={[
                   "absolute top-3 right-3 flex items-center justify-center w-5 h-5 rounded-full transition-all duration-200",
                   isSelected
-                    ? "bg-primary text-white scale-100 shadow-sm"
+                    ? "bg-primary text-black scale-100 shadow-sm"
                     : "bg-slate-100 dark:bg-white/5 text-transparent scale-90",
                 ].join(" ")}
                 aria-hidden="true"

@@ -16,7 +16,7 @@ export default function EmptyCatalogState({ onReset }: EmptyCatalogStateProps) {
       </span>
       <button
         onClick={onReset}
-        className="mt-2 rounded-xl bg-primary hover:brightness-105 px-4 py-2 text-xs font-bold text-white shadow-sm border-primary/40 active:scale-95 transition-all cursor-pointer"
+        className="mt-2 rounded-xl bg-primary hover:brightness-105 px-4 py-2 text-xs font-bold text-black shadow-sm border-primary/40 active:scale-95 transition-all cursor-pointer"
       >
         Limpiar filtros
       </button>

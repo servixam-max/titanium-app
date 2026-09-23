@@ -92,7 +92,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
             className={cn(
               "flex-shrink-0 px-2.5 py-1 rounded-xl text-[12px] font-mono font-bold transition-all",
               activeFilter === tab.id
-                ? "bg-primary text-white font-bold shadow-sm border-primary/40"
+                ? "bg-primary text-black font-bold shadow-sm border-primary/40"
                 : "bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             )}
           >
@@ -240,7 +240,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
                       haptics.tick();
                       setSelectedAchievement(null);
                     }}
-                    className="w-full py-2.5 rounded-xl bg-primary text-white font-bold text-xs transition-all shadow-sm cursor-pointer active:scale-95 border-primary/40"
+                    className="w-full py-2.5 rounded-xl bg-primary text-black font-bold text-xs transition-all shadow-sm cursor-pointer active:scale-95 border-primary/40"
                   >
                     Entendido
                   </button>

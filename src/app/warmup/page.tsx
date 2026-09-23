@@ -248,7 +248,7 @@ function WarmupContent() {
           <div className="w-full max-w-sm space-y-3 pb-[env(safe-area-inset-bottom,0px)]">
             <button
               onClick={handleSkipToWorkout}
-              className="w-full h-14 bg-primary text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-md hover:brightness-105 active:scale-95 transition-all cursor-pointer border-primary/40"
+              className="w-full h-14 bg-primary text-black font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-md hover:brightness-105 active:scale-95 transition-all cursor-pointer border-primary/40"
             >
               <Play className="w-5 h-5 fill-current" />
               <span>Empezar Entrenamiento Ya</span>
@@ -449,7 +449,7 @@ function WarmupContent() {
               {phase === "prep" && (
                 <button
                   onClick={() => startExercise(0)}
-                  className="flex-1 h-12 bg-primary text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border-primary/40"
+                  className="flex-1 h-12 bg-primary text-black font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border-primary/40"
                 >
                   <span>Empezar ya</span>
                   <ArrowRight className="w-4 h-4" />
@@ -475,7 +475,7 @@ function WarmupContent() {
                       startTransition(currentExerciseIndex + 1);
                     }
                   }}
-                  className="flex-1 h-12 bg-primary text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border-primary/40"
+                  className="flex-1 h-12 bg-primary text-black font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer border-primary/40"
                 >
                   <span>
                     {currentExerciseIndex >= warmUpExercises.length - 1

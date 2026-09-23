@@ -89,7 +89,7 @@ export default function ExerciseCard({
           <Dumbbell className="w-7 h-7 text-primary/60" />
         )}
         {index !== undefined && !isIndividual && (
-          <span className="absolute top-0.5 left-0.5 bg-primary text-white text-[12px] font-bold px-1.5 py-0.5 rounded-full shadow-sm z-20">
+          <span className="absolute top-0.5 left-0.5 bg-primary text-black text-[12px] font-bold px-1.5 py-0.5 rounded-full shadow-sm z-20">
             #{index + 1}
           </span>
         )}
@@ -119,12 +119,12 @@ export default function ExerciseCard({
 
       {/* Action CTA on Card */}
       {isIndividual ? (
-        <div className="flex items-center gap-1.5 bg-primary text-white px-3 py-1.5 rounded-xl font-bold text-xs shadow-sm group-hover:scale-105 transition-transform flex-shrink-0 border-primary/40">
+        <div className="flex items-center gap-1.5 bg-primary text-black px-3 py-1.5 rounded-xl font-bold text-xs shadow-sm group-hover:scale-105 transition-transform flex-shrink-0 border-primary/40">
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Iniciar</span>
         </div>
       ) : (
-        <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 group-hover:bg-primary group-hover:text-white group-hover:border-primary flex items-center justify-center text-slate-400 dark:text-zinc-400 transition-colors flex-shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 group-hover:bg-primary group-hover:text-black group-hover:border-primary flex items-center justify-center text-slate-400 dark:text-zinc-400 transition-colors flex-shrink-0">
           <ChevronRight className="w-4 h-4" />
         </div>
       )}

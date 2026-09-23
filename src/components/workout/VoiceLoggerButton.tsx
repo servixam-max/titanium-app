@@ -157,7 +157,7 @@ export default function VoiceLoggerButton({ onParsed, className }: VoiceLoggerBu
         className={cn(
           "relative flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all active:scale-95 cursor-pointer shadow-sm",
           isListening
-            ? "bg-primary text-white border-primary/50 shadow-md animate-pulse font-bold"
+            ? "bg-primary text-black border-primary/50 shadow-md animate-pulse font-bold"
             : "bg-white dark:bg-[#131626] border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:border-primary/40"
         )}
         title={isListening ? "Detener micrófono" : "Dictar serie por voz (ej. '12 reps con 20 kilos')"}

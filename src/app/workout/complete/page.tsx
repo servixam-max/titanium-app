@@ -62,7 +62,7 @@ export default function WorkoutComplete() {
         <p className="text-slate-500 dark:text-zinc-400 mb-4">No hay entrenamiento completado.</p>
         <button
           onClick={() => router.push("/")}
-          className="h-[48px] px-6 bg-primary hover:bg-emerald-600 text-white font-bold rounded-xl flex items-center gap-2 shadow-sm transition-all active:scale-95"
+          className="h-[48px] px-6 bg-primary hover:bg-emerald-600 text-black font-bold rounded-xl flex items-center gap-2 shadow-sm transition-all active:scale-95"
         >
           Volver al inicio
         </button>

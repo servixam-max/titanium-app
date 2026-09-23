@@ -166,7 +166,7 @@ export default function UpdateChecker() {
           ) : (
             <button
               onClick={handleStartUpdate}
-              className="w-full h-12 bg-primary hover:brightness-105 text-white font-bold text-xs rounded-2xl shadow-sm border-primary/40 hover:scale-[1.01] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full h-12 bg-primary hover:brightness-105 text-black font-bold text-xs rounded-2xl shadow-sm border-primary/40 hover:scale-[1.01] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               Actualizar a v{updateInfo.version}

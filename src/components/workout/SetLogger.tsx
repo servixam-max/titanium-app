@@ -193,7 +193,7 @@ export default function SetLogger({
             <button
               type="button"
               onClick={applySuggestion}
-              className="fx-press flex-shrink-0 rounded-full bg-primary/15 px-3 py-1.5 text-[13px] font-semibold text-primary"
+              className="fx-press flex-shrink-0 rounded-full bg-primary/10 px-3 py-1.5 text-[13px] font-semibold text-primary"
             >
               Usar
             </button>

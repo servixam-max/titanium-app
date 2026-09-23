@@ -11,7 +11,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="bg-primary hover:bg-emerald-600 text-white font-bold h-touch-target-min px-8 rounded-xl flex items-center justify-center shadow-sm active:scale-95 transition-all"
+        className="bg-primary hover:bg-emerald-600 text-black font-bold h-touch-target-min px-8 rounded-xl flex items-center justify-center shadow-sm active:scale-95 transition-all"
       >
         Volver al inicio
       </Link>

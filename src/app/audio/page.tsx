@@ -89,7 +89,7 @@ export default function AudioTestPage() {
           <button
             onClick={testSpeechWithExercise}
             disabled={!audioEnabled || testResult === "testing"}
-            className="w-full h-12 bg-primary hover:bg-emerald-600 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm border-primary disabled:opacity-50 cursor-pointer"
+            className="w-full h-12 bg-primary hover:bg-emerald-600 text-black font-bold text-xs rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm border-primary disabled:opacity-50 cursor-pointer"
           >
             <Mic className="w-4 h-4" />
             <span>PROBAR LECTURA DE EJERCICIOS</span>

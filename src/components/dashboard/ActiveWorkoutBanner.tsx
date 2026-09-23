@@ -18,7 +18,7 @@ export default function ActiveWorkoutBanner({ activeWorkout }: ActiveWorkoutBann
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       onClick={() => router.push(`/workout/${activeWorkout.mode}`)}
-      className="flex h-[62px] items-center gap-3 rounded-2xl border-primary/40 bg-primary px-4 text-white shadow-md active:scale-[0.98] transition-transform cursor-pointer"
+      className="flex h-[62px] items-center gap-3 rounded-2xl border-primary/40 bg-primary px-4 text-black shadow-md active:scale-[0.98] transition-transform cursor-pointer"
     >
       <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white/20 text-white">
         <Play className="h-5 w-5 fill-current text-white" />

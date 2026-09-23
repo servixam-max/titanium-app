@@ -91,7 +91,7 @@ export default function ExerciseSearchBar({
             onClick={() => {
               haptics.selection();
               onSelectEquipment("dumbbells"); }} className={`px-2.5 py-1 rounded-xl text-[13px] font-mono font-bold flex items-center gap-1 transition-all ${ selectedEquipment ==="dumbbells"
-                ? "bg-primary text-white border-primary/40 shadow-sm"
+                ? "bg-primary text-black border-primary/40 shadow-sm"
                 : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
             }`}
           >
@@ -117,7 +117,7 @@ export default function ExerciseSearchBar({
       </div>
 
       {/* Muscle Tag Carousel */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5"> {MUSCLE_TAGS.map((tag) => { const isSelected = selectedMuscle === tag.id; return ( <button key={tag.id} onClick={() => { haptics.selection(); onSelectMuscle(tag.id); }} className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 active:scale-95 cursor-pointer ${ isSelected ?"bg-primary text-white font-bold shadow-sm border-primary/40"
+      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5"> {MUSCLE_TAGS.map((tag) => { const isSelected = selectedMuscle === tag.id; return ( <button key={tag.id} onClick={() => { haptics.selection(); onSelectMuscle(tag.id); }} className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 active:scale-95 cursor-pointer ${ isSelected ?"bg-primary text-black font-bold shadow-sm border-primary/40"
                   : "bg-white dark:bg-[#131626] hover:bg-slate-100 dark:hover:bg-[#181d2e] text-slate-600 dark:text-zinc-400"
               }`}
             >

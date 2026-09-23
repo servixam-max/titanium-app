@@ -399,7 +399,7 @@ export default function CustomWorkoutBuilder({
                 }}
                 className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                   viewSavedList
-                    ? "bg-primary text-white border-primary font-bold shadow-sm"
+                    ? "bg-primary text-black border-primary font-bold shadow-sm"
                     : "bg-slate-100 dark:bg-[#131626] text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-[#181d2e]"
                 }`}
               >
@@ -527,7 +527,7 @@ export default function CustomWorkoutBuilder({
                         startWorkout(routine, "guided", 0);
                         router.push("/workout/guided");
                       }}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white font-bold hover:scale-105 transition-all shadow-sm cursor-pointer"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-black font-bold hover:scale-105 transition-all shadow-sm cursor-pointer"
                       title="Iniciar Guiado"
                     >
                       <Play className="h-3.5 w-3.5 fill-current ml-0.5" />
@@ -690,7 +690,7 @@ export default function CustomWorkoutBuilder({
                         }}
                         className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                           !isHIIT
-                            ? "bg-primary text-white font-bold shadow-sm"
+                            ? "bg-primary text-black font-bold shadow-sm"
                             : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                         }`}
                       >
@@ -995,7 +995,7 @@ export default function CustomWorkoutBuilder({
                   }}
                   className={`flex-shrink-0 rounded-xl px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                     activeMuscle === tab.id
-                      ? "bg-primary text-white font-bold shadow-sm"
+                      ? "bg-primary text-black font-bold shadow-sm"
                       : "bg-slate-100 dark:bg-[#131626] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
@@ -1077,7 +1077,7 @@ export default function CustomWorkoutBuilder({
 
                       {/* Count badge if added */}
                       {count > 0 && (
-                        <div className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-xs font-bold shadow-sm">
+                        <div className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-black text-xs font-bold shadow-sm">
                           +{count}
                         </div>
                       )}
@@ -1105,7 +1105,7 @@ export default function CustomWorkoutBuilder({
                         onClick={() => handleAddExercise(exercise)}
                         className={`flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition-all cursor-pointer active:scale-95 ${
                           count > 0
-                            ? "bg-primary text-white shadow-sm font-bold"
+                            ? "bg-primary text-black shadow-sm font-bold"
                             : "bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20"
                         }`}
                       >
@@ -1164,7 +1164,7 @@ export default function CustomWorkoutBuilder({
             <button
               onClick={() => handleStart("guided")}
               disabled={selectedItems.length === 0}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-emerald-600 py-3 px-3 text-xs font-bold text-white shadow-sm border-primary transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+              className="flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-emerald-600 py-3 px-3 text-xs font-bold text-black shadow-sm border-primary transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
             >
               <Play className="h-4 w-4 fill-current" />
               <span>Modo Guiado</span>

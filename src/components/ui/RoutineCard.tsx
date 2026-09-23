@@ -98,7 +98,7 @@ export default function RoutineCard({
         {/* Center Info */}
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[12px] font-bold px-2.5 py-0.5 rounded-full bg-primary text-white border-primary shadow-sm"> {dayBadge} </span> <span className={`text-[12px] font-mono px-2 py-0.5 rounded-full ${style.badge} font-bold`} > {routine.equipment ||"MANCUERNAS"}
+            <span className="text-[12px] font-bold px-2.5 py-0.5 rounded-full bg-primary text-black border-primary shadow-sm"> {dayBadge} </span> <span className={`text-[12px] font-mono px-2 py-0.5 rounded-full ${style.badge} font-bold`} > {routine.equipment ||"MANCUERNAS"}
             </span>
             {isCompletedToday && (
               <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 flex items-center gap-1">
@@ -131,7 +131,7 @@ export default function RoutineCard({
             className={`w-10 h-10 rounded-2xl ${
               isCompletedToday
                 ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
-                : "bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 group-hover:bg-primary group-hover:text-white text-slate-700 dark:text-slate-200"
+                : "bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 group-hover:bg-primary group-hover:text-black text-slate-700 dark:text-slate-200"
             } flex items-center justify-center transition-all duration-300 shadow-sm`}
           >
             {isCompletedToday ? (
@@ -172,7 +172,7 @@ export default function RoutineCard({
             haptics.impact();
             onClick?.();
           }}
-          className="h-9 px-4 rounded-xl bg-primary hover:brightness-105 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm border-primary/40 active:scale-95 transition-all cursor-pointer"
+          className="h-9 px-4 rounded-xl bg-primary hover:brightness-105 text-black font-bold text-xs flex items-center gap-1.5 shadow-sm border-primary/40 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Comenzar</span>
@@ -248,7 +248,7 @@ export default function RoutineCard({
                       }
                     }}
                     title="Entrenar este ejercicio en modo individual"
-                    className="w-9 h-9 rounded-xl bg-primary/10 hover:bg-primary hover:text-white text-emerald-700 dark:text-primary border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0 shadow-sm"
+                    className="w-9 h-9 rounded-xl bg-primary/10 hover:bg-primary hover:text-black text-emerald-700 dark:text-primary border-primary/30 flex items-center justify-center transition-all active:scale-90 cursor-pointer flex-shrink-0 shadow-sm"
                   >
                     <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                   </button>

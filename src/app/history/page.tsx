@@ -280,7 +280,7 @@ export default function HistoryPage() {
             {/* Period Filters */}
             <button
               onClick={() => setFilterPeriod("all")} className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${ filterPeriod ==="all"
-                  ? "bg-primary text-white shadow-sm border-primary/40"
+                  ? "bg-primary text-black shadow-sm border-primary/40"
                   : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
@@ -288,7 +288,7 @@ export default function HistoryPage() {
             </button>
             <button
               onClick={() => setFilterPeriod("week")} className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${ filterPeriod ==="week"
-                  ? "bg-primary text-white shadow-sm border-primary/40"
+                  ? "bg-primary text-black shadow-sm border-primary/40"
                   : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
@@ -296,7 +296,7 @@ export default function HistoryPage() {
             </button>
             <button
               onClick={() => setFilterPeriod("month")} className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all ${ filterPeriod ==="month"
-                  ? "bg-primary text-white shadow-sm border-primary/40"
+                  ? "bg-primary text-black shadow-sm border-primary/40"
                   : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
@@ -317,7 +317,7 @@ export default function HistoryPage() {
             </button>
             <button
               onClick={() => setFilterMode(filterMode === "individual" ? "all" : "individual")} className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1 ${ filterMode ==="individual"
-                  ? "bg-primary text-white shadow-sm border-primary/40"
+                  ? "bg-primary text-black shadow-sm border-primary/40"
                   : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
               }`}
             >
@@ -348,7 +348,7 @@ export default function HistoryPage() {
               </p>
               <button
                 onClick={() => router.push("/")}
-                className="mt-4 px-4 py-2 bg-primary text-white font-bold text-xs rounded-xl shadow-sm border-primary/40 flex items-center gap-1.5 active:scale-95 transition-all"
+                className="mt-4 px-4 py-2 bg-primary text-black font-bold text-xs rounded-xl shadow-sm border-primary/40 flex items-center gap-1.5 active:scale-95 transition-all"
               >
                 <span>Empezar a Entrenar</span>
                 <ArrowRight className="w-3.5 h-3.5" />

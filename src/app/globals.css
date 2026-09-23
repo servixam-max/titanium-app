@@ -16,7 +16,7 @@
   --text-secondary: #CBD5E1;
   --text-tertiary: #909DC2;
   --primary: #10B981;
-  --primary-rgb: 16, 185, 129;
+  --primary-rgb: 16 185 129;
   --primary-500: #10B981;
   --primary-600: #059669;
   --primary-400: #34D399;
@@ -61,9 +61,9 @@ html.light {
   --surface-500: #475569;
   --text-primary: #0F172A;
   --text-secondary: #334155;
-  --text-tertiary: #64748B;
+  --text-tertiary: #56657C;
   --primary: #059669;
-  --primary-rgb: 5, 150, 105;
+  --primary-rgb: 5 150 105;
   --primary-500: #059669;
   --primary-600: #047857;
   --accent-cyan: #0284C7;
@@ -211,6 +211,13 @@ html.light .text-white {
   color: #0F172A !important;
 }
 
+/* Cian como texto en claro: cyan-600 sobre blanco no llega (3.7:1) */
+html.light .text-cyan-400,
+html.light .text-cyan-500,
+html.light .text-cyan-600 {
+  color: #0E7490 !important;
+}
+
 /* Primary titles / headings */
 html.light .text-slate-100,
 html.light .text-zinc-100,
@@ -236,7 +243,7 @@ html.light .text-zinc-400,
 html.light .text-gray-400,
 html.light .text-white\/60,
 html.light .text-white\/70 {
-  color: #64748B !important; /* Slate-500 (comfortable ~4.6:1 contrast) */
+  color: var(--text-tertiary) !important; /* 5.0:1 sobre el fondo claro */
 }
 
 /* Subtle / timestamps / micro-labels */
@@ -245,7 +252,18 @@ html.light .text-zinc-500,
 html.light .text-gray-500,
 html.light .text-white\/40,
 html.light .text-white\/50 {
-  color: #94A3B8 !important; /* Slate-400 */
+  color: var(--text-tertiary) !important;
+}
+
+/* En oscuro los grises medios del sistema (zinc-500 y compañía) quedaban en
+   3.7:1 sobre tarjeta: se elevan al terciario del tema (6.6:1). */
+.text-slate-500,
+.text-zinc-500,
+.text-gray-500,
+.text-slate-600,
+.text-zinc-600,
+.text-gray-600 {
+  color: var(--text-tertiary);
 }
 
 /* Placeholders in light mode */
@@ -256,35 +274,34 @@ html.light textarea::placeholder {
   opacity: 1 !important;
 }
 
-/* Crisp white text on athletic emerald CTA buttons and primary badges in both modes */
+/* Texto sobre esmeralda: negro, garantizado también por herencia.
+   (Antes esta regla forzaba blanco, que sobre esmeralda da 2,5:1.) */
+.bg-primary,
+.bg-primary *,
+button.bg-primary,
+button.bg-primary *,
 .btn-primary,
 .btn-primary *,
 button.from-primary,
 button.from-primary *,
-button.bg-primary,
-button.bg-primary *,
-.bg-primary.text-white,
-.bg-primary.text-white *,
-.from-primary.text-black,
-.from-primary.text-black *,
+span.bg-primary,
+span.bg-primary *,
+html.light .bg-primary,
+html.light .bg-primary *,
+html.light button.bg-primary,
+html.light button.bg-primary *,
 html.light .btn-primary,
 html.light .btn-primary *,
 html.light button.from-primary,
 html.light button.from-primary *,
-html.light button.bg-primary,
-html.light button.bg-primary *,
-html.light .bg-primary.text-white,
-html.light .bg-primary.text-white *,
-html.light span.from-primary,
-html.light span.from-primary *,
 html.light span.bg-primary,
 html.light span.bg-primary * {
-  color: #FFFFFF !important;
+  color: #000000 !important;
 }
 
 /* Athletic Emerald accents on light surfaces */
 html.light .text-primary:not(.btn-primary):not(.from-primary) {
-  color: #047857 !important;
+  color: #036B4B !important; /* 6.5:1 sobre blanco, 5.1:1 sobre los grises */
 }
 
 /* Saturated colored badge text in light mode (no pale pastels) */

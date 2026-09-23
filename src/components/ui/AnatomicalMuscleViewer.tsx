@@ -45,7 +45,7 @@ export default function AnatomicalMuscleViewer({
             onClick={() => {
               haptics.selection();
               setRenderMode("3d"); }} className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${ renderMode ==="3d"
-                ? "bg-primary text-white font-bold shadow-sm"
+                ? "bg-primary text-black font-bold shadow-sm"
                 : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
@@ -56,7 +56,7 @@ export default function AnatomicalMuscleViewer({
             onClick={() => {
               haptics.selection();
               setRenderMode("2d"); }} className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${ renderMode ==="2d"
-                ? "bg-primary text-white font-bold shadow-sm"
+                ? "bg-primary text-black font-bold shadow-sm"
                 : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
@@ -161,7 +161,7 @@ function TwoDimensionalViewer({
               setActiveView("front");
             }}
             className={`px-3 py-1.5 rounded-xl transition-all ${
-              activeView === "front" ? "bg-primary text-white font-bold shadow-sm border-primary/40" : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
+              activeView === "front" ? "bg-primary text-black font-bold shadow-sm border-primary/40" : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Frontal
@@ -172,7 +172,7 @@ function TwoDimensionalViewer({
               setActiveView("back");
             }}
             className={`px-3 py-1.5 rounded-xl transition-all ${
-              activeView === "back" ? "bg-primary text-white font-bold shadow-sm border-primary/40" : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
+              activeView === "back" ? "bg-primary text-black font-bold shadow-sm border-primary/40" : "text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Dorsal

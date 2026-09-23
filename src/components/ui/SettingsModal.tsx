@@ -549,7 +549,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             type="button"
                             onClick={() => {
                               setVoiceRate(preset.rate);
-                              speak("Velocidad ajustada", 1.0, preset.rate); }} className={`py-2 px-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${ isSelected ?"bg-primary text-white border-primary shadow-sm font-bold"
+                              speak("Velocidad ajustada", 1.0, preset.rate); }} className={`py-2 px-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${ isSelected ?"bg-primary text-black border-primary shadow-sm font-bold"
                                 : "bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-zinc-400 border-slate-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white"
                             }`}
                           >
@@ -654,7 +654,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             setOtaError(msg);
                           }
                         }}
-                        className="w-full h-12 bg-primary hover:bg-emerald-600 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm border-primary cursor-pointer"
+                        className="w-full h-12 bg-primary hover:bg-emerald-600 text-black font-bold text-xs rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm border-primary cursor-pointer"
                       >
                         <RefreshCw className="w-4 h-4" />
                         Comprobar Actualizaciones
@@ -727,7 +727,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               setOtaError(result.error || "Fallo en la descarga interna. Puedes descargar desde el navegador.");
                             }
                           }}
-                          className="w-full h-12 bg-primary hover:bg-emerald-600 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm border-primary hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                          className="w-full h-12 bg-primary hover:bg-emerald-600 text-black font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-sm border-primary hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
                         >
                           <Download className="w-4 h-4" />
                           Descargar e Instalar v{otaInfo.version}

@@ -85,7 +85,7 @@ export default function ExerciseDetailModal({
 
               {/* Tags overlay */}
               <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between pointer-events-none">
-                <span className="px-3 py-1 rounded-xl bg-primary text-white font-bold text-xs border-primary/40 shadow-sm"> {muscle} </span> <span className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold ${ isDumbbell ?"bg-amber-500/25 text-amber-300 border-amber-500/40"
+                <span className="px-3 py-1 rounded-xl bg-primary text-black font-bold text-xs border-primary/40 shadow-sm"> {muscle} </span> <span className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold ${ isDumbbell ?"bg-amber-500/25 text-amber-300 border-amber-500/40"
                       : "bg-cyan-500/25 text-cyan-300 border-cyan-500/40"
                   }`}
                 >
@@ -158,7 +158,7 @@ export default function ExerciseDetailModal({
                   haptics.impact();
                   onStartExercise(exercise);
                 }}
-                className="w-full h-14 bg-primary hover:brightness-105 text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-md border-primary/40 active:scale-98 transition-all cursor-pointer"
+                className="w-full h-14 bg-primary hover:brightness-105 text-black font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-md border-primary/40 active:scale-98 transition-all cursor-pointer"
               >
                 <Play className="w-4 h-4 fill-current" />
                 <span>Entrenar este ejercicio ahora</span>

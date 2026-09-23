@@ -107,7 +107,7 @@ export default function ExerciseGridCard({
             haptics.impact();
             onQuickStart();
           }}
-          className="w-full h-10 mt-1 bg-primary hover:brightness-105 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm border-primary/40 active:scale-95 transition-all cursor-pointer"
+          className="w-full h-10 mt-1 bg-primary hover:brightness-105 text-black font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm border-primary/40 active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Entrenar</span>

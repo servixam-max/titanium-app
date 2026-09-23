@@ -132,7 +132,7 @@ export default function RoutineDetailModal({
               {/* Routine Title overlay */}
               <div className="absolute bottom-3 left-4 right-4 z-10">
                 <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary text-white shadow-sm border-primary/40">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary text-black shadow-sm border-primary/40">
                     DÍA {routine.day < 10 ? `0${routine.day}` : routine.day}
                   </span>
                   <span className="text-[13px] text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-white/15 font-bold">
@@ -169,7 +169,7 @@ export default function RoutineDetailModal({
                   <button
                     type="button"
                     onClick={() => setEquipmentPreference("dumbbells")} className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${ equipmentPreference ==="dumbbells"
-                        ? "bg-primary text-white shadow-sm"
+                        ? "bg-primary text-black shadow-sm"
                         : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                     }`}
                   >
@@ -178,7 +178,7 @@ export default function RoutineDetailModal({
                   <button
                     type="button"
                     onClick={() => setEquipmentPreference("bodyweight")} className={`flex-1 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${ equipmentPreference ==="bodyweight"
-                        ? "bg-primary text-white shadow-sm"
+                        ? "bg-primary text-black shadow-sm"
                         : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                     }`}
                   >
@@ -254,7 +254,7 @@ export default function RoutineDetailModal({
             <div className="p-4 bg-white/95 dark:bg-[#0d101a]/95 backdrop-blur-md border-t border-slate-200 dark:border-white/10 flex-shrink-0 flex gap-2 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg z-30">
               <button
                 onClick={() => handleStartWorkoutFlow(0)}
-                className="w-full h-14 bg-primary hover:brightness-105 text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-md border-primary/40 active:scale-95 transition-all cursor-pointer"
+                className="w-full h-14 bg-primary hover:brightness-105 text-black font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-md border-primary/40 active:scale-95 transition-all cursor-pointer"
               >
                 <Play className="w-5 h-5 fill-current" />
                 <span>{mode === "guided" ? "INICIAR ENTRENAMIENTO GUIADO" : "INICIAR MODO INDIVIDUAL"}</span>

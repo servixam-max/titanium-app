@@ -127,7 +127,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
             <div className="flex p-1 fx-card rounded-2xl w-full shadow-sm">
               <button
                 onClick={() => setEquipmentPreference("dumbbells")} className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${ equipmentPreference ==="dumbbells"
-                    ? "bg-primary text-white font-bold shadow-sm border-primary/40"
+                    ? "bg-primary text-black font-bold shadow-sm border-primary/40"
                     : "bg-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -135,7 +135,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
               </button>
               <button
                 onClick={() => setEquipmentPreference("bodyweight")} className={`flex-1 py-2 px-4 rounded-xl font-mono text-xs transition-all ${ equipmentPreference ==="bodyweight"
-                    ? "bg-primary text-white font-bold shadow-sm border-primary/40"
+                    ? "bg-primary text-black font-bold shadow-sm border-primary/40"
                     : "bg-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -173,7 +173,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-primary text-white font-bold border-primary/40 shadow-sm"
+                          ? "bg-primary text-black font-bold border-primary/40 shadow-sm"
                           : "bg-white dark:bg-[#141828] text-slate-800 dark:text-white border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 shadow-xs"
                       }`}
                     >
@@ -217,7 +217,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                       onClick={() => setFreeExerciseId(isSelected ? null : id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-bold transition-all ${
                         isSelected
-                          ? "bg-primary text-white font-bold border-primary/40 shadow-sm"
+                          ? "bg-primary text-black font-bold border-primary/40 shadow-sm"
                           : "bg-white dark:bg-[#141828] text-slate-800 dark:text-white border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 shadow-xs"
                       }`}
                     >
@@ -285,7 +285,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
         <div className="max-w-app mx-auto px-container-padding pointer-events-auto">
           <button
             onClick={() => handleStart(0)}
-            className="w-full bg-primary text-white font-bold text-sm h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md hover:brightness-105 border-primary/40 cursor-pointer"
+            className="w-full bg-primary text-black font-bold text-sm h-14 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md hover:brightness-105 border-primary/40 cursor-pointer"
           >
             <Play className="w-5 h-5 fill-current" />
             <span>{mode === "guided" ? "INICIAR MODO GUIADO" : "INICIAR MODO INDIVIDUAL"}</span>

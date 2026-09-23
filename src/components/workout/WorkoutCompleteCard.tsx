@@ -301,7 +301,7 @@ export default function WorkoutCompleteCard({
       >
         <button
           onClick={() => router.push("/history")}
-          className="w-full h-12 bg-primary hover:brightness-105 text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-md border-primary/40 cursor-pointer"
+          className="w-full h-12 bg-primary hover:brightness-105 text-black font-bold text-sm rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-md border-primary/40 cursor-pointer"
         >
           <Calendar className="w-4 h-4" /> Ver Historial Completo
         </button>

@@ -50,7 +50,7 @@ export default function HeroWorkoutCard({
               Hecho hoy
             </span>
           ) : isRecommended ? (
-            <span className="fx-label-sm !text-primary">Te toca hoy</span>
+            <span className="fx-label-sm text-primary">Te toca hoy</span>
           ) : null}
         </div>
 

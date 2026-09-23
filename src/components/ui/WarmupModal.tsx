@@ -79,7 +79,7 @@ export default function WarmupModal({
               <button
                 type="button"
                 onClick={onStartWarmup}
-                className="w-full h-13 bg-primary hover:brightness-105 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-md border-primary/40 active:scale-95 transition-all cursor-pointer"
+                className="w-full h-13 bg-primary hover:brightness-105 text-black font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-md border-primary/40 active:scale-95 transition-all cursor-pointer"
               >
                 <Flame className="w-4 h-4 fill-current" />
                 <span>SÍ, CALENTAR PRIMERO</span>
