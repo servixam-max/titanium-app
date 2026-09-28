@@ -81,7 +81,8 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
 - [ ] **F4.1** Auditar imágenes de ejercicios (`public/images/exercises`) y bajar
   el peso total del APK sin pérdida visible.
 - [ ] **F4.2** Ampliar Playwright a los flujos críticos: entreno guiado completo,
-  registro de peso, cambio de tema.
+  registro de peso, cambio de tema. *(parcial: navegación y cambio de tema ya
+  cubiertos; faltan completar un entreno guiado entero y guardar un peso)*
 - [ ] **F4.3** Revisar `cleartext: true` y `allowNavigation` amplio en
   `capacitor.config.json`: acotar dominios sin romper el puente LAN/Tailscale.
 - [ ] **F4.4** Revisar rendimiento del WebView: re-renderizados en entreno activo
@@ -107,3 +108,4 @@ justo debajo y se documenta el motivo.
 | v8.5.14 | F1.1 | Changelog dentro de la app: Ajustes → Novedades lista las últimas versiones con sus cambios y marca la instalada. `src/lib/changelog.ts` (lectura de la API de GitHub, relleno con los commits del rango cuando la release no trae notas, caché de 6 h en localStorage) y `src/components/ui/ChangelogList.tsx`. |
 | v8.5.15–v8.5.16 | — | Correcciones de interfaz y tema: el color primario vuelve a renderizarse con buen contraste en claro, el selector de días deja de solaparse y recargar un entreno ya no expulsa a la home. |
 | v8.5.17 | F1.2 | Aviso de novedades al actualizar: pantalla corta la primera apertura con lo que trae la versión instalada, punto de aviso en Ajustes hasta leerlas y distintivo "Nuevas" en la sección Novedades. `src/lib/whats-new.ts` + `src/components/ui/WhatsNewModal.tsx`; no aparece en instalación nueva ni interrumpe un entreno en curso. |
+| v8.5.18 | — | Los números grandes de la pantalla de entreno dejan de recortarse: el texto de 30 px usaba interlineado `none` (caja de 30 px) y la fuente medía 33 px, así que "10-12", el número de serie y "75s" se cortaban por abajo. Arreglados los 2 fallos preexistentes de los e2e de diseño: **suite móvil 60/60 en verde**. También se reforzó el monitor diario para que no vuelva a quedarse dormido si un día falla la publicación. |
