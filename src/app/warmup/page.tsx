@@ -12,6 +12,7 @@ import {
   Dumbbell,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
+import TopAppBarSpacer from "@/components/ui/TopAppBarSpacer";
 import { useAppStore } from "@/lib/store";
 import { warmUpExercises } from "@/lib/data";
 import {
@@ -188,6 +189,8 @@ function WarmupContent() {
         backHref="/"
         showVolume
       />
+
+      <TopAppBarSpacer />
 
       {/* Post-Warmup Rest Fullscreen Screen */}
       {phase === "post_rest" ? (

@@ -16,6 +16,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
+import TopAppBarSpacer from "@/components/ui/TopAppBarSpacer";
 import BottomNav from "@/components/ui/BottomNav";
 import { SkeletonSessionCard } from "@/components/ui/Skeleton";
 import { getSessions, deleteSession, deleteExerciseFromSession, LocalSession } from "@/lib/db";
@@ -159,6 +160,8 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen pb-[120px] bg-background text-on-background">
       <TopAppBar title="FORTIXAM" showBack backHref="/" showSettings />
+
+      <TopAppBarSpacer />
 
       <main className="w-full px-4 pt-4 flex flex-col gap-5 max-w-lg mx-auto">
         {/* Header Title with User Chip */}

@@ -22,6 +22,7 @@ import RoutineDetailModal from "@/components/ui/RoutineDetailModal";
 import ExerciseDetailModal from "@/components/ui/ExerciseDetailModal";
 import ExerciseGridCard from "@/components/ui/ExerciseGridCard";
 import TopAppBar from "@/components/ui/TopAppBar";
+import TopAppBarSpacer from "@/components/ui/TopAppBarSpacer";
 import BottomNav from "@/components/ui/BottomNav";
 import ExerciseSearchBar, { MuscleCategory, EquipmentFilter } from "@/components/ui/ExerciseSearchBar";
 import { CustomWorkoutBuilder } from "@/components/custom-workout";
@@ -187,7 +188,12 @@ export default function Dashboard() {
 
       <TopAppBar title="FORTIXAM" showSettings />
 
-      <main className="relative z-10 flex flex-1 flex-col gap-7 px-5 pt-4 pb-28">
+      <TopAppBarSpacer />
+
+      {/* pt seguro: la TopAppBar es `fixed` (48 px) y el espaciador reserva su
+          hueco, pero al abrir la app el WebView puede quedar con scroll previo.
+          El padding superior garantiza que el saludo nunca quede debajo. */}
+      <main className="relative z-10 flex flex-1 flex-col gap-7 px-5 pt-[56px] pb-28">
         <DashboardHeader
           user={currentUser}
           streak={streakCount}

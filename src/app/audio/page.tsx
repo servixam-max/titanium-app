@@ -6,6 +6,7 @@ import { Volume2, VolumeX, CheckCircle2, ArrowRight, Bell, Mic } from "lucide-re
 import { useAppStore } from "@/lib/store";
 import { playRestEndAlarm, playExerciseStart, playCountdown, speak, setAudioMode, setVoiceRate, preloadVoices } from "@/lib/audio";
 import TopAppBar from "@/components/ui/TopAppBar";
+import TopAppBarSpacer from "@/components/ui/TopAppBarSpacer";
 
 export default function AudioTestPage() {
   const router = useRouter();
@@ -53,6 +54,8 @@ export default function AudioTestPage() {
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-on-background">
       <TopAppBar title="AUDIO & SONIDO" showBack backHref="/" />
+
+      <TopAppBarSpacer />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 gap-5 max-w-sm mx-auto w-full py-8">
         {/* Audio Icon */}

@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
+import TopAppBarSpacer from "@/components/ui/TopAppBarSpacer";
 import BottomNav from "@/components/ui/BottomNav";
 import { SkeletonStatCard } from "@/components/ui/Skeleton";
 import AnatomicalMuscleViewer from "@/components/ui/AnatomicalMuscleViewer";
@@ -193,6 +194,8 @@ export default function StatsPage() {
   return (
     <div className="min-h-screen pb-[200px] bg-background text-on-background">
       <TopAppBar title="FORTIXAM" showBack backHref="/" showSettings />
+
+      <TopAppBarSpacer />
 
       <main className="w-full px-4 pt-4 flex flex-col gap-5 max-w-lg mx-auto">
         {/* Header with User Info */}
