@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ArrowLeft, Settings, Volume2, VolumeX, X, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 import { haptics } from "@/lib/haptics";
+import { hasUnseenNews, WHATS_NEW_SEEN_EVENT } from "@/lib/whats-new";
 
 const SettingsModal = dynamic(() => import("./SettingsModal"), { ssr: false });
 
@@ -47,6 +48,17 @@ export default function TopAppBar({
 }: TopAppBarProps) {
   const { audioEnabled, toggleAudio, currentUser, theme, setTheme } = useAppStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Punto de aviso en Ajustes mientras haya novedades de esta versión sin leer.
+  // Arranca en false y se resuelve en el efecto: el HTML se genera sin acceso a
+  // localStorage y no debe cambiar entre servidor y cliente.
+  const [hasNews, setHasNews] = useState(false);
+
+  useEffect(() => {
+    const update = () => setHasNews(hasUnseenNews());
+    update();
+    window.addEventListener(WHATS_NEW_SEEN_EVENT, update);
+    return () => window.removeEventListener(WHATS_NEW_SEEN_EVENT, update);
+  }, []);
 
   const isDark =
     theme === "dark" ||
@@ -131,10 +143,16 @@ export default function TopAppBar({
           {showSettings && (
             <button
               onClick={() => setSettingsOpen(true)}
-              className="flex items-center justify-center w-8 h-12 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-opacity active:scale-95"
-              aria-label="Ajustes"
+              className="relative flex items-center justify-center w-8 h-12 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-opacity active:scale-95"
+              aria-label={hasNews ? "Ajustes (novedades sin leer)" : "Ajustes"}
             >
               <Settings className="w-6 h-6" />
+              {hasNews && (
+                <span
+                  aria-hidden="true"
+                  className="absolute top-2.5 right-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-white dark:ring-[#0E101A]"
+                />
+              )}
             </button>
           )}
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -54,6 +54,11 @@ import {
 import { getSessions, saveSession, getWeights, saveWeight } from "@/lib/db";
 import ChangelogList from "@/components/ui/ChangelogList";
 import { ChangelogEntry, fetchChangelog } from "@/lib/changelog";
+import {
+  hasUnseenNews,
+  markCurrentVersionSeen,
+  WHATS_NEW_SEEN_EVENT,
+} from "@/lib/whats-new";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -108,6 +113,35 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [changelogLoading, setChangelogLoading] = useState(false);
   const [changelogError, setChangelogError] = useState("");
   const [changelogFromCache, setChangelogFromCache] = useState(false);
+  // Distintivo "Nuevas" hasta que el usuario ve la sección de Novedades.
+  const [hasUnseen, setHasUnseen] = useState(false);
+  const changelogSectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const update = () => setHasUnseen(hasUnseenNews());
+    update();
+    window.addEventListener(WHATS_NEW_SEEN_EVENT, update);
+    return () => window.removeEventListener(WHATS_NEW_SEEN_EVENT, update);
+  }, []);
+
+  // Al asomarse la sección de Novedades (o pasar de ella), deja de ser "nueva".
+  useEffect(() => {
+    if (!isOpen || !hasUnseen) return;
+    const node = changelogSectionRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          markCurrentVersionSeen();
+          setHasUnseen(false);
+        }
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isOpen, hasUnseen, changelog]);
 
   const loadChangelog = useCallback(async (force = false) => {
     setChangelogLoading(true);
@@ -816,11 +850,21 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 </section>
 
                 {/* Novedades (changelog) */}
-                <section className="flex flex-col gap-stack-gap">
-                  <SectionHeader
-                    icon={<HistoryIcon className="w-4 h-4" />}
-                    label="Novedades"
-                  />
+                <section
+                  ref={changelogSectionRef}
+                  className="flex flex-col gap-stack-gap"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <SectionHeader
+                      icon={<HistoryIcon className="w-4 h-4" />}
+                      label="Novedades"
+                    />
+                    {hasUnseen && (
+                      <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                        Nuevas
+                      </span>
+                    )}
+                  </div>
                   <ChangelogList
                     entries={changelog}
                     loading={changelogLoading && changelog.length === 0}

@@ -4,6 +4,10 @@
 // sembrar el usuario, AuthModal tapa la pantalla y ningún clic llega. Aquí se
 // siembra todo lo que la app consulta al arrancar.
 
+// Versión instalada que declara el repo: los e2e corren contra el export de
+// `main`, así que es la misma que verá la app al arrancar.
+const { version: APP_VERSION } = require('../../version.json');
+
 const E2E_USER = {
   id: 'e2e-user-id',
   clientId: 'e2e',
@@ -23,13 +27,13 @@ const E2E_USER = {
 /**
  * Deja la app en estado "sesión iniciada" antes de navegar.
  * @param {import('@playwright/test').Page} page
- * @param {{ theme?: 'dark' | 'light' }} [options]
+ * @param {{ theme?: 'dark' | 'light', unseenNews?: boolean }} [options]
  */
 async function seedSession(page, options = {}) {
-  const { theme } = options;
+  const { theme, unseenNews = false } = options;
 
   await page.addInitScript(
-    ({ user, theme }) => {
+    ({ user, theme, unseenNews, appVersion }) => {
       localStorage.setItem('fortixam_server_user', JSON.stringify(user));
       localStorage.setItem('fortixam_active_user_id', user.id);
       // Sin esto AuthModal se muestra encima de todo
@@ -43,8 +47,16 @@ async function seedSession(page, options = {}) {
         })
       );
       if (theme) localStorage.setItem('fortixam-theme', theme);
+      // Por defecto las novedades ya están leídas: el aviso de actualización no
+      // debe tapar las pantallas que auditan el resto de e2e. Poniendo
+      // unseenNews: true se simula "venimos de una versión anterior".
+      // Solo se escribe si no hay marca: al recargar debe conservarse lo que
+      // haya apuntado la propia app (o la prueba no mediría nada).
+      if (localStorage.getItem('fortixam_last_seen_version') === null) {
+        localStorage.setItem('fortixam_last_seen_version', unseenNews ? '8.5.0' : appVersion);
+      }
     },
-    { user: E2E_USER, theme: theme ?? null }
+    { user: E2E_USER, theme: theme ?? null, unseenNews, appVersion: APP_VERSION }
   );
 }
 
