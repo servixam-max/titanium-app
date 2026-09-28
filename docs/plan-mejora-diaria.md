@@ -47,9 +47,11 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   "Novedades", con la versión instalada marcada. *(v8.5.14 · `src/lib/changelog.ts`
   + `ChangelogList.tsx`; cuando una release no trae notas, se rellenan con los
   mensajes de commit del rango vía la API de compare)*
-- [ ] **F1.2** Badge "Novedades" cuando la versión instalada es más nueva que la
+- [x] **F1.2** Badge "Novedades" cuando la versión instalada es más nueva que la
   última leída (guardar en `localStorage`) y pantalla de bienvenida corta tras
-  actualizar.
+  actualizar. *(v8.5.17 · `src/lib/whats-new.ts` + `WhatsNewModal.tsx`; el aviso
+  no aparece en instalación nueva ni con un entreno en curso, y se retira solo al
+  leer la sección de Novedades)*
 - [ ] **F1.3** En `UpdateChecker`, mostrar el resumen de la nueva versión antes de
   descargar (hoy solo dice "mejoras y correcciones").
 
@@ -103,3 +105,5 @@ justo debajo y se documenta el motivo.
 | v8.5.12 | — | Sistema visual limpio (estilo Apple) en todas las pantallas, tests e2e del sistema de diseño y de la pantalla de acceso; descansos de los días a los 75 s prescritos. |
 | v8.5.13 | F0.5 | `docs/firma-apk.md`: cómo firma la CI (certificado del secreto, estable → OTA sin desinstalar), qué pasa si se borra el secreto y por qué un APK compilado a mano no instala encima. |
 | v8.5.14 | F1.1 | Changelog dentro de la app: Ajustes → Novedades lista las últimas versiones con sus cambios y marca la instalada. `src/lib/changelog.ts` (lectura de la API de GitHub, relleno con los commits del rango cuando la release no trae notas, caché de 6 h en localStorage) y `src/components/ui/ChangelogList.tsx`. |
+| v8.5.15–v8.5.16 | — | Correcciones de interfaz y tema: el color primario vuelve a renderizarse con buen contraste en claro, el selector de días deja de solaparse y recargar un entreno ya no expulsa a la home. |
+| v8.5.17 | F1.2 | Aviso de novedades al actualizar: pantalla corta la primera apertura con lo que trae la versión instalada, punto de aviso en Ajustes hasta leerlas y distintivo "Nuevas" en la sección Novedades. `src/lib/whats-new.ts` + `src/components/ui/WhatsNewModal.tsx`; no aparece en instalación nueva ni interrumpe un entreno en curso. |
