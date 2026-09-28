@@ -95,6 +95,32 @@ export default function DashboardHeader({
           );
         })}
       </div>
+
+      {athleteInfo && athleteInfo.nextLevel && (
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="fx-label-sm">
+              Progreso al nivel {athleteInfo.nextLevel.level}
+            </span>
+            <span className="fx-num text-[12px] text-[color:var(--text-secondary)]">
+              {Math.round(athleteInfo.progressPercent)}%
+            </span>
+          </div>
+          <div
+            className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--fx-hairline)]"
+            role="progressbar"
+            aria-valuenow={Math.round(athleteInfo.progressPercent)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`Progreso al nivel ${athleteInfo.nextLevel.level}`}
+          >
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-primary to-emerald-400 transition-[width] duration-500"
+              style={{ width: `${Math.max(2, Math.min(100, athleteInfo.progressPercent))}%` }}
+            />
+          </div>
+        </div>
+      )}
     </header>
   );
 }

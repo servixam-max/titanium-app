@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Exercise } from "@/lib/types";
 import ExerciseImage from "@/components/ui/ExerciseImage";
+import { getExerciseBiomechanics, MUSCLE_METADATA } from "@/lib/muscle-engine";
 
 interface ExerciseCardProps {
   exercise: Exercise;
@@ -25,6 +26,26 @@ const MUSCLE_LABELS: Record<string, string> = {
   legs: "Piernas",
   core: "Core",
   full_body: "Full body",
+};
+
+/** Nombres cortos de los músculos anatómicos para las etiquetas. */
+const ANATOMICAL_SHORT: Record<string, string> = {
+  chest: "Pecho",
+  deltoids_ant: "Hombro ant.",
+  deltoids_lat: "Hombro lat.",
+  deltoids_post: "Hombro post.",
+  biceps: "Bíceps",
+  triceps: "Tríceps",
+  forearms: "Antebrazo",
+  abs: "Abdomen",
+  obliques: "Oblicuos",
+  traps: "Trapecio",
+  lats: "Dorsales",
+  lower_back: "Lumbar",
+  glutes: "Glúteos",
+  quads: "Cuádriceps",
+  hamstrings: "Isquios",
+  calves: "Gemelos",
 };
 
 const MUSCLE_COLORS: Record<string, string> = {
@@ -55,6 +76,23 @@ export default function ExerciseCard({
 }: ExerciseCardProps) {
   const muscleKey = exercise.category || "full_body";
   const muscleColors = MUSCLE_COLORS[muscleKey] || MUSCLE_COLORS.full_body;
+
+  // Músculos reales del ejercicio (primario + sinergistas), calculados con el
+  // mismo motor que alimenta el mapa 3D: así la tarjeta dice exactamente lo que
+  // se va a iluminar después en Estadísticas.
+  const biomech = getExerciseBiomechanics(exercise.name, exercise.category);
+  const toName = (m: string) => ANATOMICAL_SHORT[m] ?? MUSCLE_METADATA[m as keyof typeof MUSCLE_METADATA]?.name ?? m;
+
+  const primaryNames = biomech.primary.map(toName);
+  const secondaryNames = biomech.secondary.filter((m) => !biomech.primary.includes(m)).map(toName);
+
+  // El badge de categoría ("Pecho", "Bíceps"...) se solapaba con la etiqueta
+  // anatómica: en Curl de Bíceps salía "Bíceps" dos veces. Si el badge ya está
+  // representado entre los músculos, no se repite.
+  const categoryLabel = MUSCLE_LABELS[muscleKey] || muscleKey;
+  const categoryDuplicada = [...primaryNames, ...secondaryNames].some(
+    (n) => n.toLowerCase() === categoryLabel.toLowerCase(),
+  );
 
   const isIndividual = mode === "individual";
 
@@ -109,12 +147,41 @@ export default function ExerciseCard({
         </span>
 
         {/* Secondary meta: muscle badge, rest, difficulty */}
-        <div className="flex flex-wrap items-center gap-1.5 mt-1"> <span className={`font-mono text-[12px] font-bold px-2 py-0.5 rounded-full ${muscleColors}`} > {MUSCLE_LABELS[muscleKey] || muscleKey} </span> {exercise.restSeconds > 0 && ( <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#181d2e] text-slate-700 dark:text-zinc-300 flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1.5 mt-1">
+          {!categoryDuplicada && (
+            <span className={`font-mono text-[12px] font-bold px-2 py-0.5 rounded-full ${muscleColors}`}>
+              {categoryLabel}
+            </span>
+          )}
+          {exercise.restSeconds > 0 && (
+            <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#181d2e] text-slate-700 dark:text-zinc-300 flex items-center gap-1">
               <Timer className="w-2.5 h-2.5 text-cyan-600 dark:text-cyan-400" />
               {formatRest(exercise.restSeconds)}
             </span>
           )}
         </div>
+
+        {/* Qué músculos trabaja: primarios en claro, sinergistas en tenue */}
+        {(primaryNames.length > 0 || secondaryNames.length > 0) && (
+          <div className="mt-1.5 flex flex-wrap items-center gap-1">
+            {primaryNames.map((name) => (
+              <span
+                key={`p-${name}`}
+                className="rounded-md bg-primary/15 px-1.5 py-0.5 text-[11px] font-semibold text-primary"
+              >
+                {name}
+              </span>
+            ))}
+            {secondaryNames.map((name) => (
+              <span
+                key={`s-${name}`}
+                className="rounded-md bg-[var(--fx-inset)] px-1.5 py-0.5 text-[11px] font-medium text-[color:var(--text-tertiary)]"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Action CTA on Card */}
