@@ -38,7 +38,6 @@ import { calculateTotalXP } from "@/lib/gamification";
 import { calculateStreak, buildWeeklyStats, sameDay } from "@/lib/metrics";
 import { filterCatalog } from "@/lib/catalog-filter";
 
-const InstallPrompt = dynamic(() => import("@/components/ui/InstallPrompt"), { ssr: false });
 const WhatsNewModal = dynamic(() => import("@/components/ui/WhatsNewModal"), { ssr: false });
 
 export default function Dashboard() {
@@ -404,7 +403,6 @@ export default function Dashboard() {
         }}
       />
 
-      <InstallPrompt />
       <WhatsNewModal />
       <BottomNav />
       <OnboardingModal />
