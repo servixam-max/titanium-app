@@ -46,7 +46,7 @@ export default function DayCarouselSelector({
       <div
         ref={containerRef}
         className="no-scrollbar flex items-center gap-2.5 overflow-x-auto px-1 py-1.5 scroll-smooth"
-        style={{ WebkitOverflowScrolling: "touch" }}
+        style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}
       >
         {days.map((day) => {
           const isSelected = selectedDay === day;

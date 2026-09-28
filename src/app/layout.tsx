@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import UpdateChecker from "@/components/ui/UpdateChecker";
 import AuthModal from "@/components/auth/AuthModal";
+import AndroidBackButton from "@/components/system/AndroidBackButton";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,6 +35,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // De borde a borde: sin esto el WebView no cubre la zona de la barra de
+  // gestos de Android (quedan ~63 px muertos abajo) y el gesto lateral del
+  // sistema se come pulsaciones cerca del borde. Con `cover`, la app recibe
+  // los insets reales y los gestiona con env(safe-area-inset-*).
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: dark)", color: "#0A0B10" },
     { media: "(prefers-color-scheme: light)", color: "#F8FAFC" },
@@ -103,6 +109,7 @@ export default function RootLayout({
       >
         <AuthModal />
         <UpdateChecker />
+        <AndroidBackButton />
         {children}
       </body>
     </html>
