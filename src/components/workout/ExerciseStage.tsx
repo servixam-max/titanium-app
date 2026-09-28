@@ -79,7 +79,7 @@ export default function ExerciseStage({
             <Zap className="h-3.5 w-3.5 text-primary" />
             {isTimedSet ? "Tiempo" : "Reps"}
           </span>
-          <span className="fx-num text-[30px] leading-none font-semibold text-primary">
+          <span className="fx-num text-[30px] leading-[1.15] font-semibold text-primary">
             {isTimedSet ? `${timedSeconds}s` : exercise.reps}
           </span>
           <span className="fx-label-sm opacity-70">
@@ -91,7 +91,7 @@ export default function ExerciseStage({
         <div className="fx-card flex min-h-[104px] flex-col items-center justify-center gap-1.5 p-3">
           <span className="fx-label-sm">Serie</span>
           <span className="flex items-baseline gap-0.5">
-            <span className="fx-num text-[30px] leading-none font-semibold text-foreground">
+            <span className="fx-num text-[30px] leading-[1.15] font-semibold text-foreground">
               {currentSet}
             </span>
             <span className="fx-num text-[17px] font-medium text-[color:var(--text-tertiary)]">
@@ -120,7 +120,7 @@ export default function ExerciseStage({
             <Clock className="h-3.5 w-3.5 text-[color:var(--accent-cyan)]" />
             Descanso
           </span>
-          <span className="fx-num text-[30px] leading-none font-semibold text-[color:var(--accent-cyan)]">
+          <span className="fx-num text-[30px] leading-[1.15] font-semibold text-[color:var(--accent-cyan)]">
             {exercise.restSeconds}s
           </span>
           <span className="fx-label-sm opacity-70">recuperación</span>

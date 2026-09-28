@@ -243,7 +243,7 @@ export default function SetLogger({
                 onBlur={field.onCommit}
                 onKeyDown={(e) => e.key === "Enter" && field.onCommit()}
                 aria-label={field.label}
-                className="fx-num min-w-0 flex-1 bg-transparent text-center text-[30px] leading-none font-semibold text-foreground outline-none focus:outline-none"
+                className="fx-num min-w-0 flex-1 bg-transparent text-center text-[30px] leading-[1.15] font-semibold text-foreground outline-none focus:outline-none"
               />
               <button
                 onClick={() => field.onAdjust(field.step)}
