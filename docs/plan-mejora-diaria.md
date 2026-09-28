@@ -83,8 +83,12 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
 - [ ] **F4.2** Ampliar Playwright a los flujos críticos: entreno guiado completo,
   registro de peso, cambio de tema. *(parcial: navegación y cambio de tema ya
   cubiertos; faltan completar un entreno guiado entero y guardar un peso)*
-- [ ] **F4.3** Revisar `cleartext: true` y `allowNavigation` amplio en
+- [x] **F4.3** Revisar `cleartext: true` y `allowNavigation` amplio en
   `capacitor.config.json`: acotar dominios sin romper el puente LAN/Tailscale.
+  *(v8.5.19 · resuelto por otra vía: el fallo real era el gesto ATRÁS cerrando la
+  app — `@capacitor/app` + `src/lib/back-navigation.ts` — y los 63 px que el
+  WebView no cubría: `viewport-fit=cover`. Verificado en emulador Android 16 con
+  navegación por gestos. Queda pendiente acotar dominios en sí.)*
 - [ ] **F4.4** Revisar rendimiento del WebView: re-renderizados en entreno activo
   y tiempo de arranque en frío.
 
@@ -109,3 +113,4 @@ justo debajo y se documenta el motivo.
 | v8.5.15–v8.5.16 | — | Correcciones de interfaz y tema: el color primario vuelve a renderizarse con buen contraste en claro, el selector de días deja de solaparse y recargar un entreno ya no expulsa a la home. |
 | v8.5.17 | F1.2 | Aviso de novedades al actualizar: pantalla corta la primera apertura con lo que trae la versión instalada, punto de aviso en Ajustes hasta leerlas y distintivo "Nuevas" en la sección Novedades. `src/lib/whats-new.ts` + `src/components/ui/WhatsNewModal.tsx`; no aparece en instalación nueva ni interrumpe un entreno en curso. |
 | v8.5.18 | — | Los números grandes de la pantalla de entreno dejan de recortarse: el texto de 30 px usaba interlineado `none` (caja de 30 px) y la fuente medía 33 px, así que "10-12", el número de serie y "75s" se cortaban por abajo. Arreglados los 2 fallos preexistentes de los e2e de diseño: **suite móvil 60/60 en verde**. También se reforzó el monitor diario para que no vuelva a quedarse dormido si un día falla la publicación. |
+| v8.5.19 | F4.3 | **El gesto ATRÁS de Android ya no cierra la app**: en un móvil con navegación por gestos, deslizar desde el borde salía de FORTIXAM de golpe. Se añade `@capacitor/app` y `src/components/system/AndroidBackButton.tsx` (cierra el modal abierto → retrocede → home → salir solo en la raíz), con la decisión aislada en `src/lib/back-navigation.ts` y 6 pruebas. Además el WebView no cubría la barra de gestos (63 px muertos): `viewport-fit=cover` y `touchAction: pan-x` en el carrusel de días. Verificado en emulador Android 16. |
