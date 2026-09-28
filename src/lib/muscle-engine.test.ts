@@ -112,4 +112,41 @@ describe("Biomechanical Muscle Engine", () => {
     expect(muscleStats.quads.volumeKg).toBeGreaterThan(0);
     expect(muscleStats.glutes.volumeKg).toBeGreaterThan(0);
   });
+
+  it("ilumina el músculo entrenado aunque no se anote el peso (bug real)", () => {
+    // Regresión del fallo visto en el emulador: tras entrenar pecho con
+    // mancuernas y no anotar los kilos, el 3D seguía diciendo
+    // "0/16 MÚSCULOS ACTIVOS" porque el volumen quedaba en 0.
+    // El ejercicio de banca no aporta peso corporal (bodyweightEqKg: 0).
+    const sessions: LocalSession[] = [
+      makeSession("s3", "bench", "Press de Banca Plano", [
+        makeSet("u1", 1, 0, 10),
+        makeSet("u1", 2, 0, 10),
+        makeSet("u1", 3, 0, 10),
+      ]),
+    ];
+
+    const { muscleStats, totalEffectiveVolume } = computeMuscleBreakdown(sessions, "week");
+
+    expect(muscleStats.chest.volumeKg).toBeGreaterThan(0);
+    expect(muscleStats.chest.totalSets).toBe(3);
+    expect(totalEffectiveVolume).toBeGreaterThan(0);
+
+    // Los sinergistas también deben encenderse.
+    expect(muscleStats.triceps.volumeKg).toBeGreaterThan(0);
+    expect(muscleStats.deltoids_ant.volumeKg).toBeGreaterThan(0);
+  });
+
+  it("cuenta al menos un músculo activo para el contador del 3D", () => {
+    // El contador del visor es `volumeKg > 0`. Este es el valor que se veía
+    // como 0/16 y debe pasar a 3/16 tras un entreno de pecho sin peso anotado.
+    const sessions: LocalSession[] = [
+      makeSession("s4", "bench", "Press de Banca Plano", [makeSet("u1", 1, 0, 12)]),
+    ];
+
+    const { muscleStats } = computeMuscleBreakdown(sessions, "week");
+    const activos = Object.values(muscleStats).filter((s) => s.volumeKg > 0).length;
+
+    expect(activos).toBeGreaterThanOrEqual(3);
+  });
 });

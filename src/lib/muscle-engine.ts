@@ -523,8 +523,17 @@ export function computeMuscleBreakdown(
         const rawWeight = Number(set.weight) || 0;
         const rawReps = Number(set.reps) || (set.completed ? 10 : 0);
 
-        // Calculate effective load per rep
-        const effectiveWeight = rawWeight > 0 ? rawWeight : biomech.bodyweightEqKg;
+        // Calculate effective load per rep.
+        //
+        // Si el ejercicio es con peso externo (bodyweightEqKg = 0) y el usuario
+        // no anotó los kilos, el volumen quedaba en 0 y el músculo NO se
+        // iluminaba: habías entrenado pecho y el 3D seguía diciendo
+        // "0/16 músculos activos". El músculo trabajado debe marcarse siempre,
+        // así que sin peso anotado se usa una carga de referencia para que
+        // cuente como estímulo (y se vea en el mapa).
+        const REFERENCE_LOAD_KG = 10;
+        const effectiveWeight =
+          rawWeight > 0 ? rawWeight : biomech.bodyweightEqKg > 0 ? biomech.bodyweightEqKg : REFERENCE_LOAD_KG;
         const setVolume = effectiveWeight * rawReps;
 
         // Primary muscles get 100% volume

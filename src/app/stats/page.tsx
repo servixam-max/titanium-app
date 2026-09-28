@@ -191,7 +191,7 @@ export default function StatsPage() {
   );
 
   return (
-    <div className="min-h-screen pb-[120px] bg-background text-on-background">
+    <div className="min-h-screen pb-[200px] bg-background text-on-background">
       <TopAppBar title="FORTIXAM" showBack backHref="/" showSettings />
 
       <main className="w-full px-4 pt-4 flex flex-col gap-5 max-w-lg mx-auto">

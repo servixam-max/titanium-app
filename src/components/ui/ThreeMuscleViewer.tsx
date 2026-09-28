@@ -258,8 +258,11 @@ export default function ThreeMuscleViewer({
     sceneRef.current = scene;
 
     // 2. Camera setup
+    // El lienzo queda parcialmente tapado por la barra de navegación inferior:
+    // se apunta la cámara un poco más abajo del centro del cuerpo para que el
+    // modelo aparezca más alto en el cuadro y se vean también las piernas.
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(0, 0.02, 1.8);
+    camera.position.set(0, -0.05, 1.8);
     cameraRef.current = camera;
 
     // 3. Renderer setup
@@ -687,22 +690,36 @@ export default function ThreeMuscleViewer({
       </div>
 
       {/* Main 3D Canvas Stage */}
-      <div className="relative flex flex-col items-center justify-center h-[440px] bg-gradient-to-b from-[#0A0B10] via-[#0d101a] to-[#080a0f] rounded-3xl shadow-2xl overflow-hidden touch-none">
+      <div className="relative flex flex-col items-center justify-center h-[520px] bg-gradient-to-b from-[#0A0B10] via-[#0d101a] to-[#080a0f] rounded-3xl shadow-2xl overflow-hidden touch-none">
         {/* Ambient Volumetric Neons */}
         <div className="pointer-events-none absolute -top-10 -left-10 w-64 h-64 rounded-full bg-primary/15 blur-[100px]" />
         <div className="pointer-events-none absolute -bottom-10 -right-10 w-64 h-64 rounded-full bg-cyan-500/15 blur-[100px]" />
 
         {/* HUD Overlay Top Telemetry */}
-        <div className="absolute top-3 left-4 right-4 flex items-center justify-between pointer-events-none z-20 text-[12px] text-zinc-400">
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
-            <span className="text-zinc-300 font-bold">
-              ROTACIÓN 360° ACTIVA
+        <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2 pointer-events-none z-20 text-[11px] text-zinc-400">
+          <div className="flex items-center gap-1.5 bg-black/40 rounded-full px-2.5 py-1 backdrop-blur-sm">
+            {/* Solo late cuando gira de verdad: antes decía "ROTACIÓN 360°
+                ACTIVA" con el giro apagado. */}
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                isAutoRotate ? "bg-primary animate-ping" : "bg-zinc-600"
+              }`}
+            />
+            <span className={isAutoRotate ? "text-primary font-bold" : "text-zinc-500"}>
+              {isAutoRotate ? "360° ACTIVO" : "360° APAGADO"}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 bg-black/50 rounded-full text-zinc-300">
-              {biomechanics.activeCount}/16 MÚSCULOS ACTIVOS
+            <span
+              className={`px-2.5 py-0.5 rounded-full font-semibold ${
+                biomechanics.activeCount > 0
+                  ? "bg-primary/20 text-primary border border-primary/40"
+                  : "bg-black/50 text-zinc-400"
+              }`}
+            >
+              {biomechanics.activeCount > 0
+                ? `${biomechanics.activeCount}/16 MÚSCULOS TRABAJADOS`
+                : "SIN MÚSCULOS TRABAJADOS AÚN"}
             </span>
           </div>
         </div>
@@ -726,10 +743,10 @@ export default function ThreeMuscleViewer({
         <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing outline-none" />
 
         {/* 360 Touch Drag & Tap Instructions */}
-        <div className="absolute bottom-11 left-4 right-4 flex items-center justify-between pointer-events-none z-20 text-[12px] text-zinc-400">
-          <span className="flex items-center gap-1.5">
-            <RotateCw className="w-3 h-3 text-primary animate-spin" />
-            Arrastra para dar la vuelta 360° · Toca para inspeccionar
+        <div className="absolute bottom-11 left-4 right-4 flex items-center justify-center pointer-events-none z-20 text-[12px] text-zinc-400">
+          <span className="flex items-center gap-1.5 bg-black/40 rounded-full px-3 py-1 backdrop-blur-sm">
+            <RotateCw className="w-3 h-3 text-primary" />
+            Arrastra para girar · Toca un músculo
           </span>
         </div>
 
