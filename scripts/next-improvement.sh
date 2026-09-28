@@ -4,14 +4,16 @@
 # Es el `monitor` del cron: su salida se hashea y, si es idéntica a la del día
 # anterior, la ejecución del agente se suprime (ahorra tokens).
 #
-# IMPORTANTE (anti-atasco): mirar SOLO el texto del plan crea un callejón sin
-# salida. Si el agente falla o se queda sin tiempo antes de marcar la casilla,
-# el plan queda igual y el monitor suprime todos los días siguientes para
-# siempre. Por eso la salida incluye también el ESTADO DE TRABAJO -y no solo el
-# plan-: si queda trabajo a medias (árbol sucio, commits sin publicar) o si
-# pasan los días sin publicar, la salida cambia y el agente vuelve a despertar.
-# Determinista: sin horas (solo la fecha en días), así que dentro del mismo día
-# la salida es estable.
+# ANTI-ATASCO (por qué la salida lleva la fecha):
+# mirar solo el texto del plan crea un callejón sin salida. Si el agente falla
+# o se queda sin tiempo antes de marcar la casilla, el plan queda igual, la
+# salida no cambia y el monitor suprime TODOS los días siguientes: el bot se
+# duerme para siempre (pasó del 25 al 28 de septiembre). Con la fecha incluida,
+# mientras haya alguna casilla sin marcar la salida cambia cada día y el agente
+# vuelve a despertar; cuando el plan esté completo, la salida es fija y el
+# monitor duerme al agente (ya no hay trabajo pendiente).
+#
+# Determinista: la fecha en días cambia una vez al día, no en cada tick.
 
 PLAN="/Users/servimac/apps/Titanium/titanium-app/docs/plan-mejora-diaria.md"
 REPO="/Users/servimac/apps/Titanium/titanium-app"
@@ -30,13 +32,9 @@ fi
 
 cd "$REPO" 2>/dev/null || { echo "REPO NO ENCONTRADO: $REPO"; exit 0; }
 
-SUCIO=$(git status --porcelain | wc -l | tr -d ' ')
-SIN_PUSH=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo '?')
-DIAS=$(( ( $(date +%s) - $(git log -1 --format=%ct 2>/dev/null || date +%s) ) / 86400 ))
-
+echo "DIA: $(date +%Y-%m-%d)"
 echo "SIGUIENTE TAREA DEL PLAN:"
 echo "$NEXT"
 echo "TOTAL PENDIENTES: $(grep -c '^- \[ \]' "$PLAN")"
-echo "CAMBIOS SIN COMMITEAR: $SUCIO"
-echo "COMMITS SIN PUBLICAR: $SIN_PUSH"
-echo "DIAS SIN PUBLICAR: $DIAS"
+echo "CAMBIOS SIN COMMITEAR: $(git status --porcelain | wc -l | tr -d ' ')"
+echo "COMMITS SIN PUBLICAR: $(git rev-list --count origin/main..HEAD 2>/dev/null || echo '?')"
