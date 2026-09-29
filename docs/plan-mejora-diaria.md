@@ -52,8 +52,12 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   actualizar. *(v8.5.17 · `src/lib/whats-new.ts` + `WhatsNewModal.tsx`; el aviso
   no aparece en instalación nueva ni con un entreno en curso, y se retira solo al
   leer la sección de Novedades)*
-- [ ] **F1.3** En `UpdateChecker`, mostrar el resumen de la nueva versión antes de
-  descargar (hoy solo dice "mejoras y correcciones").
+- [x] **F1.3** En `UpdateChecker`, mostrar el resumen de la nueva versión antes de
+  descargar (hoy solo dice "mejoras y correcciones"). *(v8.5.24 ·
+  `UpdateNotes` dentro de `UpdateChecker.tsx`; reutiliza `src/lib/changelog.ts`
+  con los ayudantes nuevos `sameVersion`/`findEntryByVersion`, recorta a 5
+  cambios con "Ver los N restantes" y mantiene el texto corto si aún no hay
+  notas o no hay red)*
 
 ## Fase 2 — Entrenamiento
 
@@ -118,3 +122,4 @@ justo debajo y se documenta el motivo.
 | v8.5.21 | — | **El músculo entrenado ya se ilumina en el mapa 3D**: tras un entreno de pecho el visor seguía diciendo "0/16 músculos activos" porque los ejercicios con peso externo tienen `bodyweightEqKg: 0` y, sin kilos anotados, el volumen quedaba en cero. Ahora el músculo trabajado siempre cuenta (carga de referencia), con 2 pruebas de regresión. Además el visor se ve entero (antes la barra inferior tapaba las piernas) y el HUD deja de mentir: decía "ROTACIÓN 360° ACTIVA" con el giro apagado. Verificado en emulador. |
 | v8.5.22 | — | **Cada ejercicio dice qué músculos trabaja**: las tarjetas listan primarios (verde) y sinergistas (gris) con el mismo motor que alimenta el mapa 3D, así se sabe de antemano qué se va a iluminar en Estadísticas. Se evita el badge duplicado (Curl de Bíceps ya no repetía "Bíceps"). La home gana **barra de progreso de nivel** con porcentaje. |
 | v8.5.23 | — | **La barra superior ya no tapa el contenido**: la TopAppBar es `fixed` (48 px) pero las pantallas solo reservaban 16 px, así que el saludo, el nombre, el nivel y la racha quedaban por debajo. Nuevo `TopAppBarSpacer` en las 6 pantallas que usan la barra. Medido con CDP en el WebView del emulador: el saludo pasó de y=23-45 (dentro de la barra 0-48) a y=112-135. |
+| v8.5.24 | F1.3 | **El aviso de actualización enseña qué trae la versión nueva**: antes de descargar, el diálogo dice ahora los cambios reales de la release (los mismos que Ajustes → Novedades), con recorte a 5 y "Ver los N cambios restantes". Reutiliza `src/lib/changelog.ts` con los ayudantes nuevos `sameVersion`/`findEntryByVersion` (WhatsNewModal deja de tener su copia local). Si la release aún no trae notas o no hay red, se mantiene el texto corto "Mejoras y correcciones de mantenimiento"; el diálogo gana desplazamiento (`max-h 88dvh`) para que siga cabiendo en móvil. Verificado en Pixel 7 (claro y oscuro) y con 2 e2e que simulan la API de GitHub. |
