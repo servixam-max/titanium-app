@@ -485,7 +485,7 @@ export default function WeightPage() {
               ))}
             </div>
           ) : weights.length === 0 ? (
-            <div className="fx-card rounded-2xl p-8 flex flex-col items-center text-center my-2 shadow-sm dark:shadow-lg">
+            <div className="fx-card rounded-2xl p-6 flex flex-col items-center text-center my-2 shadow-sm dark:shadow-lg">
               <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-400 dark:text-zinc-400 mb-2">
                 <Scale className="w-6 h-6" />
               </div>
@@ -493,6 +493,54 @@ export default function WeightPage() {
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-xs">
                 Registra tu peso periódicamente para seguir tu progreso corporal.
               </p>
+
+              {/* En vez de dejar la pantalla vacía, se explica cómo usarla:
+                  es la primera vez que se entra y no hay nada que mirar. */}
+              <div className="mt-5 w-full flex flex-col gap-2 text-left">
+                {[
+                  {
+                    icono: "⚖️",
+                    titulo: "Pésate siempre igual",
+                    detalle: "En ayunas y a la misma hora, una o dos veces por semana.",
+                  },
+                  {
+                    icono: "📉",
+                    titulo: "Mira la tendencia, no el día",
+                    detalle: "El peso oscila ±1 kg al día; lo que importa es la línea a varias semanas.",
+                  },
+                  {
+                    icono: "💪",
+                    titulo: "Cruza con tus entrenos",
+                    detalle: "Si subes peso corporal pero el volumen sube, es músculo, no grasa.",
+                  },
+                ].map((t) => (
+                  <div
+                    key={t.titulo}
+                    className="flex items-start gap-2.5 rounded-xl bg-[var(--fx-inset)] p-3"
+                  >
+                    <span aria-hidden="true" className="text-base leading-none">
+                      {t.icono}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-semibold text-foreground">{t.titulo}</p>
+                      <p className="mt-0.5 text-[12px] leading-relaxed text-[color:var(--text-tertiary)]">
+                        {t.detalle}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowInput(true);
+                  haptics.light();
+                }}
+                className="mt-5 w-full h-12 rounded-2xl bg-primary text-sm font-bold text-black transition-all active:scale-95"
+              >
+                Registrar mi primer pesaje
+              </button>
             </div>
           ) : (
             weights.map((entry, idx) => {
