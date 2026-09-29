@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Sparkles, CheckCircle2 } from "lucide-react";
 import { APP_VERSION } from "@/lib/ota-sync";
-import { ChangelogEntry, fetchChangelog } from "@/lib/changelog";
+import { fetchChangelog, findEntryByVersion } from "@/lib/changelog";
 import {
   initWhatsNewTracking,
   markCurrentVersionSeen,
@@ -105,15 +105,6 @@ export function WhatsNewContent({
   );
 }
 
-function findEntry(
-  entries: ChangelogEntry[],
-  version: string,
-): ChangelogEntry | undefined {
-  return entries.find(
-    (e) => e.version.replace(/^v/i, "") === version.replace(/^v/i, ""),
-  );
-}
-
 export default function WhatsNewModal() {
   const hydrated = useStoreHydrated();
   const { currentUser, onboardingComplete, activeWorkout } = useAppStore();
@@ -139,11 +130,11 @@ export default function WhatsNewModal() {
         let { entries } = await fetchChangelog();
         // La caché puede ser de antes de publicar esta versión: una segunda
         // consulta a GitHub la trae. Si no hay red, se muestra el texto corto.
-        if (!findEntry(entries, APP_VERSION.version)) {
+        if (!findEntryByVersion(entries, APP_VERSION.version)) {
           const fresh = await fetchChangelog({ force: true });
           entries = fresh.entries;
         }
-        const entry = findEntry(entries, APP_VERSION.version);
+        const entry = findEntryByVersion(entries, APP_VERSION.version);
         if (alive) setNotes(entry?.notes ?? []);
       } catch {
         if (alive) setNotes([]);

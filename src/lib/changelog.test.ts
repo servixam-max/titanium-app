@@ -4,6 +4,8 @@ import {
   parseCommits,
   formatReleaseDate,
   isInstalledVersion,
+  sameVersion,
+  findEntryByVersion,
   mapReleases,
   fetchChangelog,
   getCachedChangelog,
@@ -82,6 +84,27 @@ describe("Changelog — fechas y versión instalada", () => {
     expect(isInstalledVersion("v8.5.14", "8.5.14")).toBe(true);
     expect(isInstalledVersion("8.5.13", "8.5.14")).toBe(false);
     expect(isInstalledVersion(null, "8.5.14")).toBe(false);
+  });
+
+  it("compara versiones ignorando la 'v' y los espacios", () => {
+    expect(sameVersion("v8.5.23", "8.5.23")).toBe(true);
+    expect(sameVersion(" 8.5.23 ", "v8.5.23")).toBe(true);
+    expect(sameVersion("8.5.23", "8.5.24")).toBe(false);
+    expect(sameVersion(null, "8.5.23")).toBe(false);
+    expect(sameVersion("8.5.23", "")).toBe(false);
+  });
+
+  it("encuentra en la lista la versión que se le pida", () => {
+    const entries = mapReleases([
+      { tag_name: "v8.5.14", published_at: "2026-09-24T10:00:00Z", body: "- A" },
+      { tag_name: "v8.5.13", published_at: "2026-09-23T10:00:00Z", body: "- B" },
+    ]);
+
+    expect(findEntryByVersion(entries, "v8.5.14")?.version).toBe("8.5.14");
+    expect(findEntryByVersion(entries, "8.5.13")?.notes).toEqual(["B"]);
+    expect(findEntryByVersion(entries, "9.9.9")).toBeUndefined();
+    expect(findEntryByVersion(entries, null)).toBeUndefined();
+    expect(findEntryByVersion([], "8.5.14")).toBeUndefined();
   });
 });
 

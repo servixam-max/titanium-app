@@ -118,17 +118,34 @@ export function formatReleaseDate(iso: string | null | undefined): string {
   return `${date.getUTCDate()} ${month} ${date.getUTCFullYear()}`;
 }
 
-/** ¿Esta versión de la lista es la que tiene instalada el usuario? */
-export function isInstalledVersion(
-  version: string | null | undefined,
-  current: string = APP_VERSION.version,
+/** ¿Dos textos se refieren a la misma versión? ("v8.5.23" == "8.5.23") */
+export function sameVersion(
+  a: string | null | undefined,
+  b: string | null | undefined,
 ): boolean {
   const clean = (v: string | null | undefined) =>
     String(v ?? "")
       .replace(/^[vV]/, "")
       .trim();
-  if (!clean(version)) return false;
-  return clean(version) === clean(current);
+  if (!clean(a) || !clean(b)) return false;
+  return clean(a) === clean(b);
+}
+
+/** ¿Esta versión de la lista es la que tiene instalada el usuario? */
+export function isInstalledVersion(
+  version: string | null | undefined,
+  current: string = APP_VERSION.version,
+): boolean {
+  return sameVersion(version, current);
+}
+
+/** Busca en la lista la entrada de una versión concreta. */
+export function findEntryByVersion(
+  entries: ChangelogEntry[],
+  version: string | null | undefined,
+): ChangelogEntry | undefined {
+  if (!version) return undefined;
+  return entries.find((e) => sameVersion(e.version, version));
 }
 
 function mapRelease(raw: unknown): ChangelogEntry | null {

@@ -3,6 +3,71 @@ import { useEffect, useState } from "react";
 import { Download, X, Loader2, Sparkles, AlertTriangle } from "lucide-react";
 import { APP_VERSION, checkOtaUpdate, openApkDownload } from "@/lib/ota-sync";
 import { canInstallUnknownApps, requestInstallPermission, startInAppUpdate } from "@/lib/app-updater";
+import { NOTES_PREVIEW, fetchChangelog, findEntryByVersion } from "@/lib/changelog";
+
+interface UpdateNotesProps {
+  version: string;
+  /** Cambios de la nueva versión; `null` mientras se están buscando. */
+  notes: string[] | null;
+}
+
+/**
+ * Resumen de lo que trae la nueva versión, antes de descargarla (F1.3).
+ * Reutiliza las notas ya publicadas en la release; si aún no hay notas (o no
+ * hay red), deja un texto corto para no romper el aviso de actualización.
+ */
+export function UpdateNotes({ version, notes }: UpdateNotesProps) {
+  const [showAll, setShowAll] = useState(false);
+  const all = notes ?? [];
+  const hidden = Math.max(0, all.length - NOTES_PREVIEW);
+  const visible = showAll ? all : all.slice(0, NOTES_PREVIEW);
+
+  return (
+    <div className="w-full rounded-2xl bg-slate-50 p-3 text-left dark:bg-[#131626]">
+      <p className="mb-2 text-[13px] font-semibold text-slate-900 dark:text-white">
+        Qué trae la v{version}
+      </p>
+
+      {notes === null ? (
+        <p className="flex items-center gap-2 text-[13px] text-slate-500 dark:text-zinc-400">
+          <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+          Buscando las novedades...
+        </p>
+      ) : all.length === 0 ? (
+        <p className="text-[13px] text-slate-500 dark:text-zinc-400">
+          Mejoras y correcciones de mantenimiento.
+        </p>
+      ) : (
+        <>
+          <ul
+            className={`flex flex-col gap-1.5 ${
+              showAll ? "max-h-[38dvh] overflow-y-auto" : ""
+            }`}
+          >
+            {visible.map((note, i) => (
+              <li key={`${version}-${i}`} className="flex gap-2">
+                <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
+                <span className="text-[13px] leading-relaxed text-slate-600 dark:text-zinc-300">
+                  {note}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          {hidden > 0 && !showAll && (
+            <button
+              type="button"
+              onClick={() => setShowAll(true)}
+              className="mt-2 text-[13px] font-semibold text-emerald-700 transition-colors active:opacity-70 dark:text-primary"
+            >
+              Ver {hidden === 1 ? "el cambio restante" : `los ${hidden} cambios restantes`}
+            </button>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
 
 export default function UpdateChecker() {
   const [updateInfo, setUpdateInfo] = useState<{ version: string; url: string } | null>(null);
@@ -13,8 +78,26 @@ export default function UpdateChecker() {
   const [downloadStats, setDownloadStats] = useState({ current: "0 MB", total: "..." });
   const [hasPermission, setHasPermission] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [notes, setNotes] = useState<string[] | null>(null);
 
   useEffect(() => {
+    /** Busca qué trae la versión nueva para enseñarlo antes de descargar. */
+    const loadNotes = async (version: string) => {
+      setNotes(null);
+      try {
+        let { entries } = await fetchChangelog();
+        let entry = findEntryByVersion(entries, version);
+        if (!entry) {
+          // La copia guardada puede ser de antes de publicar esta versión.
+          entries = (await fetchChangelog({ force: true })).entries;
+          entry = findEntryByVersion(entries, version);
+        }
+        setNotes(entry?.notes ?? []);
+      } catch {
+        setNotes([]);
+      }
+    };
+
     const checkUpdate = async (manual = false) => {
       try {
         const result = await checkOtaUpdate();
@@ -24,6 +107,7 @@ export default function UpdateChecker() {
           setUpdateInfo({ version: result.latestVersion, url: result.downloadUrl });
           setShow(true);
           setUpToDateMsg(false);
+          loadNotes(result.latestVersion);
         } else if (manual) {
           setUpToDateMsg(true);
           setTimeout(() => setUpToDateMsg(false), 3000);
@@ -88,7 +172,7 @@ export default function UpdateChecker() {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-primary/50 rounded-3xl p-6 w-full max-w-sm shadow-xl dark:shadow-[0_0_40px_rgba(0,245,155,0.25)] animate-fade-in-up relative overflow-hidden">
+      <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-primary/50 rounded-3xl p-6 w-full max-w-sm shadow-xl dark:shadow-[0_0_40px_rgba(0,245,155,0.25)] animate-fade-in-up relative overflow-hidden max-h-[88dvh] overflow-x-hidden overflow-y-auto">
         {/* Glow effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/15 rounded-full blur-[60px] pointer-events-none" />
         
@@ -109,9 +193,15 @@ export default function UpdateChecker() {
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white tracking-tight mb-1">
             Actualización Lista
           </h3>
-          <p className="text-slate-500 dark:text-zinc-400 text-xs mb-4">
-            Nueva versión <strong className="text-primary">v{updateInfo.version}</strong> disponible con mejoras y correcciones.
+          <p className="text-slate-500 dark:text-zinc-400 text-xs mb-3">
+            Nueva versión <strong className="text-primary">v{updateInfo.version}</strong> disponible{!isDownloading && " con estos cambios:"}
           </p>
+
+          {!isDownloading && (
+            <div className="mb-3 w-full">
+              <UpdateNotes version={updateInfo.version} notes={notes} />
+            </div>
+          )}
 
           {!isDownloading && !hasPermission && (
             <div className="w-full bg-amber-500/10 border-amber-500/30 rounded-xl p-3 mb-4 text-left">
