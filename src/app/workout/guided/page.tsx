@@ -18,6 +18,7 @@ import {
   unlockAudio,
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
+import { getExerciseNote } from "@/lib/workout-notes";
 import { getAllRecords, ExerciseRecord } from "@/lib/records";
 import { useLastPerformance } from "@/hooks/useLastPerformance";
 import { useStoreHydrated, hasPersistedWorkout } from "@/hooks/useStoreHydrated";
@@ -44,6 +45,7 @@ export default function GuidedWorkout() {
     tickPrep,
     skipPrep,
     skipWork,
+    setExerciseNote,
     audioEnabled,
     audioMode,
     voiceRate,
@@ -67,6 +69,7 @@ export default function GuidedWorkout() {
   const currentRound = activeWorkout.currentRound ?? 1;
   const totalRounds = routine?.rounds ?? 1;
   const currentExercise = routine?.exercises[currentExerciseIndex];
+  const currentNote = getExerciseNote(activeWorkout.session?.exercises, currentExercise?.id);
   const { last: lastPerformance, suggestion } = useLastPerformance(currentExercise);
   const isHIIT = routine?.type === "hiit";
   const timedSeconds =
@@ -294,12 +297,14 @@ export default function GuidedWorkout() {
       isLastExercise={isLastExercise}
       weight={activeWorkout.exerciseWeights[currentExercise.id] || 0}
       reps={activeWorkout.exerciseReps[currentExercise.id] || 0}
+      note={currentNote}
       showRepeat={currentSet > 1}
       existingRecord={recordsMap.get(currentExercise.id)}
       lastPerformance={lastPerformance}
       suggestion={suggestion}
       onWeightChange={(w) => setExerciseWeight(currentExercise.id, w)}
       onRepsChange={(r) => setExerciseReps(currentExercise.id, r)}
+      onNoteChange={(text) => setExerciseNote(currentExercise.id, text)}
       onComplete={handleComplete}
       onRepeatLastSet={handleRepeatLastSet}
     />

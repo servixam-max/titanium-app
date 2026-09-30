@@ -14,6 +14,7 @@ import {
   Zap,
   Layers,
   ArrowRight,
+  NotebookPen,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import TopAppBarSpacer from "@/components/ui/TopAppBarSpacer";
@@ -23,6 +24,7 @@ import { getSessions, deleteSession, deleteExerciseFromSession, LocalSession } f
 import { routines } from "@/lib/data";
 import { useAppStore } from "@/lib/store";
 import { haptics } from "@/lib/haptics";
+import { normalizeNote } from "@/lib/workout-notes";
 import { TrainingMode } from "@/lib/types";
 
 export default function HistoryPage() {
@@ -442,16 +444,24 @@ export default function HistoryPage() {
                       <div className="space-y-3 mb-4">
                         {session.exercises.map((ex, idx) => {
                           const exerciseDef = routine?.exercises.find((e) => e.id === ex.exerciseId);
-                          const exerciseName = exerciseDef?.name || `Ejercicio ${idx + 1}`;
+                          // El nombre real ya viene guardado en la propia sesión:
+                          // antes, si la rutina no estaba en el catálogo, se perdía.
+                          const exerciseName = exerciseDef?.name || ex.exerciseName || `Ejercicio ${idx + 1}`;
                           return (
                             <div
                               key={ex.exerciseId + idx}
-                              className="bg-white dark:bg-[#141828] rounded-xl p-2.5 flex items-center justify-between"
+                              className="bg-white dark:bg-[#141828] rounded-xl p-2.5 flex items-start justify-between gap-2"
                             >
-                              <div>
+                              <div className="min-w-0">
                                 <span className="text-xs font-bold text-slate-900 dark:text-white block">
                                   {exerciseName}
                                 </span>
+                                {normalizeNote(ex.note) && (
+                                  <p className="mt-1 flex items-start gap-1.5 text-[12px] leading-snug text-slate-600 dark:text-zinc-300">
+                                    <NotebookPen className="w-3 h-3 flex-shrink-0 mt-[1px] text-primary" />
+                                    <span className="min-w-0 break-words">{normalizeNote(ex.note)}</span>
+                                  </p>
+                                )}
                                 <div className="flex items-center gap-2 mt-1">
                                   <span className="text-[12px] text-slate-500 dark:text-zinc-400">
                                     {ex.sets.length} {ex.sets.length === 1 ? "serie" : "series"}
@@ -464,7 +474,7 @@ export default function HistoryPage() {
                                 </div>
                               </div>
 
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 flex-shrink-0">
                                 <div className="flex items-center gap-1"> {ex.sets.map((set, sIdx) => ( <span key={sIdx} className={`w-6 h-6 rounded-md flex items-center justify-center text-[12px] font-mono font-bold ${ set.completed ?"bg-primary/20 text-primary border-primary/40"
                                           : "bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-zinc-400"
                                       }`}

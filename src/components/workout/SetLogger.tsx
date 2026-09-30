@@ -8,6 +8,7 @@ import { haptics } from "@/lib/haptics";
 import { estimate1RM, checkNewSetRecord, ExerciseRecord } from "@/lib/records";
 import { LastPerformance, LoadSuggestion } from "@/lib/progression";
 import VoiceLoggerButton from "./VoiceLoggerButton";
+import ExerciseNoteButton from "./ExerciseNoteButton";
 import { ParsedVoiceWorkout } from "@/lib/voice-parser";
 
 interface SetLoggerProps {
@@ -16,12 +17,15 @@ interface SetLoggerProps {
   isLastExercise: boolean;
   weight: number;
   reps: number;
+  /** Nota rápida guardada del ejercicio (F2.1). */
+  note?: string;
   showRepeat?: boolean;
   existingRecord?: ExerciseRecord;
   lastPerformance?: LastPerformance;
   suggestion?: LoadSuggestion;
   onWeightChange: (weight: number) => void;
   onRepsChange: (reps: number) => void;
+  onNoteChange?: (note: string) => void;
   onComplete: (rpe?: number) => void;
   onRepeatLastSet?: () => void;
   className?: string;
@@ -52,12 +56,14 @@ export default function SetLogger({
   isLastExercise,
   weight,
   reps,
+  note,
   showRepeat = false,
   existingRecord,
   lastPerformance,
   suggestion,
   onWeightChange,
   onRepsChange,
+  onNoteChange,
   onComplete,
   onRepeatLastSet,
   className,
@@ -154,6 +160,9 @@ export default function SetLogger({
         )}
         <VoiceLoggerButton onParsed={handleVoiceParsed} />
       </div>
+
+      {/* Nota rápida del ejercicio: cerrada es una píldora discreta (F2.1) */}
+      {onNoteChange && <ExerciseNoteButton note={note} onSave={onNoteChange} />}
 
       {/* Última marca + sugerencia: la app propone, no solo registra */}
       {(lastPerformance || suggestion) && (

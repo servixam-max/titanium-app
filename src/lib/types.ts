@@ -150,6 +150,8 @@ export interface ExerciseLog extends SyncableEntity {
   exerciseName: string;
   order: number;
   sets: SetLog[];
+  /** Nota rápida del usuario sobre este ejercicio (F2.1). */
+  note?: string;
   targetSets?: number;
   targetReps?: string;
   restSeconds?: number;

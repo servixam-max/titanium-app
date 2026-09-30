@@ -14,6 +14,7 @@ import { logger } from "@/lib/logger";
 import { getActiveUser, getActiveUserId, logoutUser } from "./auth";
 import { UserAccount } from "@/lib/types";
 import { calculateAdaptiveRest } from "./workout";
+import { applyExerciseNote } from "./workout-notes";
 import { AppTheme, applyTheme, getStoredTheme } from "./theme";
 
 interface AppState {
@@ -48,6 +49,8 @@ interface AppState {
   adjustRest: (deltaSeconds: number) => void;
   setExerciseWeight: (exerciseId: string, weight: number) => void;
   setExerciseReps: (exerciseId: string, reps: number) => void;
+  /** Nota rápida del ejercicio, se guarda con la sesión (F2.1). */
+  setExerciseNote: (exerciseId: string, note: string) => void;
   startRest: (seconds?: number) => void;
   skipRest: () => void;
   tickRest: () => void;
@@ -198,6 +201,20 @@ export const useAppStore = create<AppState>()(
           activeWorkout: {
             ...activeWorkout,
             exerciseReps: { ...activeWorkout.exerciseReps, [exerciseId]: reps },
+          },
+        });
+      },
+
+      setExerciseNote: (exerciseId, note) => {
+        const { activeWorkout } = get();
+        if (!activeWorkout.session) return;
+        set({
+          activeWorkout: {
+            ...activeWorkout,
+            session: {
+              ...activeWorkout.session,
+              exercises: applyExerciseNote(activeWorkout.session.exercises, exerciseId, note),
+            },
           },
         });
       },
