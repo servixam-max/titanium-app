@@ -9,6 +9,7 @@ import {
   ActiveWorkoutBanner,
   HeroWorkoutCard,
   WarmupLink,
+  WarmupReminderBanner,
   CategoryFilter,
   ViewSwitcher,
   EmptyCatalogState,
@@ -36,6 +37,7 @@ import { preloadVoices } from "@/lib/speech";
 import { haptics } from "@/lib/haptics";
 import { Routine, WorkoutSession, Exercise, Plan } from "@/lib/types";
 import { calculateTotalXP } from "@/lib/gamification";
+import { computeWarmupReminder } from "@/lib/warmup-reminder";
 import { calculateStreak, buildWeeklyStats, sameDay } from "@/lib/metrics";
 import { filterCatalog } from "@/lib/catalog-filter";
 
@@ -92,6 +94,16 @@ export default function Dashboard() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser?.id]);
+
+  // F2.4: aviso de calentamiento tras X días sin fuerza. Se calcula en cliente
+  // (depende de "hoy") para no desincronizar el render del servidor.
+  const [daysSinceStrength, setDaysSinceStrength] = useState<number | null>(null);
+  const [warmupReminderDismissed, setWarmupReminderDismissed] = useState(false);
+
+  useEffect(() => {
+    const history = sessionsList.length > 0 ? sessionsList : storeSessions;
+    setDaysSinceStrength(computeWarmupReminder({ sessions: history }).daysSinceLastStrength);
+  }, [sessionsList, storeSessions]);
 
   const stats = useMemo(() => buildWeeklyStats(sessionsList), [sessionsList]);
   const streakCount = useMemo(() => calculateStreak(sessionsList), [sessionsList]);
@@ -203,6 +215,14 @@ export default function Dashboard() {
         />
 
         <ActiveWorkoutBanner activeWorkout={activeWorkout} />
+
+        {/* F2.4: aviso discreto y descartable; no compite con un entreno en curso */}
+        {!activeWorkout.routine && !warmupReminderDismissed && (
+          <WarmupReminderBanner
+            daysSince={daysSinceStrength}
+            onDismiss={() => setWarmupReminderDismissed(true)}
+          />
+        )}
 
         <ViewSwitcher
           value={activeTab}
