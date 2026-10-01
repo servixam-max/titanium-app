@@ -61,8 +61,12 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
 
 ## Fase 2 — Entrenamiento
 
-- [ ] **F2.1** Notas rápidas por ejercicio durante el entreno (se guardan con la
-  sesión y se ven en el historial).
+- [x] **F2.1** Notas rápidas por ejercicio durante el entreno (se guardan con la
+  sesión y se ven en el historial). *(v8.5.27 · `ExerciseLog.note` +
+  `src/lib/workout-notes.ts` + `ExerciseNoteButton.tsx`; píldora discreta en el
+  registro de serie —individual y guiado—, se guarda al salir del campo o con
+  Enter, y se relee al desplegar la sesión en el Historial. 13 pruebas de la
+  lógica y 7 del componente, más 2 e2e del recorrido completo)*
 - [ ] **F2.2** Temporizador de descanso flotante en modo individual.
 - [ ] **F2.3** Supersets (`supersetGroup` en el tipo `Exercise`): encadenar dos
   ejercicios sin descanso intermedio y etiquetarlo en la UI.
@@ -125,3 +129,4 @@ justo debajo y se documenta el motivo.
 | v8.5.24 | F1.3 | **El aviso de actualización enseña qué trae la versión nueva**: antes de descargar, el diálogo dice ahora los cambios reales de la release (los mismos que Ajustes → Novedades), con recorte a 5 y "Ver los N cambios restantes". Reutiliza `src/lib/changelog.ts` con los ayudantes nuevos `sameVersion`/`findEntryByVersion` (WhatsNewModal deja de tener su copia local). Si la release aún no trae notas o no hay red, se mantiene el texto corto "Mejoras y correcciones de mantenimiento"; el diálogo gana desplazamiento (`max-h 88dvh`) para que siga cabiendo en móvil. Verificado en Pixel 7 (claro y oscuro) y con 2 e2e que simulan la API de GitHub. |
 | v8.5.25 | — | **Depuración del WebView en builds de desarrollo**: al auditar en el emulador el socket de Chrome DevTools desaparecía entre sesiones y no había forma fiable de medir el layout real. Se activa `setWebContentsDebuggingEnabled` cuando el APK es depurable (flag `FLAG_DEBUGGABLE`, no `BuildConfig`: este proyecto no lo genera) y queda apagado en release. Es la herramienta que permite medir posiciones en píxeles en vez de suponerlas. |
 | v8.5.26 | — | **Control de Peso deja de ser un hueco vacío**: al entrar por primera vez solo había un cartel "sin registros" rodeado de espacio muerto, sin nada que hacer ni aprender. Ahora, cuando no hay pesajes, se muestran tres consejos prácticos (pesarse siempre igual; mirar la tendencia y no el día, porque el peso oscila ±1 kg; y cruzar el peso con el volumen para distinguir músculo de grasa) más un botón "Registrar mi primer pesaje" que abre el formulario. Verificado en emulador. |
+| v8.5.27 | F2.1 | **Notas rápidas por ejercicio durante el entreno**: durante la sesión se puede apuntar lo que no cabe en un número —"el codo me molestó", "subir a 42,5 la próxima"— desde una píldora discreta junto al registro de serie, en modo individual y guiado; se guarda sola al salir del campo (o con Enter) y queda dentro de la sesión, así que se relee al desplegar el entreno en el Historial. La lógica vive en `src/lib/workout-notes.ts` (normaliza, recorta a 280 caracteres y borra la nota si se vacía) con 13 pruebas, y el componente `ExerciseNoteButton` con 7; 2 e2e recorren el camino completo (escribir → guardar → terminar el entreno → ver la nota en el historial). De paso, el Historial ya muestra el nombre real del ejercicio guardado en la sesión cuando la rutina no está en el catálogo (antes decía "Ejercicio N"). Verificado en Pixel 7, claro y oscuro: zona táctil de 44 px, campos de 16 px (sin zoom en iOS) y contraste 6,9:1 / 5,0:1 en la nota guardada. |
