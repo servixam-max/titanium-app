@@ -67,7 +67,16 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   registro de serie —individual y guiado—, se guarda al salir del campo o con
   Enter, y se relee al desplegar la sesión en el Historial. 13 pruebas de la
   lógica y 7 del componente, más 2 e2e del recorrido completo)*
-- [ ] **F2.2** Temporizador de descanso flotante en modo individual.
+- [x] **F2.2** Temporizador de descanso flotante en modo individual.
+  *(v8.5.28 · `src/lib/rest-timer.ts` + `src/components/workout/RestBar.tsx`;
+  el descanso deja de tapar la pantalla completa y pasa a ser una tarjeta
+  pegada bajo la cabecera que descuenta sin bloquear — se puede ajustar
+  peso/reps, revisar el ejercicio o registrar ya la serie siguiente. Mantiene
+  los avisos de voz (mitad, 30 s, 10 s, 3-2-1) y añade el toque de fin de
+  descanso; +15/−15 s y Saltar siguen. 7 pruebas de la lógica, 9 del
+  componente y 2 e2e del recorrido; el modo guiado conserva su pantalla
+  completa. Verificado en emulador Android 16: el reloj desciende de 1:14 a
+  1:02 con el resto del entreno usable detrás)*
 - [ ] **F2.3** Supersets (`supersetGroup` en el tipo `Exercise`): encadenar dos
   ejercicios sin descanso intermedio y etiquetarlo en la UI.
 - [ ] **F2.4** Recordatorio de calentamiento si la última sesión de fuerza fue
@@ -130,3 +139,4 @@ justo debajo y se documenta el motivo.
 | v8.5.25 | — | **Depuración del WebView en builds de desarrollo**: al auditar en el emulador el socket de Chrome DevTools desaparecía entre sesiones y no había forma fiable de medir el layout real. Se activa `setWebContentsDebuggingEnabled` cuando el APK es depurable (flag `FLAG_DEBUGGABLE`, no `BuildConfig`: este proyecto no lo genera) y queda apagado en release. Es la herramienta que permite medir posiciones en píxeles en vez de suponerlas. |
 | v8.5.26 | — | **Control de Peso deja de ser un hueco vacío**: al entrar por primera vez solo había un cartel "sin registros" rodeado de espacio muerto, sin nada que hacer ni aprender. Ahora, cuando no hay pesajes, se muestran tres consejos prácticos (pesarse siempre igual; mirar la tendencia y no el día, porque el peso oscila ±1 kg; y cruzar el peso con el volumen para distinguir músculo de grasa) más un botón "Registrar mi primer pesaje" que abre el formulario. Verificado en emulador. |
 | v8.5.27 | F2.1 | **Notas rápidas por ejercicio durante el entreno**: durante la sesión se puede apuntar lo que no cabe en un número —"el codo me molestó", "subir a 42,5 la próxima"— desde una píldora discreta junto al registro de serie, en modo individual y guiado; se guarda sola al salir del campo (o con Enter) y queda dentro de la sesión, así que se relee al desplegar el entreno en el Historial. La lógica vive en `src/lib/workout-notes.ts` (normaliza, recorta a 280 caracteres y borra la nota si se vacía) con 13 pruebas, y el componente `ExerciseNoteButton` con 7; 2 e2e recorren el camino completo (escribir → guardar → terminar el entreno → ver la nota en el historial). De paso, el Historial ya muestra el nombre real del ejercicio guardado en la sesión cuando la rutina no está en el catálogo (antes decía "Ejercicio N"). Verificado en Pixel 7, claro y oscuro: zona táctil de 44 px, campos de 16 px (sin zoom en iOS) y contraste 6,9:1 / 5,0:1 en la nota guardada. |
+| v8.5.28 | F2.2 | **El descanso ya no tapa la pantalla en el modo individual**: en vez de un overlay a pantalla completa, ahora es una tarjeta flotante pegada bajo la cabecera que descuenta sin bloquear — durante el reloj se puede ajustar peso/reps, revisar el ejercicio o registrar ya la serie siguiente. Conserva los avisos de voz (mitad, 30 s, 10 s y cuenta atrás 3-2-1) y añade el toque de fin de descanso; −15 s / +15 s / Saltar siguen a un toque. La lógica pura vive en `src/lib/rest-timer.ts` (7 pruebas) y el componente en `src/components/workout/RestBar.tsx` (9 pruebas), más 2 e2e: el reloj cuenta, ajusta, no bloquea el botón de completar y se puede saltar; el modo guiado conserva su pantalla completa de descanso. Verificado en emulador Android 16 (navegación por gestos): el reloj descendió de 1:14 a 1:02 con todo el entreno usable detrás. |
