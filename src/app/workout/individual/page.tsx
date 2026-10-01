@@ -25,7 +25,7 @@ import {
   ExerciseStage,
   ExerciseDotProgress,
   SetLogger,
-  RestOverlay,
+  RestBar,
   ExitConfirmModal,
 } from "@/components/workout";
 
@@ -263,6 +263,7 @@ export default function IndividualWorkout() {
           />
         }
       >
+        <RestBar />
         <div className="flex-shrink-0">
           <div className="flex items-center justify-between mb-1.5 px-1">
             <span className="text-primary font-bold text-[13px] flex items-center gap-1.5">
@@ -307,8 +308,6 @@ export default function IndividualWorkout() {
           className="flex-1 min-h-0"
         />
       </WorkoutShell>
-
-      <RestOverlay />
 
       <ExitConfirmModal
         open={showExitConfirm}

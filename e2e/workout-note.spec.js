@@ -43,7 +43,7 @@ test.describe('Nota rápida del ejercicio (F2.1)', () => {
       if (!(await completar.isVisible().catch(() => false))) break;
       await completar.click({ force: true });
       await page.waitForTimeout(250);
-      const saltar = page.locator('button:has-text("Saltar descanso")').first();
+      const saltar = page.locator('button:has-text("Saltar")').first();
       if (await saltar.isVisible().catch(() => false)) {
         await saltar.click({ force: true });
         await page.waitForTimeout(250);
