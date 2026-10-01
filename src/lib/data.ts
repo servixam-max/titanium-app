@@ -898,6 +898,7 @@ export const routines: Routine[] = [
         sets: 3,
         reps: "10-12",
         restSeconds: 75,
+        supersetGroup: "d7-brazo-1",
         equipment: "dumbbells",
         description:
           "Supinación completa al subir. Codos estables y recorrido amplio.",
@@ -912,6 +913,7 @@ export const routines: Routine[] = [
         sets: 3,
         reps: "10-12",
         restSeconds: 75,
+        supersetGroup: "d7-brazo-1",
         equipment: "dumbbells",
         description:
           "Extensión vertical a dos manos estirando la cabeza larga del tríceps.",
@@ -926,6 +928,7 @@ export const routines: Routine[] = [
         sets: 3,
         reps: "10-12",
         restSeconds: 75,
+        supersetGroup: "d7-brazo-2",
         equipment: "dumbbells",
         description:
           "Agarre neutro para enfatizar braquial y grosor de brazo.",
@@ -940,6 +943,7 @@ export const routines: Routine[] = [
         sets: 3,
         reps: "12-15",
         restSeconds: 75,
+        supersetGroup: "d7-brazo-2",
         equipment: "dumbbells",
         description:
           "Extensión hacia atrás con parada isométrica de 1 segundo en el bloqueo.",
