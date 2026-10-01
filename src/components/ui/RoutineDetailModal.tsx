@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { X, Play, Clock, Layers, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Routine, TrainingMode } from "@/lib/types";
+import { Exercise, Routine, TrainingMode } from "@/lib/types";
+import { getSupersetPartnerInRoutine } from "@/lib/supersets";
 import { useAppStore } from "@/lib/store";
 import ExerciseImage from "@/components/ui/ExerciseImage";
 import ExerciseCard from "@/components/ui/ExerciseCard";
@@ -45,6 +46,9 @@ export default function RoutineDetailModal({
       : routine.exercises;
 
   const totalSets = exercises.reduce((sum, ex) => sum + ex.sets, 0);
+  /** Compañero de superserie dentro de la lista mostrada (F2.3). */
+  const supersetPartnerName = (exercise: Exercise): string | undefined =>
+    getSupersetPartnerInRoutine(exercises, exercise)?.name;
 
   const handleStartWorkoutFlow = (exerciseIndex?: number) => {
     const targetIdx = exerciseIndex ?? 0;
@@ -241,6 +245,7 @@ export default function RoutineDetailModal({
                       exercise={ex}
                       index={idx}
                       mode={mode}
+                      supersetPartnerName={supersetPartnerName(ex)}
                       onClick={() => {
                         handleStartWorkoutFlow(idx);
                       }}

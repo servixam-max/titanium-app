@@ -15,6 +15,7 @@ import { getActiveUser, getActiveUserId, logoutUser } from "./auth";
 import { UserAccount } from "@/lib/types";
 import { calculateAdaptiveRest } from "./workout";
 import { applyExerciseNote } from "./workout-notes";
+import { countSetsDonePerRound, decideSupersetAdvance } from "./supersets";
 import { AppTheme, applyTheme, getStoredTheme } from "./theme";
 
 interface AppState {
@@ -413,16 +414,51 @@ export const useAppStore = create<AppState>()(
         const currentRound = activeWorkout.currentRound ?? 1;
         const isLastRound = currentRound >= rounds;
         const isWorkoutFinishing = isLastSet && isLastExercise && isLastRound;
+
+        // Superserie (F2.3): qué pasa tras completar la serie lo decide
+        // decideSupersetAdvance (lógica pura en lib/supersets.ts). Cuando hay
+        // grupo: encadenar con el compañero sin descanso intermedio, descansar
+        // al cerrar la vuelta completa (descanso del último ejercicio) y salir
+        // del grupo cuando se agota.
+        const supersetAdvance = activeWorkout.routine
+          ? decideSupersetAdvance({
+              exercises: activeWorkout.routine.exercises,
+              setsDone: countSetsDonePerRound(
+                updatedExercises,
+                activeWorkout.routine.exercises,
+                currentRound,
+              ),
+              exerciseIndex,
+            })
+          : null;
+        // Encadenar dos ejercicios del grupo: pasar directo, sin descanso.
+        const isChaining =
+          supersetAdvance !== null && supersetAdvance.restSeconds === 0;
+
         // El descanso prescrito manda; solo se adapta por esfuerzo real (RPE)
         // y por series largas por tiempo.
         const lastSetDuration = duration || (currentExercise.workSeconds ? currentExercise.workSeconds : undefined);
-        const nextRestSeconds = isWorkoutFinishing
-          ? 0
-          : calculateAdaptiveRest({
+        let nextRestSeconds = 0;
+        if (!isWorkoutFinishing) {
+          if (supersetAdvance && supersetAdvance.restSeconds === 0) {
+            // Sin descanso intermedio dentro del par.
+            nextRestSeconds = 0;
+          } else if (supersetAdvance) {
+            // Vuelta completa del par: el descanso lo marca el último
+            // ejercicio del grupo recién cerrado.
+            nextRestSeconds = calculateAdaptiveRest({
+              baseRestSeconds: supersetAdvance.restSeconds,
+              lastSetRpe: rpe,
+              lastSetDuration,
+            });
+          } else {
+            nextRestSeconds = calculateAdaptiveRest({
               baseRestSeconds: currentExercise.restSeconds || 75,
               lastSetRpe: rpe,
               lastSetDuration,
             });
+          }
+        }
 
         const nextActiveWorkout: ActiveWorkoutState = {
           ...activeWorkout,
@@ -432,11 +468,16 @@ export const useAppStore = create<AppState>()(
           },
           isWorking: false,
           workTimeRemaining: 0,
-          isResting: !isWorkoutFinishing, // NEVER rest if finishing workout
-          restTimeRemaining: isWorkoutFinishing ? 0 : nextRestSeconds,
+          isResting: !isWorkoutFinishing && !isChaining, // NEVER rest if finishing workout
+          restTimeRemaining: isWorkoutFinishing || isChaining ? 0 : nextRestSeconds,
         };
 
-        if (isLastSet) {
+        if (isWorkoutFinishing) {
+          // El entreno termina aquí: finishWorkout se dispara tras el set().
+        } else if (supersetAdvance) {
+          nextActiveWorkout.currentExerciseIndex = supersetAdvance.exerciseIndex;
+          nextActiveWorkout.currentSet = supersetAdvance.setNumber;
+        } else if (isLastSet) {
           if (!isLastExercise) {
             const nextIndex = exerciseIndex + 1;
             nextActiveWorkout.currentExerciseIndex = nextIndex;

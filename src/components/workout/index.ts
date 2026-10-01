@@ -1,4 +1,5 @@
 export { default as WorkoutShell } from "./WorkoutShell";
+export { default as SupersetBadge } from "./SupersetBadge";
 export { default as ExerciseStage } from "./ExerciseStage";
 export { default as ExerciseDotProgress } from "./ExerciseDotProgress";
 export { default as SetLogger } from "./SetLogger";

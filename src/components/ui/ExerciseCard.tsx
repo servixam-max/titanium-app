@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Exercise } from "@/lib/types";
 import ExerciseImage from "@/components/ui/ExerciseImage";
+import SupersetBadge from "@/components/workout/SupersetBadge";
 import { getExerciseBiomechanics, MUSCLE_METADATA } from "@/lib/muscle-engine";
 
 interface ExerciseCardProps {
@@ -15,6 +16,8 @@ interface ExerciseCardProps {
   onClick?: () => void;
   compact?: boolean;
   mode?: "guided" | "individual";
+  /** Nombre del compañero de superserie del ejercicio (F2.3), si lo hay. */
+  supersetPartnerName?: string;
 }
 
 const MUSCLE_LABELS: Record<string, string> = {
@@ -73,6 +76,7 @@ export default function ExerciseCard({
   onClick,
   compact = false,
   mode = "guided",
+  supersetPartnerName,
 }: ExerciseCardProps) {
   const muscleKey = exercise.category || "full_body";
   const muscleColors = MUSCLE_COLORS[muscleKey] || MUSCLE_COLORS.full_body;
@@ -158,6 +162,9 @@ export default function ExerciseCard({
               <Timer className="w-2.5 h-2.5 text-cyan-600 dark:text-cyan-400" />
               {formatRest(exercise.restSeconds)}
             </span>
+          )}
+          {supersetPartnerName && (
+            <SupersetBadge partnerName={supersetPartnerName} className="!py-0.5" />
           )}
         </div>
 

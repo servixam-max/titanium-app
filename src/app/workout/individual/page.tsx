@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import {
   announceExerciseComplete,
+  announceNextExercise,
   announceRest,
   announceWorkoutComplete,
   announceSetsRemaining,
@@ -16,6 +17,7 @@ import {
 } from "@/lib/audio";
 import { haptics } from "@/lib/haptics";
 import { detectSupersetGroups } from "@/lib/workout";
+import { countSetsDonePerRound, decideSupersetAdvance, SupersetAdvance } from "@/lib/supersets";
 import { getExerciseNote } from "@/lib/workout-notes";
 import { getAllRecords, ExerciseRecord } from "@/lib/records";
 import { useLastPerformance } from "@/hooks/useLastPerformance";
@@ -179,6 +181,19 @@ export default function IndividualWorkout() {
       }
     }
 
+    // Superserie (F2.3): anticipa la decisión del store (serie simulada) para
+    // que el aviso de voz diga la verdad (directo sin descanso o vuelta completa).
+    const setsDoneSimulated = countSetsDonePerRound(
+      activeWorkout.session?.exercises,
+      routine.exercises,
+      currentRound,
+    ).map((done, idx) => (idx === currentExerciseIndex ? done + 1 : done));
+    const supersetAdvance: SupersetAdvance | null = decideSupersetAdvance({
+      exercises: routine.exercises,
+      setsDone: setsDoneSimulated,
+      exerciseIndex: currentExerciseIndex,
+    });
+
     if (isWorkoutFinishing) {
       completeSet(currentExerciseIndex, currentSet, undefined, reps, undefined, rpe);
       if (audioEnabled) announceWorkoutComplete();
@@ -191,7 +206,15 @@ export default function IndividualWorkout() {
 
     completeSet(currentExerciseIndex, currentSet, undefined, reps, undefined, rpe);
 
-    if (!isLastSet && audioEnabled) {
+    const announcedPartner =
+      supersetAdvance && supersetAdvance.restSeconds === 0
+        ? routine.exercises[supersetAdvance.exerciseIndex]
+        : undefined;
+
+    if (announcedPartner && audioEnabled) {
+      // Superserie: no hay descanso intermedio, se pasa directo al compañero.
+      setTimeout(() => announceNextExercise(announcedPartner.name), 800);
+    } else if (!isLastSet && audioEnabled) {
       setTimeout(() => announceRest(currentExercise.restSeconds), 800);
     } else if (isLastSet) {
       const nextEx = routine.exercises[currentExerciseIndex + 1];

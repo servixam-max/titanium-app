@@ -19,6 +19,8 @@ import {
   restRemainingFraction,
 } from "@/lib/rest-timer";
 import { cn } from "@/lib/utils";
+import SupersetBadge from "./SupersetBadge";
+import { getSupersetPartnerInRoutine } from "@/lib/supersets";
 
 /**
  * Descanso flotante del modo individual (F2.2).
@@ -109,6 +111,14 @@ export default function RestBar() {
   const detail = isNewExercise
     ? `A continuación: ${currentExercise?.name ?? "el siguiente ejercicio"}`
     : `${currentExercise?.name ?? "Ejercicio"} · serie ${upcomingSet} de ${totalSets}`;
+  // El descanso que se está viviendo precede a este ejercicio; si pertenece a
+  // una superserie, se etiqueta también aquí (F2.3).
+  const upcomingSupersetPartner = currentExercise
+    ? getSupersetPartnerInRoutine(
+        activeWorkout.routine?.exercises ?? [],
+        currentExercise,
+      )
+    : undefined;
 
   return (
     <div className="sticky top-0 z-40 flex-shrink-0 bg-background py-1">
@@ -135,6 +145,12 @@ export default function RestBar() {
               <p className="truncate text-[13px] leading-snug text-[color:var(--text-secondary)]">
                 {detail}
               </p>
+              {upcomingSupersetPartner && (
+                <SupersetBadge
+                  partnerName={upcomingSupersetPartner.name}
+                  className="mt-1"
+                />
+              )}
             </div>
             <span
               className={cn(

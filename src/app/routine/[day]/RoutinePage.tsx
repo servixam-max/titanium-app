@@ -7,9 +7,10 @@ import TopAppBar from "@/components/ui/TopAppBar";
 import BottomNav from "@/components/ui/BottomNav";
 import ModeSelector from "@/components/ui/ModeSelector";
 import ExerciseCard from "@/components/ui/ExerciseCard";
+import { getSupersetPartnerInRoutine } from "@/lib/supersets";
 import WarmupModal from "@/components/ui/WarmupModal";
 import { routines, getExerciseById } from "@/lib/data";
-import { TrainingMode } from "@/lib/types";
+import { Exercise, TrainingMode } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
 
 export default function RoutinePage({ day: dayProp }: { day: number }) {
@@ -32,6 +33,10 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
     removeFavoriteExercise,
     sessions,
   } = useAppStore();
+
+  /** Compañero de superserie dentro de la lista mostrada (F2.3). */
+  const supersetPartnerName = (exercise: Exercise): string | undefined =>
+    getSupersetPartnerInRoutine(exercises, exercise)?.name;
 
   const isCompletedToday = useMemo(() => {
     if (!routine) return false;
@@ -267,6 +272,7 @@ export default function RoutinePage({ day: dayProp }: { day: number }) {
                 exercise={exercise}
                 index={index}
                 mode={mode}
+                supersetPartnerName={supersetPartnerName(exercise)}
                 onClick={() => {
                   if (mode === "individual") {
                     handleStart(index);

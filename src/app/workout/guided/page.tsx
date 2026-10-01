@@ -9,6 +9,7 @@ import RestTimer from "@/components/ui/RestTimer";
 import WorkTimer from "@/components/ui/WorkTimer";
 import {
   announceExerciseComplete,
+  announceNextExercise,
   announcePrepareNext,
   announceExerciseStart,
   announceRest,
@@ -17,6 +18,7 @@ import {
   setVoiceRate as setGlobalVoiceRate,
   unlockAudio,
 } from "@/lib/audio";
+import { countSetsDonePerRound, decideSupersetAdvance, SupersetAdvance } from "@/lib/supersets";
 import { haptics } from "@/lib/haptics";
 import { getExerciseNote } from "@/lib/workout-notes";
 import { getAllRecords, ExerciseRecord } from "@/lib/records";
@@ -222,6 +224,23 @@ export default function GuidedWorkout() {
 
     triggerFeedback();
 
+    // Superserie (F2.3): anticipa la decisión del store (serie simulada) para
+    // anunciar la cadena directa sin descanso intermedio.
+    const setsDoneSimulated = countSetsDonePerRound(
+      activeWorkout.session?.exercises,
+      routine.exercises,
+      currentRound,
+    ).map((done, idx) => (idx === currentExerciseIndex ? done + 1 : done));
+    const supersetAdvance: SupersetAdvance | null = decideSupersetAdvance({
+      exercises: routine.exercises,
+      setsDone: setsDoneSimulated,
+      exerciseIndex: currentExerciseIndex,
+    });
+    const announcedPartner =
+      supersetAdvance && supersetAdvance.restSeconds === 0
+        ? routine.exercises[supersetAdvance.exerciseIndex]
+        : undefined;
+
     if (isWorkoutFinishing) {
       completeSet(currentExerciseIndex, currentSet, undefined, reps, undefined, rpe);
       if (audioEnabled) announceWorkoutComplete();
@@ -231,7 +250,15 @@ export default function GuidedWorkout() {
     }
     setIsFinishing(false);
 
-    if (isLastSet) {
+    if (announcedPartner) {
+      // Superserie: se pasa directo al siguiente ejercicio del par, sin descanso.
+      if (audioEnabled) {
+        announceExerciseComplete();
+        setTimeout(() => {
+          if (audioEnabled) announceNextExercise(announcedPartner.name);
+        }, 1200);
+      }
+    } else if (isLastSet) {
       const nextEx = routine.exercises[currentExerciseIndex + 1];
       if (nextEx && audioEnabled) {
         announcePrepareNext(nextEx.name, currentExercise.restSeconds);
@@ -380,6 +407,7 @@ export default function GuidedWorkout() {
                 isHIIT={isHIIT}
                 circuitNumber={circuitNumber}
                 totalCircuits={totalCircuits}
+                routine={routine}
                 className="h-full"
               />
             </motion.div>

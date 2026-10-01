@@ -54,6 +54,9 @@ export interface Exercise extends Partial<Omit<SyncableEntity, "id">> {
   techniqueTips?: string[];
   alternatives?: string[]; // exercise ids
   tags?: string[];
+  /** Grupo de superserie (F2.3): ejercicios con el mismo valor se encadenan
+   *  sin descanso intermedio entre sí. */
+  supersetGroup?: string;
 }
 
 export type ExerciseGroupType = "straight" | "superset" | "giant" | "circuit" | "dropset";

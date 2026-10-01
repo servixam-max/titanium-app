@@ -6,6 +6,8 @@ import { useAppStore } from "@/lib/store";
 import { useEffect, useRef, useState } from "react";
 import TimerCircle from "@/components/ui/TimerCircle";
 import ExerciseImage from "@/components/ui/ExerciseImage";
+import SupersetBadge from "@/components/workout/SupersetBadge";
+import { getSupersetPartnerInRoutine } from "@/lib/supersets";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SectionTitle from "@/components/ui/SectionTitle";
 import {
@@ -36,6 +38,14 @@ export default function RestTimer() {
 
   const currentExercise =
     activeWorkout.routine?.exercises[activeWorkout.currentExerciseIndex];
+  // El siguiente ejercicio de la sesión; si forma superserie, se etiqueta en
+  // la previsualización del descanso (F2.3).
+  const upcomingSupersetPartner = currentExercise
+    ? getSupersetPartnerInRoutine(
+        activeWorkout.routine?.exercises ?? [],
+        currentExercise,
+      )
+    : undefined;
 
   useEffect(() => {
     if (!activeWorkout.isResting) return;
@@ -215,6 +225,11 @@ export default function RestTimer() {
               <p className="text-white font-headline-md text-headline-md truncate">
                 {currentExercise?.name}
               </p>
+              {upcomingSupersetPartner && (
+                <div className="mt-1.5">
+                  <SupersetBadge partnerName={upcomingSupersetPartner.name} />
+                </div>
+              )}
               <div className="flex items-center gap-2 mt-1 text-zinc-400 text-xs flex-wrap">
                 <span className="flex items-center gap-1 font-bold text-white">
                   <Dumbbell className="w-3.5 h-3.5 text-primary" />

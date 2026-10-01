@@ -1,9 +1,11 @@
 "use client";
 
-import { Zap, Clock, Repeat } from "lucide-react";
+import { Zap, Clock } from "lucide-react";
 import ExerciseImage from "@/components/ui/ExerciseImage";
+import SupersetBadge from "./SupersetBadge";
 import { Exercise, ExerciseGroup } from "@/lib/types";
 import { getSupersetPartner } from "@/lib/workout";
+import { getSupersetPartnerInRoutine } from "@/lib/supersets";
 
 interface ExerciseStageProps {
   exercise: Exercise;
@@ -28,8 +30,18 @@ export default function ExerciseStage({
   routine,
   className,
 }: ExerciseStageProps) {
+  // Superserie explícita del ejercicio (F2.3): fuente de verdad supersetGroup.
+  const explicitPartner =
+    exercise.supersetGroup && routine
+      ? getSupersetPartnerInRoutine(routine.exercises, exercise)
+      : undefined;
+  // Compatibilidad: el badge por grupos autodetectados (pares por categoría)
+  // solo se mantiene cuando el ejercicio no tiene supersetGroup explícito.
   const supersetPartnerId = groups ? getSupersetPartner(exercise.id || `ex-${exerciseIndex}`, groups) : undefined;
-  const supersetPartner = supersetPartnerId && routine?.exercises?.find((ex) => ex.id === supersetPartnerId);
+  let supersetPartner = explicitPartner;
+  if (!supersetPartner && supersetPartnerId) {
+    supersetPartner = routine?.exercises?.find((ex) => ex.id === supersetPartnerId);
+  }
 
   const timedSeconds =
     exercise.workSeconds ??
@@ -52,9 +64,8 @@ export default function ExerciseStage({
           </p>
         )}
         {supersetPartner && (
-          <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent-cyan/10 border-accent-cyan/30 text-accent-cyan text-xs font-semibold">
-            <Repeat className="w-3.5 h-3.5" />
-            Superset con {supersetPartner.name}
+          <div className="mt-1.5 flex justify-center">
+            <SupersetBadge partnerName={supersetPartner.name} />
           </div>
         )}
       </div>
