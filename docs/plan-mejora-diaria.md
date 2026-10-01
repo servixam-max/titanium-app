@@ -79,8 +79,13 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   1:02 con el resto del entreno usable detrás)*
 - [ ] **F2.3** Supersets (`supersetGroup` en el tipo `Exercise`): encadenar dos
   ejercicios sin descanso intermedio y etiquetarlo en la UI.
-- [ ] **F2.4** Recordatorio de calentamiento si la última sesión de fuerza fue
-  hace más de X días.
+- [x] **F2.4** Recordatorio de calentamiento si la última sesión de fuerza fue
+  hace más de X días. *(v8.5.29 · `src/lib/warmup-reminder.ts` +
+  `WarmupReminderBanner.tsx`; umbral de 5 días sin una sesión de fuerza
+  completada — el modelo no guarda tipo de sesión, así que la fuerza se infiere
+  de las series anotadas con reps/peso. Aviso discreto y descartable en la home,
+  oculto si hay un entreno en curso y ausente sin historial. 22 pruebas de la
+  lógica y 3 del componente)*
 - [ ] **F2.5** Compartir resumen del entrenamiento (Web Share API, fallback a
   portapapeles).
 
@@ -140,3 +145,4 @@ justo debajo y se documenta el motivo.
 | v8.5.26 | — | **Control de Peso deja de ser un hueco vacío**: al entrar por primera vez solo había un cartel "sin registros" rodeado de espacio muerto, sin nada que hacer ni aprender. Ahora, cuando no hay pesajes, se muestran tres consejos prácticos (pesarse siempre igual; mirar la tendencia y no el día, porque el peso oscila ±1 kg; y cruzar el peso con el volumen para distinguir músculo de grasa) más un botón "Registrar mi primer pesaje" que abre el formulario. Verificado en emulador. |
 | v8.5.27 | F2.1 | **Notas rápidas por ejercicio durante el entreno**: durante la sesión se puede apuntar lo que no cabe en un número —"el codo me molestó", "subir a 42,5 la próxima"— desde una píldora discreta junto al registro de serie, en modo individual y guiado; se guarda sola al salir del campo (o con Enter) y queda dentro de la sesión, así que se relee al desplegar el entreno en el Historial. La lógica vive en `src/lib/workout-notes.ts` (normaliza, recorta a 280 caracteres y borra la nota si se vacía) con 13 pruebas, y el componente `ExerciseNoteButton` con 7; 2 e2e recorren el camino completo (escribir → guardar → terminar el entreno → ver la nota en el historial). De paso, el Historial ya muestra el nombre real del ejercicio guardado en la sesión cuando la rutina no está en el catálogo (antes decía "Ejercicio N"). Verificado en Pixel 7, claro y oscuro: zona táctil de 44 px, campos de 16 px (sin zoom en iOS) y contraste 6,9:1 / 5,0:1 en la nota guardada. |
 | v8.5.28 | F2.2 | **El descanso ya no tapa la pantalla en el modo individual**: en vez de un overlay a pantalla completa, ahora es una tarjeta flotante pegada bajo la cabecera que descuenta sin bloquear — durante el reloj se puede ajustar peso/reps, revisar el ejercicio o registrar ya la serie siguiente. Conserva los avisos de voz (mitad, 30 s, 10 s y cuenta atrás 3-2-1) y añade el toque de fin de descanso; −15 s / +15 s / Saltar siguen a un toque. La lógica pura vive en `src/lib/rest-timer.ts` (7 pruebas) y el componente en `src/components/workout/RestBar.tsx` (9 pruebas), más 2 e2e: el reloj cuenta, ajusta, no bloquea el botón de completar y se puede saltar; el modo guiado conserva su pantalla completa de descanso. Verificado en emulador Android 16 (navegación por gestos): el reloj descendió de 1:14 a 1:02 con todo el entreno usable detrás. |
+| v8.5.29 | F2.4 | **Aviso de calentamiento tras días sin fuerza**: si la última sesión de fuerza completada fue hace 5 días o más, la home muestra un aviso discreto y descartable que recuerda calentar — movilidad y 2 series de aproximación con carga ligera —; no aparece con un entreno en curso ni sin historial, y se retira en la visita con su X. La lógica pura vive en `src/lib/warmup-reminder.ts` (umbral exportado de 5 días; el modelo no guarda "tipo de sesión", así que la fuerza se infiere de las series anotadas con reps/peso; fechas inválidas o futuras no generan aviso) con 22 pruebas, y el componente `WarmupReminderBanner.tsx` con 3. |
