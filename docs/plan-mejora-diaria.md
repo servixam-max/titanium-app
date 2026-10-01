@@ -108,8 +108,12 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
 
 ## Fase 4 — Rendimiento y calidad
 
-- [ ] **F4.1** Auditar imágenes de ejercicios (`public/images/exercises`) y bajar
-  el peso total del APK sin pérdida visible.
+- [x] **F4.1** Auditar imágenes de ejercicios (`public/images/exercises`) y bajar
+  el peso total del APK sin pérdida visible. *(v8.5.32 · auditoría medida y
+  compresión aplicada: `screen.webp` 1024→800 px q80 y `screen-sm.webp` 512→384,
+  más 13 `screen.jpg` legacy sin referencias eliminados. **9,5 MB → 4,8 MB
+  (−53 %)**; 0 archivos por encima de 800 px; calidad verificada a ojo
+  (SSIM 0,998 en la muestra medida). El APK debug pasa de ~17 MB a ~12 MB)*
 - [ ] **F4.2** Ampliar Playwright a los flujos críticos: entreno guiado completo,
   registro de peso, cambio de tema. *(parcial: navegación y cambio de tema ya
   cubiertos; faltan completar un entreno guiado entero y guardar un peso)*
@@ -155,3 +159,5 @@ justo debajo y se documenta el motivo.
 | v8.5.28 | F2.2 | **El descanso ya no tapa la pantalla en el modo individual**: en vez de un overlay a pantalla completa, ahora es una tarjeta flotante pegada bajo la cabecera que descuenta sin bloquear — durante el reloj se puede ajustar peso/reps, revisar el ejercicio o registrar ya la serie siguiente. Conserva los avisos de voz (mitad, 30 s, 10 s y cuenta atrás 3-2-1) y añade el toque de fin de descanso; −15 s / +15 s / Saltar siguen a un toque. La lógica pura vive en `src/lib/rest-timer.ts` (7 pruebas) y el componente en `src/components/workout/RestBar.tsx` (9 pruebas), más 2 e2e: el reloj cuenta, ajusta, no bloquea el botón de completar y se puede saltar; el modo guiado conserva su pantalla completa de descanso. Verificado en emulador Android 16 (navegación por gestos): el reloj descendió de 1:14 a 1:02 con todo el entreno usable detrás. |
 | v8.5.29 | F2.4 | **Aviso de calentamiento tras días sin fuerza**: si la última sesión de fuerza completada fue hace 5 días o más, la home muestra un aviso discreto y descartable que recuerda calentar — movilidad y 2 series de aproximación con carga ligera —; no aparece con un entreno en curso ni sin historial, y se retira en la visita con su X. La lógica pura vive en `src/lib/warmup-reminder.ts` (umbral exportado de 5 días; el modelo no guarda "tipo de sesión", así que la fuerza se infiere de las series anotadas con reps/peso; fechas inválidas o futuras no generan aviso) con 22 pruebas, y el componente `WarmupReminderBanner.tsx` con 3. |
 | v8.5.30 | F2.3 | **Superseries de verdad en el entreno**: dos ejercicios del mismo grupo se encadenan alternando series — completas una serie del primero y pasas directo al segundo sin descanso; el descanso prescrito llega al cerrar la vuelta completa (una serie de cada uno). El encadenado se etiqueta con un badge "Superserie" en las tarjetas, durante el entreno y en el descanso, y el aviso de voz anuncia el cambio sin decir "descansa" en falso. La decisión de negocio vive en `src/lib/supersets.ts` (`decideSupersetAdvance`) con 25 pruebas y el badge con 3. Activado en el Día 7 (Brazos & Hombros 3D), que ya lo prometía: Curl de Bíceps ↔ Extensión de Tríceps y Curl Martillo ↔ Patada de Tríceps. |
+| v8.5.31 | — | **Las superseries ya tienen datos reales**: la activación del Día 7 (pares Curl de Bíceps ↔ Extensión de Tríceps y Curl Martillo ↔ Patada de Tríceps con `supersetGroup`) entró después del tag de v8.5.30, así que se publica aquí. Verificado en vivo: completar la primera serie pasa directo al compañero sin descanso (0 tarjetas), y al cerrar la vuelta llega el descanso con el badge también en la tarjeta. |
+| v8.5.32 | F4.1 | **El catálogo de ejercicios pesa la mitad**: auditoría medida (153 archivos, 9,5 MB) y compresión aplicada — `screen.webp` 1024→800 px q80, `screen-sm.webp` 512→384 y 13 `screen.jpg` legacy sin referencias fuera. Total **9,5 MB → 4,8 MB (−53 %)** sin pérdida visible; el APK debug baja de ~17 MB a ~12 MB. Incluye la bitácora y el cierre de F4.1. |
