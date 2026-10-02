@@ -11,6 +11,7 @@ import { playVictoryFanfare } from "@/lib/audio";
 import NumberTicker from "@/components/ui/NumberTicker";
 import BorderBeam from "@/components/ui/BorderBeam";
 import { generateWorkoutDebrief } from "@/lib/ai-debrief";
+import ShareWorkoutButton from "./ShareWorkoutButton";
 
 interface WorkoutCompleteCardProps {
   session?: WorkoutSession | null;
@@ -299,6 +300,10 @@ export default function WorkoutCompleteCard({
         transition={{ delay: 0.35 }}
         className="w-full space-y-2.5"
       >
+        <ShareWorkoutButton
+          session={safeSession}
+          routineTitle={routineTitle}
+        />
         <button
           onClick={() => router.push("/history")}
           className="w-full h-12 bg-primary hover:brightness-105 text-black font-bold text-sm rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-all shadow-md border-primary/40 cursor-pointer"

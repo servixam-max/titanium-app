@@ -6,3 +6,4 @@ export { default as SetLogger } from "./SetLogger";
 export { default as RestBar } from "./RestBar";
 export { default as ExitConfirmModal } from "./ExitConfirmModal";
 export { default as WorkoutCompleteCard } from "./WorkoutCompleteCard";
+export { default as ShareWorkoutButton } from "./ShareWorkoutButton";
