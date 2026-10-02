@@ -94,8 +94,16 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   de las series anotadas con reps/peso. Aviso discreto y descartable en la home,
   oculto si hay un entreno en curso y ausente sin historial. 22 pruebas de la
   lógica y 3 del componente)*
-- [ ] **F2.5** Compartir resumen del entrenamiento (Web Share API, fallback a
-  portapapeles).
+- [x] **F2.5** Compartir resumen del entrenamiento (Web Share API, fallback a
+  portapapeles). *(v8.5.33 · `src/lib/share-summary.ts` +
+  `ShareWorkoutButton.tsx`; botón "Compartir resumen" en la pantalla de fin de
+  entreno: usa la hoja nativa cuando existe y, en el WebView del APK donde no
+  está implementada, copia el resumen al portapapeles con aviso honesto
+  ("Resumen copiado"); cancelar la hoja no se anuncia como error. El texto
+  incluye duración, series, reps y volumen, con cifras deterministas —punto de
+  miles, sin depender del ICU del dispositivo—. 18 pruebas de la lógica y 6
+  del componente, más 3 e2e del recorrido completo; verificado en Pixel 7 a
+  375 y 412 px, claro y oscuro, con contraste 6,9:1 y 7,4:1)*
 
 ## Fase 3 — Progreso y datos
 
@@ -161,3 +169,4 @@ justo debajo y se documenta el motivo.
 | v8.5.30 | F2.3 | **Superseries de verdad en el entreno**: dos ejercicios del mismo grupo se encadenan alternando series — completas una serie del primero y pasas directo al segundo sin descanso; el descanso prescrito llega al cerrar la vuelta completa (una serie de cada uno). El encadenado se etiqueta con un badge "Superserie" en las tarjetas, durante el entreno y en el descanso, y el aviso de voz anuncia el cambio sin decir "descansa" en falso. La decisión de negocio vive en `src/lib/supersets.ts` (`decideSupersetAdvance`) con 25 pruebas y el badge con 3. Activado en el Día 7 (Brazos & Hombros 3D), que ya lo prometía: Curl de Bíceps ↔ Extensión de Tríceps y Curl Martillo ↔ Patada de Tríceps. |
 | v8.5.31 | — | **Las superseries ya tienen datos reales**: la activación del Día 7 (pares Curl de Bíceps ↔ Extensión de Tríceps y Curl Martillo ↔ Patada de Tríceps con `supersetGroup`) entró después del tag de v8.5.30, así que se publica aquí. Verificado en vivo: completar la primera serie pasa directo al compañero sin descanso (0 tarjetas), y al cerrar la vuelta llega el descanso con el badge también en la tarjeta. |
 | v8.5.32 | F4.1 | **El catálogo de ejercicios pesa la mitad**: auditoría medida (153 archivos, 9,5 MB) y compresión aplicada — `screen.webp` 1024→800 px q80, `screen-sm.webp` 512→384 y 13 `screen.jpg` legacy sin referencias fuera. Total **9,5 MB → 4,8 MB (−53 %)** sin pérdida visible; el APK debug baja de ~17 MB a ~12 MB. Incluye la bitácora y el cierre de F4.1. |
+| v8.5.33 | F2.5 | **Comparte tu entrenamiento al terminarlo**: la pantalla de resumen gana un botón "Compartir resumen" que envía un texto con lo hecho —duración, series, reps y volumen— a donde se quiera. Usa la hoja nativa del sistema (WhatsApp, Telegram, lo que haya) y, como el WebView del APK no la implementa, copia el resumen al portapapeles avisando en claro ("Resumen copiado"); cancelar la hoja nativa no se trata como error. La lógica pura vive en `src/lib/share-summary.ts` (18 pruebas) y el componente en `ShareWorkoutButton.tsx` (6), más 3 e2e que recorren el camino completo en ambos escenarios. Verificado en Pixel 7 a 375 y 412 px: zona táctil de 48 px y contraste 6,9:1 (oscuro) / 7,4:1 (claro). |
