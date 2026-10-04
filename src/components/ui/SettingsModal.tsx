@@ -46,6 +46,7 @@ import {
   checkOtaUpdate,
   openApkDownload,
 } from "@/lib/ota-sync";
+import { Capacitor } from "@capacitor/core";
 import {
   canInstallUnknownApps,
   requestInstallPermission,
@@ -54,6 +55,15 @@ import {
 import { getSessions, saveSession, getWeights, saveWeight } from "@/lib/db";
 import ChangelogList from "@/components/ui/ChangelogList";
 import { ChangelogEntry, fetchChangelog } from "@/lib/changelog";
+import {
+  buildBackupPayload,
+  parseBackupJson,
+  backupFileName,
+  mergeLastExerciseWeights,
+  restoreSummary,
+  BackupParseError,
+} from "@/lib/backup";
+import { downloadBackupFile, saveBackupViaShare } from "@/lib/backup-save";
 import {
   hasUnseenNews,
   markCurrentVersionSeen,
@@ -168,10 +178,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       setSyncMsg("Generando copia de seguridad...");
       const userSessions = await getSessions(currentUser?.id);
       const userWeights = await getWeights(currentUser?.id);
-      const backupData = {
-        app: "FORTIXAM",
+      const payload = buildBackupPayload({
         version: APP_VERSION.version,
-        exportedAt: new Date().toISOString(),
         user: {
           id: currentUser?.id,
           username: currentUser?.username,
@@ -180,25 +188,43 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         sessions: userSessions,
         weights: userWeights,
         lastExerciseWeights: useAppStore.getState().lastExerciseWeights,
-      };
+      });
 
-      const jsonStr = JSON.stringify(backupData, null, 2);
-      const blob = new Blob([jsonStr], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      const usernameClean = (currentUser?.username || "usuario").toLowerCase().replace(/[^a-z0-9]/g, "_");
-      a.download = `fortixam-backup-${usernameClean}-${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const jsonStr = JSON.stringify(payload, null, 2);
+      const fileName = backupFileName(currentUser?.username, payload.exportedAt);
+
+      // Android (APK): escribe el archivo y lo entrega al sistema con la hoja
+      // nativa; el camino `Blob`+`<a download>` no existe en el WebView.
+      if (Capacitor.isNativePlatform()) {
+        const result = await saveBackupViaShare(fileName, jsonStr);
+        if (result.cancelled) {
+          setSyncStatus("idle");
+          setSyncMsg("Cerraste la hoja: la copia no se ha guardado fuera de la app.");
+          return;
+        }
+        if (!result.ok) {
+          throw new Error(result.error || "No se pudo guardar la copia");
+        }
+        setSyncStatus("success");
+        setSyncMsg("¡Copia creada! Elige dónde guardarla o con quién compartirla.");
+        setTimeout(() => setSyncStatus("idle"), 4000);
+        return;
+      }
+
+      // Web/PWA: descarga clásica, que en el navegador sí funciona.
+      if (!downloadBackupFile(fileName, jsonStr)) {
+        throw new Error("El navegador no pudo descargar el archivo");
+      }
       setSyncStatus("success");
-      setSyncMsg("¡Copia de seguridad guardada en tu dispositivo!");
+      setSyncMsg("¡Copia de seguridad descargada!");
       setTimeout(() => setSyncStatus("idle"), 4000);
-    } catch {
+    } catch (err) {
       setSyncStatus("error");
-      setSyncMsg("Error al generar copia de seguridad.");
+      setSyncMsg(
+        err instanceof Error && err.message
+          ? `Error al generar la copia: ${err.message}`
+          : "Error al generar copia de seguridad.",
+      );
     }
   };
 
@@ -211,35 +237,46 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     reader.onload = async (event) => {
       try {
         const text = event.target?.result as string;
-        const data = JSON.parse(text);
-        if (!data || (!data.sessions && !data.weights)) {
-          throw new Error("Formato inválido");
-        }
+        const backup = parseBackupJson(text);
 
         const targetUserId = currentUser?.id || "xam-seed-id";
         let sessionCount = 0;
         let weightCount = 0;
 
-        if (Array.isArray(data.sessions)) {
-          for (const s of data.sessions) {
-            await saveSession(s, targetUserId);
-            sessionCount++;
-          }
+        for (const s of backup.sessions) {
+          await saveSession(s, targetUserId);
+          sessionCount++;
         }
-        if (Array.isArray(data.weights)) {
-          for (const w of data.weights) {
-            await saveWeight(w, targetUserId);
-            weightCount++;
-          }
+        for (const w of backup.weights) {
+          await saveWeight(w, targetUserId);
+          weightCount++;
         }
+
+        // "Última marca por ejercicio": lo que ya hay en este dispositivo no se
+        // pisa (puede ser más reciente); lo que falta se rellena desde el archivo.
+        const merged = mergeLastExerciseWeights(
+          useAppStore.getState().lastExerciseWeights,
+          backup.lastExerciseWeights,
+        );
+        useAppStore.setState({ lastExerciseWeights: merged });
 
         await loadSessions();
         setSyncStatus("success");
-        setSyncMsg(`¡Datos restaurados! (${sessionCount} sesiones, ${weightCount} pesos)`);
+        setSyncMsg(
+          restoreSummary({
+            sessions: sessionCount,
+            weights: weightCount,
+            lastWeights: Object.keys(backup.lastExerciseWeights).length,
+          }),
+        );
         setTimeout(() => setSyncStatus("idle"), 4000);
-      } catch {
+      } catch (err) {
         setSyncStatus("error");
-        setSyncMsg("Error: El archivo seleccionado no es válido.");
+        setSyncMsg(
+          err instanceof BackupParseError
+            ? `Error: ${err.userMessage}`
+            : "Error: El archivo seleccionado no es válido.",
+        );
       }
     };
     reader.readAsText(file);

@@ -23,6 +23,8 @@
     "@capacitor/app": "^8.1.1",
     "@capacitor/browser": "^8.0.0",
     "@capacitor/core": "^8.5.0",
+    "@capacitor/filesystem": "^8.1.4",
+    "@capacitor/share": "^8.0.3",
     "@types/three": "^0.186.0",
     "bcryptjs": "^3.0.2",
     "canvas-confetti": "^1.9.4",
