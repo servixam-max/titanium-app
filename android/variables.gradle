@@ -1,5 +1,8 @@
 ext {
-    minSdkVersion = 22
+    // Capacitor 8 exige Android 7.0 (API 24): el plugin Filesystem usa
+    // io.ionic.libs:ionfilesystem-android (minSdk 23) y el manifiesto no se
+    // fusiona por debajo. El build de CI fallaba con minSdkVersion 22.
+    minSdkVersion = 24
     compileSdkVersion = 36
     targetSdkVersion = 36
     androidxActivityVersion = '1.8.0'
