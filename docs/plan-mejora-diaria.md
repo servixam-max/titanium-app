@@ -121,7 +121,16 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   cancelarla muestra el aviso honesto. De paso, `minSdkVersion` 22→24: Capacitor
   8 y el plugin Filesystem exigen API 24 y el build de CI fallaba en el
   manifest merger)*
-- [ ] **F3.2** Heatmap de constancia de las últimas 4 semanas en Estadísticas.
+- [x] **F3.2** Heatmap de constancia de las últimas 4 semanas en Estadísticas.
+  *(v8.5.35 · cuadrícula lunes-domingo de las últimas 4 semanas: cada día se
+  pinta con intensidad relativa a la jornada más fuerte de la ventana (estilo
+  mapa de contribuciones de GitHub, el patrón de las apps de fitness actuales),
+  hoy con anillo y días futuros atenuados sin contarlos como entrenados. Resumen
+  honesto: «X días entrenados» y % de constancia sobre los días ya transcurridos
+  (sin historial lo dice en claro en vez de fingir una cuadrícula viva). Lógica
+  pura en `src/lib/consistency.ts` (18 pruebas) y componente
+  `ConsistencyHeatmap.tsx` (7 pruebas), más 4 e2e (escritorio y móvil) que
+  restauran una copia y comprueban la cuadrícula día a día)*
 - [ ] **F3.3** Estimar 1RM por ejercicio en la gráfica de récords y marcar la
   semana en que se batió.
 - [ ] **F3.4** Comparativa mensual de volumen por grupo muscular.
@@ -183,3 +192,4 @@ justo debajo y se documenta el motivo.
 | v8.5.32 | F4.1 | **El catálogo de ejercicios pesa la mitad**: auditoría medida (153 archivos, 9,5 MB) y compresión aplicada — `screen.webp` 1024→800 px q80, `screen-sm.webp` 512→384 y 13 `screen.jpg` legacy sin referencias fuera. Total **9,5 MB → 4,8 MB (−53 %)** sin pérdida visible; el APK debug baja de ~17 MB a ~12 MB. Incluye la bitácora y el cierre de F4.1. |
 | v8.5.33 | F2.5 | **Comparte tu entrenamiento al terminarlo**: la pantalla de resumen gana un botón "Compartir resumen" que envía un texto con lo hecho —duración, series, reps y volumen— a donde se quiera. Usa la hoja nativa del sistema (WhatsApp, Telegram, lo que haya) y, como el WebView del APK no la implementa, copia el resumen al portapapeles avisando en claro ("Resumen copiado"); cancelar la hoja nativa no se trata como error. La lógica pura vive en `src/lib/share-summary.ts` (18 pruebas) y el componente en `ShareWorkoutButton.tsx` (6), más 3 e2e que recorren el camino completo en ambos escenarios. Verificado en Pixel 7 a 375 y 412 px: zona táctil de 48 px y contraste 6,9:1 (oscuro) / 7,4:1 (claro). |
 | v8.5.34 | F3.1 | **La copia de seguridad por fin se guarda de verdad en el móvil**: la exportación de Ajustes usaba `Blob`+descarga, que el WebView del APK no sabe hacer — decía "¡Copia de seguridad guardada!" y no se guardaba nada (el `Intent` moría sobre `blob:` y la carpeta Download quedaba vacía). Ahora el .json se escribe en el dispositivo con el plugin Filesystem y se entrega al sistema con la hoja de compartir (Guardar en Archivos, Drive, WhatsApp…), manteniendo la descarga clásica en navegador. La restauración recupera también la última marca por ejercicio sin pisar la más reciente del dispositivo, y los avisos dejan de mentir: cancelar la hoja no es error y un archivo ajeno se rechaza en claro. La lógica pura vive en `src/lib/backup.ts` y `src/lib/backup-save.ts` (26 pruebas) y 4 e2e. Verificado en emulador con el APK real: `fortixam-backup-xam-2026-10-04.json` (5.240 B, JSON válido con sesiones) escrito y hoja del sistema abierta; cancelarla muestra "Cerraste la hoja: la copia no se ha guardado fuera de la app". Incluye `minSdkVersion` 22→24 (Capacitor 8 y el plugin Filesystem exigen API 24; el primer build de CI falló en el manifest merger). |
+| v8.5.35 | F3.2 | **Constancia de las últimas 4 semanas de un vistazo**: nueva tarjeta en Estadísticas con una cuadrícula lunes-domingo de 28 días; cada día entrenado se pinta con intensidad relativa a la jornada más fuerte de la ventana (mismo patrón que el mapa de contribuciones de GitHub), hoy lleva un anillo y los días futuros salen atenuados sin contarlos como entrenados. Resumen honesto: «X días entrenados» y % de constancia sobre los días ya transcurridos; sin historial lo dice en claro en vez de fingir una cuadrícula viva. Lógica pura en `src/lib/consistency.ts` (18 pruebas) y componente `ConsistencyHeatmap.tsx` (7 pruebas), más 4 e2e (escritorio y móvil). |
