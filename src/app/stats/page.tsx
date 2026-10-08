@@ -25,6 +25,7 @@ import {
 import { calculateStreak } from "@/lib/metrics";
 import AchievementsList from "@/components/ui/AchievementsList";
 import ConsistencyHeatmap from "@/components/ui/ConsistencyHeatmap";
+import RecordsChart from "@/components/ui/RecordsChart";
 import { getSessions, LocalSession } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { routines } from "@/lib/data";
@@ -374,6 +375,9 @@ export default function StatsPage() {
 
         {/* Heatmap de constancia (F3.2): las últimas 4 semanas, día a día */}
         <ConsistencyHeatmap sessions={sessions} />
+
+        {/* Gráfica de récords (F3.3): 1RM estimado por ejercicio y semana del récord */}
+        <RecordsChart sessions={sessions} />
 
         {/* Volume per Session Bar Chart */}
         {recentSessions.length > 0 && (

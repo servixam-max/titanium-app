@@ -18,7 +18,8 @@ export const CONSISTENCY_WEEK_COUNT = 4;
 export const CONSISTENCY_DAY_COUNT = 28;
 
 const DIAS_SEMANA_CORTOS = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"] as const;
-const MESES_CORTOS = [
+// Compartido con `records-chart.ts` (F3.3), que etiqueta fechas igual.
+export const MESES_CORTOS = [
   "ene",
   "feb",
   "mar",
