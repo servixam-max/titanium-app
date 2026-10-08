@@ -131,8 +131,18 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   pura en `src/lib/consistency.ts` (18 pruebas) y componente
   `ConsistencyHeatmap.tsx` (7 pruebas), más 4 e2e (escritorio y móvil) que
   restauran una copia y comprueban la cuadrícula día a día)*
-- [ ] **F3.3** Estimar 1RM por ejercicio en la gráfica de récords y marcar la
-  semana en que se batió.
+- [x] **F3.3** Estimar 1RM por ejercicio en la gráfica de récords y marcar la
+  semana en que se batió. *(v8.5.36 · tarjeta «Récords» en Estadísticas: la
+  evolución del 1RM estimado (Epley, la definición única de la app) del
+  ejercicio elegido, jornada a jornada; la semana del récord vigente queda
+  marcada sobre la línea (banda vertical + punto con anillo), con resumen claro
+  («Récord el 23 sep · semana del 21 sep»). Selector de ejercicio cuando hay
+  varios (los más recientes primero) y matiz honesto cuando el récord salió de
+  una serie de más de 12 repeticiones. Sin marcas con peso deja de fingir una
+  gráfica y lo dice en claro. Lógica pura en `src/lib/records-chart.ts` (14
+  pruebas) y componente `RecordsChart.tsx` (9 pruebas), más 4 e2e —incluido el
+  recorrido real de restaurar una copia y cambiar de ejercicio— en escritorio y
+  móvil)*
 - [ ] **F3.4** Comparativa mensual de volumen por grupo muscular.
 
 ## Fase 4 — Rendimiento y calidad
@@ -193,3 +203,4 @@ justo debajo y se documenta el motivo.
 | v8.5.33 | F2.5 | **Comparte tu entrenamiento al terminarlo**: la pantalla de resumen gana un botón "Compartir resumen" que envía un texto con lo hecho —duración, series, reps y volumen— a donde se quiera. Usa la hoja nativa del sistema (WhatsApp, Telegram, lo que haya) y, como el WebView del APK no la implementa, copia el resumen al portapapeles avisando en claro ("Resumen copiado"); cancelar la hoja nativa no se trata como error. La lógica pura vive en `src/lib/share-summary.ts` (18 pruebas) y el componente en `ShareWorkoutButton.tsx` (6), más 3 e2e que recorren el camino completo en ambos escenarios. Verificado en Pixel 7 a 375 y 412 px: zona táctil de 48 px y contraste 6,9:1 (oscuro) / 7,4:1 (claro). |
 | v8.5.34 | F3.1 | **La copia de seguridad por fin se guarda de verdad en el móvil**: la exportación de Ajustes usaba `Blob`+descarga, que el WebView del APK no sabe hacer — decía "¡Copia de seguridad guardada!" y no se guardaba nada (el `Intent` moría sobre `blob:` y la carpeta Download quedaba vacía). Ahora el .json se escribe en el dispositivo con el plugin Filesystem y se entrega al sistema con la hoja de compartir (Guardar en Archivos, Drive, WhatsApp…), manteniendo la descarga clásica en navegador. La restauración recupera también la última marca por ejercicio sin pisar la más reciente del dispositivo, y los avisos dejan de mentir: cancelar la hoja no es error y un archivo ajeno se rechaza en claro. La lógica pura vive en `src/lib/backup.ts` y `src/lib/backup-save.ts` (26 pruebas) y 4 e2e. Verificado en emulador con el APK real: `fortixam-backup-xam-2026-10-04.json` (5.240 B, JSON válido con sesiones) escrito y hoja del sistema abierta; cancelarla muestra "Cerraste la hoja: la copia no se ha guardado fuera de la app". Incluye `minSdkVersion` 22→24 (Capacitor 8 y el plugin Filesystem exigen API 24; el primer build de CI falló en el manifest merger). |
 | v8.5.35 | F3.2 | **Constancia de las últimas 4 semanas de un vistazo**: nueva tarjeta en Estadísticas con una cuadrícula lunes-domingo de 28 días; cada día entrenado se pinta con intensidad relativa a la jornada más fuerte de la ventana (mismo patrón que el mapa de contribuciones de GitHub), hoy lleva un anillo y los días futuros salen atenuados sin contarlos como entrenados. Resumen honesto: «X días entrenados» y % de constancia sobre los días ya transcurridos; sin historial lo dice en claro en vez de fingir una cuadrícula viva. Lógica pura en `src/lib/consistency.ts` (18 pruebas) y componente `ConsistencyHeatmap.tsx` (7 pruebas), más 4 e2e (escritorio y móvil). |
+| v8.5.36 | F3.3 | **Tu récord de cada ejercicio, en una gráfica**: nueva tarjeta «Récords» en Estadísticas con la evolución del 1RM estimado (Epley, la definición única de la app) del ejercicio elegido, jornada a jornada. La semana exacta del récord vigente queda marcada sobre la línea —banda vertical y punto con anillo— y el resumen lo dice con su fecha («Récord el 23 sep · semana del 21 sep»). Con varios ejercicios hay selector (los más recientes primero); el matiz de fiabilidad aparece cuando el récord salió de más de 12 repeticiones, y sin marcas con peso lo dice en claro en vez de fingir una gráfica. Lógica pura en `src/lib/records-chart.ts` (14 pruebas) y componente `RecordsChart.tsx` (9 pruebas), más 4 e2e (escritorio y móvil) que restauran una copia y recorren el cambio de ejercicio. |
