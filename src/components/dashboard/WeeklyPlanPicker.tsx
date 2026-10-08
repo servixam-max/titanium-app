@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarDays, Check, Coffee, Dumbbell } from "lucide-react";
+import { useState } from "react";
+import { CalendarDays, Check, Coffee, Dumbbell, Sparkles } from "lucide-react";
 import { haptics } from "@/lib/haptics";
 import { PLANES_SEMANALES } from "@/lib/weekly-plans";
 import type { PlanSemanal, DiaSemana } from "@/lib/weekly-plan";
@@ -129,6 +130,21 @@ interface WeeklyPlanPickerProps {
 }
 
 export default function WeeklyPlanPicker({ planActivoId, onElegir }: WeeklyPlanPickerProps) {
+  // Confirmación visible al elegir: sin esto se pulsaba y no pasaba "nada" a la
+  // vista (la elección se guardaba en silencio).
+  const [confirmado, setConfirmado] = useState<string | null>(null);
+
+  const planActivo = PLANES_SEMANALES.find((p) => p.id === planActivoId) ?? null;
+
+  const elegir = (id: string) => {
+    onElegir(id);
+    const p = PLANES_SEMANALES.find((x) => x.id === id);
+    setConfirmado(
+      p ? `Plan «${p.name}» activado: la pantalla de inicio ya te dice qué toca cada día.` : null,
+    );
+    window.setTimeout(() => setConfirmado(null), 5000);
+  };
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-0.5">
@@ -140,12 +156,46 @@ export default function WeeklyPlanPicker({ planActivoId, onElegir }: WeeklyPlanP
         </p>
       </div>
 
+      {/* Plan activo ahora mismo, bien visible */}
+      {planActivo ? (
+        <div className="fx-card flex items-start gap-2.5 rounded-2xl p-3">
+          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <div className="min-w-0">
+            <p className="text-[13px] font-semibold text-foreground">
+              Plan activo: {planActivo.name}
+            </p>
+            <p className="mt-0.5 text-[12px] leading-relaxed text-[color:var(--text-tertiary)]">
+              Tu pantalla de inicio ya muestra qué toca cada día de la semana.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-[color:var(--text-tertiary)] p-3">
+          <p className="text-[13px] font-semibold text-foreground">Sin plan elegido</p>
+          <p className="mt-0.5 text-[12px] leading-relaxed text-[color:var(--text-tertiary)]">
+            Mientras no elijas uno, la pantalla de inicio te pedirá que selecciones un plan.
+          </p>
+        </div>
+      )}
+
+      {/* Aviso de confirmación tras elegir */}
+      {confirmado && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex items-center gap-2 rounded-xl bg-primary/15 px-3 py-2 text-[12px] font-semibold text-primary"
+        >
+          <Check className="h-3.5 w-3.5 shrink-0" />
+          {confirmado}
+        </div>
+      )}
+
       {PLANES_SEMANALES.map((plan) => (
         <PlanSemanalCard
           key={plan.id}
           plan={plan}
           activo={planActivoId === plan.id}
-          onElegir={onElegir}
+          onElegir={elegir}
         />
       ))}
     </div>

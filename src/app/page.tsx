@@ -180,12 +180,22 @@ export default function Dashboard() {
   }, [sessionsList, planActivo]);
 
   const activeSelectedRoutine = useMemo(() => {
+    // Si hay plan, la rutina mostrada la manda el plan; el carrusel solo puede
+    // elegir cuando no hay plan activo.
+    if (planActivo) {
+      return recommendedRoutine ?? routines.find((r) => r.day === selectedDay) ?? routines[0];
+    }
     return routines.find((r) => r.day === selectedDay) || recommendedRoutine || routines[0];
-  }, [selectedDay, recommendedRoutine]);
+  }, [selectedDay, recommendedRoutine, planActivo]);
 
+  // Al cambiar de plan (o al elegirlo por primera vez) el día seleccionado se
+  // sincroniza con lo que toca hoy: antes quedaba el que tuvieras pinchado a
+  // mano y la home parecía no haberse enterado del plan.
   useEffect(() => {
-    if (recommendedRoutine) setSelectedDay(recommendedRoutine.day);
-  }, [recommendedRoutine]);
+    if (planActivo && recommendedRoutine) {
+      setSelectedDay(recommendedRoutine.day);
+    }
+  }, [planActivo, recommendedRoutine]);
 
   const handleFirstInteraction = () => {
     if (!audioWarmedUp) {
@@ -428,7 +438,17 @@ export default function Dashboard() {
 
         {activeTab === "plans" && (
           <div className="flex flex-col gap-6">
-            <WeeklyPlanPicker planActivoId={planSemanalId} onElegir={elegirPlanSemanal} />
+            <WeeklyPlanPicker
+              planActivoId={planSemanalId}
+              onElegir={(id) => {
+                elegirPlanSemanal(id);
+                // Al elegir plan se vuelve a Inicio para que se vea el efecto:
+                // la tarjeta de "Hoy" ya dice qué toca. Antes se guardaba sin
+                // más y parecía que no había pasado nada.
+                setActiveTab("routines");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
             <PlansView
               activePlan={activePlan}
               savedPlans={savedPlans}
