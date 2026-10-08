@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { SlidersHorizontal, ChevronRight, ChevronDown } from "lucide-react";
@@ -40,6 +40,9 @@ import { calculateTotalXP } from "@/lib/gamification";
 import { computeWarmupReminder } from "@/lib/warmup-reminder";
 import { calculateStreak, buildWeeklyStats, sameDay } from "@/lib/metrics";
 import { filterCatalog } from "@/lib/catalog-filter";
+import { sesionDeHoy, yaEntrenadoHoy } from "@/lib/weekly-plan";
+import { PLANES_SEMANALES } from "@/lib/weekly-plans";
+import WeeklyPlanPicker from "@/components/dashboard/WeeklyPlanPicker";
 
 const WhatsNewModal = dynamic(() => import("@/components/ui/WhatsNewModal"), { ssr: false });
 
@@ -61,7 +64,43 @@ export default function Dashboard() {
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentFilter>("all");
   const [activePlan, setActivePlan] = useState<Plan | null>(null);
   const [savedPlans, setSavedPlans] = useState<Plan[]>([]);
+
+  /**
+   * Plan semanal activo (el que decide qué toca cada día de la semana).
+   * Se guarda aparte de `activePlan` porque son modelos distintos: `activePlan`
+   * es el plan de servidor con `schedule` por contador, y este es el semanal.
+   */
+  const [planSemanalId, setPlanSemanalId] = useState<string | null>(null);
+
+  const planActivo = useMemo(
+    () => (planSemanalId ? PLANES_SEMANALES.find((p) => p.id === planSemanalId) ?? null : null),
+    [planSemanalId],
+  );
+
+  /** Qué toca hoy según el plan (o aviso de "elige un plan"). */
+  const hoy = useMemo(() => sesionDeHoy(planActivo), [planActivo]);
   const [showAllRoutines, setShowAllRoutines] = useState(false);
+
+  // El plan elegido se recuerda en el dispositivo: al reabrir la app debe seguir
+  // diciendo lo mismo, no volver a preguntar.
+  useEffect(() => {
+    try {
+      const guardado = localStorage.getItem("fortixam_plan_semanal");
+      if (guardado) setPlanSemanalId(guardado);
+    } catch {
+      /* sin localStorage (SSR) no hay nada que recordar */
+    }
+  }, []);
+
+  const elegirPlanSemanal = useCallback((id: string | null) => {
+    setPlanSemanalId(id);
+    try {
+      if (id) localStorage.setItem("fortixam_plan_semanal", id);
+      else localStorage.removeItem("fortixam_plan_semanal");
+    } catch {
+      /* modo privado: la elección dura la sesión, no es un error */
+    }
+  }, []);
 
   const allDays = useMemo(() => routines.map((r) => r.day), []);
   const completeCatalog = useMemo(() => getCompleteExerciseCatalog(), []);
@@ -120,12 +159,16 @@ export default function Dashboard() {
   }, [sessionsList, storeSessions]);
 
   const recommendedRoutine = useMemo(() => {
-    if (activePlan?.schedule?.length) {
-      const completed = sessionsList.filter((s) => s.completed && s.routineId);
-      const nextIdx = completed.length % activePlan.schedule.length;
-      const targetDay = activePlan.schedule[nextIdx];
-      const found = routines.find((r) => r.day === targetDay);
-      if (found) return found;
+    // El plan semanal manda: si hay plan activo, la sesión de hoy sale del día
+    // de la semana (lunes Día 1, martes Día 2…), no de un contador de entrenos.
+    if (planActivo) {
+      const hoy = sesionDeHoy(planActivo);
+      if (hoy.dias.length > 0) {
+        const found = routines.find((r) => r.day === hoy.dias[0]);
+        if (found) return found;
+      }
+      // Día de descanso: no se propone sesión (la UI lo explica).
+      return null;
     }
 
     const completed = sessionsList.filter((s) => s.completed && s.routineId);
@@ -134,7 +177,7 @@ export default function Dashboard() {
     if (isNaN(lastRoutineId) || lastRoutineId < 1 || lastRoutineId > 17) return routines[0];
     const nextDay = (lastRoutineId % 17) + 1;
     return routines.find((r) => r.day === nextDay) || routines[0];
-  }, [sessionsList, activePlan]);
+  }, [sessionsList, planActivo]);
 
   const activeSelectedRoutine = useMemo(() => {
     return routines.find((r) => r.day === selectedDay) || recommendedRoutine || routines[0];
@@ -239,29 +282,67 @@ export default function Dashboard() {
               <div className="flex items-baseline justify-between px-1">
                 <h2 className="fx-section-title">Hoy</h2>
                 <span className="fx-label-sm">
-                  {selectedDay === 18 ? "Sesión libre" : `Día ${selectedDay} de 18`}
+                  {hoy.esDescanso ? hoy.etiqueta : `Día ${selectedDay} de 18`}
                 </span>
               </div>
 
-              <HeroWorkoutCard
-                key={`hero-workout-${activeSelectedRoutine.day}`}
-                routine={activeSelectedRoutine}
-                isCompletedToday={completedTodayRoutineIds.has(activeSelectedRoutine.day)}
-                isRecommended={selectedDay === recommendedRoutine?.day}
-                onStartRoutine={() => {
-                  setSelectedRoutine(activeSelectedRoutine);
-                }}
-                onStartExercise={(exerciseIndex) =>
-                  handleStartRoutineExercise(activeSelectedRoutine, exerciseIndex)
-                }
-                onOpenDetails={() => {
-                  setSelectedRoutine(activeSelectedRoutine);
-                }}
-              />
+              {/* Qué toca hoy según el plan y por qué. Si es descanso, se dice
+                  en claro en vez de proponer una sesión que no corresponde. */}
+              {planActivo && (
+                <p className="px-1 text-[12px] leading-relaxed text-[color:var(--text-tertiary)]">
+                  {hoy.motivo}
+                </p>
+              )}
+
+              {hoy.esDescanso && !recommendedRoutine ? (
+                <div className="fx-card flex flex-col gap-3 rounded-2xl p-4">
+                  <div className="flex items-center gap-2">
+                    <span aria-hidden="true" className="text-lg">
+                      {hoy.descansoOpcional ? "🌤️" : "😴"}
+                    </span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {hoy.etiqueta}
+                    </span>
+                  </div>
+                  <p className="text-[13px] leading-relaxed text-[color:var(--text-secondary)]">
+                    {hoy.descansoOpcional
+                      ? "Puedes descansar o entrenar lo que te apetezca."
+                      : "Hoy toca recuperar. Mañana vuelves con más fuerza."}
+                  </p>
+                  {hoy.descansoOpcional && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const el = document.getElementById("elige-sesion");
+                        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }}
+                      className="h-11 w-full rounded-xl bg-primary text-[13px] font-bold text-black transition-all active:scale-95"
+                    >
+                      Entrenar igualmente
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <HeroWorkoutCard
+                  key={`hero-workout-${activeSelectedRoutine.day}`}
+                  routine={activeSelectedRoutine}
+                  isCompletedToday={completedTodayRoutineIds.has(activeSelectedRoutine.day)}
+                  isRecommended={selectedDay === recommendedRoutine?.day}
+                  onStartRoutine={() => {
+                    setSelectedRoutine(activeSelectedRoutine);
+                  }}
+                  onStartExercise={(exerciseIndex) =>
+                    handleStartRoutineExercise(activeSelectedRoutine, exerciseIndex)
+                  }
+                  onOpenDetails={() => {
+                    setSelectedRoutine(activeSelectedRoutine);
+                  }}
+                />
+              )}
             </section>
 
             {/* 2. Interactive Day Selector Hub */}
-            <section className="flex flex-col gap-3">
+            <section id="elige-sesion" className="flex flex-col gap-3">
               <h2 className="fx-section-title px-1">Elige sesión</h2>
               <DayCarouselSelector
                 days={allDays}
@@ -346,20 +427,23 @@ export default function Dashboard() {
         )}
 
         {activeTab === "plans" && (
-          <PlansView
-            activePlan={activePlan}
-            savedPlans={savedPlans}
-            currentUserId={currentUser?.id}
-            onPlanActivated={(p) => {
-              setActivePlan(p);
-              getPlans(currentUser?.id).then((list) => {
-                if (list?.length) setSavedPlans(list);
-              });
-            }}
-            onSelectRoutine={(routine) => {
-              setSelectedRoutine(routine);
-            }}
-          />
+          <div className="flex flex-col gap-6">
+            <WeeklyPlanPicker planActivoId={planSemanalId} onElegir={elegirPlanSemanal} />
+            <PlansView
+              activePlan={activePlan}
+              savedPlans={savedPlans}
+              currentUserId={currentUser?.id}
+              onPlanActivated={(p) => {
+                setActivePlan(p);
+                getPlans(currentUser?.id).then((list) => {
+                  if (list?.length) setSavedPlans(list);
+                });
+              }}
+              onSelectRoutine={(routine) => {
+                setSelectedRoutine(routine);
+              }}
+            />
+          </div>
         )}
 
         {activeTab === "custom" && (
