@@ -57,6 +57,12 @@ export interface Exercise extends Partial<Omit<SyncableEntity, "id">> {
   /** Grupo de superserie (F2.3): ejercicios con el mismo valor se encadenan
    *  sin descanso intermedio entre sí. */
   supersetGroup?: string;
+  /**
+   * Ejercicio de remate opcional: el usuario decide si lo hace y puede saltarlo.
+   * No cuenta para la duración estimada del día (es un extra, no parte del
+   * plan medido), como el remate de burpees o flexiones al final.
+   */
+  optional?: boolean;
 }
 
 export type ExerciseGroupType = "straight" | "superset" | "giant" | "circuit" | "dropset";

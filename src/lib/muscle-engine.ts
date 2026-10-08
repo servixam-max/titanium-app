@@ -251,9 +251,12 @@ export function getExerciseBiomechanics(name: string, category?: string): Exerci
     };
   }
   if (n.includes("pájaro") || n.includes("reverse fly") || n.includes("posterior")) {
+    // El deltoides posterior es el objetivo; el trapecio medio colabora, pero
+    // como sinergista: contarlo como primario hacía que un día de hombros
+    // pareciera repetir trapecio cuando en realidad solo se trabaja de apoyo.
     return {
-      primary: ["deltoids_post", "traps"],
-      secondary: ["lats"],
+      primary: ["deltoids_post"],
+      secondary: ["traps", "lats"],
       bodyweightEqKg: 0,
     };
   }

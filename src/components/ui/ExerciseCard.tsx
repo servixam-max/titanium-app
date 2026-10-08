@@ -171,6 +171,11 @@ export default function ExerciseCard({
         {/* Qué músculos trabaja: primarios en claro, sinergistas en tenue */}
         {(primaryNames.length > 0 || secondaryNames.length > 0) && (
           <div className="mt-1.5 flex flex-wrap items-center gap-1">
+            {exercise.optional && (
+              <span className="rounded-md border border-dashed border-[color:var(--text-tertiary)] px-1.5 py-0.5 text-[11px] font-medium text-[color:var(--text-tertiary)]">
+                opcional
+              </span>
+            )}
             {primaryNames.map((name) => (
               <span
                 key={`p-${name}`}
