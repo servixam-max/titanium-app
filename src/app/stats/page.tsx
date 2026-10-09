@@ -26,6 +26,7 @@ import { calculateStreak } from "@/lib/metrics";
 import AchievementsList from "@/components/ui/AchievementsList";
 import ConsistencyHeatmap from "@/components/ui/ConsistencyHeatmap";
 import RecordsChart from "@/components/ui/RecordsChart";
+import MonthlyComparison from "@/components/ui/MonthlyComparison";
 import { getSessions, LocalSession } from "@/lib/db";
 import { useAppStore } from "@/lib/store";
 import { routines } from "@/lib/data";
@@ -378,6 +379,9 @@ export default function StatsPage() {
 
         {/* Gráfica de récords (F3.3): 1RM estimado por ejercicio y semana del récord */}
         <RecordsChart sessions={sessions} />
+
+        {/* Comparativa mensual (F3.4): volumen por grupo muscular frente al mismo tramo del mes pasado */}
+        <MonthlyComparison sessions={sessions} />
 
         {/* Volume per Session Bar Chart */}
         {recentSessions.length > 0 && (

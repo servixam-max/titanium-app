@@ -461,6 +461,134 @@ export interface DetailedMuscleStat {
 
 export type MuscleTimeframe = "week" | "month" | "all";
 
+/** Clave de los seis grupos mayores que agrupa la app. */
+export type MajorGroupKey = MuscleInfo["majorGroup"];
+
+/** Los seis grupos mayores, con el nombre y color que usa la interfaz. */
+export const MAJOR_GROUPS: ReadonlyArray<{
+  key: MajorGroupKey;
+  name: string;
+  color: string;
+}> = [
+  { key: "chest", name: "Pecho", color: "#10B981" },
+  { key: "back", name: "Espalda", color: "#00E1FF" },
+  { key: "shoulders", name: "Hombros", color: "#9333EA" },
+  { key: "arms", name: "Brazos", color: "#F59E0B" },
+  { key: "legs", name: "Piernas", color: "#FF007A" },
+  { key: "core", name: "Core", color: "#10B981" },
+];
+
+/** Volumen crudo acumulado de un músculo (antes de niveles y porcentajes). */
+export interface RawMuscleStats {
+  volume: number;
+  sets: number;
+  reps: number;
+}
+
+/** Lo mínimo que necesita el acumulador; acepta sesiones reales o de prueba. */
+export interface MuscleSessionLike {
+  completed?: boolean | null;
+  endTime?: string | null;
+  exercises?: Array<{
+    exerciseId?: string | null;
+    exerciseName?: string | null;
+    sets?: Array<{
+      completed?: boolean | null;
+      weight?: number | null;
+      reps?: number | null;
+    }> | null;
+  } | null> | null;
+}
+
+/**
+ * Acumula el volumen efectivo por músculo de unas sesiones ya filtradas:
+ * primarios al 100 % y sinergistas al 45 %, con carga de referencia cuando el
+ * ejercicio es con peso corporal o no se anotaron los kilos. Es la única
+ * definición del cálculo y la comparten `computeMuscleBreakdown` y la
+ * comparativa mensual (F3.4), para que sus cifras no puedan discrepar.
+ */
+export function accumulateMuscleStats(
+  sessions: MuscleSessionLike[],
+): Record<AnatomicalMuscle, RawMuscleStats> {
+  // Initialize all anatomical muscles
+  const statsMap: Record<AnatomicalMuscle, RawMuscleStats> = {
+    chest: { volume: 0, sets: 0, reps: 0 },
+    deltoids_ant: { volume: 0, sets: 0, reps: 0 },
+    deltoids_lat: { volume: 0, sets: 0, reps: 0 },
+    deltoids_post: { volume: 0, sets: 0, reps: 0 },
+    biceps: { volume: 0, sets: 0, reps: 0 },
+    triceps: { volume: 0, sets: 0, reps: 0 },
+    forearms: { volume: 0, sets: 0, reps: 0 },
+    abs: { volume: 0, sets: 0, reps: 0 },
+    obliques: { volume: 0, sets: 0, reps: 0 },
+    traps: { volume: 0, sets: 0, reps: 0 },
+    lats: { volume: 0, sets: 0, reps: 0 },
+    lower_back: { volume: 0, sets: 0, reps: 0 },
+    glutes: { volume: 0, sets: 0, reps: 0 },
+    quads: { volume: 0, sets: 0, reps: 0 },
+    hamstrings: { volume: 0, sets: 0, reps: 0 },
+    calves: { volume: 0, sets: 0, reps: 0 },
+  };
+
+  for (const session of sessions) {
+    if (!session || !session.completed) continue;
+    for (const ex of session.exercises || []) {
+      if (!ex || !ex.exerciseId) continue;
+      const catalogEx = getExerciseById(ex.exerciseId);
+      const exName = ex.exerciseName || catalogEx?.name || ex.exerciseId;
+      const exCategory = catalogEx?.category;
+      const biomech = getExerciseBiomechanics(exName, exCategory);
+
+      for (const set of ex.sets || []) {
+        if (!set) continue;
+        const rawWeight = Number(set.weight) || 0;
+        const rawReps = Number(set.reps) || (set.completed ? 10 : 0);
+
+        // Calculate effective load per rep.
+        //
+        // Si el ejercicio es con peso externo (bodyweightEqKg = 0) y el usuario
+        // no anotó los kilos, el volumen quedaba en 0 y el músculo NO se
+        // iluminaba: habías entrenado pecho y el 3D seguía diciendo
+        // "0/16 músculos activos". El músculo trabajado debe marcarse siempre,
+        // así que sin peso anotado se usa una carga de referencia para que
+        // cuente como estímulo (y se vea en el mapa).
+        const REFERENCE_LOAD_KG = 10;
+        const effectiveWeight =
+          rawWeight > 0 ? rawWeight : biomech.bodyweightEqKg > 0 ? biomech.bodyweightEqKg : REFERENCE_LOAD_KG;
+        const setVolume = effectiveWeight * rawReps;
+
+        // Primary muscles get 100% volume
+        for (const m of biomech.primary) {
+          statsMap[m].volume += setVolume;
+          statsMap[m].sets += 1;
+          statsMap[m].reps += rawReps;
+        }
+
+        // Secondary muscles get 45% volume synergy
+        for (const m of biomech.secondary) {
+          statsMap[m].volume += Math.round(setVolume * 0.45);
+          statsMap[m].sets += 1;
+          statsMap[m].reps += Math.round(rawReps * 0.45);
+        }
+      }
+    }
+  }
+
+  return statsMap;
+}
+
+/** Suma el volumen ya acumulado por músculo a los seis grupos mayores. */
+export function aggregateMajorGroups(
+  stats: Record<AnatomicalMuscle, RawMuscleStats>,
+): Array<{ key: MajorGroupKey; name: string; color: string; volume: number }> {
+  const byGroup = new Map<MajorGroupKey, number>();
+  (Object.keys(stats) as AnatomicalMuscle[]).forEach((m) => {
+    const grp = MUSCLE_METADATA[m].majorGroup;
+    byGroup.set(grp, (byGroup.get(grp) ?? 0) + stats[m].volume);
+  });
+  return MAJOR_GROUPS.map((g) => ({ ...g, volume: byGroup.get(g.key) ?? 0 }));
+}
+
 export function computeMuscleBreakdown(
   sessions: LocalSession[],
   timeframe: MuscleTimeframe = "week"
@@ -495,66 +623,9 @@ export function computeMuscleBreakdown(
     ? completed.filter((s) => new Date(s.endTime!) >= filterDate!)
     : completed;
 
-  // Initialize all anatomical muscles
-  const statsMap: Record<AnatomicalMuscle, { volume: number; sets: number; reps: number }> = {
-    chest: { volume: 0, sets: 0, reps: 0 },
-    deltoids_ant: { volume: 0, sets: 0, reps: 0 },
-    deltoids_lat: { volume: 0, sets: 0, reps: 0 },
-    deltoids_post: { volume: 0, sets: 0, reps: 0 },
-    biceps: { volume: 0, sets: 0, reps: 0 },
-    triceps: { volume: 0, sets: 0, reps: 0 },
-    forearms: { volume: 0, sets: 0, reps: 0 },
-    abs: { volume: 0, sets: 0, reps: 0 },
-    obliques: { volume: 0, sets: 0, reps: 0 },
-    traps: { volume: 0, sets: 0, reps: 0 },
-    lats: { volume: 0, sets: 0, reps: 0 },
-    lower_back: { volume: 0, sets: 0, reps: 0 },
-    glutes: { volume: 0, sets: 0, reps: 0 },
-    quads: { volume: 0, sets: 0, reps: 0 },
-    hamstrings: { volume: 0, sets: 0, reps: 0 },
-    calves: { volume: 0, sets: 0, reps: 0 },
-  };
-
-  for (const session of filteredSessions) {
-    for (const ex of session.exercises || []) {
-      const catalogEx = getExerciseById(ex.exerciseId);
-      const exName = ex.exerciseName || catalogEx?.name || ex.exerciseId;
-      const exCategory = catalogEx?.category;
-      const biomech = getExerciseBiomechanics(exName, exCategory);
-
-      for (const set of ex.sets || []) {
-        const rawWeight = Number(set.weight) || 0;
-        const rawReps = Number(set.reps) || (set.completed ? 10 : 0);
-
-        // Calculate effective load per rep.
-        //
-        // Si el ejercicio es con peso externo (bodyweightEqKg = 0) y el usuario
-        // no anotó los kilos, el volumen quedaba en 0 y el músculo NO se
-        // iluminaba: habías entrenado pecho y el 3D seguía diciendo
-        // "0/16 músculos activos". El músculo trabajado debe marcarse siempre,
-        // así que sin peso anotado se usa una carga de referencia para que
-        // cuente como estímulo (y se vea en el mapa).
-        const REFERENCE_LOAD_KG = 10;
-        const effectiveWeight =
-          rawWeight > 0 ? rawWeight : biomech.bodyweightEqKg > 0 ? biomech.bodyweightEqKg : REFERENCE_LOAD_KG;
-        const setVolume = effectiveWeight * rawReps;
-
-        // Primary muscles get 100% volume
-        for (const m of biomech.primary) {
-          statsMap[m].volume += setVolume;
-          statsMap[m].sets += 1;
-          statsMap[m].reps += rawReps;
-        }
-
-        // Secondary muscles get 45% volume synergy
-        for (const m of biomech.secondary) {
-          statsMap[m].volume += Math.round(setVolume * 0.45);
-          statsMap[m].sets += 1;
-          statsMap[m].reps += Math.round(rawReps * 0.45);
-        }
-      }
-    }
-  }
+  // El cálculo vive una sola vez (`accumulateMuscleStats`), compartido con la
+  // comparativa mensual (F3.4): así las cifras de ambas tarjetas no discrepan.
+  const statsMap = accumulateMuscleStats(filteredSessions);
 
   // Find maximum volume among all muscles to calibrate scale
   const volumes = Object.values(statsMap).map((v) => v.volume);
@@ -597,31 +668,15 @@ export function computeMuscleBreakdown(
     };
   });
 
-  // Major Groups compilation
-  const majorGroupsDict: Record<string, { name: string; color: string; volume: number }> = {
-    chest: { name: "Pecho", color: "#10B981", volume: 0 },
-    back: { name: "Espalda", color: "#00E1FF", volume: 0 },
-    shoulders: { name: "Hombros", color: "#9333EA", volume: 0 },
-    arms: { name: "Brazos", color: "#F59E0B", volume: 0 },
-    legs: { name: "Piernas", color: "#FF007A", volume: 0 },
-    core: { name: "Core", color: "#10B981", volume: 0 },
-  };
-
-  (Object.keys(muscleStats) as AnatomicalMuscle[]).forEach((m) => {
-    const st = muscleStats[m];
-    const grp = st.info.majorGroup;
-    if (majorGroupsDict[grp]) {
-      majorGroupsDict[grp].volume += st.volumeKg;
-    }
-  });
-
-  const majorTotal = Object.values(majorGroupsDict).reduce((s, g) => s + g.volume, 0);
-  const majorGroups = Object.entries(majorGroupsDict).map(([key, data]) => ({
-    key,
-    name: data.name,
-    color: data.color,
-    volume: data.volume,
-    percentage: majorTotal > 0 ? Math.round((data.volume / majorTotal) * 100) : 0,
+  // Major Groups compilation (mismos grupos y colores que la app entera)
+  const aggGroups = aggregateMajorGroups(statsMap);
+  const majorTotal = aggGroups.reduce((s, g) => s + g.volume, 0);
+  const majorGroups = aggGroups.map((g) => ({
+    key: g.key,
+    name: g.name,
+    color: g.color,
+    volume: g.volume,
+    percentage: majorTotal > 0 ? Math.round((g.volume / majorTotal) * 100) : 0,
   }));
 
   return {
