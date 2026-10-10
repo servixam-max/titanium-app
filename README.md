@@ -20,7 +20,7 @@ App de fitness PWA + Android con entrenamientos guiados e individuales, seguimie
 - **Temporizador adaptativo**: el descanso se ajusta por tipo de ejercicio, duración y RPE; supersets detectados y señalados en la UI.
 - **Modo claro y oscuro** con cambio sin parpadeo (zero-FOUC); todas las pantallas respetan el tema.
 - **OTA**: distribución del APK vía GitHub Releases.
-- **Testing**: Vitest (125 unit) + Playwright (16 e2e contra el export estático, incluidos contraste de modo claro y flujos de entreno).
+- **Testing**: Vitest (409 unit) + Playwright (81 e2e en escritorio y en móvil contra el export estático: humo de la PWA, flujos de entreno completos, registro de peso, copia de seguridad y contraste de modo claro/oscuro).
 
 ## 🏗️ Arquitectura
 
@@ -104,7 +104,9 @@ npm run lint          # ESLint
 npx tsc --noEmit      # TypeScript
 ```
 
-Los e2e siembran un usuario en localStorage (`fortixam_server_user`) para saltar AuthModal y cubren: el humo de la PWA, el flujo real de entreno (rutina → modal de calentamiento → guiado/individual), el constructor personalizado y el contraste del modo claro con estilos calculados.
+Los e2e siembran un usuario en localStorage (`fortixam_server_user`) para saltar AuthModal y cubren, en escritorio y móvil (Pixel 7): el humo de la PWA, el flujo de entreno completo (rutina → modal de calentamiento → guiado/individual, hasta completar todas las series y ver el resumen), el registro de un pesaje que sobrevive a una recarga, el constructor personalizado, la copia de seguridad y el contraste del modo claro con estilos calculados.
+
+Nota: los e2e corren contra `dist-apk`, así que este debe ser un export fresco de `main` (`BUILD_MODE=apk npx next build && node scripts/generate-sw.js dist-apk`). Con un export de una versión anterior, la app ve la última release publicada como «actualización disponible» y su aviso tapa los clics.
 
 Nota: el merge de la sincronización tiene tests de regresión específicos (un payload del servidor sin detalle **no** debe borrar las series locales), y el filtrado por `user_id` de las consultas está cubierto en `sync-mapping`.
 
