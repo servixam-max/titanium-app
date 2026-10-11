@@ -176,8 +176,16 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   app — `@capacitor/app` + `src/lib/back-navigation.ts` — y los 63 px que el
   WebView no cubría: `viewport-fit=cover`. Verificado en emulador Android 16 con
   navegación por gestos. Queda pendiente acotar dominios en sí.)*
-- [ ] **F4.4** Revisar rendimiento del WebView: re-renderizados en entreno activo
-  y tiempo de arranque en frío.
+- [x] **F4.4** Revisar rendimiento del WebView: re-renderizados en entreno activo
+  y tiempo de arranque en frío. *(v8.5.43 · medido con una sonda de renders
+  (`src/lib/perf-probe.ts` + `useRenderProbe`): cada tic de 1 Hz del descanso
+  repintaba la pantalla completa del entreno —6 renders de la página en 6 s—;
+  ahora las pantallas de entreno, el registrador de series, el hook de última
+  marca y AuthModal se suscriben por campo y el tic repinta solo el reloj
+  (**6 → 1**). Nuevo `e2e/rendimiento-webview.spec.js` (3 pruebas × escritorio y
+  móvil) que vigila la regla y pone tope al arranque en frío. WebView real:
+  arranque en frío ~0,4 s de mediana (adb `am start -W`); export de la home:
+  FCP 48–140 ms)*
 
 ## Prioridad
 
@@ -224,3 +232,4 @@ justo debajo y se documenta el motivo.
 | v8.5.40 | — | **Elegir un plan ahora se ve y se aplica entero**: al pulsar un plan semanal solo se guardaba el id en silencio, así que parecía que el toque no había hecho nada. Ahora al elegir un plan (1) se guarda, (2) la app vuelve sola a la pantalla de inicio para que se vea el efecto, (3) aparece un aviso de confirmación con el nombre del plan que se retira a los 5 s, (4) la tarjeta «Hoy» dice qué toca con su motivo («Jueves toca Día 2 en «Empuje · Tirón»»), y (5) el día seleccionado se sincroniza con lo que marca el plan en vez de quedarse el que hubiera pinchado a mano. La pantalla de Planes añade un bloque con el **plan activo** (o «Sin plan elegido») para que siempre se sepa en qué estado está. Verificado con CDP dentro del WebView del emulador: el flujo Planes → pulsar plan → guardado → vuelta a Inicio funciona y `localStorage` queda en `push-pull-4`; la home pasa a decir «Jueves toca Día 2». |
 | v8.5.41 | F3.4 | **Comparativa mensual por grupo muscular**: nueva tarjeta «Comparativa Mensual» en Estadísticas que compara el volumen efectivo del mes en curso con el **mismo tramo** del mes pasado (día 1 → hoy contra día 1 → el mismo día, acotado si el mes es más corto — «1–9 oct vs 1–9 sep · mismo tramo»), grupo a grupo con las dos barras juntas y chips de variación («+47 %», «-50 %», «nuevo»; acotado a «>999 %» cuando el número deja de informar). El volumen lo define una sola vez el motor biomecánico: se extraen `accumulateMuscleStats` y `aggregateMajorGroups` (primarios 100 %, sinergistas 45 %) y `computeMuscleBreakdown` pasa a reutilizarlos, así las cifras de ambas tarjetas no pueden discrepar. 22 pruebas de la lógica, 9 del componente y 4 e2e (escritorio y móvil) que restauran una copia con entrenos de ambos tramos; verificado en Pixel 7 a 375 px, claro y oscuro. |
 | v8.5.42 | F4.2 | **La suite e2e cubre ya los dos flujos críticos que faltaban** (el cambio de tema y la navegación ya lo estaban): completar un entreno guiado entero —las 6 series de la rutina de prueba, con su descanso a pantalla completa entre series, hasta el resumen y con la sesión guardada con todas sus series— y registrar un pesaje en Control de Peso que sigue ahí tras recargar la app. Nuevo `e2e/flujos-criticos.spec.js`, verde en escritorio y móvil (Pixel 7); la suite queda en 162 e2e entre los dos proyectos. Se documenta además el requisito que explicaba la suite en rojo al correrla tras publicar: `dist-apk` debe ser un export fresco de `main` — con uno viejo, el aviso «Actualización Lista» de la app tapa los clics. |
+| v8.5.43 | F4.4 | **El reloj del descanso deja de repintar toda la pantalla del entreno**: descanso, preparación e intervalo de trabajo hacen tic cada segundo, y como el reloj vive dentro de `activeWorkout`, cada tic re-renderizaba la pantalla completa —justo mientras sigue siendo interactiva (F2.2)—. Medido con una sonda de renders nueva (`src/lib/perf-probe.ts` + `useRenderProbe`, apagada salvo que alguien la encienda desde fuera): **6 renders de la pantalla por cada 6 s de descanso → 1**. Ahora las pantallas de entreno (individual y guiado), el registrador de series, la ficha del ejercicio, el hook de última marca y AuthModal se suscriben solo a los campos que pintan; el tic repinta únicamente el reloj (RestBar/RestTimer). Nuevo `e2e/rendimiento-webview.spec.js` (3 pruebas × escritorio y móvil) que vigila la regla y pone tope holgado al arranque en frío. WebView Android: arranque en frío ~0,4 s de mediana (adb `am start -W`); export de la home: FCP 48–140 ms. |
