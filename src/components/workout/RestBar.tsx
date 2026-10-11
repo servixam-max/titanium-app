@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import SupersetBadge from "./SupersetBadge";
 import { getSupersetPartnerInRoutine } from "@/lib/supersets";
+import { useRenderProbe } from "@/hooks/useRenderProbe";
 
 /**
  * Descanso flotante del modo individual (F2.2).
@@ -33,6 +34,7 @@ import { getSupersetPartnerInRoutine } from "@/lib/supersets";
  * ahora sí suena al cumplirse el tiempo.
  */
 export default function RestBar() {
+  useRenderProbe("rest-bar");
   const { activeWorkout, tickRest, adjustRest, skipRest, audioEnabled } =
     useAppStore();
 

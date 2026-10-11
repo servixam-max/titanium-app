@@ -6,6 +6,7 @@ import SupersetBadge from "./SupersetBadge";
 import { Exercise, ExerciseGroup } from "@/lib/types";
 import { getSupersetPartner } from "@/lib/workout";
 import { getSupersetPartnerInRoutine } from "@/lib/supersets";
+import { useRenderProbe } from "@/hooks/useRenderProbe";
 
 interface ExerciseStageProps {
   exercise: Exercise;
@@ -30,6 +31,7 @@ export default function ExerciseStage({
   routine,
   className,
 }: ExerciseStageProps) {
+  useRenderProbe("exercise-stage");
   // Superserie explícita del ejercicio (F2.3): fuente de verdad supersetGroup.
   const explicitPartner =
     exercise.supersetGroup && routine

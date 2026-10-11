@@ -41,7 +41,10 @@ import { playExerciseStart } from "@/lib/audio";
 import { syncNow } from "@/lib/sync";
 
 export default function AuthModal() {
-  const { currentUser, setCurrentUser } = useAppStore();
+  // F4.4 — suscripción por campo: con el store entero, este modal del layout se
+  // repintaba en cada tic del reloj de descanso aunque esté cerrado (render nulo).
+  const currentUser = useAppStore((s) => s.currentUser);
+  const setCurrentUser = useAppStore((s) => s.setCurrentUser);
   const [activeTab, setActiveTab] = useState<"login" | "register" | "forgot">("login");
 
   // Server connectivity status

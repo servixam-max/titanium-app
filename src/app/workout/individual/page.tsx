@@ -30,24 +30,38 @@ import {
   RestBar,
   ExitConfirmModal,
 } from "@/components/workout";
+import { useRenderProbe } from "@/hooks/useRenderProbe";
 
 export default function IndividualWorkout() {
   const router = useRouter();
-  const {
-    activeWorkout,
-    completeSet,
-    finishWorkout,
-    cancelWorkout,
-    goToExercise,
-    setExerciseReps,
-    setExerciseWeight,
-    setExerciseNote,
-    audioEnabled,
-    audioMode,
-    voiceRate,
-    toggleAudio,
-    currentUser,
-  } = useAppStore();
+  useRenderProbe("individual-page");
+  // F4.4 — suscripción por campo, nunca al store entero: con `useAppStore()` a
+  // secas esta pantalla se repintaba en CADA tic del descanso (1/s), porque el
+  // reloj vive dentro de activeWorkout y cualquier cambio del store cambiaba el
+  // objeto de estado. Aquí no se selecciona ningún campo del reloj
+  // (restTimeRemaining / isResting): el tic solo repinta la tarjeta del descanso
+  // (RestBar), no la pantalla completa.
+  const routine = useAppStore((s) => s.activeWorkout.routine);
+  const currentExerciseIndex = useAppStore((s) => s.activeWorkout.currentExerciseIndex);
+  const currentSet = useAppStore((s) => s.activeWorkout.currentSet);
+  const currentRoundValue = useAppStore((s) => s.activeWorkout.currentRound);
+  const justFinished = useAppStore((s) => s.activeWorkout.justFinished);
+  const sessionCompleted = useAppStore((s) => s.activeWorkout.session?.completed);
+  const sessionExercises = useAppStore((s) => s.activeWorkout.session?.exercises);
+  const exerciseWeights = useAppStore((s) => s.activeWorkout.exerciseWeights);
+  const exerciseReps = useAppStore((s) => s.activeWorkout.exerciseReps);
+  const completeSet = useAppStore((s) => s.completeSet);
+  const finishWorkout = useAppStore((s) => s.finishWorkout);
+  const cancelWorkout = useAppStore((s) => s.cancelWorkout);
+  const goToExercise = useAppStore((s) => s.goToExercise);
+  const setExerciseReps = useAppStore((s) => s.setExerciseReps);
+  const setExerciseWeight = useAppStore((s) => s.setExerciseWeight);
+  const setExerciseNote = useAppStore((s) => s.setExerciseNote);
+  const audioEnabled = useAppStore((s) => s.audioEnabled);
+  const audioMode = useAppStore((s) => s.audioMode);
+  const voiceRate = useAppStore((s) => s.voiceRate);
+  const toggleAudio = useAppStore((s) => s.toggleAudio);
+  const currentUser = useAppStore((s) => s.currentUser);
 
   const [flashKey, setFlashKey] = useState(0);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -59,13 +73,10 @@ export default function IndividualWorkout() {
     getAllRecords(currentUser?.id).then(setRecordsMap).catch(console.error);
   }, [currentUser?.id]);
 
-  const routine = activeWorkout.routine;
-  const currentExerciseIndex = activeWorkout.currentExerciseIndex;
-  const currentSet = activeWorkout.currentSet;
-  const currentRound = activeWorkout.currentRound ?? 1;
+  const currentRound = currentRoundValue ?? 1;
   const totalRounds = routine?.rounds ?? 1;
   const currentExercise = routine?.exercises[currentExerciseIndex];
-  const currentNote = getExerciseNote(activeWorkout.session?.exercises, currentExercise?.id);
+  const currentNote = getExerciseNote(sessionExercises, currentExercise?.id);
   const { last: lastPerformance, suggestion } = useLastPerformance(currentExercise);
   const supersetGroups = useMemo(() => (routine ? detectSupersetGroups(routine) : []), [routine]);
 
@@ -89,7 +100,7 @@ export default function IndividualWorkout() {
   // entreno expulsaba a la home antes de que el estado persistido cargara.
   useEffect(() => {
     if (!hydrated) return;
-    if (activeWorkout.justFinished && activeWorkout.session?.completed) {
+    if (justFinished && sessionCompleted) {
       router.push("/workout/complete");
       return;
     }
@@ -100,7 +111,7 @@ export default function IndividualWorkout() {
       router.push("/");
       return;
     }
-  }, [hydrated, routine, activeWorkout.justFinished, activeWorkout.session?.completed, router]);
+  }, [hydrated, routine, justFinished, sessionCompleted, router]);
 
   // Sync audio engine
   useEffect(() => {
@@ -155,7 +166,7 @@ export default function IndividualWorkout() {
     const targetReps = targetMatch
       ? parseInt(targetMatch[targetMatch.length - 1], 10)
       : 10;
-    const reps = activeWorkout.exerciseReps[currentExercise.id] || targetReps;
+    const reps = exerciseReps[currentExercise.id] || targetReps;
     setExerciseReps(currentExercise.id, reps);
 
     triggerFeedback();
@@ -184,7 +195,7 @@ export default function IndividualWorkout() {
     // Superserie (F2.3): anticipa la decisión del store (serie simulada) para
     // que el aviso de voz diga la verdad (directo sin descanso o vuelta completa).
     const setsDoneSimulated = countSetsDonePerRound(
-      activeWorkout.session?.exercises,
+      sessionExercises,
       routine.exercises,
       currentRound,
     ).map((done, idx) => (idx === currentExerciseIndex ? done + 1 : done));
@@ -271,8 +282,8 @@ export default function IndividualWorkout() {
             exercise={currentExercise}
             isLastSet={isLastSet}
             isLastExercise={isLastExercise}
-            weight={activeWorkout.exerciseWeights[currentExercise.id] || 0}
-            reps={activeWorkout.exerciseReps[currentExercise.id] || 0}
+            weight={exerciseWeights[currentExercise.id] || 0}
+            reps={exerciseReps[currentExercise.id] || 0}
             note={currentNote}
             showRepeat={currentSet > 1}
             existingRecord={recordsMap.get(currentExercise.id)}

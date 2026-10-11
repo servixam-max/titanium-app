@@ -33,27 +33,46 @@ import {
 } from "@/components/workout";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import TimerCircle from "@/components/ui/TimerCircle";
+import { useRenderProbe } from "@/hooks/useRenderProbe";
 
 export default function GuidedWorkout() {
   const router = useRouter();
-  const {
-    activeWorkout,
-    completeSet,
-    finishWorkout,
-    setExerciseReps,
-    setExerciseWeight,
-    goToExercise,
-    startPrep,
-    tickPrep,
-    skipPrep,
-    skipWork,
-    setExerciseNote,
-    audioEnabled,
-    audioMode,
-    voiceRate,
-    toggleAudio,
-    currentUser,
-  } = useAppStore();
+  useRenderProbe("guided-page");
+  // F4.4 — suscripción por campo, nunca al store entero. Los ticks de 1 Hz
+  // (descanso, preparación, intervalo de trabajo) viven en activeWorkout; con
+  // la suscripción global esta pantalla entera se repintaba en cada tic. Aquí
+  // solo se selecciona lo que se pinta: durante el descanso a pantalla completa
+  // (RestTimer) esta página ya no se re-renderiza ni una vez por segundo.
+  // prepTimeRemaining sí se selecciona: es el contador que la propia pantalla
+  // de preparación muestra mientras está visible.
+  const routine = useAppStore((s) => s.activeWorkout.routine);
+  const currentExerciseIndex = useAppStore((s) => s.activeWorkout.currentExerciseIndex);
+  const currentSet = useAppStore((s) => s.activeWorkout.currentSet);
+  const currentRoundValue = useAppStore((s) => s.activeWorkout.currentRound);
+  const justFinished = useAppStore((s) => s.activeWorkout.justFinished);
+  const sessionCompleted = useAppStore((s) => s.activeWorkout.session?.completed);
+  const sessionExercises = useAppStore((s) => s.activeWorkout.session?.exercises);
+  const isPreparing = useAppStore((s) => s.activeWorkout.isPreparing);
+  const prepTimeRemaining = useAppStore((s) => s.activeWorkout.prepTimeRemaining);
+  const isWorking = useAppStore((s) => s.activeWorkout.isWorking);
+  const isResting = useAppStore((s) => s.activeWorkout.isResting);
+  const exerciseWeights = useAppStore((s) => s.activeWorkout.exerciseWeights);
+  const exerciseReps = useAppStore((s) => s.activeWorkout.exerciseReps);
+  const completeSet = useAppStore((s) => s.completeSet);
+  const finishWorkout = useAppStore((s) => s.finishWorkout);
+  const setExerciseReps = useAppStore((s) => s.setExerciseReps);
+  const setExerciseWeight = useAppStore((s) => s.setExerciseWeight);
+  const goToExercise = useAppStore((s) => s.goToExercise);
+  const startPrep = useAppStore((s) => s.startPrep);
+  const tickPrep = useAppStore((s) => s.tickPrep);
+  const skipPrep = useAppStore((s) => s.skipPrep);
+  const skipWork = useAppStore((s) => s.skipWork);
+  const setExerciseNote = useAppStore((s) => s.setExerciseNote);
+  const audioEnabled = useAppStore((s) => s.audioEnabled);
+  const audioMode = useAppStore((s) => s.audioMode);
+  const voiceRate = useAppStore((s) => s.voiceRate);
+  const toggleAudio = useAppStore((s) => s.toggleAudio);
+  const currentUser = useAppStore((s) => s.currentUser);
 
   const [flashKey, setFlashKey] = useState(0);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -65,13 +84,10 @@ export default function GuidedWorkout() {
     getAllRecords(currentUser?.id).then(setRecordsMap).catch(console.error);
   }, [currentUser?.id]);
 
-  const routine = activeWorkout.routine;
-  const currentExerciseIndex = activeWorkout.currentExerciseIndex;
-  const currentSet = activeWorkout.currentSet;
-  const currentRound = activeWorkout.currentRound ?? 1;
+  const currentRound = currentRoundValue ?? 1;
   const totalRounds = routine?.rounds ?? 1;
   const currentExercise = routine?.exercises[currentExerciseIndex];
-  const currentNote = getExerciseNote(activeWorkout.session?.exercises, currentExercise?.id);
+  const currentNote = getExerciseNote(sessionExercises, currentExercise?.id);
   const { last: lastPerformance, suggestion } = useLastPerformance(currentExercise);
   const isHIIT = routine?.type === "hiit";
   const timedSeconds =
@@ -87,7 +103,7 @@ export default function GuidedWorkout() {
   // entreno expulsaba a la home antes de que el estado persistido cargara.
   useEffect(() => {
     if (!hydrated) return;
-    if (activeWorkout.justFinished && activeWorkout.session?.completed) {
+    if (justFinished && sessionCompleted) {
       router.push("/workout/complete");
       return;
     }
@@ -98,13 +114,7 @@ export default function GuidedWorkout() {
       router.push("/");
       return;
     }
-  }, [
-    hydrated,
-    routine,
-    activeWorkout.justFinished,
-    activeWorkout.session?.completed,
-    router,
-  ]);
+  }, [hydrated, routine, justFinished, sessionCompleted, router]);
 
   // Sync audio engine with store settings on mount and when changed
   useEffect(() => {
@@ -130,10 +140,10 @@ export default function GuidedWorkout() {
     if (
       routine &&
       isTimedSet &&
-      !activeWorkout.isPreparing &&
-      !activeWorkout.isWorking &&
-      !activeWorkout.isResting &&
-      !activeWorkout.justFinished
+      !isPreparing &&
+      !isWorking &&
+      !isResting &&
+      !justFinished
     ) {
       startPrep(10);
     }
@@ -142,22 +152,22 @@ export default function GuidedWorkout() {
     routine,
     isTimedSet,
     timedSeconds,
-    activeWorkout.isPreparing,
-    activeWorkout.isWorking,
-    activeWorkout.isResting,
-    activeWorkout.justFinished,
+    isPreparing,
+    isWorking,
+    isResting,
+    justFinished,
     currentExerciseIndex,
     currentSet,
   ]);
 
   // Tick the HIIT preparation countdown
   useEffect(() => {
-    if (!activeWorkout.isPreparing) return;
+    if (!isPreparing) return;
     const interval = setInterval(() => {
       tickPrep();
     }, 1000);
     return () => clearInterval(interval);
-  }, [activeWorkout.isPreparing, tickPrep]);
+  }, [isPreparing, tickPrep]);
 
   // Confirm before leaving the page
   const onBeforeUnload = useCallback((e: BeforeUnloadEvent) => {
@@ -213,13 +223,13 @@ export default function GuidedWorkout() {
   const handleComplete = async (rpe?: number) => {
     if (isFinishing) return;
     setIsFinishing(true);
-    if (activeWorkout.isWorking) skipWork();
+    if (isWorking) skipWork();
 
     const targetMatch = currentExercise.reps.match(/\d+/g);
     const targetReps = targetMatch
       ? parseInt(targetMatch[targetMatch.length - 1], 10)
       : 10;
-    const reps = activeWorkout.exerciseReps[currentExercise.id] || targetReps;
+    const reps = exerciseReps[currentExercise.id] || targetReps;
     setExerciseReps(currentExercise.id, reps);
 
     triggerFeedback();
@@ -227,7 +237,7 @@ export default function GuidedWorkout() {
     // Superserie (F2.3): anticipa la decisión del store (serie simulada) para
     // anunciar la cadena directa sin descanso intermedio.
     const setsDoneSimulated = countSetsDonePerRound(
-      activeWorkout.session?.exercises,
+      sessionExercises,
       routine.exercises,
       currentRound,
     ).map((done, idx) => (idx === currentExerciseIndex ? done + 1 : done));
@@ -298,7 +308,7 @@ export default function GuidedWorkout() {
   const circuitNumber = isHIIT ? currentRound : undefined;
   const totalCircuits = isHIIT ? totalRounds : undefined;
 
-  const footer = activeWorkout.isPreparing ? (
+  const footer = isPreparing ? (
     <PrimaryButton
       leftIcon={<CheckCircle className="w-6 h-6" />}
       onClick={() => {
@@ -311,7 +321,7 @@ export default function GuidedWorkout() {
     <PrimaryButton
       leftIcon={<CheckCircle className="w-6 h-6" />}
       onClick={() => {
-        if (activeWorkout.isWorking) skipWork();
+        if (isWorking) skipWork();
         handleComplete();
       }}
     >
@@ -322,8 +332,8 @@ export default function GuidedWorkout() {
       exercise={currentExercise}
       isLastSet={isLastSet}
       isLastExercise={isLastExercise}
-      weight={activeWorkout.exerciseWeights[currentExercise.id] || 0}
-      reps={activeWorkout.exerciseReps[currentExercise.id] || 0}
+      weight={exerciseWeights[currentExercise.id] || 0}
+      reps={exerciseReps[currentExercise.id] || 0}
       note={currentNote}
       showRepeat={currentSet > 1}
       existingRecord={recordsMap.get(currentExercise.id)}
@@ -373,16 +383,16 @@ export default function GuidedWorkout() {
           />
         </div>
 
-        {activeWorkout.isPreparing ? (
+        {isPreparing ? (
           <div className="flex-1 flex flex-col items-center justify-center min-h-0">
             <h2 className="font-headline-lg text-headline-lg text-white text-center mb-2">
               Preparado/a?
             </h2>
             <p className="text-zinc-400 text-sm mb-6 text-center">
-              Empieza en {activeWorkout.prepTimeRemaining} segundos
+              Empieza en {prepTimeRemaining} segundos
             </p>
             <TimerCircle
-              seconds={activeWorkout.prepTimeRemaining}
+              seconds={prepTimeRemaining}
               total={10}
               size={220}
               strokeWidth={10}

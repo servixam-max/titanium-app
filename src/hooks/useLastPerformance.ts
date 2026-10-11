@@ -24,10 +24,17 @@ interface UseLastPerformanceResult {
  * Devuelve la última marca del ejercicio (peso × reps) y la sugerencia de
  * progresión para hoy. Además precarga peso/reps en el store cuando el
  * ejercicio aún no tiene valores en la sesión activa.
+ *
+ * F4.4 — suscripción por campo: con el store entero, este hook se re-ejecutaba
+ * en cada tic del descanso (y arrastraba a la pantalla que lo usa). Solo hace
+ * falta saber cuándo cambian los pesos anotados (`exerciseWeights`), que es lo
+ * único que dispara la precarga.
  */
 export function useLastPerformance(exercise?: Exercise): UseLastPerformanceResult {
   const [sessions, setSessions] = useState<WorkoutSession[]>([]);
-  const { activeWorkout, setExerciseWeight, setExerciseReps } = useAppStore();
+  const exerciseWeights = useAppStore((s) => s.activeWorkout.exerciseWeights);
+  const setExerciseWeight = useAppStore((s) => s.setExerciseWeight);
+  const setExerciseReps = useAppStore((s) => s.setExerciseReps);
   const prefilledRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -76,7 +83,7 @@ export function useLastPerformance(exercise?: Exercise): UseLastPerformanceResul
   useEffect(() => {
     if (!exercise || !suggestion || suggestion.weight <= 0) return;
     const exerciseId = exercise.id ?? "";
-    const current = activeWorkout.exerciseWeights[exerciseId];
+    const current = exerciseWeights[exerciseId];
     if (current !== undefined && current > 0) return;
 
     const key = `${exerciseId}:${suggestion.weight}:${suggestion.reps}`;
@@ -85,7 +92,7 @@ export function useLastPerformance(exercise?: Exercise): UseLastPerformanceResul
 
     setExerciseWeight(exerciseId, suggestion.weight);
     setExerciseReps(exerciseId, suggestion.reps);
-  }, [exercise, suggestion, activeWorkout.exerciseWeights, setExerciseWeight, setExerciseReps]);
+  }, [exercise, suggestion, exerciseWeights, setExerciseWeight, setExerciseReps]);
 
   return { last, suggestion, historyCount };
 }

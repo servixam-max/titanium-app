@@ -10,6 +10,7 @@ import { LastPerformance, LoadSuggestion } from "@/lib/progression";
 import VoiceLoggerButton from "./VoiceLoggerButton";
 import ExerciseNoteButton from "./ExerciseNoteButton";
 import { ParsedVoiceWorkout } from "@/lib/voice-parser";
+import { useRenderProbe } from "@/hooks/useRenderProbe";
 
 interface SetLoggerProps {
   exercise: Exercise;
@@ -68,6 +69,7 @@ export default function SetLogger({
   onRepeatLastSet,
   className,
 }: SetLoggerProps) {
+  useRenderProbe("set-logger");
   const [localWeight, setLocalWeight] = useState(String(weight || ""));
   const [localReps, setLocalReps] = useState(String(reps || ""));
   // RPE opcional: si se marca, el descanso se ajusta al esfuerzo real.

@@ -20,9 +20,11 @@ import {
   announceThirtySecondsLeft,
   announceHalfRest,
 } from "@/lib/audio";
+import { useRenderProbe } from "@/hooks/useRenderProbe";
 
 export default function RestTimer() {
   const router = useRouter();
+  useRenderProbe("rest-timer");
   const {
     activeWorkout,
     skipRest,
