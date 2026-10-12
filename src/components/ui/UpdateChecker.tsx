@@ -87,8 +87,10 @@ export default function UpdateChecker() {
       try {
         let { entries } = await fetchChangelog();
         let entry = findEntryByVersion(entries, version);
-        if (!entry) {
-          // La copia guardada puede ser de antes de publicar esta versión.
+        if (!entry || entry.notes.length === 0) {
+          // La copia guardada puede ser de antes de publicar esta versión, o
+          // venir sin notas (API limitada): una consulta nueva las trae por la
+          // API o por el canal raw.
           entries = (await fetchChangelog({ force: true })).entries;
           entry = findEntryByVersion(entries, version);
         }

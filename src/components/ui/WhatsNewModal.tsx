@@ -128,13 +128,14 @@ export default function WhatsNewModal() {
     (async () => {
       try {
         let { entries } = await fetchChangelog();
-        // La caché puede ser de antes de publicar esta versión: una segunda
-        // consulta a GitHub la trae. Si no hay red, se muestra el texto corto.
-        if (!findEntryByVersion(entries, APP_VERSION.version)) {
-          const fresh = await fetchChangelog({ force: true });
-          entries = fresh.entries;
+        let entry = findEntryByVersion(entries, APP_VERSION.version);
+        // La caché puede ser de antes de publicar esta versión, o venir sin
+        // notas (API limitada): una segunda consulta las trae por la API o por
+        // el canal raw. Si no hay red, se muestra el texto corto.
+        if (!entry || entry.notes.length === 0) {
+          entries = (await fetchChangelog({ force: true })).entries;
+          entry = findEntryByVersion(entries, APP_VERSION.version);
         }
-        const entry = findEntryByVersion(entries, APP_VERSION.version);
         if (alive) setNotes(entry?.notes ?? []);
       } catch {
         if (alive) setNotes([]);

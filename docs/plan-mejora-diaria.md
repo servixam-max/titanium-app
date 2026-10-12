@@ -187,9 +187,20 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   arranque en frío ~0,4 s de mediana (adb `am start -W`); export de la home:
   FCP 48–140 ms)*
 
+## Fase 5 — Robustez de la publicación
+
+- [ ] **F5.1** Notas y novedades inmunes al límite de la API de GitHub: el canal
+  raw (`ota_server/changelog.json`, regenerado en cada publicación) sirve de
+  respaldo cuando la API responde 403 o deja versiones sin notas, en Ajustes →
+  Novedades, el aviso pre-descarga y la bienvenida tras actualizar.
+- [ ] **F5.2** Arreglar los 4 e2e preexistentes del sistema de diseño (textos de
+  11 px en /stats y /routine/1) y dejar la suite e2e 100 % en verde.
+- [ ] **F5.3** Acotar `cleartext` y `allowNavigation` en `capacitor.config.json`
+  sin romper el puente LAN/Tailscale (cola de F4.3).
+
 ## Prioridad
 
-Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4. Dentro de cada fase, de arriba abajo.
+Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5. Dentro de cada fase, de arriba abajo.
 Si una tarea resulta inviable o demasiado grande, se divide en una tarea nueva
 justo debajo y se documenta el motivo.
 

@@ -9,7 +9,8 @@
 #   2. ejecuta la suite de tests (puerta de calidad)
 #   3. compila el export estático del APK (puerta de calidad)
 #   4. commitea el cambio del día
-#   5. sube la versión con `npm run release` (patch) y commitea
+#   5. sube la versión con `npm run release` (patch), regenera el canal raw de
+#      las novedades (ota_server/changelog.json, F5.1) y commitea
 #   6. push a main
 #   7. crea el tag vX.Y.Z y lo empuja  ->  GitHub Actions compila y publica
 #      el APK en GitHub Releases (canal OTA de la app)
@@ -95,6 +96,17 @@ fi
 
 VERSION=$(node -p "require('./version.json').version")
 VERSION_CODE=$(node -p "require('./version.json').versionCode")
+
+# Regenera el canal raw de las novedades (F5.1) con la versión que se publica,
+# para que el archivo viaje en el mismo commit de versión. No es puerta de
+# calidad: si falla, la release sale igual y se reintenta al día siguiente
+# (la generación es completa e idempotente).
+if node scripts/update-changelog.mjs >/tmp/fortixam-changelog.log 2>&1; then
+  log "OK: $(tail -1 /tmp/fortixam-changelog.log)"
+else
+  log "WARN: no se pudo regenerar ota_server/changelog.json:"
+  tail -5 /tmp/fortixam-changelog.log
+fi
 
 git add -A
 git commit -q -m "chore(release): v${VERSION} — versionCode ${VERSION_CODE}"

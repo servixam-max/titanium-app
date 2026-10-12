@@ -7,6 +7,8 @@ import {
   sameVersion,
   findEntryByVersion,
   mapReleases,
+  mapRawChangelog,
+  mergeChangelog,
   fetchChangelog,
   getCachedChangelog,
 } from "./changelog";
@@ -177,6 +179,89 @@ describe("Changelog — mapReleases", () => {
   });
 });
 
+describe("Changelog — mapRawChangelog (canal raw, F5.1)", () => {
+  it("normaliza el archivo ota_server/changelog.json", () => {
+    const entries = mapRawChangelog({
+      generatedAt: "2026-10-12T07:00:00Z",
+      repo: "servixam-max/titanium-app",
+      releases: [
+        {
+          version: "8.5.44",
+          name: "FORTIXAM v8.5.44",
+          publishedAt: "2026-10-12T07:00:00Z",
+          notes: ["Mejora del día"],
+          url: "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.44",
+        },
+        {
+          version: "v8.5.43",
+          publishedAt: "2026-10-11T07:00:00Z",
+          notes: ["Otra mejora"],
+        },
+      ],
+    });
+
+    expect(entries.map((e) => e.version)).toEqual(["8.5.44", "8.5.43"]);
+    expect(entries[0].notes).toEqual(["Mejora del día"]);
+    // Sin url explícita se construye la de la release; la "v" se ignora
+    expect(entries[1].url).toContain("/releases/tag/v8.5.43");
+  });
+
+  it("limpia markdown, quita duplicados y recorta el exceso de cambios", () => {
+    const notes = [
+      "Mejora [con enlace](https://example.com)",
+      "Mejora con enlace",
+      ...Array.from({ length: 10 }, (_, i) => `Cambio ${i + 1}`),
+    ];
+    const entries = mapRawChangelog([{ version: "8.5.44", notes: ["", "   ", ...notes] }]);
+
+    expect(entries[0].notes[0]).toBe("Mejora con enlace");
+    expect(entries[0].notes).toHaveLength(8);
+    expect(entries[0].notes.filter((n) => n === "Mejora con enlace")).toHaveLength(1);
+  });
+
+  it("tolera payloads vacíos o mal formados", () => {
+    expect(mapRawChangelog(null)).toEqual([]);
+    expect(mapRawChangelog({})).toEqual([]);
+    expect(mapRawChangelog({ releases: "no-es-lista" })).toEqual([]);
+    expect(mapRawChangelog({ releases: [null, {}, { version: "" }, { version: 42 }] })).toEqual([]);
+    // Una lista suelta también vale
+    expect(mapRawChangelog([{ version: "8.5.44" }])).toHaveLength(1);
+  });
+});
+
+describe("Changelog — mergeChangelog (API + canal raw)", () => {
+  it("rellena desde el respaldo las notas que falten y conserva las propias", () => {
+    const merged = mergeChangelog(
+      [
+        { version: "8.5.44", name: "n", publishedAt: "2026-10-12T07:00:00Z", notes: ["De la API"], url: "u1" },
+        { version: "8.5.43", name: "n", publishedAt: "2026-10-11T07:00:00Z", notes: [], url: "u2" },
+      ],
+      [
+        { version: "8.5.43", name: "n", publishedAt: "2026-10-11T07:00:00Z", notes: ["Del canal raw"], url: "u2" },
+      ],
+    );
+
+    expect(findEntryByVersion(merged, "8.5.44")?.notes).toEqual(["De la API"]);
+    expect(findEntryByVersion(merged, "8.5.43")?.notes).toEqual(["Del canal raw"]);
+  });
+
+  it("añade las versiones que solo están en el respaldo (release recién publicada)", () => {
+    const merged = mergeChangelog(
+      [{ version: "8.5.43", name: "n", publishedAt: "2026-10-11T07:00:00Z", notes: ["A"], url: "u" }],
+      [{ version: "8.5.44", name: "n", publishedAt: "2026-10-12T07:00:00Z", notes: ["B"], url: "u" }],
+    );
+
+    expect(merged.map((e) => e.version)).toEqual(["8.5.44", "8.5.43"]);
+  });
+
+  it("sin respaldo devuelve la principal, y sin principal el respaldo entero", () => {
+    const primary = [{ version: "8.5.43", name: "n", publishedAt: "2026-10-11T07:00:00Z", notes: [], url: "u" }];
+    const fallback = [{ version: "8.5.43", name: "n", publishedAt: "2026-10-11T07:00:00Z", notes: ["X"], url: "u" }];
+    expect(mergeChangelog(primary, [])).toBe(primary);
+    expect(mergeChangelog([], fallback)).toBe(fallback);
+  });
+});
+
 describe("Changelog — fetchChangelog con caché", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -286,6 +371,9 @@ describe("Changelog — fetchChangelog con caché", () => {
       if (String(url).includes("/compare/")) {
         return { ok: false, status: 404, json: async () => ({}) };
       }
+      if (String(url).includes("raw.githubusercontent.com")) {
+        return { ok: false, status: 404, json: async () => ({}) };
+      }
       return {
         ok: true,
         json: async () => [
@@ -298,5 +386,68 @@ describe("Changelog — fetchChangelog con caché", () => {
     const { entries } = await fetchChangelog({ force: true });
     expect(entries).toHaveLength(1);
     expect(entries[0].notes).toEqual([]);
+  });
+
+  it("con la API limitada (403), las novedades llegan por el canal raw", async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (String(url).includes("api.github.com")) {
+        return { ok: false, status: 403, json: async () => ({ message: "API rate limit exceeded" }) };
+      }
+      if (String(url).includes("changelog.json")) {
+        return {
+          ok: true,
+          json: async () => ({
+            releases: [
+              { version: "8.5.44", publishedAt: "2026-10-12T07:00:00Z", notes: ["Mejora del día"] },
+            ],
+          }),
+        };
+      }
+      return { ok: false, status: 404, json: async () => ({}) };
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { entries, cached } = await fetchChangelog({ force: true });
+    expect(cached).toBe(false);
+    expect(entries[0].version).toBe("8.5.44");
+    expect(entries[0].notes).toEqual(["Mejora del día"]);
+    // La copia queda guardada para las próximas 6 h
+    expect(getCachedChangelog()?.[0].version).toBe("8.5.44");
+  });
+
+  it("usa el canal raw para rellenar las versiones sin notas", async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      const target = String(url);
+      if (target.includes("/compare/")) {
+        return { ok: false, status: 403, json: async () => ({}) };
+      }
+      if (target.includes("api.github.com")) {
+        return {
+          ok: true,
+          json: async () => [
+            { tag_name: "v8.5.44", published_at: "2026-10-12T07:00:00Z", body: "**Full Changelog**: https://x" },
+            { tag_name: "v8.5.43", published_at: "2026-10-11T07:00:00Z", body: "**Full Changelog**: https://x" },
+          ],
+        };
+      }
+      if (target.includes("changelog.json")) {
+        return {
+          ok: true,
+          json: async () => ({
+            releases: [
+              { version: "8.5.44", publishedAt: "2026-10-12T07:00:00Z", notes: ["Del canal raw"] },
+              { version: "8.5.43", publishedAt: "2026-10-11T07:00:00Z", notes: ["Del canal raw B"] },
+            ],
+          }),
+        };
+      }
+      return { ok: false, status: 404, json: async () => ({}) };
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { entries } = await fetchChangelog({ force: true });
+    // La API manda; el canal raw rellena las notas que la API no pudo traer
+    expect(findEntryByVersion(entries, "8.5.44")?.notes).toEqual(["Del canal raw"]);
+    expect(findEntryByVersion(entries, "8.5.43")?.notes).toEqual(["Del canal raw B"]);
   });
 });

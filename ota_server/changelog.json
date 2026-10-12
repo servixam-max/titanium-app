@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-10-12T07:04:30.260Z",
+  "repo": "servixam-max/titanium-app",
+  "releases": [
+    {
+      "version": "8.5.43",
+      "name": "FORTIXAM v8.5.43",
+      "publishedAt": "2026-10-11T07:12:50.000Z",
+      "notes": [
+        "docs: plan diario — flujos críticos e2e v8.5.42",
+        "perf(workout): el tic del descanso solo repinta el reloj, no la pantalla"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.43"
+    },
+    {
+      "version": "8.5.42",
+      "name": "FORTIXAM v8.5.42",
+      "publishedAt": "2026-10-10T07:13:21.000Z",
+      "notes": [
+        "docs: plan diario — comparativa mensual por grupo muscular v8.5.41",
+        "test(e2e): flujos críticos — entreno guiado completo y registro de peso"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.42"
+    },
+    {
+      "version": "8.5.41",
+      "name": "FORTIXAM v8.5.41",
+      "publishedAt": "2026-10-09T07:26:27.000Z",
+      "notes": [
+        "docs: bitacora v8.5.40 — elegir plan se ve y se aplica",
+        "feat(stats): comparativa mensual de volumen por grupo muscular"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.41"
+    },
+    {
+      "version": "8.5.40",
+      "name": "FORTIXAM v8.5.40",
+      "publishedAt": "2026-10-08T10:27:13.000Z",
+      "notes": [
+        "docs: bitacora v8.5.39 — planes semanales",
+        "fix(planes): elegir un plan ahora se ve y se aplica del todo"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.40"
+    },
+    {
+      "version": "8.5.39",
+      "name": "FORTIXAM v8.5.39",
+      "publishedAt": "2026-10-08T10:12:04.000Z",
+      "notes": [
+        "docs: bitacora v8.5.38 — remates opcionales y duraciones reales",
+        "feat(planes): planes semanales por dia y la home dice que toca hoy"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.39"
+    },
+    {
+      "version": "8.5.38",
+      "name": "FORTIXAM v8.5.38",
+      "publishedAt": "2026-10-08T09:57:27.000Z",
+      "notes": [
+        "docs: bitacora v8.5.37 — descansos por tipo y dias sin repetir",
+        "fix(entrenos): remates opcionales, duraciones reales y musculos sin repetir"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.38"
+    },
+    {
+      "version": "8.5.37",
+      "name": "FORTIXAM v8.5.37",
+      "publishedAt": "2026-10-08T09:19:31.000Z",
+      "notes": [
+        "docs: plan diario — F3.3 gráfica de récords v8.5.36",
+        "fix(entrenos): descansos por tipo de ejercicio y dias sin repetir"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.37"
+    },
+    {
+      "version": "8.5.36",
+      "name": "FORTIXAM v8.5.36",
+      "publishedAt": "2026-10-08T07:15:33.000Z",
+      "notes": [
+        "docs: plan diario — F3.2 heatmap de constancia v8.5.35",
+        "feat(stats): gráfica de récords con 1RM estimado"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.36"
+    },
+    {
+      "version": "8.5.35",
+      "name": "FORTIXAM v8.5.35",
+      "publishedAt": "2026-10-06T07:01:09.000Z",
+      "notes": [
+        "docs: plan diario — F3.1 copia de seguridad en el móvil v8.5.34",
+        "feat(stats): heatmap de constancia de 4 semanas"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.35"
+    },
+    {
+      "version": "8.5.34",
+      "name": "FORTIXAM v8.5.34",
+      "publishedAt": "2026-10-04T07:17:40.000Z",
+      "notes": [
+        "docs: plan diario — F2.5 compartir resumen v8.5.33",
+        "feat(ajustes): copia de seguridad que funciona en el móvil",
+        "fix(android): minSdk 24 — el plugin de la copia de seguridad exige API 23+"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.34"
+    },
+    {
+      "version": "8.5.33",
+      "name": "FORTIXAM v8.5.33",
+      "publishedAt": "2026-10-02T07:21:53.000Z",
+      "notes": [
+        "feat(entreno): compartir el resumen del entrenamiento"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.33"
+    },
+    {
+      "version": "8.5.32",
+      "name": "FORTIXAM v8.5.32",
+      "publishedAt": "2026-10-01T23:31:01.000Z",
+      "notes": [
+        "perf(imagenes): F4.1 — comprimir catalogo de ejercicios 9,5MB -> 4,6MB (-53%)",
+        "docs: F4.1 completada (compresion -53%) + bitacora v8.5.31"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.32"
+    }
+  ]
+}

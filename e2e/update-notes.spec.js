@@ -71,6 +71,60 @@ async function mockGitHub(page, { conNotas = true } = {}) {
   });
 }
 
+/**
+ * Simula la API de GitHub agotada por IP (403) con el canal raw cubriendo la
+ * publicación: version.json y changelog.json servidos desde el CDN.
+ */
+async function mockApiLimitada(page) {
+  await page.route('**/api.github.com/**', async (route) => {
+    await route.fulfill({
+      status: 403,
+      contentType: 'application/json',
+      body: JSON.stringify({ message: 'API rate limit exceeded' }),
+    });
+  });
+
+  await page.route('**/raw.githubusercontent.com/**', async (route) => {
+    const url = route.request().url();
+
+    if (url.includes('version.json')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          version: VERSION_NUEVA,
+          versionCode: 9000000,
+          apkName: `FORTIXAM-${VERSION_NUEVA}.apk`,
+          url: `https://github.com/servixam-max/titanium-app/releases/download/v${VERSION_NUEVA}/FORTIXAM-${VERSION_NUEVA}.apk`,
+        }),
+      });
+      return;
+    }
+
+    if (url.includes('changelog.json')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          generatedAt: '2026-09-29T08:00:00Z',
+          releases: [
+            {
+              version: VERSION_NUEVA,
+              name: `FORTIXAM v${VERSION_NUEVA}`,
+              publishedAt: '2026-09-29T08:00:00Z',
+              notes: NOTAS,
+              url: `https://github.com/servixam-max/titanium-app/releases/tag/v${VERSION_NUEVA}`,
+            },
+          ],
+        }),
+      });
+      return;
+    }
+
+    await route.fulfill({ status: 404, body: '{}' });
+  });
+}
+
 test.describe('Actualización — qué trae la versión nueva', () => {
   test('el aviso enseña los cambios antes de descargar', async ({ page }) => {
     await mockGitHub(page);
@@ -93,5 +147,17 @@ test.describe('Actualización — qué trae la versión nueva', () => {
     await expect(page.getByText('Actualización Lista')).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText(`Qué trae la v${VERSION_NUEVA}`)).toBeVisible();
     await expect(page.getByText('Mejoras y correcciones de mantenimiento.')).toBeVisible();
+  });
+
+  test('con la API de GitHub limitada, las notas llegan por el canal raw', async ({ page }) => {
+    await mockApiLimitada(page);
+    await seedSession(page);
+    await page.goto('/');
+
+    await expect(page.getByText('Actualización Lista')).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(`Qué trae la v${VERSION_NUEVA}`)).toBeVisible();
+    for (const nota of NOTAS) {
+      await expect(page.getByText(nota)).toBeVisible();
+    }
   });
 });

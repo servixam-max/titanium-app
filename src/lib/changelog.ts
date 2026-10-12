@@ -11,16 +11,29 @@ import { APP_VERSION } from "./ota-sync";
  * La app es offline-first: si GitHub no responde se devuelve la última copia
  * guardada en localStorage (el usuario sigue viendo las novedades que leyó el
  * último día con conexión).
+ *
+ * Desde F5.1 hay un segundo canal: `ota_server/changelog.json` servido por el
+ * CDN raw de GitHub, que no tiene el límite por IP de la API. Si la API
+ * responde 403 (límite agotado) o deja versiones sin notas, esas notas se
+ * completan desde el canal raw en vez de rendirse.
  */
 
 const REPO = "servixam-max/titanium-app";
 const GITHUB_RELEASES_URL = `https://api.github.com/repos/${REPO}/releases?per_page=12`;
 const GITHUB_COMPARE_URL = `https://api.github.com/repos/${REPO}/compare`;
+/**
+ * Canal raw de las novedades: mismo contenido que la API, servido por el CDN
+ * de GitHub y sin el límite de peticiones por IP. Lo regenera
+ * `scripts/update-changelog.mjs` en cada publicación.
+ */
+const GITHUB_RAW_CHANGELOG_URL = `https://raw.githubusercontent.com/${REPO}/main/ota_server/changelog.json`;
 
 const CACHE_KEY = "fortixam_changelog_v1";
 /** Las novedades cambian como mucho una vez al día: 6 h de caché es de sobra. */
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 const REQUEST_TIMEOUT_MS = 6000;
+/** El CDN raw responde rápido; si no contesta en este margen, no vale esperar. */
+const RAW_REQUEST_TIMEOUT_MS = 4000;
 /** Tope de consultas de comparación por carga (cuida el límite de la API). */
 const MAX_COMPARE_REQUESTS = 4;
 
@@ -118,17 +131,22 @@ export function formatReleaseDate(iso: string | null | undefined): string {
   return `${date.getUTCDate()} ${month} ${date.getUTCFullYear()}`;
 }
 
+/** "v8.5.23" -> "8.5.23" (comparaciones y claves de versión). */
+function cleanVersion(version: string | null | undefined): string {
+  return String(version ?? "")
+    .replace(/^[vV]/, "")
+    .trim();
+}
+
 /** ¿Dos textos se refieren a la misma versión? ("v8.5.23" == "8.5.23") */
 export function sameVersion(
   a: string | null | undefined,
   b: string | null | undefined,
 ): boolean {
-  const clean = (v: string | null | undefined) =>
-    String(v ?? "")
-      .replace(/^[vV]/, "")
-      .trim();
-  if (!clean(a) || !clean(b)) return false;
-  return clean(a) === clean(b);
+  const ca = cleanVersion(a);
+  const cb = cleanVersion(b);
+  if (!ca || !cb) return false;
+  return ca === cb;
 }
 
 /** ¿Esta versión de la lista es la que tiene instalada el usuario? */
@@ -252,13 +270,83 @@ function bumpDown(version: string): string | null {
   return parts.join(".");
 }
 
+/** Deja las versiones ordenadas (nueva → vieja por fecha de publicación). */
+function sortByNewest(entries: ChangelogEntry[]): ChangelogEntry[] {
+  return entries.sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : a.publishedAt > b.publishedAt ? -1 : 0));
+}
+
 /** Normaliza la respuesta de la API y deja las versiones ordenadas (nueva → vieja). */
 export function mapReleases(payload: unknown): ChangelogEntry[] {
   if (!Array.isArray(payload)) return [];
   const entries = payload
     .map(mapRelease)
     .filter((e): e is ChangelogEntry => e !== null);
-  return entries.sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : a.publishedAt > b.publishedAt ? -1 : 0));
+  return sortByNewest(entries);
+}
+
+/**
+ * Normaliza la lista del canal raw (`ota_server/changelog.json`): acepta la
+ * envoltura `{ releases: [...] }` que genera el script o una lista suelta, y
+ * deja las entradas con la misma forma que las de la API.
+ */
+export function mapRawChangelog(payload: unknown): ChangelogEntry[] {
+  const list = Array.isArray(payload)
+    ? payload
+    : payload && typeof payload === "object" && Array.isArray((payload as Record<string, unknown>).releases)
+      ? ((payload as Record<string, unknown>).releases as unknown[])
+      : [];
+  const entries: ChangelogEntry[] = [];
+  for (const raw of list) {
+    if (!raw || typeof raw !== "object") continue;
+    const r = raw as Record<string, unknown>;
+    const version = cleanVersion(typeof r.version === "string" ? r.version : "");
+    if (!version) continue;
+    const notes = Array.isArray(r.notes)
+      ? Array.from(
+          new Set(
+            r.notes
+              .map((note) => cleanInline(String(note ?? "")))
+              .filter((note) => note.length > 0),
+          ),
+        ).slice(0, MAX_NOTES_PER_RELEASE)
+      : [];
+    entries.push({
+      version,
+      name: String(r.name ?? `FORTIXAM v${version}`).trim() || `FORTIXAM v${version}`,
+      publishedAt: String(r.publishedAt ?? r.published_at ?? ""),
+      notes,
+      url:
+        typeof r.url === "string" && r.url
+          ? r.url
+          : `https://github.com/${REPO}/releases/tag/v${version}`,
+    });
+  }
+  return sortByNewest(entries);
+}
+
+/**
+ * Fusiona la lista de la API con la del canal raw: manda la primera, pero las
+ * entradas sin notas se rellenan desde el respaldo y las versiones que solo
+ * existan en él se añaden (p. ej. una release recién publicada que la API aún
+ * no lista, o la API limitada sirviendo la lista entera).
+ */
+export function mergeChangelog(
+  primary: ChangelogEntry[],
+  fallback: ChangelogEntry[],
+): ChangelogEntry[] {
+  if (fallback.length === 0) return primary;
+  if (primary.length === 0) return fallback;
+  const rawByVersion = new Map(fallback.map((e) => [cleanVersion(e.version), e]));
+  const merged = primary.map((entry) => {
+    if (entry.notes.length > 0) return entry;
+    const raw = rawByVersion.get(cleanVersion(entry.version));
+    return raw && raw.notes.length > 0 ? { ...entry, notes: raw.notes } : entry;
+  });
+  const known = new Set(primary.map((e) => cleanVersion(e.version)));
+  for (const entry of fallback) {
+    if (!known.has(cleanVersion(entry.version))) merged.push(entry);
+  }
+  return sortByNewest(merged);
 }
 
 export function getCachedChangelog(): ChangelogEntry[] | null {
@@ -287,9 +375,27 @@ function saveChangelog(entries: ChangelogEntry[]): void {
   }
 }
 
+/** Lee la lista del canal raw. Devuelve [] si el archivo no está o no responde. */
+async function fetchRawChangelog(): Promise<ChangelogEntry[]> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), RAW_REQUEST_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${GITHUB_RAW_CHANGELOG_URL}?t=${Date.now()}`, {
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    return mapRawChangelog(await res.json());
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 /**
  * Novedades de las últimas versiones publicadas.
  * Usa la caché si está fresca; con `force` siempre consulta a GitHub.
+ * Si la API falla o deja versiones sin notas (límite por IP), completa con el
+ * canal raw antes de rendirse.
  */
 export async function fetchChangelog(
   options: { force?: boolean } = {},
@@ -302,18 +408,40 @@ export async function fetchChangelog(
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
-    const res = await fetch(GITHUB_RELEASES_URL, {
-      signal: controller.signal,
-      cache: "no-store",
-      headers: { Accept: "application/vnd.github.v3+json" },
-    });
-    if (!res.ok) throw new Error(`GitHub respondió ${res.status}`);
-    let entries = mapReleases(await res.json());
-    if (entries.length === 0) {
-      throw new Error("Todavía no hay versiones publicadas con notas.");
+    let apiEntries: ChangelogEntry[] = [];
+    let apiError: unknown = null;
+    try {
+      const res = await fetch(GITHUB_RELEASES_URL, {
+        signal: controller.signal,
+        cache: "no-store",
+        headers: { Accept: "application/vnd.github.v3+json" },
+      });
+      if (!res.ok) throw new Error(`GitHub respondió ${res.status}`);
+      apiEntries = mapReleases(await res.json());
+    } catch (err) {
+      apiError = err;
+      logger.warn("Changelog API error:", err);
     }
+
     // Las releases sin notas propias se rellenan con los commits del rango.
-    entries = await fillNotesFromCommits(entries, controller.signal);
+    if (apiEntries.length > 0) {
+      apiEntries = await fillNotesFromCommits(apiEntries, controller.signal);
+    }
+
+    // Canal raw: cubre las notas que falten y, con la API caída, sirve la
+    // lista entera (la API pública se limita por IP; el CDN raw no).
+    let entries = apiEntries;
+    if (entries.length === 0 || entries.some((entry) => entry.notes.length === 0)) {
+      const rawEntries = await fetchRawChangelog().catch((err) => {
+        logger.warn("Changelog raw error:", err);
+        return [] as ChangelogEntry[];
+      });
+      entries = mergeChangelog(entries, rawEntries);
+    }
+
+    if (entries.length === 0) {
+      throw apiError ?? new Error("Todavía no hay versiones publicadas con notas.");
+    }
     saveChangelog(entries);
     return { entries, cached: false };
   } catch (err) {
