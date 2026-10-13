@@ -1,11 +1,21 @@
 {
-  "generatedAt": "2026-10-12T07:10:59.413Z",
+  "generatedAt": "2026-10-13T07:07:07.348Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.45",
+      "name": "FORTIXAM v8.5.45",
+      "publishedAt": "2026-10-13T07:07:06.000Z",
+      "notes": [
+        "docs: plan diario — notas OTA inmunes al límite de la API v8.5.44",
+        "fix(ui): ningún texto de la app por debajo de 12px"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.45"
+    },
+    {
       "version": "8.5.44",
       "name": "FORTIXAM v8.5.44",
-      "publishedAt": "2026-10-12T07:10:58.000Z",
+      "publishedAt": "2026-10-12T07:10:59.000Z",
       "notes": [
         "docs: plan diario — rendimiento del entreno activo v8.5.43",
         "feat(novedades): las notas llegan aunque la API de GitHub esté limitada"
@@ -112,15 +122,6 @@
         "fix(android): minSdk 24 — el plugin de la copia de seguridad exige API 23+"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.34"
-    },
-    {
-      "version": "8.5.33",
-      "name": "FORTIXAM v8.5.33",
-      "publishedAt": "2026-10-02T07:21:53.000Z",
-      "notes": [
-        "feat(entreno): compartir el resumen del entrenamiento"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.33"
     }
   ]
 }

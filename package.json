@@ -1,6 +1,6 @@
 {
   "name": "titanium-app",
-  "version": "8.5.44",
+  "version": "8.5.45",
   "private": true,
   "scripts": {
     "dev": "next dev",
