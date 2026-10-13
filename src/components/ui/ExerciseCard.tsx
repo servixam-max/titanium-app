@@ -172,14 +172,14 @@ export default function ExerciseCard({
         {(primaryNames.length > 0 || secondaryNames.length > 0) && (
           <div className="mt-1.5 flex flex-wrap items-center gap-1">
             {exercise.optional && (
-              <span className="rounded-md border border-dashed border-[color:var(--text-tertiary)] px-1.5 py-0.5 text-[11px] font-medium text-[color:var(--text-tertiary)]">
+              <span className="rounded-md border border-dashed border-[color:var(--text-tertiary)] px-1.5 py-0.5 text-xs font-medium text-[color:var(--text-tertiary)]">
                 opcional
               </span>
             )}
             {primaryNames.map((name) => (
               <span
                 key={`p-${name}`}
-                className="rounded-md bg-primary/15 px-1.5 py-0.5 text-[11px] font-semibold text-primary"
+                className="rounded-md bg-primary/15 px-1.5 py-0.5 text-xs font-semibold text-primary"
               >
                 {name}
               </span>
@@ -187,7 +187,7 @@ export default function ExerciseCard({
             {secondaryNames.map((name) => (
               <span
                 key={`s-${name}`}
-                className="rounded-md bg-[var(--fx-inset)] px-1.5 py-0.5 text-[11px] font-medium text-[color:var(--text-tertiary)]"
+                className="rounded-md bg-[var(--fx-inset)] px-1.5 py-0.5 text-xs font-medium text-[color:var(--text-tertiary)]"
               >
                 {name}
               </span>

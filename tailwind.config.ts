@@ -128,7 +128,8 @@ const config: Config = {
         "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
         "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
         "caption": ["12px", { lineHeight: "16px", fontWeight: "500" }],
-        "label-caps": ["11px", { lineHeight: "16px", letterSpacing: "0.08em", fontWeight: "700" }],
+        // Suelo tipográfico del sistema: nada por debajo de 12px (v8.5.45, F5.2).
+        "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.08em", fontWeight: "700" }],
         // Legacy aliases
         "display-timer": ["clamp(56px, 15vw, 84px)", { lineHeight: "1", letterSpacing: "-0.02em", fontWeight: "700" }],
         "display-timer-mobile": ["56px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],

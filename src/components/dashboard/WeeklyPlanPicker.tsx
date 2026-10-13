@@ -52,12 +52,12 @@ function PlanSemanalCard({ plan, activo, onElegir }: PlanSemanalCardProps) {
           <div className="mb-1 flex flex-wrap items-center gap-2">
             <h4 className="truncate text-sm font-semibold text-foreground">{plan.name}</h4>
             {plan.recommended && (
-              <span className="rounded-md border border-primary/40 bg-primary/10 px-1.5 py-0.5 text-[11px] font-bold text-primary">
+              <span className="rounded-md border border-primary/40 bg-primary/10 px-1.5 py-0.5 text-xs font-bold text-primary">
                 Recomendado
               </span>
             )}
             {activo && (
-              <span className="flex items-center gap-1 rounded-md bg-primary px-1.5 py-0.5 text-[11px] font-bold text-black">
+              <span className="flex items-center gap-1 rounded-md bg-primary px-1.5 py-0.5 text-xs font-bold text-black">
                 <Check className="h-3 w-3" />
                 Activo
               </span>
@@ -78,7 +78,7 @@ function PlanSemanalCard({ plan, activo, onElegir }: PlanSemanalCardProps) {
             <div key={d} className="flex flex-1 flex-col items-center gap-1">
               <span className="fx-label-sm">{DIA_CORTO[d]}</span>
               <span
-                className={`flex h-7 w-full items-center justify-center rounded-md text-[11px] font-bold ${
+                className={`flex h-7 w-full items-center justify-center rounded-md text-xs font-bold ${
                   entrena
                     ? "bg-primary/20 text-primary"
                     : entrada.descansoOpcional

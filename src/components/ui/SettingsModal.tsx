@@ -897,7 +897,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       label="Novedades"
                     />
                     {hasUnseen && (
-                      <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                      <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs font-semibold text-primary">
                         Nuevas
                       </span>
                     )}

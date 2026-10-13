@@ -696,7 +696,7 @@ export default function ThreeMuscleViewer({
         <div className="pointer-events-none absolute -bottom-10 -right-10 w-64 h-64 rounded-full bg-cyan-500/15 blur-[100px]" />
 
         {/* HUD Overlay Top Telemetry */}
-        <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2 pointer-events-none z-20 text-[11px] text-zinc-400">
+        <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2 pointer-events-none z-20 text-xs text-zinc-400">
           <div className="flex items-center gap-1.5 bg-black/40 rounded-full px-2.5 py-1 backdrop-blur-sm">
             {/* Solo late cuando gira de verdad: antes decía "ROTACIÓN 360°
                 ACTIVA" con el giro apagado. */}
