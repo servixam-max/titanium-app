@@ -102,7 +102,7 @@ VERSION_CODE=$(node -p "require('./version.json').versionCode")
 # calidad: si falla, la release sale igual y se reintenta al día siguiente
 # (la generación es completa e idempotente).
 if node scripts/update-changelog.mjs >/tmp/fortixam-changelog.log 2>&1; then
-  log "OK: $(tail -1 /tmp/fortixam-changelog.log)"
+  log "$(tail -1 /tmp/fortixam-changelog.log)"
 else
   log "WARN: no se pudo regenerar ota_server/changelog.json:"
   tail -5 /tmp/fortixam-changelog.log
