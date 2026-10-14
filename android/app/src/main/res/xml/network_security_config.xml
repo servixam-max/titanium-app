@@ -18,10 +18,10 @@
 
     <domain-config cleartextTrafficPermitted="true">
         <!-- Emulador Android: 10.0.2.2 apunta al Mac anfitrión -->
-        <domain>10.0.2.2</domain>
+        <domain includeSubdomains="false">10.0.2.2</domain>
         <!-- Mac en la WiFi de casa -->
-        <domain>192.168.2.107</domain>
+        <domain includeSubdomains="false">192.168.2.107</domain>
         <!-- Mac en Tailscale -->
-        <domain>100.126.164.101</domain>
+        <domain includeSubdomains="false">100.126.164.101</domain>
     </domain-config>
 </network-security-config>

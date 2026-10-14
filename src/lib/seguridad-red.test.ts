@@ -60,6 +60,15 @@ describe("Política de red del APK (endurecimiento F5.3)", () => {
     // El emulador llega al Mac anfitrión por 10.0.2.2.
     expect(nsc, "falta 10.0.2.2 (emulador)").toContain(">10.0.2.2<");
 
+    // El lint de release exige `includeSubdomains` explícito en cada <domain>
+    // (v8.5.46: su ausencia tumbó el primer build de CI).
+    for (const ip of ["10.0.2.2", ...ipsDelPuente()]) {
+      expect(
+        nsc,
+        `la entrada <domain ${ip}> debe declarar includeSubdomains="false" o el lint de release falla`,
+      ).toMatch(new RegExp(`<domain includeSubdomains="false">${ip.replace(/\./g, "\\.")}<\\/domain>`));
+    }
+
     // Cada IP del puente declarada en el código debe seguir permitida aquí,
     // o la app dejaría de poder actualizarse/compartir por la red local.
     for (const ip of ipsDelPuente()) {
