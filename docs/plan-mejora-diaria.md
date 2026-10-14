@@ -206,12 +206,33 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   `label-caps` de Tailwind pasa a 12 px: `design-system.spec.js` queda **20/20**
   y la suite e2e completa **170/170 en verde** (antes 165 + 4 rojos + 1 flaky);
   verificado además en el emulador con el APK de CI)*
-- [ ] **F5.3** Acotar `cleartext` y `allowNavigation` en `capacitor.config.json`
-  sin romper el puente LAN/Tailscale (cola de F4.3).
+- [x] **F5.3** Acotar `cleartext` y `allowNavigation` en `capacitor.config.json`
+  sin romper el puente LAN/Tailscale (cola de F4.3). *(v8.5.46 · el APK pedía
+  HTTP sin cifrar «a todo»; ahora la política vive en
+  `android/app/src/main/res/xml/network_security_config.xml` — HTTP prohibido
+  por defecto y permitido solo al Mac del puente (WiFi y Tailscale) y al host
+  del emulador; `allowNavigation` queda vacío y el service worker deja pasar
+  las peticiones de otros orígenes, que antes devolvían su respuesta de reserva
+  y enmascaraban el puente. Medido en el emulador: 200 real por 10.0.2.2,
+  192.168.2.107 y 100.126.164.101; example.com bloqueado con
+  ERR_CLEARTEXT_NOT_PERMITTED, también en la descarga nativa. Tests:
+  `seguridad-red` (manifiesto + NSC + CANDIDATE_IPS) y `service-worker`)*
+
+## Fase 6 — Siguientes (cola)
+
+- [ ] **F6.1** Decidir el destino de la pantalla `/routine/[day]`: enlazarla
+  desde algún flujo o retirarla con su test. Hoy ningún botón lleva a ella
+  (el detalle de rutina abre en modal) pero los e2e la auditan.
+- [ ] **F6.2** Texto corto para el HUD del visor 3D en móvil estrecho: «SIN
+  MÚSCULOS TRABAJADOS AÚN» parte en dos líneas dentro de su píldora; «Sin
+  músculos aún» lo deja en una.
+- [ ] **F6.3** Revisar `android.allowMixedContent` (sigue en `true` para que el
+  puente http funcione desde la página https): documentar por qué es necesario
+  o acotarlo, p. ej. sirviendo el puente por HTTPS local.
 
 ## Prioridad
 
-Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5. Dentro de cada fase, de arriba abajo.
+Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6. Dentro de cada fase, de arriba abajo.
 Si una tarea resulta inviable o demasiado grande, se divide en una tarea nueva
 justo debajo y se documenta el motivo.
 
@@ -257,3 +278,4 @@ justo debajo y se documenta el motivo.
 | v8.5.43 | F4.4 | **El reloj del descanso deja de repintar toda la pantalla del entreno**: descanso, preparación e intervalo de trabajo hacen tic cada segundo, y como el reloj vive dentro de `activeWorkout`, cada tic re-renderizaba la pantalla completa —justo mientras sigue siendo interactiva (F2.2)—. Medido con una sonda de renders nueva (`src/lib/perf-probe.ts` + `useRenderProbe`, apagada salvo que alguien la encienda desde fuera): **6 renders de la pantalla por cada 6 s de descanso → 1**. Ahora las pantallas de entreno (individual y guiado), el registrador de series, la ficha del ejercicio, el hook de última marca y AuthModal se suscriben solo a los campos que pintan; el tic repinta únicamente el reloj (RestBar/RestTimer). Nuevo `e2e/rendimiento-webview.spec.js` (3 pruebas × escritorio y móvil) que vigila la regla y pone tope holgado al arranque en frío. WebView Android: arranque en frío ~0,4 s de mediana (adb `am start -W`); export de la home: FCP 48–140 ms. |
 | v8.5.44 | F5.1 | **Las notas de «Novedades» ya no dependen del límite de la API de GitHub**: la API pública solo permite 60 peticiones/hora por IP y, al agotarse (pasó el día anterior), la app caía al texto genérico «Mejoras y correcciones de mantenimiento». Ahora cada publicación genera `ota_server/changelog.json` —las 12 últimas versiones con sus cambios reales— servido por el CDN raw, que no tiene ese límite; `fetchChangelog` fusiona API + canal raw, completa las versiones sin notas (403 incluido) para Ajustes → Novedades, el aviso pre-descarga y la bienvenida tras actualizar, y fuerza una consulta nueva si la copia guardada venía sin notas. 8 pruebas nuevas y 1 e2e con la API simulada en 403. Verificado en emulador Android 16 con el cupo realmente agotado (0/60 y 403): aviso de la v8.5.44 → descarga → instalación conservando datos → modal con los 2 cambios reales. |
 | v8.5.45 | F5.2 | **Ningún texto de la aplicación vuelve a quedar por debajo de 12 px**: los chips de músculos de las tarjetas de ejercicio (`ExerciseCard`) y la telemetría del visor 3D (`ThreeMuscleViewer`: «360° APAGADO», «SIN MÚSCULOS TRABAJADOS») se pintaban a 11 px, y el plan semanal, el distintivo «Nuevas» de Ajustes y el «Instalada» de Novedades tenían el mismo caso latente. Todo sube al suelo tipográfico del sistema (12 px, `text-xs`) y el token `label-caps` de Tailwind pasa también a 12 px. Con esto `e2e/design-system.spec.js` queda **20/20** y la **suite e2e completa 170/170 en verde** (antes 165 + 4 rojos + 1 intermitente). Verificado también con el APK de CI en el emulador Android 16: los chips del «Día 1: Empuje» y el HUD de Estadísticas se ven correctos y sin cortes (el salto de línea del HUD ya existía a 11 px; se comprobó midiendo). |
+| v8.5.46 | F5.3 | **El APK ya solo permite HTTP sin cifrar hacia el puente LAN/Tailscale**: declaraba tráfico en claro «a todo» (`usesCleartextTraffic=true` y un `allowNavigation` amplio cuyas entradas, además, ni casaban con el formato que usa Capacitor 8). Ahora la política vive en `network_security_config.xml`: HTTP prohibido por defecto y permitido solo a 10.0.2.2 (emulador), 192.168.2.107 (WiFi de casa) y 100.126.164.101 (Tailscale); GitHub sigue por HTTPS. `allowNavigation` queda vacío (las URLs externas se abren en el navegador del sistema) y `cleartext:false` en `capacitor.config.json`. De paso, el service worker deja pasar las peticiones de otros orígenes: su fetch interno de http desde el contexto https fallaba (mixed content) y devolvía su respuesta de reserva, así que el puente nunca llegaba a la red desde la app. Verificado en emulador Android 16 con el APK: el fetch de la página y la descarga nativa del actualizador (8.389.401 B por 10.0.2.2) responden por los tres candidatos; example.com bloqueado con `net::ERR_CLEARTEXT_NOT_PERMITTED` y «Cleartext HTTP traffic not permitted» en la ruta nativa. Tests nuevos: `seguridad-red` (manifiesto + NSC + CANDIDATE_IPS en sync) y `service-worker` (guarda de origen cruzado). |
