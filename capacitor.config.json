@@ -4,17 +4,8 @@
   "webDir": "dist-apk",
   "server": {
     "androidScheme": "https",
-    "cleartext": true,
-    "allowNavigation": [
-      "http://192.168.*:*",
-      "http://100.*:*",
-      "http://10.0.2.2:*",
-      "https://*.servixam.app",
-      "https://*.tail31979d.ts.net",
-      "http://localhost:*",
-      "https://accounts.google.com",
-      "https://appleid.apple.com"
-    ]
+    "cleartext": false,
+    "allowNavigation": []
   },
   "android": {
     "allowMixedContent": true

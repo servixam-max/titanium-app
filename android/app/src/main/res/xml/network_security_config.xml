@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  FORTIXAM — política de tráfico en claro (HTTP sin cifrar).
+
+  Por defecto se PROHÍBE el HTTP: la app habla HTTPS con GitHub (canal OTA
+  global) y no necesita texto claro para nada más. La única excepción es el
+  puente local de desarrollo — el Mac del usuario, que sirve version.json y
+  los APK en http://<ip>:8082 (ver CANDIDATE_IPS en src/lib/ota-sync.ts) —
+  más el host del emulador (10.0.2.2 = Mac anfitrión).
+
+  Si el Mac cambia de IP (otra WiFi, otra red Tailscale), actualizar aquí y
+  en CANDIDATE_IPS de src/lib/ota-sync.ts: src/lib/seguridad-red.test.ts
+  falla si dejan de coincidir. Android ignora esta política en WebViews muy
+  antiguos (fail-open), pero en los actuales el bloqueo es real.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Emulador Android: 10.0.2.2 apunta al Mac anfitrión -->
+        <domain>10.0.2.2</domain>
+        <!-- Mac en la WiFi de casa -->
+        <domain>192.168.2.107</domain>
+        <!-- Mac en Tailscale -->
+        <domain>100.126.164.101</domain>
+    </domain-config>
+</network-security-config>

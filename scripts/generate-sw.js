@@ -117,6 +117,12 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
+  // Otros orígenes (API de GitHub, puente LAN/Tailscale): que vayan directos a
+  // la red. El SW no puede pedir http desde su contexto https (mixed content),
+  // así que si interceptara el puente devolvería su respuesta de reserva y la
+  // app no encontraría el servidor local. Verificado en el WebView del emulador.
+  if (url.origin !== self.location.origin) return;
+
   // API: always network
   if (isApiRequest(url)) return;
 
