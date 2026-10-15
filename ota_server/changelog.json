@@ -1,14 +1,25 @@
 {
-  "generatedAt": "2026-10-14T07:13:44.387Z",
+  "generatedAt": "2026-10-15T07:17:08.982Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.47",
+      "name": "FORTIXAM v8.5.47",
+      "publishedAt": "2026-10-15T07:17:08.000Z",
+      "notes": [
+        "refactor(rutina): retira la pantalla huérfana /routine/[day]; el detalle vive en el modal"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.47"
+    },
+    {
       "version": "8.5.46",
       "name": "FORTIXAM v8.5.46",
-      "publishedAt": "2026-10-14T07:13:43.000Z",
+      "publishedAt": "2026-10-14T07:19:33.000Z",
       "notes": [
         "docs: plan diario — suelo tipográfico de 12px v8.5.45",
-        "fix(android): HTTP en claro solo hacia el puente LAN/Tailscale"
+        "fix(android): HTTP en claro solo hacia el puente LAN/Tailscale",
+        "docs: plan diario — F5.3 red acotada v8.5.46",
+        "fix(android): includeSubdomains explícito en el network-security-config (lint de release)"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.46"
     },
@@ -111,16 +122,6 @@
         "feat(stats): gráfica de récords con 1RM estimado"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.36"
-    },
-    {
-      "version": "8.5.35",
-      "name": "FORTIXAM v8.5.35",
-      "publishedAt": "2026-10-06T07:01:09.000Z",
-      "notes": [
-        "docs: plan diario — F3.1 copia de seguridad en el móvil v8.5.34",
-        "feat(stats): heatmap de constancia de 4 semanas"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.35"
     }
   ]
 }
