@@ -107,6 +107,9 @@ export default function RoutineDetailModal({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 320 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Detalle de la rutina ${routine.title}`}
             className="relative z-10 w-full sm:max-w-lg h-[90dvh] sm:h-[86dvh] bg-white dark:bg-[#0A0B10] border-t border-[var(--fx-hairline)] rounded-t-[32px] sm:rounded-3xl flex flex-col overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_-20px_50px_rgba(0,0,0,0.9)]"
           >
             {/* Grabber bar for mobile feel */}
@@ -148,7 +151,7 @@ export default function RoutineDetailModal({
                     {totalSets} series
                   </span>
                 </div>
-                <h2 className="fx-num text-xl sm:text-2xl text-white font-semibold tracking-tight truncate drop-shadow-md">
+                <h2 className="fx-num text-xl sm:text-2xl fx-on-media font-semibold tracking-tight truncate drop-shadow-md">
                   {routine.title}
                 </h2>
               </div>

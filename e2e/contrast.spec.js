@@ -7,23 +7,32 @@ const { seedWorkout } = require('./helpers/workout-session');
 // Calcula la relación de contraste WCAG de cada texto visible contra su fondo
 // real (componiendo la cadena de fondos translúcidos) y falla si no llega al
 // mínimo. Es la comprobación que convierte "se lee mal" en algo medible.
+//
+// El detalle de rutina es un modal desde la home (v8.5.47 retiró la página
+// /routine/[day]); la tercera columna abre ese modal y acota la auditoría a él.
 
 const RUTAS = [
-  ['/', null],
-  ['/stats', null],
-  ['/history', null],
-  ['/weight', null],
-  ['/routine/1', null],
-  ['/warmup', null],
-  ['/audio', null],
-  ['/workout/complete', null],
-  ['/workout/guided', 'guided'],
-  ['/workout/individual', 'individual'],
+  ['/', null, null],
+  ['/', null, 'detalle'], // el detalle de rutina, abierto desde la home
+  ['/stats', null, null],
+  ['/history', null, null],
+  ['/weight', null, null],
+  ['/warmup', null, null],
+  ['/audio', null, null],
+  ['/workout/complete', null, null],
+  ['/workout/guided', 'guided', null],
+  ['/workout/individual', 'individual', null],
 ];
 
-/** Comprueba el contraste de todo el texto visible y devuelve las infracciones. */
-async function auditarContraste(page) {
-  return page.evaluate(() => {
+/**
+ * Comprueba el contraste de todo el texto visible y devuelve las infracciones.
+ * Con `scope` solo se audita ese subárbol (p. ej. el modal de detalle).
+ */
+async function auditarContraste(page, scope = null) {
+  return page.evaluate((scopeSelector) => {
+    const raiz = scopeSelector ? document.querySelector(scopeSelector) : document;
+    if (!raiz) return [`no se encontró ${scopeSelector}`];
+
     const parseColor = (value) => {
       const m = String(value).match(/rgba?\(([^)]+)\)/);
       if (!m) return null;
@@ -89,7 +98,7 @@ async function auditarContraste(page) {
       );
     };
 
-    for (const el of document.querySelectorAll('*')) {
+    for (const el of raiz.querySelectorAll('*')) {
       const texto = [...el.childNodes]
         .filter((n) => n.nodeType === 3)
         .map((n) => n.textContent.trim())
@@ -123,13 +132,13 @@ async function auditarContraste(page) {
     }
 
     return infracciones;
-  });
+  }, scope);
 }
 
 for (const tema of ['dark', 'light']) {
   test.describe(`Contraste · tema ${tema}`, () => {
-    for (const [ruta, modo] of RUTAS) {
-      test(`${ruta}`, async ({ page }) => {
+    for (const [ruta, modo, accion] of RUTAS) {
+      test(`${ruta}${accion === 'detalle' ? ' (detalle de rutina)' : ''}`, async ({ page }) => {
         await seedSession(page, { theme: tema });
         if (modo) await seedWorkout(page, { mode: modo });
 
@@ -137,9 +146,24 @@ for (const tema of ['dark', 'light']) {
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(600);
 
+        let scope = null;
+        if (accion === 'detalle') {
+          const empezar = page.getByRole('button', { name: 'Empezar' });
+          await expect(empezar).toBeVisible({ timeout: 10000 });
+          await empezar.click({ force: true });
+          await expect(page.locator('[role="dialog"]')).toBeVisible({ timeout: 10000 });
+          // El clic deja el cursor sobre la lista de ejercicios y un hover
+          // accidental cambiaría colores (nombre en verde, tarjeta en gris).
+          // Se audita el estado en reposo: fuera del modal.
+          await page.mouse.move(5, 5);
+          // La hoja entra con muelle: esperar a que se asiente antes de medir
+          await page.waitForTimeout(700);
+          scope = '[role="dialog"]';
+        }
+
         await expect(page.locator('html')).toHaveClass(new RegExp(tema));
 
-        const infracciones = await auditarContraste(page);
+        const infracciones = await auditarContraste(page, scope);
         expect(
           infracciones,
           `contraste insuficiente en ${ruta} (${tema}):\n  ${infracciones.slice(0, 12).join('\n  ')}`,

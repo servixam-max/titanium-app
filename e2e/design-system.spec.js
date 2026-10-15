@@ -7,13 +7,25 @@ const { seedWorkout } = require('./helpers/workout-session');
 // sin bordes en superficies, sin etiquetas en mayúsculas, tipografía del
 // sistema y tamaños legibles. Si alguien reintroduce el estilo antiguo
 // (bordes + mono mayúscula + 10px), este test lo caza.
+//
+// El detalle de rutina ya no es una página propia: es el modal que se abre
+// desde la home (v8.5.47 retiró /routine/[day]). Por eso este spec lo audita
+// en una prueba aparte, con el modal abierto y el análisis acotado a él.
 
-const RUTAS = ['/', '/stats', '/history', '/weight', '/routine/1', '/warmup', '/audio', '/workout/complete'];
+const RUTAS = ['/', '/stats', '/history', '/weight', '/warmup', '/audio', '/workout/complete'];
 
-/** Recorre el DOM y devuelve las infracciones de las reglas del sistema. */
-async function auditar(page) {
-  return page.evaluate(() => {
-    const problemas = { mayusculas: [], mono: [], diminutos: [], conBorde: [], desbordan: [] };
+/**
+ * Recorre el DOM (o solo un subárbol, si se pasa un selector) y devuelve las
+ * infracciones de las reglas del sistema.
+ */
+async function auditar(page, scope = null) {
+  return page.evaluate((scopeSelector) => {
+    const raiz = scopeSelector ? document.querySelector(scopeSelector) : document;
+    const problemas = { mayusculas: [], mono: [], diminutos: [], conBorde: [], desbordan: [], falta: [] };
+    if (!raiz) {
+      problemas.falta.push(`no se encontró ${scopeSelector}`);
+      return problemas;
+    }
 
     const visible = (el) => {
       const r = el.getBoundingClientRect();
@@ -24,7 +36,7 @@ async function auditar(page) {
     // 0. Texto que no cabe en su caja. Es el fallo que apareció en el selector
     // de días: tres líneas dentro de 64 px fijos acabaron solapándose. Se
     // excluye el recorte intencionado (truncate / line-clamp).
-    for (const el of document.querySelectorAll('*')) {
+    for (const el of raiz.querySelectorAll('*')) {
       if (el.children.length > 0) continue;
       const texto = (el.textContent || '').trim();
       if (texto.length < 1) continue;
@@ -44,7 +56,7 @@ async function auditar(page) {
       }
     }
 
-    for (const el of document.querySelectorAll('*')) {
+    for (const el of raiz.querySelectorAll('*')) {
       if (!visible(el)) continue;
       const cs = getComputedStyle(el);
       const texto = (el.textContent || '').trim();
@@ -70,7 +82,7 @@ async function auditar(page) {
     }
 
     // 4. Superficies grandes con borde visible
-    for (const el of document.querySelectorAll('div, section, article')) {
+    for (const el of raiz.querySelectorAll('div, section, article')) {
       if (!visible(el)) continue;
       const cs = getComputedStyle(el);
       const r = el.getBoundingClientRect();
@@ -81,7 +93,7 @@ async function auditar(page) {
     }
 
     return problemas;
-  });
+  }, scope);
 }
 
 test.describe('Sistema de diseño', () => {
@@ -103,6 +115,39 @@ test.describe('Sistema de diseño', () => {
       expect(p.desbordan, `textos que no caben en su caja (${ruta}): ${p.desbordan.slice(0, 5).join(' | ')}`).toEqual([]);
     });
   }
+});
+
+test.describe('Sistema de diseño · detalle de rutina (modal)', () => {
+  // El detalle de rutina se abre como modal desde la home. Se audita ese
+  // estado real (con sus tarjetas de ejercicio y su selector de modo), no la
+  // página retirada.
+  test('el modal abierto desde la home respeta las reglas del sistema', async ({ page }) => {
+    await seedSession(page);
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(400);
+
+    const empezar = page.getByRole('button', { name: 'Empezar' });
+    await expect(empezar).toBeVisible({ timeout: 10000 });
+    await empezar.click({ force: true });
+
+    const modal = page.locator('[role="dialog"]');
+    await expect(modal).toBeVisible({ timeout: 10000 });
+    // El clic deja el cursor sobre la lista de ejercicios y un hover
+    // accidental cambiaría colores (nombre en verde, tarjeta en gris). Se
+    // audita el estado en reposo: fuera del modal.
+    await page.mouse.move(5, 5);
+    // La hoja entra con muelle: esperar a que se asiente antes de medir
+    await page.waitForTimeout(700);
+
+    const p = await auditar(page, '[role="dialog"]');
+
+    expect(p.falta, `el modal de detalle no está en el DOM`).toEqual([]);
+    expect(p.mayusculas, `textos en mayúsculas en el detalle: ${p.mayusculas.slice(0, 5).join(' | ')}`).toEqual([]);
+    expect(p.diminutos, `textos por debajo de 12px en el detalle: ${p.diminutos.slice(0, 5).join(' | ')}`).toEqual([]);
+    expect(p.conBorde, `superficies con borde en el detalle: ${p.conBorde.slice(0, 5).join(' | ')}`).toEqual([]);
+    expect(p.desbordan, `textos que no caben en su caja (detalle): ${p.desbordan.slice(0, 5).join(' | ')}`).toEqual([]);
+  });
 });
 
 test.describe('Sistema de diseño · pantallas de entreno', () => {

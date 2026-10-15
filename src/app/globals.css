@@ -540,6 +540,14 @@ body {
   font-weight: 600;
 }
 
+/* Texto sobre imagen/medio oscuro (héroe de una ficha): debe quedarse blanco
+   en AMBOS temas. La remezcla del modo claro convierte .text-white en tinta
+   oscura para las superficies claras, y sobre la foto oscura eso era ilegible
+   (el título del detalle de rutina, ratio 1,01:1). */
+.fx-on-media {
+  color: #FFFFFF;
+}
+
 /* Respuesta táctil discreta, como en iOS */
 .fx-press {
   transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1), background-color 140ms ease, opacity 140ms ease;

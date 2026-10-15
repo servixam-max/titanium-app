@@ -52,10 +52,20 @@ test.describe('FORTIXAM — PWA estática', () => {
     }
   });
 
-  test('Páginas de detalle de rutina renderizan', async ({ page }) => {
-    const res = await page.goto('/routine/1');
-    expect(res.status()).toBe(200);
-    await expect(page.locator('text=INICIAR MODO').first()).toBeVisible();
+  test('El detalle de rutina abre en modal desde la home', async ({ page }) => {
+    // v8.5.47: la antigua página /routine/[day] se retiró (nadie enlazaba a
+    // ella); el detalle real es el modal que abre el botón "Empezar".
+    await seedSession(page);
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(400);
+
+    const empezar = page.getByRole('button', { name: 'Empezar' });
+    await expect(empezar).toBeVisible({ timeout: 10000 });
+    await empezar.click({ force: true });
+
+    await expect(page.locator('[role="dialog"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=INICIAR ENTRENAMIENTO GUIADO').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('Assets de imagen servidos', async ({ request }) => {
