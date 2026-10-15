@@ -220,15 +220,25 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
 
 ## Fase 6 — Siguientes (cola)
 
-- [ ] **F6.1** Decidir el destino de la pantalla `/routine/[day]`: enlazarla
+- [x] **F6.1** Decidir el destino de la pantalla `/routine/[day]`: enlazarla
   desde algún flujo o retirarla con su test. Hoy ningún botón lleva a ella
-  (el detalle de rutina abre en modal) pero los e2e la auditan.
+  (el detalle de rutina abre en modal) pero los e2e la auditan. *(v8.5.47 ·
+  **retirada**: ningún flujo la necesitaba — el modal la supera — así que se
+  borra con su `ModeSelector` huérfano y los e2e del flujo de entreno pasan a
+  recorrer el camino real home → modal; la auditoría de diseño/contraste del
+  detalle se hace ahora sobre el modal abierto —que gana `role=dialog` y se
+  cierra con ATRÁS de Android—, y al medirlo apareció el título del héroe
+  ilegible en claro (1,01:1): corregido con `fx-on-media`)*
 - [ ] **F6.2** Texto corto para el HUD del visor 3D en móvil estrecho: «SIN
   MÚSCULOS TRABAJADOS AÚN» parte en dos líneas dentro de su píldora; «Sin
   músculos aún» lo deja en una.
 - [ ] **F6.3** Revisar `android.allowMixedContent` (sigue en `true` para que el
   puente http funcione desde la página https): documentar por qué es necesario
   o acotarlo, p. ej. sirviendo el puente por HTTPS local.
+- [ ] **F6.4** El nombre del ejercicio en hover (modo claro) queda en 3,6:1:
+  `group-hover:text-primary` lo pinta en verde `#059669` sobre tarjeta
+  `slate-50`. Buscar un verde del tema con 4,5:1 sobre claro sin perder el
+  acento de hover. *(detectado al auditar el detalle de rutina en v8.5.47)*
 
 ## Prioridad
 
@@ -279,3 +289,4 @@ justo debajo y se documenta el motivo.
 | v8.5.44 | F5.1 | **Las notas de «Novedades» ya no dependen del límite de la API de GitHub**: la API pública solo permite 60 peticiones/hora por IP y, al agotarse (pasó el día anterior), la app caía al texto genérico «Mejoras y correcciones de mantenimiento». Ahora cada publicación genera `ota_server/changelog.json` —las 12 últimas versiones con sus cambios reales— servido por el CDN raw, que no tiene ese límite; `fetchChangelog` fusiona API + canal raw, completa las versiones sin notas (403 incluido) para Ajustes → Novedades, el aviso pre-descarga y la bienvenida tras actualizar, y fuerza una consulta nueva si la copia guardada venía sin notas. 8 pruebas nuevas y 1 e2e con la API simulada en 403. Verificado en emulador Android 16 con el cupo realmente agotado (0/60 y 403): aviso de la v8.5.44 → descarga → instalación conservando datos → modal con los 2 cambios reales. |
 | v8.5.45 | F5.2 | **Ningún texto de la aplicación vuelve a quedar por debajo de 12 px**: los chips de músculos de las tarjetas de ejercicio (`ExerciseCard`) y la telemetría del visor 3D (`ThreeMuscleViewer`: «360° APAGADO», «SIN MÚSCULOS TRABAJADOS») se pintaban a 11 px, y el plan semanal, el distintivo «Nuevas» de Ajustes y el «Instalada» de Novedades tenían el mismo caso latente. Todo sube al suelo tipográfico del sistema (12 px, `text-xs`) y el token `label-caps` de Tailwind pasa también a 12 px. Con esto `e2e/design-system.spec.js` queda **20/20** y la **suite e2e completa 170/170 en verde** (antes 165 + 4 rojos + 1 intermitente). Verificado también con el APK de CI en el emulador Android 16: los chips del «Día 1: Empuje» y el HUD de Estadísticas se ven correctos y sin cortes (el salto de línea del HUD ya existía a 11 px; se comprobó midiendo). |
 | v8.5.46 | F5.3 | **El APK ya solo permite HTTP sin cifrar hacia el puente LAN/Tailscale**: declaraba tráfico en claro «a todo» (`usesCleartextTraffic=true` y un `allowNavigation` amplio cuyas entradas, además, ni casaban con el formato que usa Capacitor 8). Ahora la política vive en `network_security_config.xml`: HTTP prohibido por defecto y permitido solo a 10.0.2.2 (emulador), 192.168.2.107 (WiFi de casa) y 100.126.164.101 (Tailscale); GitHub sigue por HTTPS. `allowNavigation` queda vacío (las URLs externas se abren en el navegador del sistema) y `cleartext:false` en `capacitor.config.json`. De paso, el service worker deja pasar las peticiones de otros orígenes: su fetch interno de http desde el contexto https fallaba (mixed content) y devolvía su respuesta de reserva, así que el puente nunca llegaba a la red desde la app. Verificado en emulador Android 16 con el APK: el fetch de la página y la descarga nativa del actualizador (8.389.401 B por 10.0.2.2) responden por los tres candidatos; example.com bloqueado con `net::ERR_CLEARTEXT_NOT_PERMITTED` y «Cleartext HTTP traffic not permitted» en la ruta nativa. Tests nuevos: `seguridad-red` (manifiesto + NSC + CANDIDATE_IPS en sync) y `service-worker` (guarda de origen cruzado). |
+| v8.5.47 | F6.1 | **El detalle de rutina se queda solo con el modal — y por fin se audita**: la pantalla `/routine/[day]` no tenía ningún enlace (el detalle real es el modal que abre «Empezar»), así que se retira junto a su `ModeSelector`, que solo ella usaba. Los e2e del flujo de entreno dejan de entrar por esa ruta y recorren el camino real (home → modal → calentamiento → entreno), y la auditoría de sistema de diseño y contraste del detalle pasa a hacerse sobre el modal abierto con el análisis acotado a él. El modal gana semántica de diálogo (`role=dialog`, `aria-modal`, `aria-label`), lo que además hace que el gesto ATRÁS de Android lo cierre como al resto de diálogos. Y al medirlo apareció un fallo real de modo claro: el título «Día 1: Empuje» quedaba en **1,01:1** —prácticamente invisible— porque la remezcla del tema claro convierte `.text-white` en tinta oscura y la foto del héroe sigue siendo oscura en ambos temas; nueva utilidad `fx-on-media` para texto sobre imagen. También se corrigió la flaqueza de los e2e al medir con el cursor encima: las auditorías esperan al estado en reposo. |
