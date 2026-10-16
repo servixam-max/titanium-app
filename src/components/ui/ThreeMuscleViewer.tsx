@@ -710,6 +710,10 @@ export default function ThreeMuscleViewer({
             </span>
           </div>
           <div className="flex items-center gap-2">
+            {/* Texto corto (F6.2): «SIN MÚSCULOS TRABAJADOS AÚN» y
+                «12/16 MÚSCULOS TRABAJADOS» no cabían en la píldora en móvil
+                estrecho y partían en dos líneas (medido a 375 y 412 px); estas
+                formas caben en una. */}
             <span
               className={`px-2.5 py-0.5 rounded-full font-semibold ${
                 biomechanics.activeCount > 0
@@ -718,8 +722,8 @@ export default function ThreeMuscleViewer({
               }`}
             >
               {biomechanics.activeCount > 0
-                ? `${biomechanics.activeCount}/16 MÚSCULOS TRABAJADOS`
-                : "SIN MÚSCULOS TRABAJADOS AÚN"}
+                ? `${biomechanics.activeCount}/16 músculos`
+                : "Sin músculos aún"}
             </span>
           </div>
         </div>
