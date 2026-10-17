@@ -4,14 +4,22 @@
 
   Por defecto se PROHÍBE el HTTP: la app habla HTTPS con GitHub (canal OTA
   global) y no necesita texto claro para nada más. La única excepción es el
-  puente local de desarrollo — el Mac del usuario, que sirve version.json y
-  los APK en http://<ip>:8082 (ver CANDIDATE_IPS en src/lib/ota-sync.ts) —
-  más el host del emulador (10.0.2.2 = Mac anfitrión).
+  puente local — el Mac del usuario, que sirve version.json y los APK en
+  http://<ip>:8082 (ver CANDIDATE_IPS en src/lib/ota-sync.ts) — más el
+  servidor de la API en http://<ip>:3001 y el host del emulador (10.0.2.2 =
+  Mac anfitrión).
 
-  Si el Mac cambia de IP (otra WiFi, otra red Tailscale), actualizar aquí y
-  en CANDIDATE_IPS de src/lib/ota-sync.ts: src/lib/seguridad-red.test.ts
-  falla si dejan de coincidir. Android ignora esta política en WebViews muy
-  antiguos (fail-open), pero en los actuales el bloqueo es real.
+  Desde F6.3 el WebView está en modo estricto (android.allowMixedContent
+  false) y ya no acepta contenido mixto https→http: estas URLs solo salen
+  por petición nativa (CapacitorHttp, ver src/lib/http-local.ts), donde
+  sigue aplicando esta política. Por eso cada IP usada por la app debe estar
+  aquí — es la única puerta que queda abierta al texto claro.
+
+  Si el Mac cambia de IP (otra WiFi, otra red Tailscale), actualizar aquí,
+  CANDIDATE_IPS de src/lib/ota-sync.ts y DEFAULT_SERVER_URLS de
+  src/lib/api-config.ts: src/lib/seguridad-red.test.ts falla si dejan de
+  coincidir. Android ignora esta política en WebViews muy antiguos
+  (fail-open), pero en los actuales el bloqueo es real.
 -->
 <network-security-config>
     <base-config cleartextTrafficPermitted="false" />

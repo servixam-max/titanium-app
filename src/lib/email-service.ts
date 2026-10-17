@@ -1,5 +1,7 @@
 // Service for dispatching verification codes and managing OTP tokens in FORTIXAM
 
+import { fetchLocal } from "./http-local";
+
 export interface OtpSession {
   email: string;
   code: string;
@@ -76,7 +78,7 @@ export async function sendPasswordResetEmail(
 
   if (webhookUrl) {
     try {
-      const res = await fetch(webhookUrl.trim(), {
+      const res = await fetchLocal(webhookUrl.trim(), {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         redirect: "follow",

@@ -1,4 +1,5 @@
 import { logger } from "./logger";
+import { fetchLocal } from "./http-local";
 
 export interface AppVersion {
   version: string; // display version, e.g. "6.16"
@@ -39,7 +40,10 @@ export async function findWorkingServer(): Promise<string> {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000);
-      const res = await fetch(url, {
+      // El puente habla http y la app vive en https: dentro del APK la
+      // petición sale nativa (CapacitorHttp), fuera del WebView, que desde
+      // F6.3 está en modo estricto y bloquearía el contenido mixto.
+      const res = await fetchLocal(url, {
         signal: controller.signal,
         cache: "no-store",
       });
@@ -263,7 +267,7 @@ export async function checkOtaUpdate(): Promise<{
   // 3. Fallback: Local PC server (Tailscale / WiFi) if GitHub was unreachable
   try {
     const serverUrl = await findWorkingServer();
-    const res = await fetch(`${serverUrl}/version.json?t=${Date.now()}`, {
+    const res = await fetchLocal(`${serverUrl}/version.json?t=${Date.now()}`, {
       cache: "no-store",
     });
     if (!res.ok) throw new Error("Error al leer version.json del servidor");
@@ -298,7 +302,7 @@ export async function checkOtaUpdate(): Promise<{
 export async function syncToServer(data: unknown): Promise<boolean> {
   try {
     const serverUrl = await findWorkingServer();
-    const res = await fetch(`${serverUrl}/sync`, {
+    const res = await fetchLocal(`${serverUrl}/sync`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -313,7 +317,7 @@ export async function syncToServer(data: unknown): Promise<boolean> {
 export async function syncFromServer(): Promise<unknown> {
   try {
     const serverUrl = await findWorkingServer();
-    const res = await fetch(`${serverUrl}/sync.json`, { cache: "no-store" });
+    const res = await fetchLocal(`${serverUrl}/sync.json`, { cache: "no-store" });
     if (res.ok) {
       return await res.json();
     }

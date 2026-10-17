@@ -128,6 +128,18 @@ haga: si empujas un tag `vX.Y.Z`, [GitHub Actions](./.github/workflows/build-apk
 compila el APK, lo firma con `ANDROID_KEYSTORE_BASE64` y lo sube a la release de
 ese tag — que es exactamente el canal que consulta el OTA de la app.
 
+### Red del APK: sin contenido mixto (F6.3)
+
+El WebView sirve la app desde `https://localhost` con `android.allowMixedContent`
+en **false**: no acepta ninguna petición `http://` hecha desde la página. Las
+únicas URLs en texto claro que usa la app —el puente OTA (`http://<mac>:8082`)
+y la API local (`http://<mac>:3001`)— salen por petición nativa (`CapacitorHttp`,
+ver `src/lib/http-local.ts` → `fetchLocal`), fuera del WebView, y siguen
+limitadas por la lista blanca de `android/app/src/main/res/xml/network_security_config.xml`.
+Si el Mac cambia de IP hay que actualizar esa lista **y** `CANDIDATE_IPS`
+(`src/lib/ota-sync.ts`) / `DEFAULT_SERVER_URLS` (`src/lib/api-config.ts`):
+`src/lib/seguridad-red.test.ts` falla si dejan de coincidir.
+
 ## 🔁 Mejora diaria automática
 
 El proyecto tiene un circuito para publicar **una mejora pequeña y verificada

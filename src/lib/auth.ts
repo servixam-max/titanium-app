@@ -3,6 +3,7 @@
 
 import { UserAccount, UserProfile } from "./types";
 import { buildApiUrl, isNativeApp, detectActiveServer } from "./api-config";
+import { fetchLocal } from "./http-local";
 
 const ACTIVE_USER_ID_KEY = "fortixam_active_user_id";
 const ACCESS_TOKEN_KEY = "fortixam_access_token";
@@ -116,7 +117,9 @@ export function setServerUser(user: UserAccount | null): void {
 
 export async function isServerAvailable(): Promise<boolean> {
   try {
-    const res = await fetch(buildApiUrl("/api/health"), { method: "GET", cache: "no-store" });
+    // En el APK la API vive en http://<mac>:3001 y la petición sale nativa
+    // (CapacitorHttp): el WebView está en modo estricto desde F6.3.
+    const res = await fetchLocal(buildApiUrl("/api/health"), { method: "GET", cache: "no-store" });
     return res.ok;
   } catch {
     return false;
@@ -127,7 +130,7 @@ async function refreshAccessToken(): Promise<string | null> {
   const refreshToken = getRefreshToken();
   if (!refreshToken) return null;
   try {
-    const res = await fetch(buildApiUrl("/api/auth/refresh"), {
+    const res = await fetchLocal(buildApiUrl("/api/auth/refresh"), {
       method: "POST",
       headers: { "x-refresh-token": refreshToken },
     });
@@ -152,12 +155,18 @@ export async function fetchWithAuth(
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
   const target = typeof input === "string" ? buildApiUrl(input) : input;
-  let res = await fetch(target, { ...init, headers });
+  // Las URLs de la API local son http: dentro del APK van nativas.
+  const pedir = () =>
+    typeof target === "string"
+      ? fetchLocal(target, { ...init, headers })
+      : fetch(target, { ...init, headers });
+
+  let res = await pedir();
   if (res.status === 401) {
     token = await refreshAccessToken();
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
-      res = await fetch(target, { ...init, headers });
+      res = await pedir();
     }
   }
   return res;
@@ -168,7 +177,7 @@ async function serverLogin(email: string, password: string): Promise<AuthResult>
     const url = buildApiUrl("/api/auth/login");
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch(url, {
+    const res = await fetchLocal(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -210,7 +219,7 @@ async function serverRegister(username: string, email: string, password: string)
     const url = buildApiUrl("/api/auth/register");
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(url, {
+    const res = await fetchLocal(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),

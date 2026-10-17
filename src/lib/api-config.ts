@@ -1,3 +1,5 @@
+import { fetchLocal } from "./http-local";
+
 export const SERVER_URL_KEY = "fortixam_server_url";
 
 export const DEFAULT_SERVER_URLS = [
@@ -47,7 +49,9 @@ export async function detectActiveServer(): Promise<string | null> {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000);
-      const res = await fetch(`${candidate}/api/health`, {
+      // El servidor local habla http: dentro del APK la petición sale nativa
+      // (CapacitorHttp) y el WebView no necesita aceptar contenido mixto.
+      const res = await fetchLocal(`${candidate}/api/health`, {
         signal: controller.signal,
         cache: "no-store",
       });
