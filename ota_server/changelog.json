@@ -1,7 +1,19 @@
 {
-  "generatedAt": "2026-10-16T07:12:18.764Z",
+  "generatedAt": "2026-10-17T07:14:23.181Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
+    {
+      "version": "8.5.49",
+      "name": "FORTIXAM v8.5.49",
+      "publishedAt": "2026-10-17T07:14:22.000Z",
+      "notes": [
+        "docs: plan diario — F6.2 texto corto del HUD del visor 3D v8.5.48",
+        "docs: plan diario — F6.2 verificado en emulador con el APK de CI v8.5.48",
+        "chore(infra): aísla la base de datos de FORTIXAM del servicio «db» de Nextcloud",
+        "fix(red): el APK deja de aceptar contenido mixto; el http local sale nativo"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.49"
+    },
     {
       "version": "8.5.48",
       "name": "FORTIXAM v8.5.48",
@@ -112,16 +124,6 @@
         "fix(entrenos): remates opcionales, duraciones reales y musculos sin repetir"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.38"
-    },
-    {
-      "version": "8.5.37",
-      "name": "FORTIXAM v8.5.37",
-      "publishedAt": "2026-10-08T09:19:31.000Z",
-      "notes": [
-        "docs: plan diario — F3.3 gráfica de récords v8.5.36",
-        "fix(entrenos): descansos por tipo de ejercicio y dias sin repetir"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.37"
     }
   ]
 }
