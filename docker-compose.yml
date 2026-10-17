@@ -1,14 +1,26 @@
 # FORTIXAM v8 — despliegue: PostgreSQL + web standalone
 #
 # Uso:
-#   docker compose up -d db
+#   docker compose up -d
 #
+# OJO: en esta carpeta convive nextcloud-docker-compose.yml, otro proyecto
+# (mismo nombre de proyecto, derivado de la carpeta) con un servicio que
+# TAMBIÉN se llama «db». Por eso la base de datos de FORTIXAM se llama aquí
+# «titanium-db» y expone el alias «db» en la red: DATABASE_HOST=db del .env
+# resuelve al alias, no al nombre del servicio, así que una futura operación
+# de compose sobre el archivo de Nextcloud no puede confundir, recrear ni
+# tirar esta base de datos (pasó el 17-oct-2026: `compose create db` recreó
+# el contenedor del otro archivo). No renombrar el alias sin tocar el .env.
 
 services:
-  db:
+  titanium-db:
     image: postgres:15-alpine
     container_name: titanium-db
     restart: unless-stopped
+    networks:
+      default:
+        aliases:
+          - db
     environment:
       POSTGRES_DB: ${DATABASE_NAME:-titanium}
       POSTGRES_USER: ${DATABASE_USER:-titanium}
@@ -29,7 +41,7 @@ services:
     build: .
     restart: unless-stopped
     depends_on:
-      db:
+      titanium-db:
         condition: service_healthy
     environment:
       DATABASE_HOST: db
