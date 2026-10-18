@@ -1,11 +1,21 @@
 {
-  "generatedAt": "2026-10-17T07:14:23.181Z",
+  "generatedAt": "2026-10-18T07:06:25.906Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.50",
+      "name": "FORTIXAM v8.5.50",
+      "publishedAt": "2026-10-18T07:06:25.000Z",
+      "notes": [
+        "docs: plan diario — F6.3 verificada en emulador con el APK de CI v8.5.49",
+        "fix(ui): el nombre del ejercicio se lee en el hover de la tarjeta"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.50"
+    },
+    {
       "version": "8.5.49",
       "name": "FORTIXAM v8.5.49",
-      "publishedAt": "2026-10-17T07:14:22.000Z",
+      "publishedAt": "2026-10-17T07:14:23.000Z",
       "notes": [
         "docs: plan diario — F6.2 texto corto del HUD del visor 3D v8.5.48",
         "docs: plan diario — F6.2 verificado en emulador con el APK de CI v8.5.48",
@@ -114,16 +124,6 @@
         "feat(planes): planes semanales por dia y la home dice que toca hoy"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.39"
-    },
-    {
-      "version": "8.5.38",
-      "name": "FORTIXAM v8.5.38",
-      "publishedAt": "2026-10-08T09:57:27.000Z",
-      "notes": [
-        "docs: bitacora v8.5.37 — descansos por tipo y dias sin repetir",
-        "fix(entrenos): remates opcionales, duraciones reales y musculos sin repetir"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.38"
     }
   ]
 }
