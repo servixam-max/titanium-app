@@ -17,6 +17,9 @@
   --text-tertiary: #909DC2;
   --primary: #10B981;
   --primary-rgb: 16 185 129;
+  /* Verde legible como texto sobre tarjeta (F6.4). En oscuro es el mismo
+     acento; en claro baja a emerald-700 para pasar 4,5:1. */
+  --primary-strong-rgb: 16 185 129;
   --primary-500: #10B981;
   --primary-600: #059669;
   --primary-400: #34D399;
@@ -64,6 +67,10 @@ html.light {
   --text-tertiary: #56657C;
   --primary: #059669;
   --primary-rgb: 5 150 105;
+  /* El texto en verde sobre tarjeta necesita el mismo verde que el resto del
+     texto primario en claro (#036B4B, 6,3:1 sobre tarjeta): emerald-600 se
+     quedaba en 3,6:1 y el nombre desaparecía al pasar el dedo (F6.4). */
+  --primary-strong-rgb: 3 107 75;
   --primary-500: #059669;
   --primary-600: #047857;
   --accent-cyan: #0284C7;

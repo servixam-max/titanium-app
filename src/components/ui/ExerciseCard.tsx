@@ -103,6 +103,7 @@ export default function ExerciseCard({
   return (
     <div
       onClick={onClick}
+      data-testid="exercise-card"
       className={`group relative bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] rounded-2xl p-3.5 flex items-center gap-3 min-h-touch-target-min transition-all duration-200 overflow-hidden cursor-pointer active:scale-[0.98] shadow-sm dark:shadow-md ${
           isIndividual
             ? "border-slate-200 dark:border-white/10 hover:border-primary/40 hover:bg-slate-50 dark:hover:bg-[#181d2e]"
@@ -140,7 +141,7 @@ export default function ExerciseCard({
       {/* Exercise Info */}
       <div className="flex-1 flex flex-col gap-0.5 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-sm text-slate-900 dark:text-white font-bold tracking-tight truncate group-hover:text-primary transition-colors">
+          <span data-testid="exercise-name" className="text-sm text-slate-900 dark:text-white font-bold tracking-tight truncate group-hover:text-primary-strong transition-colors">
             {exercise.name}
           </span>
         </div>

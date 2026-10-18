@@ -90,7 +90,7 @@ export default function ExerciseGridCard({
       {/* Bottom Info & Action Button */}
       <div className="p-3 flex flex-col gap-2 flex-1 justify-between bg-white dark:bg-[#131626]">
         <div onClick={onSelect} className="cursor-pointer">
-          <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug group-hover:text-primary transition-colors line-clamp-2">
+          <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug group-hover:text-primary-strong transition-colors line-clamp-2">
             {exercise.name}
           </h4>
           {exercise.description && (

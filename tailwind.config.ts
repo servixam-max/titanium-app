@@ -31,6 +31,10 @@ const config: Config = {
           container: "rgb(var(--primary-rgb) / <alpha-value>)",
           fixed: "rgb(var(--primary-rgb) / <alpha-value>)",
           "fixed-dim": "#047857",
+          // Verde para texto sobre tarjeta (F6.4): en claro usa el mismo verde
+          // del texto primario (#036B4B, 6,3:1); el acento emerald-600 se
+          // quedaba en 3,6:1. En oscuro es el acento de siempre.
+          strong: "rgb(var(--primary-strong-rgb) / <alpha-value>)",
           600: "#047857",
           500: "rgb(var(--primary-rgb) / <alpha-value>)",
           400: "#34D399",

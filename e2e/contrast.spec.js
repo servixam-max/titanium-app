@@ -170,5 +170,43 @@ for (const tema of ['dark', 'light']) {
         ).toEqual([]);
       });
     }
+
+    // F6.4 — el estado hover también cuenta: el nombre del ejercicio se pinta
+    // en verde al pasar el dedo/ratón por la tarjeta, y en claro el acento
+    // (emerald-600) se quedaba en 3,60:1 sobre la tarjeta. Este caso audita el
+    // color real ya con la tarjeta en hover, que es el que se ve al tocar.
+    test('el nombre del ejercicio en hover mantiene el contraste', async ({ page }) => {
+      await seedSession(page, { theme: tema });
+
+      await page.goto('/');
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(400);
+
+      const empezar = page.getByRole('button', { name: 'Empezar' });
+      await expect(empezar).toBeVisible({ timeout: 10000 });
+      await empezar.click({ force: true });
+      await expect(page.locator('[role="dialog"]')).toBeVisible({ timeout: 10000 });
+      await page.waitForTimeout(700);
+
+      const tarjeta = page.locator('[role="dialog"] [data-testid="exercise-card"]').first();
+      await expect(tarjeta).toBeVisible({ timeout: 10000 });
+      await tarjeta.hover();
+      // `transition-colors` anima el verde: medir cuando ya se ha asentado.
+      await page.waitForTimeout(400);
+
+      const nombre = tarjeta.locator('[data-testid="exercise-name"]');
+      const colorHover = await nombre.evaluate((el) => getComputedStyle(el).color);
+      expect(colorHover, `el nombre no cambió de color en hover (${colorHover})`).not.toBe(
+        'rgb(15, 23, 42)',
+      );
+
+      const infracciones = await auditarContraste(page, '[role="dialog"]');
+      expect(
+        infracciones,
+        `contraste insuficiente con la tarjeta en hover (${tema}), color "${colorHover}":\n  ${infracciones
+          .slice(0, 12)
+          .join('\n  ')}`,
+      ).toEqual([]);
+    });
   });
 }

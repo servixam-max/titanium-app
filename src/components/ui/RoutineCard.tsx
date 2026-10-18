@@ -108,7 +108,7 @@ export default function RoutineCard({
             )}
           </div>
 
-          <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight truncate group-hover:text-primary transition-colors mt-0.5">
+          <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight truncate group-hover:text-primary-strong transition-colors mt-0.5">
             {routine.title}
           </h3>
 
