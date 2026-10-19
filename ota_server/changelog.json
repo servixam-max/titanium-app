@@ -1,7 +1,17 @@
 {
-  "generatedAt": "2026-10-18T07:06:25.906Z",
+  "generatedAt": "2026-10-19T07:19:00.309Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
+    {
+      "version": "8.5.51",
+      "name": "FORTIXAM v8.5.51",
+      "publishedAt": "2026-10-19T07:18:59.000Z",
+      "notes": [
+        "docs: plan diario — F6.4 v8.5.50",
+        "fix(ui): el foco del teclado y el hover de la lista se leen siempre"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.51"
+    },
     {
       "version": "8.5.50",
       "name": "FORTIXAM v8.5.50",
@@ -114,16 +124,6 @@
         "fix(planes): elegir un plan ahora se ve y se aplica del todo"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.40"
-    },
-    {
-      "version": "8.5.39",
-      "name": "FORTIXAM v8.5.39",
-      "publishedAt": "2026-10-08T10:12:04.000Z",
-      "notes": [
-        "docs: bitacora v8.5.38 — remates opcionales y duraciones reales",
-        "feat(planes): planes semanales por dia y la home dice que toca hoy"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.39"
     }
   ]
 }
