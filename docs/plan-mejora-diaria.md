@@ -261,9 +261,33 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   desde hoy también el estado hover —medido en Pixel 7: `rgb(3,107,75)` sobre
   `rgb(248,250,252)`— y con la clase antigua ese caso falla con 3,60:1)*
 
+## Fase 7 — Estados y accesibilidad
+
+- [x] **F7.1** Auditar los estados que aún nadie mide: pulsado, foco de teclado
+  y hover de botones/chips (hoy solo reposo y el nombre de las tarjetas).
+  *(v8.5.51 · nueva suite `e2e/estados-interactivos.spec.js`: recorre hover,
+  pulsado y foco en los dos temas y mide el color real contra su fondo. Al
+  medirlo aparecieron tres fallos reales: el nombre del ejercicio dentro de la
+  lista de una rutina usaba `group-hover/item:text-primary` y quedaba en
+  **3,77:1** en claro —pasa al token `text-primary-strong`—; el anillo de foco
+  emerald-600 se quedaba en **2,96:1** sobre las superficies hundidas
+  (`#DFE4EA`), así que en claro baja a `#036B4B` con el token nuevo
+  `--focus-ring` (6,5:1 sobre blanco, 5,1:1 sobre la hundida); y los campos de
+  peso/reps/notas apagaban el contorno con `focus:outline-none` (2 px
+  transparentes) sin pintar alternativa —el color vuelve a pintarse solo con
+  teclado—. 5 pruebas nuevas en `foco-teclado.test.ts` y la guarda de hover
+  ampliada a los grupos con nombre)*
+- [ ] **F7.2** Las tarjetas del tema oscuro se saltan en la auditoría porque
+  llevan degradado de fondo y el script no lo calcula: medir el píxel real bajo
+  el texto (captura + lectura del color) en vez de descartarlas.
+- [ ] **F7.3** Sustituir las ~150 reglas `html.light … !important` que
+  reescriben colores por nombre de clase por tokens de tema: el fallo de F6.4
+  nació justo de ahí (`group-hover:text-primary` no pasaba por la regla de
+  `.text-primary`).
+
 ## Prioridad
 
-Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6. Dentro de cada fase, de arriba abajo.
+Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7. Dentro de cada fase, de arriba abajo.
 Si una tarea resulta inviable o demasiado grande, se divide en una tarea nueva
 justo debajo y se documenta el motivo.
 
@@ -314,3 +338,4 @@ justo debajo y se documenta el motivo.
 | v8.5.48 | F6.2 | **El HUD del visor 3D cabe en una línea en móvil**: «SIN MÚSCULOS TRABAJADOS AÚN» y «12/16 MÚSCULOS TRABAJADOS» partían en dos líneas dentro de su píldora a 375 y 412 px —medido con los rectángulos de línea reales del navegador— y, al no caber, el flex encogía también la píldora izquierda, así que «360° APAGADO» se partía de rebote. Ahora el HUD dice «Sin músculos aún» y «N/16 músculos», y ambos estados caben en una línea de 360 a 412 px. Nuevo `e2e/hud-visor-3d.spec.js` (4 pruebas, escritorio y móvil): mide las líneas a 360/375/412 en el estado vacío y con un entreno restaurado por el camino real (Ajustes → Restaurar), y vigila que el texto no desborde su píldora. Verificado en el emulador Android 16 con el APK de CI (v8.5.48): «Sin músculos aún» sin datos y, al cambiar a «Total», «5/16 músculos» — ambos en una línea dentro de su píldora. A 320 px (por debajo de la base de 375) el ancho del HUD queda justo y las dos píldoras se parten — caso de borde documentado. |
 | v8.5.49 | F6.3 | **El APK deja de aceptar contenido mixto: el http local sale del WebView**: la app vive en `https://localhost` y hablaba con el puente OTA (:8082) y la API local (:3001) por `http`, así que el WebView tenía que permitir contenido mixto (`allowMixedContent: true`). Ahora esas peticiones las hace el sistema operativo con `CapacitorHttp` —fuera del WebView, donde la restricción no existe y donde sigue aplicando la política de red del APK— mediante `fetchLocal` (src/lib/http-local.ts), y `allowMixedContent` pasa a `false`: el WebView rechaza cualquier https→http. En web y para https todo sigue con `fetch` normal. 10 pruebas del helper (nativo vs web, cabeceras, cuerpos JSON, 204, abort, fallback) y guardas anti-regresión en `seguridad-red`: el flag no puede volver a `true` y ninguna URL http local puede salir por `fetch` directo. Verificado en el WebView real del emulador: `fetch` a http bloqueado («Failed to fetch»), petición nativa 200 por el puente y por la API, y el fallback OTA completo con GitHub simulado caído pinta «Actualización Lista v9.9.9» (fixture local). El APK de CI se instala encima conservando datos y muestra «Tu aplicación está al día (v8.5.49)». De paso, el compose gana un servicio renombrado (`titanium-db` + alias `db`) para que no pueda confundirse con el servicio homónimo del compose de Nextcloud que convive en la carpeta. |
 | v8.5.50 | F6.4 | **El nombre del ejercicio se lee al tocarlo**: al pasar el dedo por una tarjeta, el nombre se pintaba en el verde de acento (emerald-600, `#059669`) sobre la tarjeta clara, que da **3,60:1** — por debajo del mínimo de 4,5:1, así que el nombre se desvanecía justo en el gesto de tocarlo. Ahora el hover usa un verde propio para texto (`--primary-strong-rgb`): en claro, el mismo verde que ya emplea el texto primario del tema (`#036B4B`, **6,26:1** sobre la tarjeta en hover y 6,55:1 sobre blanca); en oscuro, el acento de siempre (`#10B981`, 6,60:1), sin cambiar nada de lo que se ve. Aplica a las tres tarjetas (detalle de rutina, catálogo y home). El e2e de contraste audita ya también el estado hover: con la clase antigua falla con 3,60:1 medidos (`rgb(5,150,105)` sobre `rgb(248,250,252)`), así que no puede volver sin que la suite lo diga. |
+| v8.5.51 | F7.1 | **Los estados también se leen: hover de la lista, foco de teclado y campos con contorno**: la auditoría nueva de estados interactivos —hover, pulsado y foco, en los dos temas— encontró tres fallos que nadie medía. El nombre del ejercicio dentro de la lista de una rutina se pintaba con `group-hover/item:text-primary` y quedaba en **3,77:1** sobre la tarjeta blanca (el mismo acento crudo que F6.4, pero en el `group/item` que la guarda anterior no miraba): pasa a `text-primary-strong` (**6,5:1**). El anillo de foco global usaba emerald-600 y sobre las superficies hundidas (`#DFE4EA`) daba **2,96:1** —por debajo del 3:1 de WCAG para indicadores—: token nuevo `--focus-ring`, `#036B4B` en claro (**5,1:1** sobre la hundida, 6,5:1 sobre blanco) y el acento de siempre en oscuro (7,6:1). Y los campos de peso/reps/notas apagaban el contorno con `focus:outline-none` (2 px transparentes) sin pintar alternativa, así que al tabular no se veía el foco: el color del anillo se repinta solo con teclado. Nuevo `e2e/estados-interactivos.spec.js` (4 casos × 2 temas; 14 pasan y 2 se saltan en móvil porque el hover no existe en táctil) y 5 pruebas en `foco-teclado.test.ts`; suite completa **189 pasan** (5 intermitentes que pasaron al reintentar). |
