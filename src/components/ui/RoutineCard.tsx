@@ -224,7 +224,7 @@ export default function RoutineCard({
 
                   {/* Exercise info */}
                   <div className="min-w-0 flex-1">
-                    <span className="text-xs font-bold text-slate-900 dark:text-white block truncate group-hover/item:text-primary transition-colors">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block truncate group-hover/item:text-primary-strong transition-colors">
                       {idx + 1}. {ex.name}
                     </span>
                     <div className="flex items-center gap-2 mt-0.5 text-[12px] text-slate-600 dark:text-slate-300">

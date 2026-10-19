@@ -108,7 +108,7 @@ describe("Verde de hover sobre tarjeta (F6.4)", () => {
     // Las propias pruebas quedan fuera: citan el nombre de la clase a propósito.
     const culpables = ficherosFuente()
       .filter((ruta) => !/\.test\./.test(ruta))
-      .filter((ruta) => /group-hover:text-primary(?![-\w/])/.test(fs.readFileSync(ruta, "utf8")))
+      .filter((ruta) => /group-hover(?:\/[\w-]+)?:text-primary(?![-\w/])/.test(fs.readFileSync(ruta, "utf8")))
       .map((ruta) => path.relative(ROOT, ruta));
     expect(culpables, "usa group-hover:text-primary-strong en lugar del acento crudo").toEqual([]);
   });
