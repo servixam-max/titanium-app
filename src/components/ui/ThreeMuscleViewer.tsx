@@ -758,7 +758,7 @@ export default function ThreeMuscleViewer({
         <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2.5 bg-black/40 border-t border-white/5 text-[12px] z-20 backdrop-blur-sm">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-slate-200 dark:bg-[#131626] border-slate-300 dark:border-white/20" />
-            <span className="text-slate-500 dark:text-zinc-500">Inactivo</span>
+            <span className="text-slate-500 dark:text-zinc-400">Inactivo</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_6px_#00E1FF]" />
@@ -770,7 +770,7 @@ export default function ThreeMuscleViewer({
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34D399]" />
-            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Hipertrofia</span>
+            <span className="text-emerald-700 dark:text-emerald-400 font-semibold">Hipertrofia</span>
           </div>
         </div>
       </div>
@@ -799,7 +799,7 @@ export default function ThreeMuscleViewer({
               title="Tracción (Espalda/Dorsal/Bíceps)"
             />
           </div>
-          <span className="text-[12px] text-slate-500 dark:text-zinc-500 block mt-1.5">
+          <span className="text-[12px] text-slate-500 dark:text-zinc-400 block mt-1.5">
             {biomechanics.pushRatio >= 45 && biomechanics.pushRatio <= 55
               ? "Equilibrio postural óptimo"
               : biomechanics.pushRatio > 55
@@ -830,7 +830,7 @@ export default function ThreeMuscleViewer({
               title="Tren Inferior"
             />
           </div>
-          <span className="text-[12px] text-slate-500 dark:text-zinc-500 block mt-1.5">
+          <span className="text-[12px] text-slate-500 dark:text-zinc-400 block mt-1.5">
             {biomechanics.upperRatio >= 45 && biomechanics.upperRatio <= 55
               ? "Equilibrio tren superior/inferior"
               : biomechanics.upperRatio > 55
@@ -851,7 +851,7 @@ export default function ThreeMuscleViewer({
                 <span className="text-[12px] font-semibold text-primary bg-primary/10 border-primary/30 px-2.5 py-0.5 rounded-full">
                   {selectedStat.info.majorGroup}
                 </span>
-                <span className="text-[12px] text-slate-500 dark:text-zinc-500">
+                <span className="text-[12px] text-slate-500 dark:text-zinc-400">
                   {selectedStat.info.scientificName}
                 </span>
               </div>

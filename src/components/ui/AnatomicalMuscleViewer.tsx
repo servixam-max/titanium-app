@@ -65,7 +65,7 @@ export default function AnatomicalMuscleViewer({
           </button>
         </div>
 
-        <span className="text-[12px] text-slate-500 dark:text-zinc-500">
+        <span className="text-[12px] text-slate-500 dark:text-zinc-400">
           {renderMode === "3d" ? "Motor WebGL 3D" : "Esquema Vectorial"}
         </span>
       </div>
