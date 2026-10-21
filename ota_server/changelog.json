@@ -1,11 +1,21 @@
 {
-  "generatedAt": "2026-10-19T07:19:00.309Z",
+  "generatedAt": "2026-10-21T07:18:16.593Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.52",
+      "name": "FORTIXAM v8.5.52",
+      "publishedAt": "2026-10-21T07:18:16.000Z",
+      "notes": [
+        "docs: plan diario — F7.1 v8.5.51",
+        "fix(a11y): la auditoría mide el fondo real de las tarjetas con degradado"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.52"
+    },
+    {
       "version": "8.5.51",
       "name": "FORTIXAM v8.5.51",
-      "publishedAt": "2026-10-19T07:18:59.000Z",
+      "publishedAt": "2026-10-19T07:19:00.000Z",
       "notes": [
         "docs: plan diario — F6.4 v8.5.50",
         "fix(ui): el foco del teclado y el hover de la lista se leen siempre"
@@ -114,16 +124,6 @@
         "feat(stats): comparativa mensual de volumen por grupo muscular"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.41"
-    },
-    {
-      "version": "8.5.40",
-      "name": "FORTIXAM v8.5.40",
-      "publishedAt": "2026-10-08T10:27:13.000Z",
-      "notes": [
-        "docs: bitacora v8.5.39 — planes semanales",
-        "fix(planes): elegir un plan ahora se ve y se aplica del todo"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.40"
     }
   ]
 }
