@@ -1,7 +1,16 @@
 {
-  "generatedAt": "2026-10-21T07:18:16.593Z",
+  "generatedAt": "2026-10-23T07:04:18.274Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
+    {
+      "version": "8.5.53",
+      "name": "FORTIXAM v8.5.53",
+      "publishedAt": "2026-10-23T07:04:17.000Z",
+      "notes": [
+        "fix(a11y): los avisos y la inicial del avatar se leen en los dos temas"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.53"
+    },
     {
       "version": "8.5.52",
       "name": "FORTIXAM v8.5.52",
@@ -114,16 +123,6 @@
         "test(e2e): flujos críticos — entreno guiado completo y registro de peso"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.42"
-    },
-    {
-      "version": "8.5.41",
-      "name": "FORTIXAM v8.5.41",
-      "publishedAt": "2026-10-09T07:26:27.000Z",
-      "notes": [
-        "docs: bitacora v8.5.40 — elegir plan se ve y se aplica",
-        "feat(stats): comparativa mensual de volumen por grupo muscular"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.41"
     }
   ]
 }
