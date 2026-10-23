@@ -68,7 +68,7 @@ export default function ChangelogList({
   if (error) {
     return (
       <div className="fx-card flex flex-col gap-3 p-4">
-        <div className="flex items-center gap-2 text-sm font-semibold text-amber-600 dark:text-amber-400">
+        <div className="flex items-center gap-2 text-sm font-semibold text-amber-700 dark:text-amber-400">
           <AlertTriangle className="h-5 w-5" />
           <span>No se pudieron cargar las novedades</span>
         </div>
@@ -137,9 +137,9 @@ export default function ChangelogList({
               </span>
 
               {isOpen ? (
-                <ChevronUp className="h-4 w-4 shrink-0 text-slate-400 dark:text-zinc-500" />
+                <ChevronUp className="h-4 w-4 shrink-0 text-slate-400 dark:text-zinc-400" />
               ) : (
-                <ChevronDown className="h-4 w-4 shrink-0 text-slate-400 dark:text-zinc-500" />
+                <ChevronDown className="h-4 w-4 shrink-0 text-slate-400 dark:text-zinc-400" />
               )}
             </button>
 
@@ -189,7 +189,7 @@ export default function ChangelogList({
         </button>
       )}
 
-      <p className="text-center text-[13px] text-slate-400 dark:text-zinc-500">
+      <p className="text-center text-[13px] text-slate-400 dark:text-zinc-400">
         {fromCache
           ? "Mostrando la última copia guardada. Se actualiza sola con conexión."
           : "Novedades leídas de las versiones publicadas en GitHub."}

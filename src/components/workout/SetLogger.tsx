@@ -185,7 +185,7 @@ export default function SetLogger({
             {suggestion && (
               <p className="flex items-center gap-1.5 text-[13px] leading-snug">
                 {suggestion.action === "increase" && <TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-primary" />}
-                {suggestion.action === "down" && <TrendingDown className="h-3.5 w-3.5 flex-shrink-0 text-amber-500" />}
+                {suggestion.action === "down" && <TrendingDown className="h-3.5 w-3.5 flex-shrink-0 text-amber-700 dark:text-amber-400" />}
                 {suggestion.action === "start" && <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-[color:var(--accent-cyan)]" />}
                 {suggestion.action === "hold" && <Minus className="h-3.5 w-3.5 flex-shrink-0 text-[color:var(--text-tertiary)]" />}
                 <span className="min-w-0 truncate text-[color:var(--text-secondary)]">

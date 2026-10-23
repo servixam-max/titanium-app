@@ -463,7 +463,7 @@ export default function StatsPage() {
                     <Flame className="w-3 h-3 fill-primary flex-shrink-0" />
                     {MUSCLE_METADATA[mostTrainedMuscle].name}
                   </span>
-                  <span className="text-[12px] text-slate-400 dark:text-zinc-500 block mt-0.5">
+                  <span className="text-[12px] text-slate-400 dark:text-zinc-400 block mt-0.5">
                     {Math.round(muscleStats[mostTrainedMuscle].volumeKg)} kg acumulados
                   </span>
                 </div>
@@ -477,7 +477,7 @@ export default function StatsPage() {
                     <Sparkles className="w-3 h-3 text-cyan-600 dark:text-cyan-400 flex-shrink-0" />
                     {MUSCLE_METADATA[leastTrainedMuscle].name}
                   </span>
-                  <span className="text-[12px] text-slate-400 dark:text-zinc-500 block mt-0.5">
+                  <span className="text-[12px] text-slate-400 dark:text-zinc-400 block mt-0.5">
                     {Math.round(muscleStats[leastTrainedMuscle].volumeKg)} kg acumulados
                   </span>
                 </div>

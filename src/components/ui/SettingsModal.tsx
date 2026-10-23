@@ -53,6 +53,7 @@ import {
   startInAppUpdate,
 } from "@/lib/app-updater";
 import { getSessions, saveSession, getWeights, saveWeight } from "@/lib/db";
+import { inkParaFondo } from "@/lib/avatar-ink";
 import ChangelogList from "@/components/ui/ChangelogList";
 import { ChangelogEntry, fetchChangelog } from "@/lib/changelog";
 import {
@@ -427,8 +428,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 <section className="fx-card rounded-2xl p-4 flex items-center justify-between shadow-sm dark:shadow-lg relative overflow-hidden">
                   <div className="flex items-center gap-3.5 relative z-10">
                     <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-semibold text-xl shadow-sm"
-                      style={{ backgroundColor: currentUser?.avatarColor || "#10B981" }}
+                      className="w-12 h-12 rounded-xl flex items-center justify-center font-semibold text-xl shadow-sm"
+                      style={{
+                        backgroundColor: currentUser?.avatarColor || "#10B981",
+                        // Sobre el menta de por defecto el blanco daba 1,9:1 (F7.3a).
+                        color: inkParaFondo(currentUser?.avatarColor),
+                      }}
                     >
                       {(currentUser?.username || "A").slice(0, 1).toUpperCase()}
                     </div>
@@ -437,7 +442,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <span className="font-bold text-slate-900 dark:text-white text-base">
                           {currentUser?.username || "Atleta"}
                         </span>
-                        <span className="text-[12px] font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">
+                        <span className="text-[12px] font-bold bg-emerald-500/20 text-primary-strong px-2 py-0.5 rounded-full">
                           CONECTADO
                         </span>
                       </div>
@@ -451,7 +456,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       logout();
                       onClose();
                     }}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-white/5 hover:bg-red-500/10 text-slate-700 dark:text-zinc-300 hover:text-red-500 dark:hover:text-red-400 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-white/5 hover:bg-red-500/10 text-slate-700 dark:text-zinc-300 hover:text-danger rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
                     title="Cerrar sesión"
                   >
                     <LogOut className="w-3.5 h-3.5" />
@@ -646,7 +651,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     />
 
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-400 dark:text-zinc-500">0.65x</span>
+                      <span className="text-slate-400 dark:text-zinc-400">0.65x</span>
                       <button
                         type="button"
                         onClick={() =>
@@ -656,7 +661,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       >
                         🔊 Probar Voz
                       </button>
-                      <span className="text-slate-400 dark:text-zinc-500">1.30x</span>
+                      <span className="text-slate-400 dark:text-zinc-400">1.30x</span>
                     </div>
                   </div>
                 </section>
@@ -741,7 +746,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                     {otaStatus === "update-found" && otaInfo && (
                       <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-emerald-500/40 rounded-2xl p-4 flex flex-col gap-3 shadow-sm dark:shadow-lg">
-                        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold text-sm">
+                        <div className="flex items-center gap-2 text-primary-strong font-semibold text-sm">
                           <Sparkles className="w-5 h-5" />
                           <span>¡Nueva versión v{otaInfo.version} lista!</span>
                         </div>
@@ -751,7 +756,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                         {!hasInstallPermission && (
                           <div className="bg-amber-500/10 border-amber-500/30 rounded-xl p-3 flex flex-col gap-2">
-                            <div className="flex items-center gap-2 text-amber-500 dark:text-amber-400 text-xs font-bold">
+                            <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-bold">
                               <AlertTriangle className="w-4 h-4" />
                               <span>Permiso para autoinstalar</span>
                             </div>
@@ -842,7 +847,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                         <div className="flex items-center justify-between text-[13px] text-slate-600 dark:text-zinc-400">
                           <span>{downloadStats.current} / {downloadStats.total}</span>
-                          <span className="text-slate-400 dark:text-zinc-500">No cierres la app</span>
+                          <span className="text-slate-400 dark:text-zinc-400">No cierres la app</span>
                         </div>
                       </div>
                     )}
@@ -925,7 +930,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <button
                       disabled={syncStatus === "syncing"}
                       onClick={handleExportBackup}
-                      className="w-full h-12 bg-slate-50 dark:bg-[#181d2e] border-primary/30 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-emerald-600 dark:text-primary cursor-pointer"
+                      className="w-full h-12 bg-slate-50 dark:bg-[#181d2e] border-primary/30 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/10 active:scale-95 transition-all text-primary-strong cursor-pointer"
                     >
                       <Download className="w-5 h-5" />
                       <span className="font-bold text-sm">
@@ -945,7 +950,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </label>
                     
                     {syncMsg && (
-                      <p className={`text-xs text-center font-bold ${syncStatus === "error" ? "text-red-500 dark:text-red-400" : "text-primary"}`}>
+                      <p className={`text-xs text-center font-bold ${syncStatus === "error" ? "text-danger" : "text-primary"}`}>
                         {syncMsg}
                       </p>
                     )}
@@ -961,7 +966,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   <div className="bg-white dark:bg-[#131626] border-red-500/20 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-xs font-bold text-red-500 dark:text-red-400 block">
+                        <span className="text-xs font-bold text-danger block">
                           Restablecer Historial
                         </span>
                         <span className="text-[13px] text-slate-500 dark:text-zinc-400">
@@ -973,14 +978,14 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     {!showResetConfirm ? (
                       <button
                         onClick={() => setShowResetConfirm(true)}
-                        className="w-full h-10 bg-slate-50 dark:bg-[#181d2e] border-red-500/20 flex items-center justify-center gap-2 rounded-lg text-red-500 dark:text-red-400 hover:bg-red-500/10 active:scale-95 transition-all mt-2 cursor-pointer"
+                        className="w-full h-10 bg-slate-50 dark:bg-[#181d2e] border-red-500/20 flex items-center justify-center gap-2 rounded-lg text-danger hover:bg-red-500/10 active:scale-95 transition-all mt-2 cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                         <span className="text-xs font-bold">Borrar todos los datos locales</span>
                       </button>
                     ) : (
                       <div className="bg-red-500/10 border-error/20 rounded-lg p-3 mt-2">
-                        <p className="text-xs text-red-500 dark:text-red-400 mb-3 text-center">¿Seguro? Se perderán tus entrenamientos en este dispositivo.</p>
+                        <p className="text-xs text-danger mb-3 text-center">¿Seguro? Se perderán tus entrenamientos en este dispositivo.</p>
                         <div className="flex gap-2">
                           <button onClick={() => setShowResetConfirm(false)} className="flex-1 h-10 bg-slate-100 dark:bg-[#131626] rounded-md text-xs font-bold text-slate-700 dark:text-white cursor-pointer">Cancelar</button>
                           <button onClick={handleResetHistory} className="flex-1 h-10 bg-red-500 hover:bg-red-600 text-white rounded-md text-xs font-bold cursor-pointer">Sí, borrar</button>

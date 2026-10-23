@@ -50,6 +50,10 @@ const config: Config = {
           violet: "#8B5CF6",
           amber: "#FFB800",
         },
+        // Rojo de aviso como TEXTO (F7.3a): token de tema, no una clase suelta.
+        // En oscuro es red-400; en claro red-700, porque red-500 se quedaba en
+        // 3,3-3,8:1 sobre las tarjetas claras y sobre su propia píldora.
+        danger: "rgb(var(--danger-text-rgb) / <alpha-value>)",
         // === Legacy aliases (kept for gradual migration) ===
         "surface-container": {
           lowest: "#07080C",

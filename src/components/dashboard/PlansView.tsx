@@ -324,12 +324,12 @@ export default function PlansView({
 
                     {/* Progresión semanal */}
                     {plan.weeklyPlan && plan.weeklyPlan.length > 0 && (
-                      <div className="mb-3 flex flex-wrap items-center gap-1.5"> {plan.weeklyPlan.map((week) => ( <span key={week.week} title={week.note} className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[12px] font-mono font-bold ${ week.isDeload ?"border-amber-400/40 bg-amber-400/10 text-amber-600 dark:text-amber-300"
+                      <div className="mb-3 flex flex-wrap items-center gap-1.5"> {plan.weeklyPlan.map((week) => ( <span key={week.week} title={week.note} className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[12px] font-mono font-bold ${ week.isDeload ?"border-amber-400/40 bg-amber-400/10 text-amber-700 dark:text-amber-300"
                                 : "border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-zinc-300"
                             }`}
                           >
                             S{week.week}
-                            <span className={week.isDeload ? "text-amber-600 dark:text-amber-300" : "text-primary"}>
+                            <span className={week.isDeload ? "text-amber-700 dark:text-amber-300" : "text-primary"}>
                               {week.intensityPct}%
                             </span>
                           </span>
@@ -575,7 +575,7 @@ export default function PlansView({
                     <span
                       key={r}
                       onClick={() => setCoachRestrictions(coachRestrictions.filter((x) => x !== r))}
-                      className="inline-flex items-center gap-1 rounded-lg border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[13px] font-bold text-rose-600 dark:text-rose-300 cursor-pointer hover:bg-rose-500/20"
+                      className="inline-flex items-center gap-1 rounded-lg border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[13px] font-bold text-rose-700 dark:text-rose-300 cursor-pointer hover:bg-rose-500/20"
                     >
                       <ShieldAlert className="h-3 w-3" />
                       {r}

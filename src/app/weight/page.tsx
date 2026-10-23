@@ -238,9 +238,9 @@ export default function WeightPage() {
                   <span className="text-5xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight">
                     {stats.current.toFixed(1)}
                   </span>
-                  <span className="text-xl font-bold text-primary">kg</span> </div> </div> {/* Difference Badge */} <div className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs font-mono font-bold ${ stats.diff < 0 ?"bg-emerald-500/15 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+                  <span className="text-xl font-bold text-primary">kg</span> </div> </div> {/* Difference Badge */} <div className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs font-mono font-bold ${ stats.diff < 0 ?"bg-emerald-500/15 border-emerald-500/30 text-primary-strong"
                     : stats.diff > 0
-                    ? "bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-400"
+                    ? "bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-400"
                     : "bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-600 dark:text-zinc-300"
                 }`}
               >
@@ -273,7 +273,7 @@ export default function WeightPage() {
               </div>
               <div className="text-center bg-slate-50 dark:bg-[#0d101a] rounded-xl p-2.5">
                 <span className="text-[12px] text-slate-500 dark:text-zinc-400 block">Máximo</span>
-                <span className="text-sm font-bold text-amber-600 dark:text-amber-400 mt-0.5 block">
+                <span className="text-sm font-bold text-amber-700 dark:text-amber-400 mt-0.5 block">
                   {stats.max.toFixed(1)} kg
                 </span>
               </div>
@@ -369,11 +369,11 @@ export default function WeightPage() {
                 <div className="flex items-center gap-4 mt-1 self-end">
                   <div className="flex items-center gap-1">
                     <div className="w-6 h-0.5 bg-gradient-to-r from-cyan-400 to-primary rounded" />
-                    <span className="text-[12px] text-slate-500 dark:text-zinc-500">Peso</span>
+                    <span className="text-[12px] text-slate-500 dark:text-zinc-400">Peso</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="w-6 h-0.5 border-t border-dashed border-cyan-400 opacity-60" />
-                    <span className="text-[12px] text-slate-500 dark:text-zinc-500">Media 7d</span>
+                    <span className="text-[12px] text-slate-500 dark:text-zinc-400">Media 7d</span>
                   </div>
                 </div>
               </div>
@@ -569,9 +569,9 @@ export default function WeightPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3"> {diff !== null && ( <span className={`text-xs font-mono font-bold flex items-center gap-0.5 ${ diff < 0 ?"text-emerald-600 dark:text-emerald-400"
+                  <div className="flex items-center gap-3"> {diff !== null && ( <span className={`text-xs font-mono font-bold flex items-center gap-0.5 ${ diff < 0 ?"text-primary-strong"
                             : diff > 0
-                            ? "text-amber-600 dark:text-amber-400"
+                            ? "text-amber-700 dark:text-amber-400"
                             : "text-slate-500 dark:text-zinc-400"
                         }`}
                       >
@@ -594,7 +594,7 @@ export default function WeightPage() {
                         </button>
                         <button
                           onClick={() => handleDelete(entry.id)}
-                          className="text-[12px] text-red-500 dark:text-red-400 font-bold px-2 py-1 bg-red-500/10 rounded-lg"
+                          className="text-[12px] text-danger font-bold px-2 py-1 bg-red-500/10 rounded-lg"
                         >
                           Borrar
                         </button>
@@ -602,7 +602,7 @@ export default function WeightPage() {
                     ) : (
                       <button
                         onClick={() => setDeleteConfirm(entry.id)}
-                        className="text-slate-400 dark:text-zinc-500 hover:text-red-500 p-1 transition-colors"
+                        className="text-slate-400 dark:text-zinc-400 hover:text-danger p-1 transition-colors"
                         title="Eliminar registro"
                       >
                         <Trash2 className="w-4 h-4" />

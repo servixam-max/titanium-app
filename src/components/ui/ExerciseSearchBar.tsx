@@ -82,7 +82,7 @@ export default function ExerciseSearchBar({
               haptics.selection();
               onSelectEquipment("all"); }} className={`px-2.5 py-1 rounded-xl text-[13px] font-mono font-bold transition-all ${ selectedEquipment ==="all"
                 ? "bg-slate-900 dark:bg-white/20 text-white border-slate-700 dark:border-white/30"
-                : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
+                : "text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
             }`}
           >
             Todo
@@ -92,7 +92,7 @@ export default function ExerciseSearchBar({
               haptics.selection();
               onSelectEquipment("dumbbells"); }} className={`px-2.5 py-1 rounded-xl text-[13px] font-mono font-bold flex items-center gap-1 transition-all ${ selectedEquipment ==="dumbbells"
                 ? "bg-primary text-black border-primary/40 shadow-sm"
-                : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
+                : "text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
             }`}
           >
             <Dumbbell className="w-3 h-3" />
@@ -103,7 +103,7 @@ export default function ExerciseSearchBar({
               haptics.selection();
               onSelectEquipment("bodyweight"); }} className={`px-2.5 py-1 rounded-xl text-[13px] font-mono font-bold flex items-center gap-1 transition-all ${ selectedEquipment ==="bodyweight"
                 ? "bg-cyan-600 text-white border-cyan-500/40 shadow-sm"
-                : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
+                : "text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-300 bg-slate-100 dark:bg-black/30"
             }`}
           >
             <User className="w-3 h-3" />

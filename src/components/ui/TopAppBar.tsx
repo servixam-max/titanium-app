@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 import { haptics } from "@/lib/haptics";
 import { hasUnseenNews, WHATS_NEW_SEEN_EVENT } from "@/lib/whats-new";
+import { inkParaFondo } from "@/lib/avatar-ink";
 
 const SettingsModal = dynamic(() => import("./SettingsModal"), { ssr: false });
 
@@ -106,8 +107,13 @@ export default function TopAppBar({
           {currentUser && (
             <button
               onClick={() => setSettingsOpen(true)}
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-black font-bold text-xs shadow-sm active:scale-90 transition-all"
-              style={{ backgroundColor: currentUser.avatarColor || "#10B981" }}
+              className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shadow-sm active:scale-90 transition-all"
+              style={{
+                backgroundColor: currentUser.avatarColor || "#10B981",
+                // La inicial elige tinta por luminancia (F7.3a): en negro fijo,
+                // sobre el violeta de la paleta quedaba en 3,1:1.
+                color: inkParaFondo(currentUser.avatarColor),
+              }}
               title={`Perfil de ${currentUser.username}`}
             >
               {currentUser.username.slice(0, 1).toUpperCase()}

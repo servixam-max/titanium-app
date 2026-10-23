@@ -24,9 +24,16 @@ const { auditarContraste } = require('./helpers/contraste-pixel');
 // así que se desactiva para que la auditoría mida siempre lo mismo.
 test.use({ serviceWorkers: 'block' });
 
+// La medición por píxel es cara: cada texto se fotografía y se lee. Las
+// pantallas con más textos sobre degradado (/stats en oscuro, 39) rozaban los
+// 30 s del límite global y salían intermitentes; 60 s les da aire sin tapar
+// una lentitud de verdad.
+test.describe.configure({ timeout: 60_000 });
+
 const RUTAS = [
   ['/', null, null],
   ['/', null, 'detalle'], // el detalle de rutina, abierto desde la home
+  ['/', null, 'ajustes'], // el panel de Ajustes (F7.3a: nadie lo medía)
   ['/stats', null, null],
   ['/history', null, null],
   ['/weight', null, null],
@@ -49,7 +56,8 @@ for (const tema of ['dark', 'light']) {
     });
 
     for (const [ruta, modo, accion] of RUTAS) {
-      test(`${ruta}${accion === 'detalle' ? ' (detalle de rutina)' : ''}`, async ({ page }) => {
+      const sufijo = accion === 'detalle' ? ' (detalle de rutina)' : accion === 'ajustes' ? ' (ajustes)' : '';
+      test(`${ruta}${sufijo}`, async ({ page }) => {
         await seedSession(page, { theme: tema });
         if (modo) await seedWorkout(page, { mode: modo });
 
@@ -70,6 +78,20 @@ for (const tema of ['dark', 'light']) {
           // La hoja entra con muelle: esperar a que se asiente antes de medir
           await page.waitForTimeout(700);
           scope = '[role="dialog"]';
+        }
+        if (accion === 'ajustes') {
+          // F7.3a: el panel de Ajustes nunca se medía, y ahí vivían cuatro
+          // textos por debajo de 4,5:1 en claro (el verde de estado y los
+          // avisos rojos usaban clases sueltas que la capa de reescrituras del
+          // tema claro no cubría).
+          const ajustes = page.getByRole('button', { name: /^Ajustes/ }).first();
+          await expect(ajustes).toBeVisible({ timeout: 10000 });
+          await ajustes.click({ force: true });
+          const panel = page.locator('[role="dialog"][aria-labelledby="settings-title"]');
+          await expect(panel).toBeVisible({ timeout: 10000 });
+          await page.mouse.move(5, 5);
+          await page.waitForTimeout(800);
+          scope = '[role="dialog"][aria-labelledby="settings-title"]';
         }
 
         await expect(page.locator('html')).toHaveClass(new RegExp(tema));

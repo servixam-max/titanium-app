@@ -277,9 +277,24 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   transparentes) sin pintar alternativa —el color vuelve a pintarse solo con
   teclado—. 5 pruebas nuevas en `foco-teclado.test.ts` y la guarda de hover
   ampliada a los grupos con nombre)*
-- [ ] **F7.2** Las tarjetas del tema oscuro se saltan en la auditoría porque
+- [x] **F7.2** Las tarjetas del tema oscuro se saltan en la auditoría porque
   llevan degradado de fondo y el script no lo calcula: medir el píxel real bajo
   el texto (captura + lectura del color) en vez de descartarlas.
+  *(v8.5.52 · nuevo `e2e/helpers/contraste-pixel.js`: oculta la tinta del texto
+  con una hoja de estilo inyectada —los estilos en línea los borra React—,
+  fotografía la caja del texto y lee el píxel que queda debajo, tomando la
+  mediana de la muestra. Solo cuenta el fondo que de verdad se ve: se sube por
+  los ancestros y se para en el primer fondo opaco, que era lo que falseaba las
+  insignias `#N` (píldora `bg-primary` opaca sobre la tarjeta con degradado).
+  Guardas nuevas: si algo tapa el texto —un diálogo abierto a mitad, una barra
+  fija— la medición falla con el motivo en vez de medir otra cosa, y el e2e
+  corta la consulta de actualizaciones a GitHub (saltaba a los 3 s y tapaba la
+  pantalla), con el service worker desactivado en esa suite porque se salta
+  `page.route`. Medidos **39** textos sobre degradado en `/stats` y **41** en el
+  detalle de rutina; destapó cuatro fallos reales: el gris secundario del visor
+  (`Motor WebGL 3D`, `Inactivo`, equilibrio postural, nombre científico) pasa de
+  `zinc-500` a `zinc-400` en oscuro —**3,39-4,15:1 → 6,4-7,8:1**— y `Hipertrofia`
+  de la leyenda pasa de emerald-600 a emerald-700 en claro —**3,44:1 → 5,01:1**—)*
 - [ ] **F7.3** Sustituir las ~150 reglas `html.light … !important` que
   reescriben colores por nombre de clase por tokens de tema: el fallo de F6.4
   nació justo de ahí (`group-hover:text-primary` no pasaba por la regla de

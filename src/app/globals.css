@@ -26,6 +26,10 @@
   /* Anillo de foco del teclado. En claro baja a #036B4B porque emerald-600
      se quedaba en 2,96:1 sobre las superficies hundidas (F7.1). */
   --focus-ring: var(--primary-500);
+  /* Rojo de aviso como texto (F7.3a): `text-red-500` daba 3,3-3,8:1 en claro
+     sobre blanco y sobre su propia píldora, y no estaba en la capa de
+     reescrituras del tema claro. En oscuro es el red-400 de siempre. */
+  --danger-text-rgb: 248 113 113;
   --accent-volt: #10B981;
   --accent-cyan: #00E5FF;
   --accent-flame: #FF9500;
@@ -77,6 +81,9 @@ html.light {
   --primary-500: #059669;
   --primary-600: #047857;
   --focus-ring: #036B4B;
+  /* Rojo de aviso como texto en claro: red-500 (#EF4444) se quedaba en 3,3-3,8:1
+     sobre blanco y sobre `bg-red-500/10`; red-700 llega a 5,3-6,5:1 (F7.3a). */
+  --danger-text-rgb: 185 28 28;
   --accent-cyan: #0284C7;
   --accent-flame: #EA580C;
   --accent-amber: #D97706;

@@ -35,7 +35,7 @@ export default function WarmupReminderBanner({
       data-testid="warmup-reminder"
       className="fx-inset relative flex min-h-[56px] items-center gap-3 pl-4 pr-11"
     >
-      <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500/12 text-amber-600 dark:text-amber-400">
+      <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500/12 text-amber-700 dark:text-amber-400">
         <Activity className="h-4 w-4" />
       </span>
       <span className="min-w-0 flex-1">

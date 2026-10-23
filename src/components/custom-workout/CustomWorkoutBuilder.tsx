@@ -534,7 +534,7 @@ export default function CustomWorkoutBuilder({
                     </button>
                     <button
                       onClick={() => handleDeleteSaved(routine.id)}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-zinc-400 hover:text-red-500 hover:bg-red-500/10 transition-all cursor-pointer"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-zinc-400 hover:text-danger hover:bg-red-500/10 transition-all cursor-pointer"
                       title="Eliminar rutina"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -555,7 +555,7 @@ export default function CustomWorkoutBuilder({
               Ejercicios Seleccionados ({selectedItems.length})
             </h3>
             {hasHIIT && (
-              <span className="rounded-full bg-rose-500/20 border-rose-500/30 px-2 py-0.5 text-[12px] font-semibold text-rose-500 dark:text-rose-400 flex items-center gap-1">
+              <span className="rounded-full bg-rose-500/20 border-rose-500/30 px-2 py-0.5 text-[12px] font-semibold text-rose-700 dark:text-rose-300 flex items-center gap-1">
                 <Flame className="h-2.5 w-2.5" /> HIIT/Tabata
               </span>
             )}
@@ -569,7 +569,7 @@ export default function CustomWorkoutBuilder({
                   setSelectedItems([]);
                 }
               }}
-              className="text-[12px] font-bold text-slate-500 dark:text-zinc-400 hover:text-red-500 transition-colors cursor-pointer"
+              className="text-[12px] font-bold text-slate-500 dark:text-zinc-400 hover:text-danger transition-colors cursor-pointer"
             >
               Vaciar lista
             </button>
@@ -641,7 +641,7 @@ export default function CustomWorkoutBuilder({
                           <span className="text-[12px] font-bold text-primary">
                             {muscle}
                           </span>
-                          <span className="text-[12px] text-slate-500 dark:text-zinc-500">
+                          <span className="text-[12px] text-slate-500 dark:text-zinc-400">
                             {item.exercise.equipment === "dumbbells" ? "Mancuernas" : "Peso Corporal"}
                           </span>
                         </div>
@@ -668,7 +668,7 @@ export default function CustomWorkoutBuilder({
                       </button>
                       <button
                         onClick={() => handleRemoveItem(item.uid)}
-                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/10 text-red-500 dark:text-red-400 hover:bg-red-500/20 transition-all ml-1 cursor-pointer"
+                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/10 text-danger hover:bg-red-500/20 transition-all ml-1 cursor-pointer"
                         title="Eliminar de la rutina"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -870,7 +870,7 @@ export default function CustomWorkoutBuilder({
                         <div className="grid grid-cols-2 gap-3">
                           {/* Work Seconds */}
                           <div className="flex flex-col gap-1.5">
-                            <span className="text-[12px] font-bold text-rose-600 dark:text-rose-300">
+                            <span className="text-[12px] font-bold text-rose-700 dark:text-rose-300">
                               Actividad (Trabajo)
                             </span>
                             <div className="flex items-center gap-1.5">
@@ -885,7 +885,7 @@ export default function CustomWorkoutBuilder({
                               >
                                 -
                               </button>
-                              <span className="flex-1 text-center text-sm font-semibold text-rose-500 dark:text-rose-400">
+                              <span className="flex-1 text-center text-sm font-semibold text-rose-700 dark:text-rose-300">
                                 {item.workSeconds}s
                               </span>
                               <button
@@ -1014,7 +1014,7 @@ export default function CustomWorkoutBuilder({
                 className={`flex-1 rounded-xl py-1.5 text-[13px] font-bold transition-all cursor-pointer ${
                   equipmentFilter === "all"
                     ? "bg-slate-200 dark:bg-white/15 text-slate-900 dark:text-white border-slate-300 dark:border-white/30"
-                    : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-500 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
+                    : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-400 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
                 }`}
               >
                 Cualquier Equipo
@@ -1027,7 +1027,7 @@ export default function CustomWorkoutBuilder({
                 className={`flex-1 rounded-xl py-1.5 text-[13px] font-bold transition-all cursor-pointer ${
                   equipmentFilter === "dumbbells"
                     ? "bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/40"
-                    : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-500 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
+                    : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-400 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
                 }`}
               >
                 Mancuernas
@@ -1039,8 +1039,8 @@ export default function CustomWorkoutBuilder({
                 }}
                 className={`flex-1 rounded-xl py-1.5 text-[13px] font-bold transition-all cursor-pointer ${
                   equipmentFilter === "bodyweight"
-                    ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border-emerald-500/40"
-                    : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-500 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
+                    ? "bg-emerald-500/20 text-primary-strong border-emerald-500/40"
+                    : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-400 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
                 }`}
               >
                 Peso Corporal

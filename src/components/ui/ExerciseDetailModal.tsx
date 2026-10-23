@@ -115,7 +115,7 @@ export default function ExerciseDetailModal({
                   <span className="text-base font-semibold text-slate-900 dark:text-white">{exercise.sets}</span>
                 </div>
                 <div className="p-3 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-[#141828] dark:to-[#101420] flex flex-col items-center text-center shadow-sm">
-                  <Activity className="w-4 h-4 text-amber-600 dark:text-amber-400 mb-1" />
+                  <Activity className="w-4 h-4 text-amber-700 dark:text-amber-400 mb-1" />
                   <span className="text-[12px] text-slate-600 dark:text-zinc-400 font-bold">Reps</span>
                   <span className="text-sm font-semibold text-slate-900 dark:text-white truncate max-w-full">
                     {exercise.reps}

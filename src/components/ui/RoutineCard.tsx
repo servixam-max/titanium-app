@@ -101,7 +101,7 @@ export default function RoutineCard({
             <span className="text-[12px] font-bold px-2.5 py-0.5 rounded-full bg-primary text-black border-primary shadow-sm"> {dayBadge} </span> <span className={`text-[12px] font-mono px-2 py-0.5 rounded-full ${style.badge} font-bold`} > {routine.equipment ||"MANCUERNAS"}
             </span>
             {isCompletedToday && (
-              <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 flex items-center gap-1">
+              <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-primary-strong border-emerald-500/30 flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" />
                 HECHO HOY
               </span>

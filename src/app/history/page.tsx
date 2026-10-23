@@ -494,7 +494,7 @@ export default function HistoryPage() {
                                     </button>
                                     <button
                                       onClick={() => handleDeleteExercise(session.id, idx)}
-                                      className="text-[12px] font-bold text-red-500 dark:text-red-400 hover:text-red-600 px-1"
+                                      className="text-[12px] font-bold text-danger hover:opacity-80 px-1"
                                     >
                                       Borrar
                                     </button>
@@ -502,7 +502,7 @@ export default function HistoryPage() {
                                 ) : (
                                   <button
                                     onClick={() => setExerciseDeleteConfirm(`${session.id}_${idx}`)}
-                                    className="w-6 h-6 rounded-md flex items-center justify-center text-slate-400 dark:text-zinc-500 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                    className="w-6 h-6 rounded-md flex items-center justify-center text-slate-400 dark:text-zinc-400 hover:text-danger hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                                     title="Eliminar este ejercicio de la sesión"
                                   >
                                     <Trash2 className="w-3 h-3" />
@@ -516,7 +516,7 @@ export default function HistoryPage() {
 
                       {/* Delete Session Action */}
                       <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-white/5">
-                        <span className="text-[13px] text-slate-400 dark:text-zinc-500">
+                        <span className="text-[13px] text-slate-400 dark:text-zinc-400">
                           ID: {session.id.slice(0, 8)}
                         </span>
                         {deleteConfirm === session.id ? (
@@ -537,7 +537,7 @@ export default function HistoryPage() {
                         ) : (
                           <button
                             onClick={() => setDeleteConfirm(session.id)}
-                            className="flex items-center gap-1 text-[13px] text-slate-400 dark:text-zinc-400 hover:text-red-500 transition-colors"
+                            className="flex items-center gap-1 text-[13px] text-slate-400 dark:text-zinc-400 hover:text-danger transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             <span>Eliminar sesión</span>

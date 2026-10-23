@@ -69,7 +69,7 @@ export default function DashboardHeader({
 
         {streak > 0 && (
           <div className="flex flex-shrink-0 items-center gap-1.5 pt-1">
-            <Flame className="h-4 w-4 text-amber-500" />
+            <Flame className="h-4 w-4 text-amber-700 dark:text-amber-400" />
             <span className="fx-num text-[17px] text-foreground">{streak}</span>
             <span className="fx-label-sm">{streak === 1 ? "día" : "días"}</span>
           </div>

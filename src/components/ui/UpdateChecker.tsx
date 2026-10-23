@@ -207,7 +207,7 @@ export default function UpdateChecker() {
 
           {!isDownloading && !hasPermission && (
             <div className="w-full bg-amber-500/10 border-amber-500/30 rounded-xl p-3 mb-4 text-left">
-              <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs font-bold mb-1">
+              <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-bold mb-1">
                 <AlertTriangle className="w-4 h-4" />
                 <span>Permiso de instalación</span>
               </div>
@@ -230,7 +230,7 @@ export default function UpdateChecker() {
           )}
 
           {errorMsg && (
-            <div className="w-full bg-rose-500/10 border-rose-500/30 rounded-xl p-3 mb-3 text-xs text-rose-600 dark:text-rose-300 text-left">
+            <div className="w-full bg-rose-500/10 border-rose-500/30 rounded-xl p-3 mb-3 text-xs text-rose-700 dark:text-rose-300 text-left">
               {errorMsg}
             </div>
           )}
@@ -252,7 +252,7 @@ export default function UpdateChecker() {
               </div>
               <div className="flex items-center justify-between text-[13px] text-slate-500 dark:text-zinc-400">
                 <span>{downloadStats.current} / {downloadStats.total}</span>
-                <span className="text-slate-400 dark:text-zinc-500">No cierres la app</span>
+                <span className="text-slate-400 dark:text-zinc-400">No cierres la app</span>
               </div>
             </div>
           ) : (

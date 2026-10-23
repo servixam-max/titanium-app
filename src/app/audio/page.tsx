@@ -116,7 +116,7 @@ export default function AudioTestPage() {
           </div>
         )}
         {testResult === "partial" && (
-          <div className="flex items-center gap-2 text-amber-500 dark:text-amber-400 text-xs font-bold bg-amber-500/10 border-amber-500/30 px-4 py-2.5 rounded-xl">
+          <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-bold bg-amber-500/10 border-amber-500/30 px-4 py-2.5 rounded-xl">
             <VolumeX className="w-4 h-4" />
             <span>CAMPANADAS OK (Voz no sintetizada)</span>
           </div>

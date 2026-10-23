@@ -281,7 +281,7 @@ function WarmupContent() {
                   </span>
                 )}
                 {phase === "transition" && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 border-amber-400/40 text-amber-500 dark:text-amber-300 text-[12px] font-semibold animate-pulse">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 border-amber-400/40 text-amber-700 dark:text-amber-300 text-[12px] font-semibold animate-pulse">
                     Descanso / Cambio · {timeLeft}s
                   </span>
                 )}
@@ -397,9 +397,9 @@ function WarmupContent() {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center"> <span className={`font-mono text-3xl font-semibold tabular-nums ${ phase ==="transition"
-                      ? "text-amber-500 dark:text-amber-400"
+                      ? "text-amber-700 dark:text-amber-400"
                       : timeLeft <= 5
-                      ? "text-red-500 dark:text-red-400 animate-pulse"
+                      ? "text-danger animate-pulse"
                       : "text-slate-900 dark:text-white"
                   }`}
                 >
@@ -421,7 +421,7 @@ function WarmupContent() {
               </span>
               {phase === "exercise" && nextExercise && (
                 <div className="mt-1 text-[13px] text-slate-500 dark:text-zinc-400 text-right">
-                  <span className="text-slate-400 dark:text-zinc-500">Siguiente:</span>{" "}
+                  <span className="text-slate-400 dark:text-zinc-400">Siguiente:</span>{" "}
                   <strong className="text-slate-900 dark:text-white truncate block max-w-[150px]">
                     {nextExercise.name}
                   </strong>
