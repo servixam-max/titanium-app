@@ -1,11 +1,21 @@
 {
-  "generatedAt": "2026-10-23T07:04:18.274Z",
+  "generatedAt": "2026-10-25T08:01:22.536Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.54",
+      "name": "FORTIXAM v8.5.54",
+      "publishedAt": "2026-10-25T08:01:22.000Z",
+      "notes": [
+        "docs: plan diario — F7.3a v8.5.53",
+        "refactor(ui): las superficies salen de tokens de tema"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.54"
+    },
+    {
       "version": "8.5.53",
       "name": "FORTIXAM v8.5.53",
-      "publishedAt": "2026-10-23T07:04:17.000Z",
+      "publishedAt": "2026-10-23T07:04:18.000Z",
       "notes": [
         "fix(a11y): los avisos y la inicial del avatar se leen en los dos temas"
       ],
@@ -113,16 +123,6 @@
         "perf(workout): el tic del descanso solo repinta el reloj, no la pantalla"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.43"
-    },
-    {
-      "version": "8.5.42",
-      "name": "FORTIXAM v8.5.42",
-      "publishedAt": "2026-10-10T07:13:21.000Z",
-      "notes": [
-        "docs: plan diario — comparativa mensual por grupo muscular v8.5.41",
-        "test(e2e): flujos críticos — entreno guiado completo y registro de peso"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.42"
     }
   ]
 }
