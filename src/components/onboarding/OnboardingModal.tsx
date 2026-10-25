@@ -187,7 +187,7 @@ export default function OnboardingModal() {
           <button
             disabled={step === 0}
             onClick={() => setStep(step - 1)}
-            className="p-2 rounded-xl hover:bg-white/5 disabled:opacity-0 transition-colors"
+            className="p-2 rounded-xl hover:bg-inset-soft disabled:opacity-0 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </button>
@@ -225,7 +225,7 @@ export default function OnboardingModal() {
                   className={`flex items-center gap-4 p-4 rounded-2xl text-left transition-all ${
                     goal === g.value
                       ? "border-primary bg-primary/10"
-                      : "border-white/10 bg-white/5 hover:bg-white/10"
+                      : "border-hairline bg-inset-soft hover:bg-inset-strong"
                   }`}
                 >
                   <span className="text-2xl">{g.icon}</span>
@@ -260,7 +260,7 @@ export default function OnboardingModal() {
                   className={`p-4 rounded-2xl text-left transition-all ${
                     level === l.value
                       ? "border-accent-cyan bg-accent-cyan/10"
-                      : "border-white/10 bg-white/5 hover:bg-white/10"
+                      : "border-hairline bg-inset-soft hover:bg-inset-strong"
                   }`}
                 >
                   <div className="font-semibold text-white">{l.label}</div>
@@ -292,7 +292,7 @@ export default function OnboardingModal() {
                     className={`aspect-square rounded-2xl text-lg font-bold transition-all ${
                       days === d
                         ? "bg-accent-violet text-white shadow-glow-violet"
-                        : "bg-white/5 text-text-secondary hover:bg-white/10"
+                        : "bg-inset-soft text-text-secondary hover:bg-inset-strong"
                     }`}
                   >
                     {d}
@@ -324,7 +324,7 @@ export default function OnboardingModal() {
                   className={`flex items-center justify-between p-4 rounded-2xl text-left transition-all ${
                     equipment.includes(e.value)
                       ? "border-primary bg-primary/10"
-                      : "border-white/10 bg-white/5 hover:bg-white/10"
+                      : "border-hairline bg-inset-soft hover:bg-inset-strong"
                   }`}
                 >
                   <span className="font-semibold text-white">{e.label}</span>
@@ -355,11 +355,11 @@ export default function OnboardingModal() {
                   onChange={(e) => setRestrictionInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addRestriction()}
                   placeholder="Escribe y pulsa añadir"
-                  className="flex-1 h-12 px-4 rounded-2xl bg-white/5 text-white focus:border-primary focus:outline-none"
+                  className="flex-1 h-12 px-4 rounded-2xl bg-inset-soft text-white focus:border-primary focus:outline-none"
                 />
                 <button
                   onClick={addRestriction}
-                  className="h-12 px-4 rounded-2xl bg-white/10 text-white font-semibold"
+                  className="h-12 px-4 rounded-2xl bg-inset-strong text-white font-semibold"
                 >
                   Añadir
                 </button>

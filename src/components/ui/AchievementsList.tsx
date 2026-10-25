@@ -148,14 +148,14 @@ export default function AchievementsList({ achievements, className }: Achievemen
               </div>
 
               {/* Progress bar */}
-              <div className="mt-2 pt-2 border-t border-white/5">
+              <div className="mt-2 pt-2 border-t border-hairline-soft">
                 <div className="flex justify-between text-[12px] mb-1">
                   <span className="text-zinc-500">Progreso</span>
                   <span className={achievement.isUnlocked ? "text-primary font-bold" : "text-zinc-400"}>
                     {achievement.progress}/{achievement.target} {achievement.unit}
                   </span>
                 </div>
-                <div className="w-full bg-[#0d101a] h-1.5 rounded-full overflow-hidden">
+                <div className="w-full bg-panel h-1.5 rounded-full overflow-hidden">
                   <div
                     className={cn(
                       "h-full rounded-full transition-all duration-500",
@@ -183,7 +183,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
             onClick={(e) => e.stopPropagation()}
           >
             <Card3D highlight rotateXMax={14} rotateYMax={14}>
-              <div className="relative overflow-hidden bg-gradient-to-b from-[#141828] via-[#111422] to-[#0d101a] border-primary/40 rounded-3xl p-6 text-center shadow-2xl">
+              <div className="relative overflow-hidden bg-gradient-to-b from-card-hi via-card-mid to-card-lo border-primary/40 rounded-3xl p-6 text-center shadow-2xl">
                 {selectedAchievement.isUnlocked && (
                   <BorderBeam
                     size={160}
@@ -212,7 +212,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
                     {selectedAchievement.description}
                   </p>
 
-                  <div className="my-4 p-3 bg-black/50 rounded-2xl border-white/5">
+                  <div className="my-4 p-3 bg-black/50 rounded-2xl border-hairline-soft">
                     <span className="text-[12px] text-zinc-400 block mb-1">
                       Estado del Logro
                     </span>

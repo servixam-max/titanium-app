@@ -216,7 +216,7 @@ export default function RestTimer() {
             {isNewExercise ? "A continuación:" : "Continúas con:"}
           </p>
           <div className="w-full fx-card-raised rounded-2xl p-3 flex items-center gap-4 animate-fade-in-up shadow-lg">
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#0d101a] flex-shrink-0">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-panel flex-shrink-0">
               <ExerciseImage
                 src={currentExercise?.image || ""}
                 alt={currentExercise?.name || "Ejercicio"}

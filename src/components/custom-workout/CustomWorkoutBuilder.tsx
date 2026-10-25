@@ -972,7 +972,7 @@ export default function CustomWorkoutBuilder({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar por nombre (ej: Burpee, Press, Salto, Crunch...)"
-                className="w-full rounded-2xl bg-[#131626] pl-10 pr-4 py-2.5 text-xs font-bold text-white placeholder-zinc-500 focus:border-primary focus:outline-none shadow-md"
+                className="w-full rounded-2xl bg-card pl-10 pr-4 py-2.5 text-xs font-bold text-white placeholder-zinc-500 focus:border-primary focus:outline-none shadow-md"
               />
               {searchQuery && (
                 <button

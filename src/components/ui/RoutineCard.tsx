@@ -205,7 +205,7 @@ export default function RoutineCard({
                   className="flex items-center justify-between gap-3 p-2.5 rounded-2xl fx-card transition-all group/item shadow-sm"
                 >
                   {/* Photo */}
-                  <div className="w-12 h-12 rounded-full overflow-hidden bg-black/50 border-white/15 flex-shrink-0 relative">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-black/50 border-hairline flex-shrink-0 relative">
                     {ex.image ? (
                       <ExerciseImage
                         src={ex.image}

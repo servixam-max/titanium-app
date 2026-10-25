@@ -332,7 +332,7 @@ function WarmupContent() {
 
           {/* Center Visual Media Card */}
           <div className="flex-shrink-0 flex-1 min-h-0 px-4">
-            <div className="w-full h-full rounded-3xl overflow-hidden relative bg-[#0d101a] shadow-xl">
+            <div className="w-full h-full rounded-3xl overflow-hidden relative bg-panel shadow-xl">
               {phase === "transition" && nextExercise ? (
                 <div className="relative w-full h-full">
                   <ExerciseImage
@@ -356,7 +356,7 @@ function WarmupContent() {
                   className="object-contain"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-[#0d101a]">
+                <div className="w-full h-full flex items-center justify-center bg-panel">
                   <Dumbbell className="w-16 h-16 text-primary/30" />
                 </div>
               )}

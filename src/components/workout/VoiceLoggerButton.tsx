@@ -189,7 +189,7 @@ export default function VoiceLoggerButton({ onParsed, className }: VoiceLoggerBu
             initial={{ opacity: 0, y: 6, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.95 }}
-            className="absolute left-0 -top-8 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0d101a] border-primary/40 shadow-xl text-[13px] text-white whitespace-nowrap pointer-events-none"
+            className="absolute left-0 -top-8 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-panel border-primary/40 shadow-xl text-[13px] text-white whitespace-nowrap pointer-events-none"
           >
             {feedbackMsg ? (
               <>

@@ -64,7 +64,7 @@ export default function ExerciseGridCard({
         )}
 
         {/* Gradient dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141828] via-transparent to-black/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-card-hi via-transparent to-black/30 pointer-events-none" />
 
         {/* Badges on top of image */}
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-1 pointer-events-none">

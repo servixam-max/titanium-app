@@ -14,7 +14,7 @@ import { haptics } from "@/lib/haptics";
 const ThreeMuscleViewer = dynamic(() => import("./ThreeMuscleViewer"), {
   ssr: false,
   loading: () => (
-    <div className="flex flex-col items-center justify-center h-[440px] bg-[#0A0B10] rounded-3xl gap-3">
+    <div className="flex flex-col items-center justify-center h-[440px] bg-app rounded-3xl gap-3">
       <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       <span className="text-xs text-zinc-400">Iniciando Motor 3D WebGL...</span>
     </div>

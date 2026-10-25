@@ -214,7 +214,7 @@ export default function WorkTimer() {
 
         <div className="w-full mb-6">
           <div className="w-full fx-card-raised rounded-2xl p-3 flex items-center gap-4 shadow-lg">
-            <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#0d101a] flex-shrink-0">
+            <div className="w-14 h-14 rounded-xl overflow-hidden bg-panel flex-shrink-0">
               <ExerciseImage
                 src={currentExercise?.image || ""}
                 alt={currentExercise?.name || "Ejercicio"}

@@ -54,6 +54,33 @@ const config: Config = {
         // En oscuro es red-400; en claro red-700, porque red-500 se quedaba en
         // 3,3-3,8:1 sobre las tarjetas claras y sobre su propia píldora.
         danger: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+        // === Superficies de tema (F7.3b) ===
+        // El color vive en globals.css y cambia con el tema; la clase dice qué
+        // superficie es (`bg-card`, `bg-inset`, `border-hairline`), no de qué
+        // color. Así no hay que reescribir clases desde una capa aparte.
+        card: "var(--surface-card)",
+        panel: "var(--surface-panel)",
+        app: "var(--surface-app)",
+        inset: {
+          DEFAULT: "var(--surface-inset)",
+          soft: "var(--surface-inset-soft)",
+          strong: "var(--surface-inset-strong)",
+        },
+        hairline: {
+          DEFAULT: "var(--hairline)",
+          soft: "var(--hairline-soft)",
+        },
+        // Rampas de degradado: tarjeta, esqueleto de carga y escenario 3D.
+        "card-hi": "var(--card-hi)",
+        "card-mid": "var(--card-mid)",
+        "card-lo": "var(--card-lo)",
+        "skeleton-hi": "var(--skeleton-hi)",
+        "skeleton-mid": "var(--skeleton-mid)",
+        "skeleton-lo": "var(--skeleton-lo)",
+        "stage-hi": "var(--stage-hi)",
+        "stage-mid": "var(--stage-mid)",
+        "stage-lo": "var(--stage-lo)",
+
         // === Legacy aliases (kept for gradual migration) ===
         "surface-container": {
           lowest: "#07080C",

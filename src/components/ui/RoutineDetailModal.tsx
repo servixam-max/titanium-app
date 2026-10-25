@@ -142,11 +142,11 @@ export default function RoutineDetailModal({
                   <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary text-black shadow-sm border-primary/40">
                     DÍA {routine.day < 10 ? `0${routine.day}` : routine.day}
                   </span>
-                  <span className="text-[13px] text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-white/15 font-bold">
+                  <span className="text-[13px] text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-hairline font-bold">
                     <Clock className="w-3.5 h-3.5 text-cyan-400" />
                     {routine.duration}
                   </span>
-                  <span className="text-[13px] text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-white/15 font-bold">
+                  <span className="text-[13px] text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-hairline font-bold">
                     <Layers className="w-3.5 h-3.5 text-primary" />
                     {totalSets} series
                   </span>

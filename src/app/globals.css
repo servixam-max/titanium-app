@@ -37,6 +37,35 @@
   --accent-violet: #8B5CF6;
   --accent-amber: #FFB800;
 
+  /* === Superficies de tema (F7.3b) ===
+     El tema claro se resolvía reescribiendo colores por nombre de clase, con
+     una regla `html.light …` por cada color oscuro y todas con `!important`, y
+     esa lista siempre se quedaba corta: la clase que faltaba se veía oscura
+     sobre claro. Ahora cada superficie tiene su valor en los dos temas y las
+     clases de Tailwind solo dicen QUÉ superficie es (`bg-card`, `bg-panel`,
+     `bg-inset`, `border-hairline`), no de qué color. */
+  --surface-card: #131626;
+  --surface-panel: #0D101A;
+  --surface-app: #0A0B10;
+  --surface-inset: #181D2E;
+  --surface-inset-soft: rgba(255, 255, 255, 0.05);
+  --surface-inset-strong: rgba(255, 255, 255, 0.10);
+  --hairline: rgba(255, 255, 255, 0.10);
+  --hairline-soft: rgba(255, 255, 255, 0.05);
+  /* Rampas de los degradados de tarjeta y del esqueleto de carga. */
+  --card-hi: #141828;
+  --card-mid: #111422;
+  --card-lo: #0D101A;
+  --skeleton-hi: #131626;
+  --skeleton-mid: #1A2238;
+  --skeleton-lo: #131626;
+  /* Escenario del visor 3D: es una superficie de imagen (el modelo se ilumina
+     para fondo oscuro), así que NO tiene versión clara a propósito. Si algún
+     día se añade, el escenario dejaría de ser lo que es. */
+  --stage-hi: #0A0B10;
+  --stage-mid: #0D101A;
+  --stage-lo: #080A0F;
+
   /* === Sistema de superficies (estilo Apple: sin bordes, elevación suave) === */
   --fx-card: rgba(255, 255, 255, 0.045);
   --fx-card-strong: rgba(255, 255, 255, 0.075);
@@ -88,6 +117,23 @@ html.light {
   --accent-flame: #EA580C;
   --accent-amber: #D97706;
 
+  /* Superficies en claro (F7.3b): las tarjetas son blancas y lo hundido es
+     gris azulado; el escenario 3D no aparece aquí a propósito. */
+  --surface-card: #FFFFFF;
+  --surface-panel: #FFFFFF;
+  --surface-app: #FFFFFF;
+  --surface-inset: #F1F5F9;
+  --surface-inset-soft: #F1F5F9;
+  --surface-inset-strong: #E2E8F0;
+  --hairline: rgba(15, 23, 42, 0.08);
+  --hairline-soft: rgba(15, 23, 42, 0.08);
+  --card-hi: #FFFFFF;
+  --card-mid: #F8FAFC;
+  --card-lo: #F8FAFC;
+  --skeleton-hi: #E2E8F0;
+  --skeleton-mid: #CBD5E1;
+  --skeleton-lo: #E2E8F0;
+
   /* Superficies en claro: tarjetas blancas sobre fondo gris, sin bordes */
   --fx-card: #FFFFFF;
   --fx-card-strong: #FFFFFF;
@@ -103,57 +149,12 @@ html.light body {
   color: #0F172A;
 }
 
-/* Card surfaces in light mode */
-html.light .bg-\[\#131626\],
-html.light .bg-\[\#141828\],
-html.light .bg-\[\#111422\],
-html.light .bg-\[\#111524\],
-html.light .bg-\[\#0A0B10\],
-html.light .bg-\[\#0d101a\],
-html.light .bg-\[\#161310\],
-html.light .bg-\[\#161c28\],
-html.light .bg-\[\#1e2738\],
-html.light .bg-\[\#131726\],
-html.light .bg-\[\#1a2236\],
-html.light .bg-\[\#101420\],
-html.light .bg-\[\#0e1a17\],
-html.light .bg-\[\#0d141e\] {
-  background-color: #FFFFFF !important;
-  background-image: none !important;
-}
-
-/* Inset buttons in light mode (e.g. SetLogger minus/plus, secondary buttons) */
-html.light .bg-\[\#181d2e\] {
-  background-color: #F1F5F9 !important;
-  border-color: rgba(15, 23, 42, 0.10) !important;
-}
-
-/* Opacity-modified dark surfaces in light mode */
-html.light .bg-\[\#0d101a\]\/95,
-html.light .bg-\[\#0d101a\]\/90,
-html.light .bg-\[\#131626\]\/60,
-html.light .bg-\[\#0A0B10\]\/80,
-html.light .bg-\[\#0A0B10\]\/95 {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-}
-
-/* Gradients in cards */
-html.light .from-\[\#141828\],
-html.light .from-\[\#111422\],
-html.light .from-\[\#151928\],
-html.light .from-\[\#0D101A\] {
-  --tw-gradient-from: #FFFFFF !important;
-  --tw-gradient-to: #F8FAFC !important;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
-}
-html.light .via-\[\#111422\],
-html.light .via-\[\#111524\] {
-  --tw-gradient-stops: #FFFFFF, #F8FAFC, #F1F5F9 !important;
-}
-html.light .to-\[\#0D101A\],
-html.light .to-\[\#0C0E18\] {
-  --tw-gradient-to: #F8FAFC !important;
-}
+/* F7.3b — Las superficies, los degradados de tarjeta y las hairlines ya no se
+   reescriben aquí: salen de tokens (`--surface-*`, `--hairline*`,
+   `--card-*`/`--skeleton-*`) y cada componente pide `bg-card`, `bg-inset`,
+   `border-hairline`… La regla por nombre de clase se quedaba corta siempre que
+   aparecía una clase nueva (el verde del nombre en hover, F6.4, nació así) y su
+   `!important` anulaba los estados `hover:` del tema claro. */
 
 /* Toned down athletic emerald button gradient (Dark mode) */
 .from-primary {
@@ -183,21 +184,17 @@ html.light .shadow-neon {
   box-shadow: 0 3px 10px rgba(5, 150, 105, 0.18) !important;
 }
 
-/* Inset chips & tracks */
+/* Inset chips & tracks: los oscurecedores de foto (`bg-black/*`) siguen
+   pintándose claros en el tema claro mientras no tengan su propia tarea;
+   las superficies hundidas (`bg-white/*`) ya son `bg-inset-*`. */
 html.light .bg-black\/10,
 html.light .bg-black\/20,
 html.light .bg-black\/30,
 html.light .bg-black\/35,
 html.light .bg-black\/40,
 html.light .bg-black\/50,
-html.light .bg-black\/60,
-html.light .bg-white\/5 {
+html.light .bg-black\/60 {
   background-color: #F1F5F9 !important;
-}
-html.light .bg-white\/10,
-html.light .bg-white\/15,
-html.light .bg-white\/20 {
-  background-color: #E2E8F0 !important;
 }
 
 /* Inset inputs in light mode */
@@ -210,19 +207,9 @@ html.light input[type="search"] {
   border-color: rgba(15, 23, 42, 0.12) !important;
 }
 
-/* Borders in light mode - soft, non-harsh */
-html.light .border-white\/5,
-html.light .border-white\/10,
-html.light .border-white\/15,
-html.light .border-white\/20,
-html.light .border-white\/30,
-html.light .border-white\/40 {
-  border-color: rgba(15, 23, 42, 0.08) !important;
-}
-html.light .divide-white\/5 > :not([hidden]) ~ :not([hidden]),
-html.light .divide-white\/10 > :not([hidden]) ~ :not([hidden]) {
-  border-color: rgba(15, 23, 42, 0.07) !important;
-}
+/* F7.3b — los bordes de tema (`border-white/5`, `border-white/10`) ya son
+   `border-hairline` / `border-hairline-soft`; aquí solo queda lo que aún no
+   tiene token propio. */
 
 /* High contrast typography in light mode - refined hierarchy */
 html.light .text-white {
@@ -401,19 +388,10 @@ html.light .bg-orange-500\/15 {
   border-color: #FDBA74 !important;
 }
 
-/* Skeletons in light mode */
-html.light .from-\[\#131726\],
-html.light .from-\[\#161c28\] {
-  --tw-gradient-from: #E2E8F0 !important;
-}
-html.light .via-\[\#1a2236\],
-html.light .via-\[\#1e2738\] {
-  --tw-gradient-stops: #E2E8F0, #CBD5E1, #E2E8F0 !important;
-}
-html.light .to-\[\#131726\],
-html.light .to-\[\#161c28\] {
-  --tw-gradient-to: #E2E8F0 !important;
-}
+/* Skeletons: el brillo de carga sale de `--skeleton-*` en los dos temas. Antes
+   la lista del tema claro era #131726/#1a2236/#161c28 y el esqueleto real usa
+   #131626/#1a2238/#131626 —un dígito de diferencia—, así que en claro se veía
+   un bloque oscuro parpadeando sobre la tarjeta blanca. */
 
 /* Shadows in light mode */
 html.light .shadow-2xl,

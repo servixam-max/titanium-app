@@ -62,7 +62,7 @@ export default function ExerciseDetailModal({
                 haptics.selection();
                 onClose();
               }}
-              className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border-white/20 text-white flex items-center justify-center active:scale-90 transition-transform cursor-pointer"
+              className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border-hairline text-white flex items-center justify-center active:scale-90 transition-transform cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>

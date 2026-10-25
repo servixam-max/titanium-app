@@ -630,22 +630,22 @@ export default function ThreeMuscleViewer({
       {/* View Presets & Tools Bar */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         {/* Preset Angle Buttons */}
-        <div className="flex items-center bg-[#0d101a] rounded-2xl p-1 shadow-inner text-xs font-bold">
+        <div className="flex items-center bg-panel rounded-2xl p-1 shadow-inner text-xs font-bold">
           <button
             onClick={() => setCameraPreset("front")}
-            className="px-3 py-1.5 rounded-xl hover:bg-white/10 text-zinc-300 hover:text-white transition-all"
+            className="px-3 py-1.5 rounded-xl hover:bg-inset-strong text-zinc-300 hover:text-white transition-all"
           >
             Frontal
           </button>
           <button
             onClick={() => setCameraPreset("right")}
-            className="px-3 py-1.5 rounded-xl hover:bg-white/10 text-zinc-300 hover:text-white transition-all"
+            className="px-3 py-1.5 rounded-xl hover:bg-inset-strong text-zinc-300 hover:text-white transition-all"
           >
             Perfil
           </button>
           <button
             onClick={() => setCameraPreset("back")}
-            className="px-3 py-1.5 rounded-xl hover:bg-white/10 text-zinc-300 hover:text-white transition-all"
+            className="px-3 py-1.5 rounded-xl hover:bg-inset-strong text-zinc-300 hover:text-white transition-all"
           >
             Dorsal
           </button>
@@ -667,7 +667,7 @@ export default function ThreeMuscleViewer({
 
           {/* Timeframe Chips */}
           {onTimeframeChange && (
-            <div className="flex items-center bg-[#0d101a] rounded-2xl p-1 text-[13px]">
+            <div className="flex items-center bg-panel rounded-2xl p-1 text-[13px]">
               {(["week", "month", "all"] as MuscleTimeframe[]).map((tf) => (
                 <button
                   key={tf}
@@ -677,7 +677,7 @@ export default function ThreeMuscleViewer({
                   }}
                   className={`px-2.5 py-1 rounded-xl font-bold transition-all ${
                     timeframe === tf
-                      ? "bg-white/15 text-white shadow-sm"
+                      ? "bg-inset-strong text-white shadow-sm"
                       : "text-zinc-500 hover:text-zinc-300"
                   }`}
                 >
@@ -690,7 +690,7 @@ export default function ThreeMuscleViewer({
       </div>
 
       {/* Main 3D Canvas Stage */}
-      <div className="relative flex flex-col items-center justify-center h-[520px] bg-gradient-to-b from-[#0A0B10] via-[#0d101a] to-[#080a0f] rounded-3xl shadow-2xl overflow-hidden touch-none">
+      <div className="relative flex flex-col items-center justify-center h-[520px] bg-gradient-to-b from-stage-hi via-stage-mid to-stage-lo rounded-3xl shadow-2xl overflow-hidden touch-none">
         {/* Ambient Volumetric Neons */}
         <div className="pointer-events-none absolute -top-10 -left-10 w-64 h-64 rounded-full bg-primary/15 blur-[100px]" />
         <div className="pointer-events-none absolute -bottom-10 -right-10 w-64 h-64 rounded-full bg-cyan-500/15 blur-[100px]" />
@@ -730,7 +730,7 @@ export default function ThreeMuscleViewer({
 
         {/* Loading / Error State */}
         {isLoading && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-30 bg-[#0A0B10]/80 backdrop-blur-sm">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-30 bg-white/95 dark:bg-[#0A0B10]/80 backdrop-blur-sm">
             <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             <span className="text-xs text-zinc-400">Cargando Escenario 3D...</span>
           </div>
@@ -755,7 +755,7 @@ export default function ThreeMuscleViewer({
         </div>
 
         {/* Heatmap Spectrum Legend */}
-        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2.5 bg-black/40 border-t border-white/5 text-[12px] z-20 backdrop-blur-sm">
+        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2.5 bg-black/40 border-t border-hairline-soft text-[12px] z-20 backdrop-blur-sm">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-slate-200 dark:bg-[#131626] border-slate-300 dark:border-white/20" />
             <span className="text-slate-500 dark:text-zinc-400">Inactivo</span>
@@ -889,22 +889,22 @@ export default function ThreeMuscleViewer({
           </div>
 
           {/* Metrics Grid */}
-          <div className="grid grid-cols-3 gap-2 mt-4 pt-3.5 border-t border-white/5 text-center relative z-10">
-            <div className="bg-black/35 rounded-2xl p-2.5 border-white/5">
+          <div className="grid grid-cols-3 gap-2 mt-4 pt-3.5 border-t border-hairline-soft text-center relative z-10">
+            <div className="bg-black/35 rounded-2xl p-2.5 border-hairline-soft">
               <span className="text-[12px] text-zinc-500 block">Carga Estimada</span>
               <span className="text-base font-semibold text-white">
                 {Math.round(selectedStat.volumeKg)}{" "}
                 <span className="text-[12px] text-zinc-400">kg</span>
               </span>
             </div>
-            <div className="bg-black/35 rounded-2xl p-2.5 border-white/5">
+            <div className="bg-black/35 rounded-2xl p-2.5 border-hairline-soft">
               <span className="text-[12px] text-zinc-500 block">Series Totales</span>
               <span className="text-base font-semibold text-primary">
                 {selectedStat.totalSets}{" "}
                 <span className="text-[12px] text-zinc-400">sets</span>
               </span>
             </div>
-            <div className="bg-black/35 rounded-2xl p-2.5 border-white/5">
+            <div className="bg-black/35 rounded-2xl p-2.5 border-hairline-soft">
               <span className="text-[12px] text-zinc-500 block">Repeticiones</span>
               <span className="text-base font-semibold text-cyan-400">
                 {selectedStat.totalReps}{" "}

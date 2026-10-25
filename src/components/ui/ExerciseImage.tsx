@@ -106,7 +106,7 @@ export default function ExerciseImage({
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-[#0d101a] flex items-center justify-center rounded-[inherit]",
+        "relative overflow-hidden bg-panel flex items-center justify-center rounded-[inherit]",
         containerClassName,
       )}
     >
@@ -114,7 +114,7 @@ export default function ExerciseImage({
         <>
           {/* Shimmer loading skeleton until image finishes loading */}
           {!isLoaded && (
-            <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-[#131626] via-[#1a2238] to-[#131626] bg-[length:200%_100%] rounded-[inherit] z-0" />
+            <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-skeleton-hi via-skeleton-mid to-skeleton-lo bg-[length:200%_100%] rounded-[inherit] z-0" />
           )}
           <img
             ref={setImgRef}
