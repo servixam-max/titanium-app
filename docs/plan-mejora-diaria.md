@@ -310,13 +310,40 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   que nadie medía, y de ahí salieron todos estos fallos. Guardas: 7 pruebas en
   `contraste-tema.test.ts` (token declarado, mínimos en los dos temas y que
   nadie vuelva a las clases que fallaban) y 5 en `avatar-ink.test.ts`)*
-- [ ] **F7.3b** (resto de F7.3) Sustituir las ~150 reglas `html.light …
+- [x] **F7.3b** (resto de F7.3) Sustituir las ~150 reglas `html.light …
   !important` que reescriben colores por nombre de clase por tokens de tema: el
   fallo de F6.4 nació justo de ahí (`group-hover:text-primary` no pasaba por la
   regla de `.text-primary`). F7.3a quitó de en medio las familias de texto que
   ya tienen token; queda la sustitución estructural del resto (superficies,
   bordes, estados), que toca casi toda la hoja de estilos y por eso se publica
-  aparte.
+  aparte. *(v8.5.54 · las superficies dejan de reescribirse clase a clase:
+  tokens `--surface-card/panel/app/inset(-soft|-strong)`, `--hairline*`, rampas
+  `--card-*`, `--skeleton-*` y `--stage-*` en `globals.css`, expuestos en
+  Tailwind como `bg-card`, `bg-panel`, `bg-inset`, `border-hairline`,
+  `from-card-hi`…, con **55 sustituciones en 18 componentes**; se borraron del
+  tema claro los bloques de superficies, botones hundidos, degradados de
+  tarjeta, hairlines y esqueletos. Destapó dos fallos reales: el `!important`
+  fijaba el fondo del botón hundido y su `hover:bg-white/10` era blanco
+  translúcido sobre blanco, así que pulsar «Reintentar» en Ajustes o las
+  opciones del onboarding no cambiaba nada —medido: `rgba(0,0,0,0)` →
+  `rgb(226,232,240)` en claro—; y el esqueleto de carga parpadeaba oscuro sobre
+  la tarjeta blanca porque la lista clara era #131726/#1a2236/#161c28 y el
+  degradado real #131626/#1a2238/#131626, un dígito de diferencia. El escenario
+  del visor 3D se declara superficie de imagen y no tiene versión clara a
+  propósito, para que el HUD no se quede sin fondo legible. Guardas: 8 pruebas
+  en `superficies-tema.test.ts` (tokens en los dos temas, escenario sin claro,
+  esqueleto claro, paso visible al pulsar y que ni las clases antiguas ni la
+  capa `html.light` vuelvan). Queda para F7.3c el resto de familias —texto
+  neutro y tonos de estado, ~500 usos con variante—)*
+- [ ] **F7.3c** (cierre de F7.3) Las **107 reglas `html.light … !important`**
+  que siguen en `globals.css`, ahora ya sin superficies ni bordes de tema:
+  tonos de estado (`amber`, `emerald`, `red`, `orange`, `blue` en sus usos con
+  `hover:`/`group-hover:`/`focus:`), los grises de texto que aún se reescriben
+  por clase, los oscurecedores de foto (`bg-black/*`) y los botones primarios
+  hundidos. Se sustituyen por tokens igual que F7.3b —cada familia con su valor
+  en los dos temas y su clase semántica— y se añade una guarda que impida que
+  vuelva a crecer una capa por nombre de clase. Es el último tramo de F7.3
+  antes de cerrar la Fase 7.
 
 ## Prioridad
 
@@ -374,3 +401,4 @@ justo debajo y se documenta el motivo.
 | v8.5.51 | F7.1 | **Los estados también se leen: hover de la lista, foco de teclado y campos con contorno**: la auditoría nueva de estados interactivos —hover, pulsado y foco, en los dos temas— encontró tres fallos que nadie medía. El nombre del ejercicio dentro de la lista de una rutina se pintaba con `group-hover/item:text-primary` y quedaba en **3,77:1** sobre la tarjeta blanca (el mismo acento crudo que F6.4, pero en el `group/item` que la guarda anterior no miraba): pasa a `text-primary-strong` (**6,5:1**). El anillo de foco global usaba emerald-600 y sobre las superficies hundidas (`#DFE4EA`) daba **2,96:1** —por debajo del 3:1 de WCAG para indicadores—: token nuevo `--focus-ring`, `#036B4B` en claro (**5,1:1** sobre la hundida, 6,5:1 sobre blanco) y el acento de siempre en oscuro (7,6:1). Y los campos de peso/reps/notas apagaban el contorno con `focus:outline-none` (2 px transparentes) sin pintar alternativa, así que al tabular no se veía el foco: el color del anillo se repinta solo con teclado. Nuevo `e2e/estados-interactivos.spec.js` (4 casos × 2 temas; 14 pasan y 2 se saltan en móvil porque el hover no existe en táctil) y 5 pruebas en `foco-teclado.test.ts`; suite completa **189 pasan** (5 intermitentes que pasaron al reintentar). |
 | v8.5.52 | F7.2 | **La auditoría de contraste ya mide el fondo real de las tarjetas**: el tema oscuro se salvaba de medirse porque casi todas sus tarjetas llevan degradado de fondo y el script solo miraba `backgroundColor`, así que las descartaba. Ahora `e2e/helpers/contraste-pixel.js` oculta la tinta del texto con una hoja inyectada —los estilos en línea los borra React—, fotografía la caja del texto y lee el píxel que queda debajo, tomando la mediana; se sube por los ancestros y para en el primer fondo opaco, que era lo que falseaba las insignias `#N`. Si algo tapa el texto (un diálogo a mitad, una barra fija) la medición falla con el motivo en vez de medir otra cosa, y el e2e corta la consulta a GitHub con el service worker desactivado porque se salta `page.route`. Medidos **39** textos sobre degradado en `/stats` y **41** en el detalle de rutina, y destapó cuatro fallos reales: el gris secundario del visor (`Motor WebGL 3D`, `Inactivo`, equilibrio postural, nombre científico) pasa de `zinc-500` a `zinc-400` en oscuro —**3,39-4,15:1 → 6,4-7,8:1**— y `Hipertrofia` de la leyenda pasa de emerald-600 a emerald-700 en claro —**3,44:1 → 5,01:1**—. |
 | v8.5.53 | F7.3a | **Los avisos y el estado de la cuenta por fin se leen**: el panel de Ajustes no se medía nunca y ahí vivían cuatro textos por debajo de 4,5:1 en claro —«CONECTADO» en verde (3,32:1), «Exportar Copia de Seguridad», «Restablecer Historial» y «Borrar todos los datos locales» en rojo (3,60-3,76:1) y «No se pudieron cargar las novedades» en ámbar (3,19:1)—. La causa de fondo es que la capa del tema claro se escribió clase a clase y esas familias no estaban. Ahora hay token de tema: `--danger-text-rgb` (red-400 en oscuro, red-700 en claro) expuesto como `text-danger`, el verde de estado pasa a `text-primary-strong` (**6,5:1**), los 23 `dark:text-zinc-500` a `dark:text-zinc-400` —el `dark:` ganaba en especificidad a la regla global que elevaba el zinc-500, y quedaba en **3,76:1**— y el ámbar de texto sube a 700 (**5,0:1**). Además la inicial del avatar deja de estar fijada en blanco: sobre el menta por defecto daba **1,91:1**; `src/lib/avatar-ink.ts` (5 pruebas) elige tinta oscura o clara por la luminancia del color elegido. Es la primera mitad de F7.3; la sustitución estructural de las ~150 reglas queda como F7.3b. Guardas: 7 pruebas en `contraste-tema.test.ts` y Ajustes dentro de `e2e/contrast.spec.js` en los dos temas. |
+| v8.5.54 | F7.3b | **Las superficies del tema claro salen de tokens y dejan de reescribirse clase a clase**: la capa `html.light … !important` tenía una regla por cada color oscuro y se quedaba corta con cada clase nueva (de ahí nacieron F6.4 y F7.3a). Ahora cada superficie tiene su valor en los dos temas —`--surface-card/panel/app/inset(-soft|-strong)`, `--hairline*`, `--card-*`, `--skeleton-*`, `--stage-*`— y los componentes piden `bg-card`, `bg-panel`, `bg-inset`, `border-hairline`, `from-card-hi`…: **55 sustituciones en 18 componentes** y fuera los bloques de superficies, botones hundidos, degradados de tarjeta, hairlines y esqueletos. Destapó dos fallos reales en claro: pulsar «Reintentar» en Ajustes o las opciones del onboarding no cambiaba de color —el `!important` fijaba el fondo hundido y el `hover:bg-white/10` era blanco translúcido sobre blanco; medido `rgba(0,0,0,0)` → `rgb(226,232,240)`— y el esqueleto de carga parpadeaba oscuro sobre la tarjeta blanca porque la lista clara era #131726/#1a2236/#161c28 y el degradado real #131626/#1a2238/#131626, un dígito de diferencia. El escenario 3D queda declarado superficie de imagen, sin versión clara a propósito. Guardas: 8 pruebas en `superficies-tema.test.ts` (tokens en ambos temas, escenario sin claro, esqueleto claro, paso visible al pulsar y que ni las clases antiguas ni la capa vuelvan). |
