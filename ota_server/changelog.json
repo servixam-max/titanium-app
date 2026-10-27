@@ -1,7 +1,17 @@
 {
-  "generatedAt": "2026-10-25T08:01:22.536Z",
+  "generatedAt": "2026-10-27T08:12:22.854Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
+    {
+      "version": "8.5.55",
+      "name": "FORTIXAM v8.5.55",
+      "publishedAt": "2026-10-27T08:12:22.000Z",
+      "notes": [
+        "docs: plan diario — F7.3b v8.5.54",
+        "refactor(ui): el tema claro sale de tokens y no de 107 reescrituras"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.55"
+    },
     {
       "version": "8.5.54",
       "name": "FORTIXAM v8.5.54",
@@ -113,16 +123,6 @@
         "feat(novedades): las notas llegan aunque la API de GitHub esté limitada"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.44"
-    },
-    {
-      "version": "8.5.43",
-      "name": "FORTIXAM v8.5.43",
-      "publishedAt": "2026-10-11T07:12:50.000Z",
-      "notes": [
-        "docs: plan diario — flujos críticos e2e v8.5.42",
-        "perf(workout): el tic del descanso solo repinta el reloj, no la pantalla"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.43"
     }
   ]
 }
