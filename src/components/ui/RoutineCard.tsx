@@ -82,7 +82,7 @@ export default function RoutineCard({
       >
         {/* Cover Thumbnail - Circular 68px */}
         {routine.coverImage && (
-          <div className="w-[68px] h-[68px] rounded-full overflow-hidden bg-black/40 border-2 border-slate-200 dark:border-white/15 flex-shrink-0 relative group- transition-colors shadow-md">
+          <div className="w-[68px] h-[68px] rounded-full overflow-hidden bg-scrim/40 border-2 border-slate-200 dark:border-white/15 flex-shrink-0 relative group- transition-colors shadow-md">
             <ExerciseImage
               src={routine.coverImage}
               alt={routine.title}
@@ -101,7 +101,7 @@ export default function RoutineCard({
             <span className="text-[12px] font-bold px-2.5 py-0.5 rounded-full bg-primary text-black border-primary shadow-sm"> {dayBadge} </span> <span className={`text-[12px] font-mono px-2 py-0.5 rounded-full ${style.badge} font-bold`} > {routine.equipment ||"MANCUERNAS"}
             </span>
             {isCompletedToday && (
-              <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-primary-strong border-emerald-500/30 flex items-center gap-1">
+              <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-success-soft text-primary-strong border-emerald-500/30 flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" />
                 HECHO HOY
               </span>
@@ -130,7 +130,7 @@ export default function RoutineCard({
           <div
             className={`w-10 h-10 rounded-2xl ${
               isCompletedToday
-                ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400"
+                ? "bg-success-soft border-emerald-500/50 text-emerald-400"
                 : "bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 group-hover:bg-primary group-hover:text-black text-slate-700 dark:text-slate-200"
             } flex items-center justify-center transition-all duration-300 shadow-sm`}
           >
@@ -205,7 +205,7 @@ export default function RoutineCard({
                   className="flex items-center justify-between gap-3 p-2.5 rounded-2xl fx-card transition-all group/item shadow-sm"
                 >
                   {/* Photo */}
-                  <div className="w-12 h-12 rounded-full overflow-hidden bg-black/50 border-hairline flex-shrink-0 relative">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-scrim/50 border-hairline flex-shrink-0 relative">
                     {ex.image ? (
                       <ExerciseImage
                         src={ex.image}

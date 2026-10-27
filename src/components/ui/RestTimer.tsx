@@ -185,7 +185,7 @@ export default function RestTimer() {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
           className={`w-[520px] h-[520px] rounded-full blur-[120px] animate-ambient ${
-            restUrgent ? "bg-red-500/15" : "bg-primary/10"
+            restUrgent ? "bg-danger-soft" : "bg-primary/10"
           }`}
         />
       </div>
@@ -244,7 +244,7 @@ export default function RestTimer() {
                     ? currentExercise.reps
                     : `${currentExercise?.reps} reps`}
                 </span>
-                <span className="text-zinc-600">·</span> <span className={`text-[12px] font-mono px-2 py-0.5 rounded-full font-bold ${ isLastSetOfExercise ?"bg-amber-500/20 text-amber-300 border-amber-500/40"
+                <span className="text-zinc-600">·</span> <span className={`text-[12px] font-mono px-2 py-0.5 rounded-full font-bold ${ isLastSetOfExercise ?"bg-warning-soft text-amber-300 border-amber-500/40"
                     : "bg-primary/15 text-primary border-primary/30"
                 }`}>
                   {isLastSetOfExercise ? "¡Última serie!" : `Quedan ${remainingSets} series`}

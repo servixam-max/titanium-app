@@ -78,7 +78,7 @@ export default function ConsistencyHeatmap({
                 {trainedDays === 1 ? "día entrenado" : "días entrenados"}
               </span>
             </div>
-            <span className="text-[12px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-full">
+            <span className="text-[12px] font-bold text-cyan-600 dark:text-cyan-400 bg-info-soft px-2.5 py-1 rounded-full">
               {consistencyPct} %
             </span>
           </>

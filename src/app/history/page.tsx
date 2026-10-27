@@ -196,7 +196,7 @@ export default function HistoryPage() {
               <span className="text-[12px] font-bold text-cyan-600 dark:text-cyan-400">
                 Volumen Total
               </span>
-              <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
+              <div className="w-7 h-7 rounded-lg bg-info-soft flex items-center justify-center text-cyan-600 dark:text-cyan-400">
                 <Dumbbell className="w-4 h-4" />
               </div>
             </div>
@@ -385,8 +385,8 @@ export default function HistoryPage() {
                       <div
                         className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 ${
                           session.mode === "guided"
-                            ? "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border-cyan-500/30"
-                            : "bg-emerald-500/15 text-primary border-primary/30"
+                            ? "bg-info-soft text-cyan-600 dark:text-cyan-400 border-cyan-500/30"
+                            : "bg-success-soft text-primary border-primary/30"
                         }`}
                       >
                         {session.mode === "guided" ? (
@@ -485,7 +485,7 @@ export default function HistoryPage() {
                                 </div>
 
                                 {exerciseDeleteConfirm === `${session.id}_${idx}` ? (
-                                  <div className="flex items-center gap-1 bg-red-500/20 border-red-500/40 rounded-lg px-1.5 py-0.5">
+                                  <div className="flex items-center gap-1 bg-danger-soft border-red-500/40 rounded-lg px-1.5 py-0.5">
                                     <button
                                       onClick={() => setExerciseDeleteConfirm(null)}
                                       className="text-[12px] text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white px-1"

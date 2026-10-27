@@ -44,7 +44,7 @@ export function WhatsNewContent({
   onDismiss,
 }: WhatsNewContentProps) {
   return (
-    <div className="fixed inset-0 z-[250] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[250] flex items-center justify-center bg-scrim/70 p-4 backdrop-blur-sm">
       <div
         role="dialog"
         aria-modal="true"

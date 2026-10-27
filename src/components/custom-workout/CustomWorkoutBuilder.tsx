@@ -373,7 +373,7 @@ export default function CustomWorkoutBuilder({
       {/* Top Banner / Title Header */}
       <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] p-5 shadow-sm dark:shadow-2xl backdrop-blur-xl">
         <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-primary/15 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-cyan-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-info/15 blur-3xl" />
 
         <div className="relative z-10 flex flex-col gap-3">
           <div className="flex items-center justify-between">
@@ -494,7 +494,7 @@ export default function CustomWorkoutBuilder({
                   className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 dark:bg-[#131626] p-3 transition-all"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-11 w-11 rounded-xl overflow-hidden bg-black/40 flex-shrink-0">
+                    <div className="h-11 w-11 rounded-xl overflow-hidden bg-scrim/40 flex-shrink-0">
                       <ExerciseImage
                         src={routine.coverImage || routine.exercises[0]?.image}
                         alt={routine.title}
@@ -534,7 +534,7 @@ export default function CustomWorkoutBuilder({
                     </button>
                     <button
                       onClick={() => handleDeleteSaved(routine.id)}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-zinc-400 hover:text-danger hover:bg-red-500/10 transition-all cursor-pointer"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-zinc-400 hover:text-danger hover:bg-danger/10 transition-all cursor-pointer"
                       title="Eliminar rutina"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -555,7 +555,7 @@ export default function CustomWorkoutBuilder({
               Ejercicios Seleccionados ({selectedItems.length})
             </h3>
             {hasHIIT && (
-              <span className="rounded-full bg-rose-500/20 border-rose-500/30 px-2 py-0.5 text-[12px] font-semibold text-rose-700 dark:text-rose-300 flex items-center gap-1">
+              <span className="rounded-full bg-danger-soft border-rose-500/30 px-2 py-0.5 text-[12px] font-semibold text-rose-700 dark:text-rose-300 flex items-center gap-1">
                 <Flame className="h-2.5 w-2.5" /> HIIT/Tabata
               </span>
             )}
@@ -622,7 +622,7 @@ export default function CustomWorkoutBuilder({
                       </span>
 
                       {/* Thumbnail */}
-                      <div className="h-12 w-12 rounded-xl overflow-hidden bg-black/40 flex-shrink-0">
+                      <div className="h-12 w-12 rounded-xl overflow-hidden bg-scrim/40 flex-shrink-0">
                         <ExerciseImage
                           src={item.exercise.image}
                           alt={item.exercise.name}
@@ -668,7 +668,7 @@ export default function CustomWorkoutBuilder({
                       </button>
                       <button
                         onClick={() => handleRemoveItem(item.uid)}
-                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-500/10 text-danger hover:bg-red-500/20 transition-all ml-1 cursor-pointer"
+                        className="flex h-7 w-7 items-center justify-center rounded-lg bg-danger-soft text-danger hover:bg-danger/20 transition-all ml-1 cursor-pointer"
                         title="Eliminar de la rutina"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -1026,7 +1026,7 @@ export default function CustomWorkoutBuilder({
                 }}
                 className={`flex-1 rounded-xl py-1.5 text-[13px] font-bold transition-all cursor-pointer ${
                   equipmentFilter === "dumbbells"
-                    ? "bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/40"
+                    ? "bg-info-soft text-cyan-600 dark:text-cyan-300 border-cyan-500/40"
                     : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-400 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
                 }`}
               >
@@ -1039,7 +1039,7 @@ export default function CustomWorkoutBuilder({
                 }}
                 className={`flex-1 rounded-xl py-1.5 text-[13px] font-bold transition-all cursor-pointer ${
                   equipmentFilter === "bodyweight"
-                    ? "bg-emerald-500/20 text-primary-strong border-emerald-500/40"
+                    ? "bg-success-soft text-primary-strong border-emerald-500/40"
                     : "bg-slate-100 dark:bg-black/20 text-slate-500 dark:text-zinc-400 border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-zinc-300"
                 }`}
               >
@@ -1066,7 +1066,7 @@ export default function CustomWorkoutBuilder({
                     }`}
                   >
                     {/* Thumbnail box */}
-                    <div className="relative aspect-square w-full bg-black/40 overflow-hidden">
+                    <div className="relative aspect-square w-full bg-scrim/40 overflow-hidden">
                       <ExerciseImage
                         src={exercise.image}
                         alt={exercise.name}
@@ -1154,7 +1154,7 @@ export default function CustomWorkoutBuilder({
 
           {/* Feedback banner */}
           {saveFeedback && (
-            <div className="mb-2.5 rounded-xl bg-emerald-500/20 border-emerald-500/30 py-1 px-3 text-center text-xs font-bold text-emerald-700 dark:text-emerald-300">
+            <div className="mb-2.5 rounded-xl bg-success-soft border-emerald-500/30 py-1 px-3 text-center text-xs font-bold text-emerald-700 dark:text-emerald-300">
               {saveFeedback}
             </div>
           )}

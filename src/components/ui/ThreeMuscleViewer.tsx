@@ -657,7 +657,7 @@ export default function ThreeMuscleViewer({
             }`}
             title="Giro automático 360°"
           >
-            {isAutoRotate ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5"/>} <span>360°</span> </button> {/* Biometric Laser Scanner */} <button onClick={() => { haptics.tick(); setIsScannerActive(!isScannerActive); }} className={`px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${ isScannerActive ?"bg-cyan-500/20 border-cyan-400 text-cyan-600 dark:text-cyan-300 shadow-sm"
+            {isAutoRotate ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5"/>} <span>360°</span> </button> {/* Biometric Laser Scanner */} <button onClick={() => { haptics.tick(); setIsScannerActive(!isScannerActive); }} className={`px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${ isScannerActive ?"bg-info-soft border-cyan-400 text-cyan-600 dark:text-cyan-300 shadow-sm"
                 : "bg-slate-100 dark:bg-[#0d101a] border-slate-200 dark:border-white/10 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200"
             }`}
           >
@@ -690,14 +690,14 @@ export default function ThreeMuscleViewer({
       </div>
 
       {/* Main 3D Canvas Stage */}
-      <div className="relative flex flex-col items-center justify-center h-[520px] bg-gradient-to-b from-stage-hi via-stage-mid to-stage-lo rounded-3xl shadow-2xl overflow-hidden touch-none">
+      <div className="fx-media relative flex flex-col items-center justify-center h-[520px] bg-gradient-to-b from-stage-hi via-stage-mid to-stage-lo rounded-3xl shadow-2xl overflow-hidden touch-none">
         {/* Ambient Volumetric Neons */}
         <div className="pointer-events-none absolute -top-10 -left-10 w-64 h-64 rounded-full bg-primary/15 blur-[100px]" />
-        <div className="pointer-events-none absolute -bottom-10 -right-10 w-64 h-64 rounded-full bg-cyan-500/15 blur-[100px]" />
+        <div className="pointer-events-none absolute -bottom-10 -right-10 w-64 h-64 rounded-full bg-info/15 blur-[100px]" />
 
         {/* HUD Overlay Top Telemetry */}
         <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2 pointer-events-none z-20 text-xs text-zinc-400">
-          <div className="flex items-center gap-1.5 bg-black/40 rounded-full px-2.5 py-1 backdrop-blur-sm">
+          <div className="flex items-center gap-1.5 bg-scrim/40 rounded-full px-2.5 py-1 backdrop-blur-sm">
             {/* Solo late cuando gira de verdad: antes decía "ROTACIÓN 360°
                 ACTIVA" con el giro apagado. */}
             <span
@@ -718,7 +718,7 @@ export default function ThreeMuscleViewer({
               className={`px-2.5 py-0.5 rounded-full font-semibold ${
                 biomechanics.activeCount > 0
                   ? "bg-primary/20 text-primary border border-primary/40"
-                  : "bg-black/50 text-zinc-400"
+                  : "bg-scrim/50 text-zinc-400"
               }`}
             >
               {biomechanics.activeCount > 0
@@ -748,14 +748,14 @@ export default function ThreeMuscleViewer({
 
         {/* 360 Touch Drag & Tap Instructions */}
         <div className="absolute bottom-11 left-4 right-4 flex items-center justify-center pointer-events-none z-20 text-[12px] text-zinc-400">
-          <span className="flex items-center gap-1.5 bg-black/40 rounded-full px-3 py-1 backdrop-blur-sm">
+          <span className="flex items-center gap-1.5 bg-scrim/40 rounded-full px-3 py-1 backdrop-blur-sm">
             <RotateCw className="w-3 h-3 text-primary" />
             Arrastra para girar · Toca un músculo
           </span>
         </div>
 
         {/* Heatmap Spectrum Legend */}
-        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2.5 bg-black/40 border-t border-hairline-soft text-[12px] z-20 backdrop-blur-sm">
+        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2.5 bg-scrim/40 border-t border-hairline-soft text-[12px] z-20 backdrop-blur-sm">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-slate-200 dark:bg-[#131626] border-slate-300 dark:border-white/20" />
             <span className="text-slate-500 dark:text-zinc-400">Inactivo</span>
@@ -869,9 +869,9 @@ export default function ThreeMuscleViewer({
                     : selectedStat.intensityLevel === "high"
                     ? "bg-primary/20 text-primary border-primary/40 shadow-sm"
                     : selectedStat.intensityLevel === "moderate"
-                    ? "bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/30"
+                    ? "bg-info-soft text-cyan-600 dark:text-cyan-300 border-cyan-500/30"
                     : selectedStat.intensityLevel === "light"
-                    ? "bg-blue-500/20 text-blue-600 dark:text-blue-300 border-blue-500/30"
+                    ? "bg-info-soft text-blue-600 dark:text-blue-300 border-blue-500/30"
                     : "bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-zinc-400"
                 }`}
               >
@@ -890,21 +890,21 @@ export default function ThreeMuscleViewer({
 
           {/* Metrics Grid */}
           <div className="grid grid-cols-3 gap-2 mt-4 pt-3.5 border-t border-hairline-soft text-center relative z-10">
-            <div className="bg-black/35 rounded-2xl p-2.5 border-hairline-soft">
+            <div className="bg-inset rounded-2xl p-2.5 border-hairline-soft">
               <span className="text-[12px] text-zinc-500 block">Carga Estimada</span>
               <span className="text-base font-semibold text-white">
                 {Math.round(selectedStat.volumeKg)}{" "}
                 <span className="text-[12px] text-zinc-400">kg</span>
               </span>
             </div>
-            <div className="bg-black/35 rounded-2xl p-2.5 border-hairline-soft">
+            <div className="bg-inset rounded-2xl p-2.5 border-hairline-soft">
               <span className="text-[12px] text-zinc-500 block">Series Totales</span>
               <span className="text-base font-semibold text-primary">
                 {selectedStat.totalSets}{" "}
                 <span className="text-[12px] text-zinc-400">sets</span>
               </span>
             </div>
-            <div className="bg-black/35 rounded-2xl p-2.5 border-hairline-soft">
+            <div className="bg-inset rounded-2xl p-2.5 border-hairline-soft">
               <span className="text-[12px] text-zinc-500 block">Repeticiones</span>
               <span className="text-base font-semibold text-cyan-400">
                 {selectedStat.totalReps}{" "}

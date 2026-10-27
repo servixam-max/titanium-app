@@ -274,7 +274,7 @@ export default function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-[9999] bg-scrim/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
       <div className="fx-card-raised relative my-auto flex w-full max-w-md flex-col overflow-hidden p-6 sm:p-8">
         {/* Ambient Glows */}
         <div className="absolute -top-16 -left-16 w-48 h-48 bg-primary/10 rounded-full blur-[70px] pointer-events-none" />
@@ -366,13 +366,13 @@ export default function AuthModal() {
 
         {/* Notifications */}
         {errorMsg && (
-          <div className="bg-red-500/10 border-red-500/30 text-danger rounded-xl px-3.5 py-2.5 text-xs flex items-center gap-2 mb-4 animate-fade-in-up">
+          <div className="bg-danger-soft border-red-500/30 text-danger rounded-xl px-3.5 py-2.5 text-xs flex items-center gap-2 mb-4 animate-fade-in-up">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
         {successMsg && (
-          <div className="bg-emerald-500/10 border-emerald-500/30 text-primary-strong rounded-xl px-3.5 py-2.5 text-xs flex items-center gap-2 mb-4 animate-fade-in-up">
+          <div className="bg-success-soft border-emerald-500/30 text-primary-strong rounded-xl px-3.5 py-2.5 text-xs flex items-center gap-2 mb-4 animate-fade-in-up">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
             <span>{successMsg}</span>
           </div>
@@ -557,7 +557,7 @@ export default function AuthModal() {
                     <KeyRound className="w-4 h-4 text-primary" />
                     <span>Recuperar contraseña</span>
                   </div>
-                  <span className="text-[12px] bg-emerald-500/10 text-primary-strong px-2 py-0.5 rounded-full border-emerald-500/20">
+                  <span className="text-[12px] bg-success-soft text-primary-strong px-2 py-0.5 rounded-full border-emerald-500/20">
                     Paso 1 de 3
                   </span>
                 </div>
@@ -695,7 +695,7 @@ export default function AuthModal() {
                     <ShieldCheck className="w-4 h-4 text-primary" />
                     <span>Nueva contraseña</span>
                   </div>
-                  <span className="text-[12px] bg-emerald-500/10 text-primary-strong px-2 py-0.5 rounded-full border-emerald-500/20">
+                  <span className="text-[12px] bg-success-soft text-primary-strong px-2 py-0.5 rounded-full border-emerald-500/20">
                     Paso 3 de 3
                   </span>
                 </div>

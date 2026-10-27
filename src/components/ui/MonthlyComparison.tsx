@@ -33,10 +33,10 @@ import { cn } from "@/lib/utils";
 // pinta.
 
 const TREND_CHIP: Record<Exclude<MonthlyTrend, "none">, string> = {
-  up: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
-  down: "bg-rose-500/10 text-rose-700 dark:text-rose-400",
+  up: "bg-success-soft text-emerald-700 dark:text-emerald-400",
+  down: "bg-danger-soft text-rose-700 dark:text-rose-400",
   equal: "bg-slate-500/10 text-slate-600 dark:text-zinc-300",
-  new: "bg-cyan-500/10 text-cyan-700 dark:text-cyan-400",
+  new: "bg-info-soft text-cyan-700 dark:text-cyan-400",
 };
 
 const TREND_ICON: Record<Exclude<MonthlyTrend, "none">, typeof TrendingUp> = {

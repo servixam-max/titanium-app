@@ -196,7 +196,7 @@ function WarmupContent() {
       {phase === "post_rest" ? (
         <div className="flex-1 flex flex-col items-center justify-between p-6 z-20 text-center animate-fade-in-up">
           <div className="w-full flex-1 flex flex-col items-center justify-center gap-4">
-            <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border-2 border-primary/40 flex items-center justify-center shadow-sm">
+            <div className="w-20 h-20 rounded-3xl bg-success-soft border-2 border-primary/40 flex items-center justify-center shadow-sm">
               <Sparkles className="w-10 h-10 text-primary animate-pulse" />
             </div>
 
@@ -271,7 +271,7 @@ function WarmupContent() {
             <div className="flex justify-between items-center mb-1.5">
               <div className="flex items-center gap-2">
                 {phase === "prep" && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-400/20 border-cyan-400/40 text-cyan-300 text-[12px] font-semibold animate-pulse">
+                  <span className="px-2.5 py-0.5 rounded-full bg-info-soft border-cyan-400/40 text-cyan-300 text-[12px] font-semibold animate-pulse">
                     Preparación · {timeLeft}s
                   </span>
                 )}
@@ -281,7 +281,7 @@ function WarmupContent() {
                   </span>
                 )}
                 {phase === "transition" && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 border-amber-400/40 text-amber-700 dark:text-amber-300 text-[12px] font-semibold animate-pulse">
+                  <span className="px-2.5 py-0.5 rounded-full bg-warning-soft border-amber-400/40 text-amber-700 dark:text-amber-300 text-[12px] font-semibold animate-pulse">
                     Descanso / Cambio · {timeLeft}s
                   </span>
                 )}
@@ -341,8 +341,8 @@ function WarmupContent() {
                     containerClassName="w-full h-full"
                     className="object-contain"
                   />
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center">
-                    <div className="bg-black/80 border-amber-400/40 px-4 py-2 rounded-2xl flex items-center gap-2 text-amber-300 font-bold text-xs shadow-lg">
+                  <div className="fx-media absolute inset-0 bg-scrim/40 backdrop-blur-[2px] flex items-center justify-center">
+                    <div className="bg-scrim/80 border-amber-400/40 px-4 py-2 rounded-2xl flex items-center gap-2 text-amber-300 font-bold text-xs shadow-lg">
                       <Clock className="w-4 h-4 animate-spin" />
                       <span>Cambio en {timeLeft}s</span>
                     </div>

@@ -187,7 +187,7 @@ export default function WorkTimer() {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
           className={`w-[520px] h-[520px] rounded-full blur-[120px] animate-ambient ${
-            workUrgent ? "bg-red-500/15" : "bg-primary/10"
+            workUrgent ? "bg-danger-soft" : "bg-primary/10"
           }`}
         />
       </div>

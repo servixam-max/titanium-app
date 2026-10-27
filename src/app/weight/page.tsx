@@ -238,9 +238,9 @@ export default function WeightPage() {
                   <span className="text-5xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight">
                     {stats.current.toFixed(1)}
                   </span>
-                  <span className="text-xl font-bold text-primary">kg</span> </div> </div> {/* Difference Badge */} <div className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs font-mono font-bold ${ stats.diff < 0 ?"bg-emerald-500/15 border-emerald-500/30 text-primary-strong"
+                  <span className="text-xl font-bold text-primary">kg</span> </div> </div> {/* Difference Badge */} <div className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs font-mono font-bold ${ stats.diff < 0 ?"bg-success-soft border-emerald-500/30 text-primary-strong"
                     : stats.diff > 0
-                    ? "bg-amber-500/15 border-amber-500/30 text-amber-700 dark:text-amber-400"
+                    ? "bg-warning-soft border-amber-500/30 text-amber-700 dark:text-amber-400"
                     : "bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-600 dark:text-zinc-300"
                 }`}
               >
@@ -594,7 +594,7 @@ export default function WeightPage() {
                         </button>
                         <button
                           onClick={() => handleDelete(entry.id)}
-                          className="text-[12px] text-danger font-bold px-2 py-1 bg-red-500/10 rounded-lg"
+                          className="text-[12px] text-danger font-bold px-2 py-1 bg-danger-soft rounded-lg"
                         >
                           Borrar
                         </button>

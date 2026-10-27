@@ -48,7 +48,7 @@ export default function ExerciseGridCard({
       {/* Top Image Box */}
       <div
         onClick={onSelect}
-        className="relative w-full aspect-square bg-black/40 overflow-hidden cursor-pointer"
+        className="relative w-full aspect-square bg-scrim/40 overflow-hidden cursor-pointer"
       >
         {exercise.image ? (
           <ExerciseImage

@@ -118,7 +118,10 @@ describe("Texto de aviso y de estado en los dos temas (F7.3a)", () => {
   });
 
   it("el token está declarado en Tailwind para que la clase compile", () => {
-    expect(leer("tailwind.config.ts")).toContain('danger: "rgb(var(--danger-text-rgb) / <alpha-value>)"');
+    // F7.3c: `danger` pasó a tener DEFAULT (texto) y soft (píldora).
+    const tailwind = leer("tailwind.config.ts");
+    expect(tailwind).toContain('DEFAULT: "rgb(var(--danger-text-rgb) / <alpha-value>)"');
+    expect(tailwind).toContain('soft: "var(--soft-danger)"');
   });
 
   it("ninguna pantalla vuelve a las clases que no llegaban", () => {

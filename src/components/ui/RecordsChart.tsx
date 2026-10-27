@@ -153,7 +153,7 @@ export default function RecordsChart({ sessions, className }: RecordsChartProps)
                 Récord el {selected.record.label} · {selected.recordWeekLabel}
               </span>
             </div>
-            <span className="flex-shrink-0 rounded-full bg-cyan-500/10 px-2.5 py-1 text-[12px] font-bold text-cyan-600 dark:text-cyan-400">
+            <span className="flex-shrink-0 rounded-full bg-info-soft px-2.5 py-1 text-[12px] font-bold text-cyan-600 dark:text-cyan-400">
               {selected.record.weight} kg × {selected.record.reps}
             </span>
           </div>

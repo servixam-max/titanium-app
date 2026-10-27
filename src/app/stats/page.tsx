@@ -248,7 +248,7 @@ export default function StatsPage() {
             </div>
 
             <div className="text-right">
-              <span className="text-[12px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border-cyan-500/30 px-2.5 py-1 rounded-full">
+              <span className="text-[12px] font-bold text-cyan-600 dark:text-cyan-400 bg-info-soft border-cyan-500/30 px-2.5 py-1 rounded-full">
                 {thisWeek} ESTA SEMANA
               </span>
             </div>
@@ -272,7 +272,7 @@ export default function StatsPage() {
               <span className="text-[12px] font-bold text-cyan-600 dark:text-cyan-400">
                 Sesiones
               </span>
-              <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
+              <div className="w-7 h-7 rounded-lg bg-info-soft flex items-center justify-center text-cyan-600 dark:text-cyan-400">
                 <Dumbbell className="w-4 h-4" />
               </div>
             </div>

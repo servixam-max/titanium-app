@@ -53,7 +53,33 @@ const config: Config = {
         // Rojo de aviso como TEXTO (F7.3a): token de tema, no una clase suelta.
         // En oscuro es red-400; en claro red-700, porque red-500 se quedaba en
         // 3,3-3,8:1 sobre las tarjetas claras y sobre su propia píldora.
-        danger: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+        danger: {
+          DEFAULT: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+          soft: "var(--soft-danger)",
+        },
+        // === Estados (F7.3c) ===
+        // Un solo tono por INTENCIÓN en cada tema, y su fondo suave para las
+        // píldoras: `text-warning` / `bg-warning-soft`. Antes esto eran reglas
+        // `html.light .text-amber-300 …` y `bg-amber-500/10` reescritas a mano.
+        warning: {
+          DEFAULT: "rgb(var(--warning-text-rgb) / <alpha-value>)",
+          soft: "var(--soft-warning)",
+        },
+        success: {
+          DEFAULT: "rgb(var(--success-text-rgb) / <alpha-value>)",
+          soft: "var(--soft-success)",
+        },
+        info: {
+          DEFAULT: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          soft: "var(--soft-info)",
+        },
+        flame: {
+          DEFAULT: "rgb(var(--flame-text-rgb) / <alpha-value>)",
+          soft: "var(--soft-flame)",
+        },
+        // Velo sobre foto o escenario 3D: es una superficie de imagen, así que
+        // se queda negro en los dos temas (`bg-scrim/40`).
+        scrim: "rgb(var(--scrim-rgb) / <alpha-value>)",
         // === Superficies de tema (F7.3b) ===
         // El color vive en globals.css y cambia con el tema; la clase dice qué
         // superficie es (`bg-card`, `bg-inset`, `border-hairline`), no de qué
@@ -123,6 +149,106 @@ const config: Config = {
         "inverse-surface": "#F1F5F9",
         "inverse-on-surface": "#0A0B10",
         "inverse-primary": "#BDE600",
+      },
+      // === Tinta y estados (F7.3c) ===
+      // El tema claro ya no reescribe clases: el color de TEXTO sale de tokens.
+      // Los nombres antiguos (`text-white`, `text-zinc-400`, `text-emerald-400`…)
+      // siguen funcionando porque apuntan a estos mismos tokens; el código nuevo
+      // usa los semánticos (`text-ink`, `text-ink-faint`, `text-warning`…).
+      // Al separar textColor de colors, `text-primary` puede ser el verde
+      // legible y `bg-primary` el verde de relleno, sin reglas `html.light`.
+      textColor: {
+        ink: "rgb(var(--ink-1-rgb) / <alpha-value>)",
+        "ink-soft": "rgb(var(--ink-2-rgb) / <alpha-value>)",
+        "ink-faint": "rgb(var(--ink-3-rgb) / <alpha-value>)",
+        primary: {
+          DEFAULT: "rgb(var(--primary-strong-rgb) / <alpha-value>)",
+        },
+        white: "rgb(var(--ink-1-rgb) / <alpha-value>)",
+        zinc: {
+          100: "rgb(var(--ink-1-rgb) / <alpha-value>)",
+          200: "rgb(var(--ink-2-rgb) / <alpha-value>)",
+          300: "rgb(var(--ink-2-rgb) / <alpha-value>)",
+          400: "rgb(var(--ink-3-rgb) / <alpha-value>)",
+          500: "rgb(var(--ink-3-rgb) / <alpha-value>)",
+          600: "rgb(var(--ink-3-rgb) / <alpha-value>)",
+        },
+        slate: {
+          100: "rgb(var(--ink-1-rgb) / <alpha-value>)",
+          200: "rgb(var(--ink-2-rgb) / <alpha-value>)",
+          300: "rgb(var(--ink-2-rgb) / <alpha-value>)",
+          400: "rgb(var(--ink-3-rgb) / <alpha-value>)",
+          500: "rgb(var(--ink-3-rgb) / <alpha-value>)",
+          600: "rgb(var(--ink-3-rgb) / <alpha-value>)",
+        },
+        gray: {
+          100: "rgb(var(--ink-1-rgb) / <alpha-value>)",
+          200: "rgb(var(--ink-2-rgb) / <alpha-value>)",
+          300: "rgb(var(--ink-2-rgb) / <alpha-value>)",
+          400: "rgb(var(--ink-3-rgb) / <alpha-value>)",
+          500: "rgb(var(--ink-3-rgb) / <alpha-value>)",
+          600: "rgb(var(--ink-3-rgb) / <alpha-value>)",
+        },
+        amber: {
+          300: "rgb(var(--warning-text-rgb) / <alpha-value>)",
+          400: "rgb(var(--warning-text-rgb) / <alpha-value>)",
+          700: "rgb(var(--warning-text-rgb) / <alpha-value>)",
+          800: "rgb(var(--warning-text-rgb) / <alpha-value>)",
+        },
+        emerald: {
+          300: "rgb(var(--success-text-rgb) / <alpha-value>)",
+          400: "rgb(var(--success-text-rgb) / <alpha-value>)",
+          500: "rgb(var(--success-text-rgb) / <alpha-value>)",
+          600: "rgb(var(--success-text-rgb) / <alpha-value>)",
+          700: "rgb(var(--success-text-rgb) / <alpha-value>)",
+          800: "rgb(var(--success-text-rgb) / <alpha-value>)",
+          900: "rgb(var(--success-text-rgb) / <alpha-value>)",
+        },
+        cyan: {
+          300: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          400: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          500: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          600: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          700: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          800: "rgb(var(--info-text-rgb) / <alpha-value>)",
+        },
+        sky: {
+          300: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          400: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          500: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          600: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          700: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          800: "rgb(var(--info-text-rgb) / <alpha-value>)",
+        },
+        blue: {
+          300: "rgb(var(--info-text-rgb) / <alpha-value>)",
+          600: "rgb(var(--info-text-rgb) / <alpha-value>)",
+        },
+        rose: {
+          300: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+          400: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+          700: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+          800: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+        },
+        red: {
+          300: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+          400: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+          500: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+          600: "rgb(var(--danger-text-rgb) / <alpha-value>)",
+        },
+        violet: {
+          300: "rgb(var(--violet-text-rgb) / <alpha-value>)",
+          400: "rgb(var(--violet-text-rgb) / <alpha-value>)",
+          800: "rgb(var(--violet-text-rgb) / <alpha-value>)",
+        },
+        purple: {
+          400: "rgb(var(--violet-text-rgb) / <alpha-value>)",
+          800: "rgb(var(--violet-text-rgb) / <alpha-value>)",
+        },
+        orange: {
+          300: "rgb(var(--flame-text-rgb) / <alpha-value>)",
+          800: "rgb(var(--flame-text-rgb) / <alpha-value>)",
+        },
       },
       fontFamily: {
         // Tipografía del sistema: SF Pro en iOS/macOS, Segoe en Windows.
@@ -198,8 +324,12 @@ const config: Config = {
       },
       boxShadow: {
         rest: "0 8px 30px rgba(0,0,0,0.7)",
-        neon: "0 2px 10px rgba(16, 185, 129, 0.16)",
-        "neon-strong": "0 4px 16px rgba(16, 185, 129, 0.22)",
+        // Elevación del sistema (F7.3c): en claro es una sombra azulada suave.
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        "2xl": "var(--shadow-2xl)",
+        neon: "var(--shadow-neon)",
+        "neon-strong": "var(--shadow-neon-strong)",
         "cyan-neon": "0 4px 20px rgba(0, 229, 255, 0.32)",
         glow: "0 0 16px rgba(16, 185, 129, 0.18)",
         "glow-cyan": "0 0 28px rgba(0, 229, 255, 0.35)",

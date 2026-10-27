@@ -45,7 +45,7 @@ export default function ExerciseDetailModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/85 backdrop-blur-xl"
+            className="absolute inset-0 bg-scrim/85 backdrop-blur-xl"
           />
 
           {/* Modal Card Sheet */}
@@ -62,13 +62,13 @@ export default function ExerciseDetailModal({
                 haptics.selection();
                 onClose();
               }}
-              className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border-hairline text-white flex items-center justify-center active:scale-90 transition-transform cursor-pointer"
+              className="fx-media absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-scrim/60 backdrop-blur-md border-hairline text-white flex items-center justify-center active:scale-90 transition-transform cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Header Image */}
-            <div className="relative w-full aspect-[4/3] bg-black/50 overflow-hidden flex-shrink-0">
+            <div className="fx-media relative w-full aspect-[4/3] bg-scrim/50 overflow-hidden flex-shrink-0">
               {exercise.image ? (
                 <ExerciseImage
                   src={exercise.image}
@@ -85,8 +85,8 @@ export default function ExerciseDetailModal({
 
               {/* Tags overlay */}
               <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between pointer-events-none">
-                <span className="px-3 py-1 rounded-xl bg-primary text-black font-bold text-xs border-primary/40 shadow-sm"> {muscle} </span> <span className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold ${ isDumbbell ?"bg-amber-500/25 text-amber-300 border-amber-500/40"
-                      : "bg-cyan-500/25 text-cyan-300 border-cyan-500/40"
+                <span className="px-3 py-1 rounded-xl bg-primary text-black font-bold text-xs border-primary/40 shadow-sm"> {muscle} </span> <span className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold ${ isDumbbell ?"bg-warning-soft text-amber-300 border-amber-500/40"
+                      : "bg-info-soft text-cyan-300 border-cyan-500/40"
                   }`}
                 >
                   {isDumbbell ? "Mancuernas" : "Peso Corporal"}

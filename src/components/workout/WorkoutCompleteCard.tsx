@@ -170,7 +170,7 @@ export default function WorkoutCompleteCard({
         initial={{ scale: 0, rotate: -20 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 350, damping: 20 }}
-        className="w-20 h-20 rounded-2xl bg-black/60 border-primary-container/40 flex items-center justify-center mb-3 shadow-[0_0_30px_rgba(204,255,0,0.35)]"
+        className="w-20 h-20 rounded-2xl bg-inset border-primary-container/40 flex items-center justify-center mb-3 shadow-[0_0_30px_rgba(204,255,0,0.35)]"
       >
         <Trophy className="w-10 h-10 text-primary-container fill-primary-container/20" />
       </motion.div>
@@ -269,7 +269,7 @@ export default function WorkoutCompleteCard({
               {aiDebrief.tags.map((t, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-0.5 rounded-full text-[12px] font-bold bg-cyan-400/10 text-cyan-700 dark:text-cyan-300 border-cyan-400/30"
+                  className="px-2 py-0.5 rounded-full text-[12px] font-bold bg-info-soft text-cyan-700 dark:text-cyan-300 border-cyan-400/30"
                 >
                   {t.label}
                 </span>

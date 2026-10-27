@@ -28,7 +28,7 @@ export default function WarmupModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/90 backdrop-blur-2xl"
+            className="absolute inset-0 bg-scrim/90 backdrop-blur-2xl"
           />
 
           {/* Dialog Card */}

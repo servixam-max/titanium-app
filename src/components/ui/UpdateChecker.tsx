@@ -173,7 +173,7 @@ export default function UpdateChecker() {
   };
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-scrim/70 backdrop-blur-sm">
       <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-primary/50 rounded-3xl p-6 w-full max-w-sm shadow-xl dark:shadow-[0_0_40px_rgba(0,245,155,0.25)] animate-fade-in-up relative overflow-hidden max-h-[88dvh] overflow-x-hidden overflow-y-auto">
         {/* Glow effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/15 rounded-full blur-[60px] pointer-events-none" />
@@ -206,7 +206,7 @@ export default function UpdateChecker() {
           )}
 
           {!isDownloading && !hasPermission && (
-            <div className="w-full bg-amber-500/10 border-amber-500/30 rounded-xl p-3 mb-4 text-left">
+            <div className="w-full bg-warning-soft border-amber-500/30 rounded-xl p-3 mb-4 text-left">
               <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-bold mb-1">
                 <AlertTriangle className="w-4 h-4" />
                 <span>Permiso de instalación</span>
@@ -230,7 +230,7 @@ export default function UpdateChecker() {
           )}
 
           {errorMsg && (
-            <div className="w-full bg-rose-500/10 border-rose-500/30 rounded-xl p-3 mb-3 text-xs text-rose-700 dark:text-rose-300 text-left">
+            <div className="w-full bg-danger-soft border-rose-500/30 rounded-xl p-3 mb-3 text-xs text-rose-700 dark:text-rose-300 text-left">
               {errorMsg}
             </div>
           )}

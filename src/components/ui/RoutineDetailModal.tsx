@@ -98,7 +98,7 @@ export default function RoutineDetailModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/85 backdrop-blur-xl"
+            className="absolute inset-0 bg-scrim/85 backdrop-blur-xl"
           />
 
           {/* Modal Bottom Sheet */}
@@ -116,7 +116,7 @@ export default function RoutineDetailModal({
             <div className="w-12 h-1.5 bg-slate-300 dark:bg-white/20 rounded-full mx-auto mt-3 mb-1 sm:hidden flex-shrink-0" />
 
             {/* Header Hero Image */}
-            <div className="relative h-44 sm:h-48 w-full bg-zinc-900 overflow-hidden flex-shrink-0">
+            <div className="fx-media relative h-44 sm:h-48 w-full bg-zinc-900 overflow-hidden flex-shrink-0">
               {routine.coverImage && (
                 <ExerciseImage
                   src={routine.coverImage}
@@ -130,7 +130,7 @@ export default function RoutineDetailModal({
               {/* Top Close Button */}
               <button
                 onClick={onClose}
-                className="absolute top-3.5 right-4 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-zinc-300 hover:text-white hover:bg-black/80 active:scale-95 transition-all z-20 cursor-pointer"
+                className="fx-media absolute top-3.5 right-4 w-10 h-10 rounded-full bg-scrim/60 backdrop-blur-md flex items-center justify-center text-zinc-300 hover:text-white hover:bg-scrim/80 active:scale-95 transition-all z-20 cursor-pointer"
                 aria-label="Cerrar"
               >
                 <X className="w-5 h-5" />
@@ -142,11 +142,11 @@ export default function RoutineDetailModal({
                   <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary text-black shadow-sm border-primary/40">
                     DÍA {routine.day < 10 ? `0${routine.day}` : routine.day}
                   </span>
-                  <span className="text-[13px] text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-hairline font-bold">
+                  <span className="text-[13px] text-white flex items-center gap-1 bg-scrim/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-hairline font-bold">
                     <Clock className="w-3.5 h-3.5 text-cyan-400" />
                     {routine.duration}
                   </span>
-                  <span className="text-[13px] text-white flex items-center gap-1 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-hairline font-bold">
+                  <span className="text-[13px] text-white flex items-center gap-1 bg-scrim/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border-hairline font-bold">
                     <Layers className="w-3.5 h-3.5 text-primary" />
                     {totalSets} series
                   </span>
@@ -164,7 +164,7 @@ export default function RoutineDetailModal({
               </p>
 
               {isCompletedToday && (
-                <div className="p-3 bg-emerald-500/15 border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-700 dark:text-emerald-400 text-xs font-bold shadow-sm">
+                <div className="p-3 bg-success-soft border-emerald-500/40 rounded-2xl flex items-center gap-2.5 text-emerald-700 dark:text-emerald-400 text-xs font-bold shadow-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                   <span>¡Has completado esta rutina hoy! Puedes repetirla o entrenar de nuevo.</span>
                 </div>

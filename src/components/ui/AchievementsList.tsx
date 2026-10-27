@@ -175,7 +175,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
       {/* 3D Interactive Trophy Modal */}
       {selectedAchievement && (
         <div
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-scrim/85 backdrop-blur-md flex items-center justify-center p-4 select-none animate-in fade-in duration-200"
           onClick={() => setSelectedAchievement(null)}
         >
           <div
@@ -212,7 +212,7 @@ export default function AchievementsList({ achievements, className }: Achievemen
                     {selectedAchievement.description}
                   </p>
 
-                  <div className="my-4 p-3 bg-black/50 rounded-2xl border-hairline-soft">
+                  <div className="my-4 p-3 bg-inset rounded-2xl border-hairline-soft">
                     <span className="text-[12px] text-zinc-400 block mb-1">
                       Estado del Logro
                     </span>

@@ -59,7 +59,7 @@ export default function AudioTestPage() {
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 gap-5 max-w-sm mx-auto w-full py-8">
         {/* Audio Icon */}
-        <div className="relative w-20 h-20 rounded-3xl bg-emerald-500/10 border-primary/30 flex items-center justify-center shadow-sm">
+        <div className="relative w-20 h-20 rounded-3xl bg-success-soft border-primary/30 flex items-center justify-center shadow-sm">
           <Volume2 className="w-10 h-10 text-primary animate-pulse" />
         </div>
 
@@ -116,7 +116,7 @@ export default function AudioTestPage() {
           </div>
         )}
         {testResult === "partial" && (
-          <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-bold bg-amber-500/10 border-amber-500/30 px-4 py-2.5 rounded-xl">
+          <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-bold bg-warning-soft border-amber-500/30 px-4 py-2.5 rounded-xl">
             <VolumeX className="w-4 h-4" />
             <span>CAMPANADAS OK (Voz no sintetizada)</span>
           </div>

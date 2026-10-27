@@ -370,7 +370,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+            className="absolute inset-0 bg-scrim/80 backdrop-blur-xl"
             onClick={handleBackdropClick}
             aria-hidden="true"
           />
@@ -442,7 +442,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <span className="font-bold text-slate-900 dark:text-white text-base">
                           {currentUser?.username || "Atleta"}
                         </span>
-                        <span className="text-[12px] font-bold bg-emerald-500/20 text-primary-strong px-2 py-0.5 rounded-full">
+                        <span className="text-[12px] font-bold bg-success-soft text-primary-strong px-2 py-0.5 rounded-full">
                           CONECTADO
                         </span>
                       </div>
@@ -456,7 +456,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       logout();
                       onClose();
                     }}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-white/5 hover:bg-red-500/10 text-slate-700 dark:text-zinc-300 hover:text-danger rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-white/5 hover:bg-danger/10 text-slate-700 dark:text-zinc-300 hover:text-danger rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer"
                     title="Cerrar sesión"
                   >
                     <LogOut className="w-3.5 h-3.5" />
@@ -755,7 +755,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         </p>
 
                         {!hasInstallPermission && (
-                          <div className="bg-amber-500/10 border-amber-500/30 rounded-xl p-3 flex flex-col gap-2">
+                          <div className="bg-warning-soft border-amber-500/30 rounded-xl p-3 flex flex-col gap-2">
                             <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-bold">
                               <AlertTriangle className="w-4 h-4" />
                               <span>Permiso para autoinstalar</span>
@@ -869,7 +869,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     )}
 
                     {otaStatus === "error" && (
-                      <div className="bg-red-500/10 border-error/30 rounded-2xl p-4 flex flex-col gap-2">
+                      <div className="bg-danger-soft border-error/30 rounded-2xl p-4 flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-red-400 font-bold text-sm">
                           <AlertTriangle className="w-5 h-5" />
                           <span>No se pudo comprobar</span>
@@ -978,13 +978,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     {!showResetConfirm ? (
                       <button
                         onClick={() => setShowResetConfirm(true)}
-                        className="w-full h-10 bg-slate-50 dark:bg-[#181d2e] border-red-500/20 flex items-center justify-center gap-2 rounded-lg text-danger hover:bg-red-500/10 active:scale-95 transition-all mt-2 cursor-pointer"
+                        className="w-full h-10 bg-slate-50 dark:bg-[#181d2e] border-red-500/20 flex items-center justify-center gap-2 rounded-lg text-danger hover:bg-danger/10 active:scale-95 transition-all mt-2 cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                         <span className="text-xs font-bold">Borrar todos los datos locales</span>
                       </button>
                     ) : (
-                      <div className="bg-red-500/10 border-error/20 rounded-lg p-3 mt-2">
+                      <div className="bg-danger-soft border-error/20 rounded-lg p-3 mt-2">
                         <p className="text-xs text-danger mb-3 text-center">¿Seguro? Se perderán tus entrenamientos en este dispositivo.</p>
                         <div className="flex gap-2">
                           <button onClick={() => setShowResetConfirm(false)} className="flex-1 h-10 bg-slate-100 dark:bg-[#131626] rounded-md text-xs font-bold text-slate-700 dark:text-white cursor-pointer">Cancelar</button>

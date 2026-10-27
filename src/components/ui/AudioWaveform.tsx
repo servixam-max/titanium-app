@@ -25,7 +25,7 @@ export default function AudioWaveform({
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-1 py-1 px-3 rounded-full bg-black/40 border-hairline-soft backdrop-blur-md",
+        "flex items-center justify-center gap-1 py-1 px-3 rounded-full bg-inset border-hairline-soft backdrop-blur-md",
         className
       )}
       style={{ height: `${height + 12}px` }}
