@@ -335,7 +335,7 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   esqueleto claro, paso visible al pulsar y que ni las clases antiguas ni la
   capa `html.light` vuelvan). Queda para F7.3c el resto de familias —texto
   neutro y tonos de estado, ~500 usos con variante—)*
-- [ ] **F7.3c** (cierre de F7.3) Las **107 reglas `html.light … !important`**
+- [x] **F7.3c** (cierre de F7.3) Las **107 reglas `html.light … !important`**
   que siguen en `globals.css`, ahora ya sin superficies ni bordes de tema:
   tonos de estado (`amber`, `emerald`, `red`, `orange`, `blue` en sus usos con
   `hover:`/`group-hover:`/`focus:`), los grises de texto que aún se reescriben
@@ -343,7 +343,29 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   hundidos. Se sustituyen por tokens igual que F7.3b —cada familia con su valor
   en los dos temas y su clase semántica— y se añade una guarda que impida que
   vuelva a crecer una capa por nombre de clase. Es el último tramo de F7.3
-  antes de cerrar la Fase 7.
+  antes de cerrar la Fase 7. *(v8.5.55 · la capa de 107 selectores
+  `html.light … !important` desaparece: ahora hay tres niveles de tinta
+  (`--ink-1/2/3-rgb` → `text-ink`, `text-ink-soft`, `text-ink-faint`), seis
+  estados con su tono y su píldora (`--warning/success/info/danger/violet/
+  flame-text-rgb` + `--soft-*` → `bg-warning-soft`…), un velo de imagen que
+  es negro en los dos temas (`--scrim-rgb` → `bg-scrim/*`), degradado y tinta
+  del botón primario, campos, cristal, elevación `shadow-md/lg/2xl` y pastilla
+  del control segmentado. Los nombres antiguos (`text-white`, `text-zinc-400`,
+  `text-emerald-400`…) siguen compilando porque Tailwind los resuelve contra
+  esos mismos tokens: ninguna de las ~1.300 clases existentes se queda fuera
+  del tema y vuelven los estados `hover:` que el `!important` anulaba. Nuevo
+  ámbito `.fx-media` para el subárbol que se pinta sobre foto o sobre el
+  escenario 3D —usa la tinta y los acentos oscuros en ambos temas—, que
+  arregla el HUD del visor con texto oscuro sobre escenario oscuro en claro.
+  **55 píldoras** pasan a clases semánticas y los velos `bg-black/*` a
+  `bg-scrim/*`. La auditoría de contraste a pie de píxel destapó un fallo real
+  del propio cambio: los tres paneles de métricas del visor se habían quedado
+  con velo negro sobre la tarjeta blanca (**2,42:1**); pasan a `bg-inset`.
+  Guardas: 8 pruebas en `tema-tokens.test.ts` (tokens en los dos temas, 4,5:1
+  sobre tarjeta/fondo/píldora para los seis estados, velo y escenario sin
+  versión clara, **cero reglas `html.light` por clase**, máximo 2 colores
+  forzados y que ni `bg-amber-500/10` ni `bg-black/` vuelvan). Suite completa:
+  **475 pruebas en Vitest** y **195 e2e en verde**)*
 
 ## Prioridad
 
@@ -402,3 +424,4 @@ justo debajo y se documenta el motivo.
 | v8.5.52 | F7.2 | **La auditoría de contraste ya mide el fondo real de las tarjetas**: el tema oscuro se salvaba de medirse porque casi todas sus tarjetas llevan degradado de fondo y el script solo miraba `backgroundColor`, así que las descartaba. Ahora `e2e/helpers/contraste-pixel.js` oculta la tinta del texto con una hoja inyectada —los estilos en línea los borra React—, fotografía la caja del texto y lee el píxel que queda debajo, tomando la mediana; se sube por los ancestros y para en el primer fondo opaco, que era lo que falseaba las insignias `#N`. Si algo tapa el texto (un diálogo a mitad, una barra fija) la medición falla con el motivo en vez de medir otra cosa, y el e2e corta la consulta a GitHub con el service worker desactivado porque se salta `page.route`. Medidos **39** textos sobre degradado en `/stats` y **41** en el detalle de rutina, y destapó cuatro fallos reales: el gris secundario del visor (`Motor WebGL 3D`, `Inactivo`, equilibrio postural, nombre científico) pasa de `zinc-500` a `zinc-400` en oscuro —**3,39-4,15:1 → 6,4-7,8:1**— y `Hipertrofia` de la leyenda pasa de emerald-600 a emerald-700 en claro —**3,44:1 → 5,01:1**—. |
 | v8.5.53 | F7.3a | **Los avisos y el estado de la cuenta por fin se leen**: el panel de Ajustes no se medía nunca y ahí vivían cuatro textos por debajo de 4,5:1 en claro —«CONECTADO» en verde (3,32:1), «Exportar Copia de Seguridad», «Restablecer Historial» y «Borrar todos los datos locales» en rojo (3,60-3,76:1) y «No se pudieron cargar las novedades» en ámbar (3,19:1)—. La causa de fondo es que la capa del tema claro se escribió clase a clase y esas familias no estaban. Ahora hay token de tema: `--danger-text-rgb` (red-400 en oscuro, red-700 en claro) expuesto como `text-danger`, el verde de estado pasa a `text-primary-strong` (**6,5:1**), los 23 `dark:text-zinc-500` a `dark:text-zinc-400` —el `dark:` ganaba en especificidad a la regla global que elevaba el zinc-500, y quedaba en **3,76:1**— y el ámbar de texto sube a 700 (**5,0:1**). Además la inicial del avatar deja de estar fijada en blanco: sobre el menta por defecto daba **1,91:1**; `src/lib/avatar-ink.ts` (5 pruebas) elige tinta oscura o clara por la luminancia del color elegido. Es la primera mitad de F7.3; la sustitución estructural de las ~150 reglas queda como F7.3b. Guardas: 7 pruebas en `contraste-tema.test.ts` y Ajustes dentro de `e2e/contrast.spec.js` en los dos temas. |
 | v8.5.54 | F7.3b | **Las superficies del tema claro salen de tokens y dejan de reescribirse clase a clase**: la capa `html.light … !important` tenía una regla por cada color oscuro y se quedaba corta con cada clase nueva (de ahí nacieron F6.4 y F7.3a). Ahora cada superficie tiene su valor en los dos temas —`--surface-card/panel/app/inset(-soft|-strong)`, `--hairline*`, `--card-*`, `--skeleton-*`, `--stage-*`— y los componentes piden `bg-card`, `bg-panel`, `bg-inset`, `border-hairline`, `from-card-hi`…: **55 sustituciones en 18 componentes** y fuera los bloques de superficies, botones hundidos, degradados de tarjeta, hairlines y esqueletos. Destapó dos fallos reales en claro: pulsar «Reintentar» en Ajustes o las opciones del onboarding no cambiaba de color —el `!important` fijaba el fondo hundido y el `hover:bg-white/10` era blanco translúcido sobre blanco; medido `rgba(0,0,0,0)` → `rgb(226,232,240)`— y el esqueleto de carga parpadeaba oscuro sobre la tarjeta blanca porque la lista clara era #131726/#1a2236/#161c28 y el degradado real #131626/#1a2238/#131626, un dígito de diferencia. El escenario 3D queda declarado superficie de imagen, sin versión clara a propósito. Guardas: 8 pruebas en `superficies-tema.test.ts` (tokens en ambos temas, escenario sin claro, esqueleto claro, paso visible al pulsar y que ni las clases antiguas ni la capa vuelvan). |
+| v8.5.55 | F7.3c | **El modo claro deja de ser una capa de parches y pasa a ser un tema de verdad**: había **107 reglas** que reescribían colores uno a uno con `!important` al cambiar a claro —una por cada clase oscura—, así que cada pantalla nueva se quedaba fuera del tema (de ahí los fallos de F6.4 y F7.3a) y el `!important` se comía el cambio de color al pulsar. Ahora cada familia tiene su valor en los dos temas y la clase dice qué es: tres niveles de tinta para el texto, seis tonos de estado con su píldora (aviso, logro, información, peligro, violeta y naranja), velo de foto que ya no se vuelve gris en claro, degradado del botón primario, campos de texto, cristal y sombras. Ninguna de las ~1.300 clases que ya hay en la app se queda fuera del tema —los nombres antiguos siguen compilando contra los mismos tokens— y vuelven los estados al pasar el dedo o pulsar. El visor 3D y las fotos declaran además su propio ámbito oscuro (`.fx-media`), así que su texto se lee igual en los dos temas: en claro el HUD del visor tenía tinta oscura sobre escenario oscuro. La auditoría de contraste a pie de píxel destapó un fallo del propio cambio —los tres paneles de métricas del visor quedaban en **2,42:1** en claro, con velo negro sobre la tarjeta blanca— y ya está corregido (`bg-inset`). Guarda nueva `tema-tokens.test.ts` (8 pruebas): tokens en los dos temas, 4,5:1 en los seis estados, velo y escenario sin versión clara, **cero reglas `html.light` por clase** y que no vuelvan ni las píldoras crudas ni `bg-black/`. **475 pruebas de Vitest y 195 e2e en verde**; capturas reales a 412 px en claro y oscuro de Inicio, Estadísticas, Peso, Historial, entreno y Ajustes. |
