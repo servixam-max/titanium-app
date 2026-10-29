@@ -15,6 +15,7 @@ import {
   Layers,
   ArrowRight,
   NotebookPen,
+  Check,
 } from "lucide-react";
 import TopAppBar from "@/components/ui/TopAppBar";
 import TopAppBarSpacer from "@/components/ui/TopAppBarSpacer";
@@ -26,13 +27,23 @@ import { useAppStore } from "@/lib/store";
 import { haptics } from "@/lib/haptics";
 import { normalizeNote } from "@/lib/workout-notes";
 import { TrainingMode } from "@/lib/types";
+import { MAJOR_GROUPS, type MajorGroupKey } from "@/lib/muscle-engine";
+import { formatThousands } from "@/lib/share-summary";
+import {
+  matchesHistoryFilters,
+  sessionMajorGroups,
+  splitGroupLabels,
+  summarizeGroupFilter,
+  type HistoryPeriod,
+} from "@/lib/history-filters";
 
 export default function HistoryPage() {
   const router = useRouter();
   const { currentUser } = useAppStore();
   const [sessions, setSessions] = useState<LocalSession[]>([]);
   const [filterMode, setFilterMode] = useState<TrainingMode | "all">("all");
-  const [filterPeriod, setFilterPeriod] = useState<"all" | "week" | "month">("all");
+  const [filterPeriod, setFilterPeriod] = useState<HistoryPeriod>("all");
+  const [filterGroup, setFilterGroup] = useState<MajorGroupKey | "all">("all");
   const [search, setSearch] = useState("");
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -62,17 +73,17 @@ export default function HistoryPage() {
   };
 
   const filteredSessions = useMemo(() => {
-    const now = new Date();
-    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-
+    // La búsqueda se queda fuera del módulo puro porque necesita el nombre de
+    // la rutina; modo, periodo y grupo muscular sí se deciden allí (y se
+    // prueban sin React).
     return sessions
-      .filter((s) => {
-        if (filterMode !== "all" && s.mode !== filterMode) return false;
-        if (filterPeriod === "week" && new Date(s.startTime) < oneWeekAgo) return false;
-        if (filterPeriod === "month" && new Date(s.startTime) < oneMonthAgo) return false;
-        return true;
-      })
+      .filter((s) =>
+        matchesHistoryFilters(s, {
+          mode: filterMode,
+          period: filterPeriod,
+          group: filterGroup,
+        }),
+      )
       .filter((s) => {
         if (!search.trim()) return true;
         const routine = routines.find((r) => r.day === s.routineId);
@@ -84,7 +95,24 @@ export default function HistoryPage() {
           (s.routineId?.toString() || "").includes(query)
         );
       });
-  }, [sessions, filterMode, filterPeriod, search]);
+  }, [sessions, filterMode, filterPeriod, filterGroup, search]);
+
+  // Grupos entrenados por sesión, calculados una sola vez (motor biomecánico).
+  const groupsBySession = useMemo(() => {
+    const map = new Map<string, MajorGroupKey[]>();
+    for (const session of sessions) {
+      map.set(session.id, sessionMajorGroups(session));
+    }
+    return map;
+  }, [sessions]);
+
+  // Resumen del grupo elegido: las mismas sesiones que se están viendo.
+  const groupSummary = useMemo(() => {
+    if (filterGroup === "all") return null;
+    return summarizeGroupFilter(filteredSessions, filterGroup);
+  }, [filteredSessions, filterGroup]);
+
+  const activeGroup = filterGroup === "all" ? null : MAJOR_GROUPS.find((g) => g.key === filterGroup);
 
   const completed = useMemo(() => {
     return sessions.filter((s) => s.completed);
@@ -330,6 +358,81 @@ export default function HistoryPage() {
               Individuales
             </button>
           </div>
+
+          {/* Filtro por grupo muscular (F8.1) */}
+          <div
+            className="flex flex-wrap items-center gap-1.5"
+            role="group"
+            aria-label="Filtrar por grupo muscular"
+          >
+            <span className="text-xs font-bold text-slate-500 dark:text-zinc-400 whitespace-nowrap pr-0.5">
+              Grupo
+            </span>
+            <button
+              onClick={() => setFilterGroup("all")}
+              aria-pressed={filterGroup === "all"}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+                filterGroup === "all"
+                  ? "bg-primary text-black shadow-sm border-primary/40"
+                  : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
+              }`}
+            >
+              Todos
+            </button>
+            {MAJOR_GROUPS.map((group) => {
+              const selected = filterGroup === group.key;
+              return (
+                <button
+                  key={group.key}
+                  onClick={() => setFilterGroup(selected ? "all" : group.key)}
+                  aria-pressed={selected}
+                  aria-label={`Filtrar por ${group.name}`}
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                    selected
+                      ? "bg-primary text-black shadow-sm border-primary/40"
+                      : "bg-white dark:bg-[#141828] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
+                  }`}
+                >
+                  {selected ? (
+                    <Check className="w-3 h-3" />
+                  ) : (
+                    <span
+                      className="w-2 h-2 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: group.color }}
+                    />
+                  )}
+                  {group.name}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Resumen del grupo elegido: mismas sesiones que se están viendo */}
+          {activeGroup && groupSummary && (
+            <div
+              data-testid="group-summary"
+              data-sessions={groupSummary.sessions}
+              data-kg={groupSummary.volumeKg}
+              className="fx-card rounded-xl px-3 py-2 flex items-center justify-between gap-3 shadow-sm"
+            >
+              <span className="flex items-center gap-1.5 min-w-0">
+                <span
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: activeGroup.color }}
+                />
+                <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                  {activeGroup.name}
+                </span>
+              </span>
+              <span className="text-xs text-slate-500 dark:text-zinc-400 whitespace-nowrap fx-num">
+                {groupSummary.sessions === 0
+                  ? "Sin sesiones con estos filtros"
+                  : `${groupSummary.sessions} ${
+                      groupSummary.sessions === 1 ? "sesión" : "sesiones"
+                    } · ${formatThousands(groupSummary.volumeKg)} kg`}
+              </span>
+            </div>
+          )}
         </section>
 
         {/* Sessions List */}
@@ -370,9 +473,17 @@ export default function HistoryPage() {
 
               const totalSets = session.exercises.reduce((acc, ex) => acc + ex.sets.length, 0);
 
+              // Grupos primarios de la sesión (máx. 3 en la tarjeta + "N").
+              const { shown: cardGroups, extra: hiddenGroups } = splitGroupLabels(
+                groupsBySession.get(session.id) ?? [],
+                3,
+              );
+
               return (
                 <div
                   key={session.id}
+                  data-testid="history-session"
+                  data-groups={(groupsBySession.get(session.id) ?? []).join(" ")}
                   className="fx-card rounded-2xl overflow-hidden transition-all shadow-sm dark:shadow-md"
                 >
                   {/* Card Header Summary */}
@@ -422,6 +533,33 @@ export default function HistoryPage() {
                             ⚡ {totalSets} series
                           </span>
                         </div>
+
+                        {/* Grupos trabajados (F8.1): los mismos que filtra la barra de arriba */}
+                        {cardGroups.length > 0 && (
+                          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-2">
+                            {cardGroups.map((group) => (
+                              <span
+                                key={group.key}
+                                className={`inline-flex items-center gap-1 text-[12px] ${
+                                  filterGroup === group.key
+                                    ? "font-bold text-slate-900 dark:text-white"
+                                    : "text-slate-500 dark:text-zinc-400"
+                                }`}
+                              >
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                                  style={{ backgroundColor: group.color }}
+                                />
+                                {group.name}
+                              </span>
+                            ))}
+                            {hiddenGroups > 0 && (
+                              <span className="text-[12px] text-slate-400 dark:text-zinc-400">
+                                +{hiddenGroups}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
 

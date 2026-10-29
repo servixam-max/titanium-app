@@ -367,9 +367,30 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   forzados y que ni `bg-amber-500/10` ni `bg-black/` vuelvan). Suite completa:
   **475 pruebas en Vitest** y **195 e2e en verde**)*
 
+## Fase 8 — Historia y progreso consultable
+
+- [ ] **F8.1** El historial se puede filtrar **por grupo muscular** (pecho,
+  espalda, hombros, brazos, piernas, core), combinado con el periodo y el modo
+  que ya existían. Cada sesión dice qué grupos trabajó y, con un grupo elegido,
+  una tira resume cuántas sesiones y cuánto volumen efectivo lleva. El grupo
+  sale del motor biomecánico por músculos **primarios** —un press de banca es
+  pecho, aunque el tríceps ayude—, con las mismas cifras que Estadísticas.
+  Criterio: filtrar «Piernas» + «Este Mes» deja exactamente las sesiones de
+  pierna del mes, el resumen coincide con el motor y «Todos» lo deshace; claro
+  y oscuro medidos. *Se abre la fase al cerrarse la Fase 7.*
+- [ ] **F8.2** Control de Peso con **tendencia y objetivo**: además del punto
+  del día, una media móvil de 7 días que no se asuste con la oscilación diaria
+  (±1 kg) y una línea de objetivo con lo que falta y a qué ritmo se va. Sin
+  objetivo elegido, la tarjeta invita a fijarlo; sin pesajes suficientes, dice
+  cuántos faltan en vez de fingir una línea.
+- [ ] **F8.3** **Recordatorio diario de entreno** con notificación local:
+  hora elegida por el usuario, permiso pedido en el momento de activarlo y
+  ningún aviso si ya se entrenó ese día. Si el permiso se deniega, se explica
+  en claro y el interruptor vuelve a apagado (nada de promesas falsas).
+
 ## Prioridad
 
-Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7. Dentro de cada fase, de arriba abajo.
+Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8. Dentro de cada fase, de arriba abajo.
 Si una tarea resulta inviable o demasiado grande, se divide en una tarea nueva
 justo debajo y se documenta el motivo.
 
