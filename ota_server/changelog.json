@@ -1,7 +1,17 @@
 {
-  "generatedAt": "2026-10-27T08:12:22.854Z",
+  "generatedAt": "2026-10-29T08:04:37.307Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
+    {
+      "version": "8.5.56",
+      "name": "FORTIXAM v8.5.56",
+      "publishedAt": "2026-10-29T08:04:36.000Z",
+      "notes": [
+        "docs: plan diario — F7.3c v8.5.55",
+        "feat(historial): filtrar por grupo muscular"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.56"
+    },
     {
       "version": "8.5.55",
       "name": "FORTIXAM v8.5.55",
@@ -113,16 +123,6 @@
         "fix(ui): ningún texto de la app por debajo de 12px"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.45"
-    },
-    {
-      "version": "8.5.44",
-      "name": "FORTIXAM v8.5.44",
-      "publishedAt": "2026-10-12T07:10:59.000Z",
-      "notes": [
-        "docs: plan diario — rendimiento del entreno activo v8.5.43",
-        "feat(novedades): las notas llegan aunque la API de GitHub esté limitada"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.44"
     }
   ]
 }
