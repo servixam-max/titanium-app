@@ -116,7 +116,7 @@ test.describe('Copia de seguridad JSON (F3.1)', () => {
     // 5. Y el pesaje en la pantalla de Peso
     await page.goto('/weight');
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('text=/81.5/').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('text=/81,5/').first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('un archivo que no es de FORTIXAM se rechaza con un aviso claro', async ({ page }) => {
