@@ -1,11 +1,21 @@
 {
-  "generatedAt": "2026-10-29T08:04:37.307Z",
+  "generatedAt": "2026-10-30T08:16:32.973Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.57",
+      "name": "FORTIXAM v8.5.57",
+      "publishedAt": "2026-10-30T08:16:32.000Z",
+      "notes": [
+        "docs: plan diario — F8.1 v8.5.56",
+        "feat(peso): tendencia de 7 días y objetivo con lo que falta"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.57"
+    },
+    {
       "version": "8.5.56",
       "name": "FORTIXAM v8.5.56",
-      "publishedAt": "2026-10-29T08:04:36.000Z",
+      "publishedAt": "2026-10-29T08:04:37.000Z",
       "notes": [
         "docs: plan diario — F7.3c v8.5.55",
         "feat(historial): filtrar por grupo muscular"
@@ -113,16 +123,6 @@
         "fix(android): includeSubdomains explícito en el network-security-config (lint de release)"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.46"
-    },
-    {
-      "version": "8.5.45",
-      "name": "FORTIXAM v8.5.45",
-      "publishedAt": "2026-10-13T07:07:07.000Z",
-      "notes": [
-        "docs: plan diario — notas OTA inmunes al límite de la API v8.5.44",
-        "fix(ui): ningún texto de la app por debajo de 12px"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.45"
     }
   ]
 }
