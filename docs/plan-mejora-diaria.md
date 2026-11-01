@@ -414,9 +414,31 @@ se reporta el motivo. Nunca se marca una casilla sin release publicado.
   16 con el APK real —el plugin recibió y programó las 7 notificaciones, una
   por día a las 19:00—)*
 
+## Fase 9 — Interrupciones y continuidad
+
+Con la Fase 8 cerrada, lo que queda por pulir es lo que la app hace **mientras
+se usa**: cuándo interrumpe con un diálogo, qué abre al tocar un aviso y qué
+recuerda entre arranques. Son cambios pequeños, pero se notan a diario.
+
+- [ ] **F9.1** **El aviso de actualización no interrumpe un entreno**: hoy,
+  si hay una versión nueva, el diálogo salta a los 3 s del arranque aunque la
+  sesión esté en marcha, justo cuando el usuario está entre series. Debe
+  esperar a que el entreno termine (o se abandone) y entonces mostrarse; la
+  comprobación manual desde Ajustes → Comprobar Actualizaciones responde
+  siempre al momento.
+- [ ] **F9.2** **Tocar el recordatorio abre la app en la sesión de hoy**: la
+  notificación ya lleva `extra.route`, pero nadie la escucha, así que al
+  tocarla la app se abre donde quedara. Escuchar
+  `localNotificationActionPerformed` y llevar a la sesión que toca hoy (la
+  misma que resuelve `sesionDeHoy()`), no a la home a ciegas.
+- [ ] **F9.3** **«Ahora no» en el aviso de actualización se recuerda**: el
+  diálogo no guarda nada, así que vuelve a saltar a los 3 s del siguiente
+  arranque, y del otro. Recordar el descarte hasta el día siguiente (o hasta
+  que haya otra versión) sin dejar de poder actualizar a mano.
+
 ## Prioridad
 
-Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8. Dentro de cada fase, de arriba abajo.
+Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8 → Fase 9. Dentro de cada fase, de arriba abajo.
 Si una tarea resulta inviable o demasiado grande, se divide en una tarea nueva
 justo debajo y se documenta el motivo.
 
