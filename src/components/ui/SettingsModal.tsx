@@ -55,6 +55,7 @@ import {
 import { getSessions, saveSession, getWeights, saveWeight } from "@/lib/db";
 import { inkParaFondo } from "@/lib/avatar-ink";
 import ChangelogList from "@/components/ui/ChangelogList";
+import TrainingReminderSection from "@/components/ui/TrainingReminderSection";
 import { ChangelogEntry, fetchChangelog } from "@/lib/changelog";
 import {
   buildBackupPayload,
@@ -691,6 +692,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </button>
                   </div>
                 </section>
+
+                {/* Training reminder (F8.3) */}
+                <TrainingReminderSection userId={currentUser?.id} sessions={sessions} />
 
                 {/* Updates */}
                 <section className="flex flex-col gap-stack-gap">
