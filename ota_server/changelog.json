@@ -1,11 +1,21 @@
 {
-  "generatedAt": "2026-10-30T08:16:32.973Z",
+  "generatedAt": "2026-11-01T08:15:29.025Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.58",
+      "name": "FORTIXAM v8.5.58",
+      "publishedAt": "2026-11-01T08:15:28.000Z",
+      "notes": [
+        "docs: plan diario — F8.2 v8.5.57",
+        "feat(ajustes): recordatorio diario de entreno con notificación local"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.58"
+    },
+    {
       "version": "8.5.57",
       "name": "FORTIXAM v8.5.57",
-      "publishedAt": "2026-10-30T08:16:32.000Z",
+      "publishedAt": "2026-10-30T08:16:33.000Z",
       "notes": [
         "docs: plan diario — F8.1 v8.5.56",
         "feat(peso): tendencia de 7 días y objetivo con lo que falta"
@@ -111,18 +121,6 @@
         "refactor(rutina): retira la pantalla huérfana /routine/[day]; el detalle vive en el modal"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.47"
-    },
-    {
-      "version": "8.5.46",
-      "name": "FORTIXAM v8.5.46",
-      "publishedAt": "2026-10-14T07:19:33.000Z",
-      "notes": [
-        "docs: plan diario — suelo tipográfico de 12px v8.5.45",
-        "fix(android): HTTP en claro solo hacia el puente LAN/Tailscale",
-        "docs: plan diario — F5.3 red acotada v8.5.46",
-        "fix(android): includeSubdomains explícito en el network-security-config (lint de release)"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.46"
     }
   ]
 }
