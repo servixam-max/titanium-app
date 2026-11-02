@@ -4,6 +4,8 @@ import { Download, X, Loader2, Sparkles, AlertTriangle } from "lucide-react";
 import { APP_VERSION, checkOtaUpdate, openApkDownload } from "@/lib/ota-sync";
 import { canInstallUnknownApps, requestInstallPermission, startInAppUpdate } from "@/lib/app-updater";
 import { NOTES_PREVIEW, fetchChangelog, findEntryByVersion } from "@/lib/changelog";
+import { useAppStore } from "@/lib/store";
+import { AVISO_TRAS_ENTRENO_MS, isWorkoutInProgress } from "@/lib/update-gate";
 
 interface UpdateNotesProps {
   version: string;
@@ -79,6 +81,9 @@ export default function UpdateChecker() {
   const [hasPermission, setHasPermission] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [notes, setNotes] = useState<string[] | null>(null);
+  // ¿Hay un entreno en marcha? Si lo hay, el aviso se guarda y espera (F9.1).
+  const workoutInProgress = useAppStore((s) => isWorkoutInProgress(s.activeWorkout));
+  const [held, setHeld] = useState(false);
 
   useEffect(() => {
     /** Busca qué trae la versión nueva para enseñarlo antes de descargar. */
@@ -107,9 +112,17 @@ export default function UpdateChecker() {
           const canInst = await canInstallUnknownApps();
           setHasPermission(canInst);
           setUpdateInfo({ version: result.latestVersion, url: result.downloadUrl });
-          setShow(true);
           setUpToDateMsg(false);
           loadNotes(result.latestVersion);
+          // El entreno se mira al responder, no al arrancar: puede haber
+          // empezado o terminado durante la consulta. La comprobación manual
+          // (forzar desde Ajustes) responde siempre al momento.
+          if (manual || !isWorkoutInProgress(useAppStore.getState().activeWorkout)) {
+            setHeld(false);
+            setShow(true);
+          } else {
+            setHeld(true);
+          }
         } else if (manual) {
           setUpToDateMsg(true);
           setTimeout(() => setUpToDateMsg(false), 3000);
@@ -130,6 +143,19 @@ export default function UpdateChecker() {
       window.removeEventListener("force-update-check", handleForceCheck);
     };
   }, []);
+
+  /**
+   * El entreno ha terminado (o se ha abandonado): sale el aviso que esperaba.
+   * Con un respiro para no tapar el resumen que se abre justo después.
+   */
+  useEffect(() => {
+    if (!held || workoutInProgress) return;
+    const timer = setTimeout(() => {
+      setHeld(false);
+      setShow(true);
+    }, AVISO_TRAS_ENTRENO_MS);
+    return () => clearTimeout(timer);
+  }, [held, workoutInProgress]);
 
   if (upToDateMsg) {
     return (
