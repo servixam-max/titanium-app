@@ -1,11 +1,22 @@
 {
-  "generatedAt": "2026-11-01T08:15:29.025Z",
+  "generatedAt": "2026-11-02T08:06:42.494Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.59",
+      "name": "FORTIXAM v8.5.59",
+      "publishedAt": "2026-11-02T08:06:41.000Z",
+      "notes": [
+        "docs: plan diario — F8.3 v8.5.58",
+        "docs: abrir la Fase 9 (interrupciones y continuidad)",
+        "feat(actualizaciones): el aviso espera a que termine el entreno"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.59"
+    },
+    {
       "version": "8.5.58",
       "name": "FORTIXAM v8.5.58",
-      "publishedAt": "2026-11-01T08:15:28.000Z",
+      "publishedAt": "2026-11-01T08:15:29.000Z",
       "notes": [
         "docs: plan diario — F8.2 v8.5.57",
         "feat(ajustes): recordatorio diario de entreno con notificación local"
@@ -112,15 +123,6 @@
         "fix(ui): HUD del visor 3D con texto corto en móvil estrecho"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.48"
-    },
-    {
-      "version": "8.5.47",
-      "name": "FORTIXAM v8.5.47",
-      "publishedAt": "2026-10-15T07:17:09.000Z",
-      "notes": [
-        "refactor(rutina): retira la pantalla huérfana /routine/[day]; el detalle vive en el modal"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.47"
     }
   ]
 }
