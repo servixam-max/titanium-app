@@ -213,7 +213,7 @@ describe("training-reminder — contenido del aviso", () => {
     expect(aviso.body).toContain("¿Ya has entrenado hoy?");
     expect(aviso.schedule.at).toEqual(at);
     expect(aviso.schedule.allowWhileIdle).toBe(true);
-    expect(aviso.extra.route).toBe("/");
+    expect(aviso.extra.route).toBe("/workout/hoy");
   });
 });
 

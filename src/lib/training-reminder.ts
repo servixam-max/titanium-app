@@ -14,6 +14,7 @@
 
 import { sameDay } from "./metrics";
 import { WorkoutSession } from "./types";
+import { RUTA_RECORDATORIO } from "./notification-route";
 
 export const REMINDER_STORAGE_KEY = "fortixam_training_reminder_v1";
 export const REMINDER_DEFAULT_HOUR = 19;
@@ -212,6 +213,9 @@ export interface ReminderNotification {
 /**
  * Contenido del aviso. El texto no promete "hoy toca X": un día de descanso
  * también puede caer aquí y la app no debe mentir.
+ *
+ * La ruta es `/workout/hoy`: el día se resuelve al tocarla, no al programarla
+ * (un aviso del lunes puede tocarse el martes).
  */
 export function buildReminderNotification(
   at: Date,
@@ -222,7 +226,7 @@ export function buildReminderNotification(
     title: "FORTIXAM",
     body: "¿Ya has entrenado hoy? Un entreno corto también cuenta.",
     schedule: { at, allowWhileIdle: true },
-    extra: { route: "/" },
+    extra: { route: RUTA_RECORDATORIO },
   };
 }
 

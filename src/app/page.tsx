@@ -41,6 +41,7 @@ import { computeWarmupReminder } from "@/lib/warmup-reminder";
 import { calculateStreak, buildWeeklyStats, sameDay } from "@/lib/metrics";
 import { filterCatalog } from "@/lib/catalog-filter";
 import { sesionDeHoy, yaEntrenadoHoy } from "@/lib/weekly-plan";
+import { PLAN_SEMANAL_STORAGE_KEY, leerPlanSemanalId } from "@/lib/notification-route";
 import { PLANES_SEMANALES } from "@/lib/weekly-plans";
 import WeeklyPlanPicker from "@/components/dashboard/WeeklyPlanPicker";
 
@@ -82,21 +83,17 @@ export default function Dashboard() {
   const [showAllRoutines, setShowAllRoutines] = useState(false);
 
   // El plan elegido se recuerda en el dispositivo: al reabrir la app debe seguir
-  // diciendo lo mismo, no volver a preguntar.
+  // diciendo lo mismo, no volver a preguntar. La clave y la lectura viven en
+  // `notification-route` porque el aviso diario también las necesita (F9.2).
   useEffect(() => {
-    try {
-      const guardado = localStorage.getItem("fortixam_plan_semanal");
-      if (guardado) setPlanSemanalId(guardado);
-    } catch {
-      /* sin localStorage (SSR) no hay nada que recordar */
-    }
+    setPlanSemanalId(leerPlanSemanalId());
   }, []);
 
   const elegirPlanSemanal = useCallback((id: string | null) => {
     setPlanSemanalId(id);
     try {
-      if (id) localStorage.setItem("fortixam_plan_semanal", id);
-      else localStorage.removeItem("fortixam_plan_semanal");
+      if (id) localStorage.setItem(PLAN_SEMANAL_STORAGE_KEY, id);
+      else localStorage.removeItem(PLAN_SEMANAL_STORAGE_KEY);
     } catch {
       /* modo privado: la elección dura la sesión, no es un error */
     }

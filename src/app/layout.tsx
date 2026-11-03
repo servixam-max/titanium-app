@@ -5,6 +5,7 @@ import UpdateChecker from "@/components/ui/UpdateChecker";
 import AuthModal from "@/components/auth/AuthModal";
 import AndroidBackButton from "@/components/system/AndroidBackButton";
 import TrainingReminderScheduler from "@/components/system/TrainingReminderScheduler";
+import NotificationOpenHandler from "@/components/system/NotificationOpenHandler";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -112,6 +113,7 @@ export default function RootLayout({
         <UpdateChecker />
         <AndroidBackButton />
         <TrainingReminderScheduler />
+        <NotificationOpenHandler />
         {children}
       </body>
     </html>
