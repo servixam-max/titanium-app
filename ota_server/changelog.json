@@ -1,11 +1,21 @@
 {
-  "generatedAt": "2026-11-03T08:27:38.296Z",
+  "generatedAt": "2026-11-04T08:11:15.603Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.61",
+      "name": "FORTIXAM v8.5.61",
+      "publishedAt": "2026-11-04T08:11:15.000Z",
+      "notes": [
+        "docs: plan diario — F9.2 v8.5.60",
+        "feat(actualizaciones): «Ahora no» se recuerda hasta mañana"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.61"
+    },
+    {
       "version": "8.5.60",
       "name": "FORTIXAM v8.5.60",
-      "publishedAt": "2026-11-03T08:27:37.000Z",
+      "publishedAt": "2026-11-03T08:27:38.000Z",
       "notes": [
         "docs: plan diario — F9.1 v8.5.59",
         "feat(recordatorio): tocar el aviso abre la sesión de hoy"
@@ -111,18 +121,6 @@
         "fix(ui): el nombre del ejercicio se lee en el hover de la tarjeta"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.50"
-    },
-    {
-      "version": "8.5.49",
-      "name": "FORTIXAM v8.5.49",
-      "publishedAt": "2026-10-17T07:14:23.000Z",
-      "notes": [
-        "docs: plan diario — F6.2 texto corto del HUD del visor 3D v8.5.48",
-        "docs: plan diario — F6.2 verificado en emulador con el APK de CI v8.5.48",
-        "chore(infra): aísla la base de datos de FORTIXAM del servicio «db» de Nextcloud",
-        "fix(red): el APK deja de aceptar contenido mixto; el http local sale nativo"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.49"
     }
   ]
 }
