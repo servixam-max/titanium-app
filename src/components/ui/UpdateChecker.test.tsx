@@ -4,6 +4,7 @@ import { NOTES_PREVIEW } from "@/lib/changelog";
 import { useAppStore } from "@/lib/store";
 import type { ActiveWorkoutState } from "@/lib/types";
 import { AVISO_TRAS_ENTRENO_MS } from "@/lib/update-gate";
+import { UPDATE_DISMISSAL_KEY, localDayKey, rememberUpdateDismissal } from "@/lib/update-dismissal";
 import UpdateChecker, { UpdateNotes } from "./UpdateChecker";
 
 // El aviso de actualización (F1.3) y su nueva espera durante el entreno (F9.1):
@@ -184,6 +185,75 @@ describe("UpdateChecker — el aviso no interrumpe un entreno (F9.1)", () => {
 
     await pasarChequeoAutomatico();
     expect(screen.getByText("Actualización Lista")).toBeInTheDocument();
+  });
+});
+
+describe("UpdateChecker — «Ahora no» se recuerda (F9.3)", () => {
+  it("cerrarlo hoy evita que vuelva a saltar al reabrir la app", async () => {
+    vi.useFakeTimers();
+
+    const { unmount } = render(<UpdateChecker />);
+    await pasarChequeoAutomatico();
+    expect(screen.getByText("Actualización Lista")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("Ahora no"));
+    expect(screen.queryByText("Actualización Lista")).not.toBeInTheDocument();
+    expect(localStorage.getItem(UPDATE_DISMISSAL_KEY)).toContain("9.0.0");
+
+    // Se cierra la app y se vuelve a abrir el mismo día.
+    unmount();
+    render(<UpdateChecker />);
+    await pasarChequeoAutomatico();
+
+    expect(screen.queryByText("Actualización Lista")).not.toBeInTheDocument();
+  });
+
+  it("la comprobación manual sigue respondiendo aunque se descartara", async () => {
+    vi.useFakeTimers();
+    rememberUpdateDismissal("9.0.0");
+
+    render(<UpdateChecker />);
+    await pasarChequeoAutomatico();
+    expect(screen.queryByText("Actualización Lista")).not.toBeInTheDocument();
+
+    await act(async () => {
+      window.dispatchEvent(new Event("force-update-check"));
+    });
+    await asentar();
+
+    expect(screen.getByText("Actualización Lista")).toBeInTheDocument();
+  });
+
+  it("un descarte de ayer no silencia el aviso de hoy", async () => {
+    vi.useFakeTimers();
+    const ayer = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    localStorage.setItem(
+      UPDATE_DISMISSAL_KEY,
+      JSON.stringify({ version: "9.0.0", day: localDayKey(ayer) }),
+    );
+
+    render(<UpdateChecker />);
+    await pasarChequeoAutomatico();
+
+    expect(screen.getByText("Actualización Lista")).toBeInTheDocument();
+  });
+
+  it("una versión nueva vuelve a avisar el mismo día", async () => {
+    vi.useFakeTimers();
+    rememberUpdateDismissal("9.0.0");
+
+    const { unmount } = render(<UpdateChecker />);
+    await pasarChequeoAutomatico();
+    expect(screen.queryByText("Actualización Lista")).not.toBeInTheDocument();
+
+    // Sale la 9.0.1: el «no» era para la 9.0.0, así que el arranque avisa.
+    unmount();
+    mocks.checkOtaUpdate.mockResolvedValue({ ...ACTUALIZACION, latestVersion: "9.0.1" });
+    render(<UpdateChecker />);
+    await pasarChequeoAutomatico();
+
+    expect(screen.getByText("Actualización Lista")).toBeInTheDocument();
+    expect(screen.getByText(/Nueva versión/)).toHaveTextContent("v9.0.1");
   });
 });
 

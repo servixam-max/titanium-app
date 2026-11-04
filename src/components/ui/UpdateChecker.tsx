@@ -6,6 +6,7 @@ import { canInstallUnknownApps, requestInstallPermission, startInAppUpdate } fro
 import { NOTES_PREVIEW, fetchChangelog, findEntryByVersion } from "@/lib/changelog";
 import { useAppStore } from "@/lib/store";
 import { AVISO_TRAS_ENTRENO_MS, isWorkoutInProgress } from "@/lib/update-gate";
+import { isUpdateDismissed, readUpdateDismissal, rememberUpdateDismissal } from "@/lib/update-dismissal";
 
 interface UpdateNotesProps {
   version: string;
@@ -109,6 +110,12 @@ export default function UpdateChecker() {
       try {
         const result = await checkOtaUpdate();
         if (result.hasUpdate) {
+          // «Ahora no» se recuerda hasta mañana o hasta que haya otra
+          // versión (F9.3). La comprobación manual nunca se silencia: si el
+          // usuario la pide, quiere saberlo ahora.
+          if (!manual && isUpdateDismissed(readUpdateDismissal(), result.latestVersion)) {
+            return;
+          }
           const canInst = await canInstallUnknownApps();
           setHasPermission(canInst);
           setUpdateInfo({ version: result.latestVersion, url: result.downloadUrl });
@@ -167,6 +174,12 @@ export default function UpdateChecker() {
 
   if (!show || !updateInfo) return null;
 
+  /** Cierra el aviso y recuerda el «no» hasta mañana o hasta otra versión (F9.3). */
+  const handleDismiss = () => {
+    rememberUpdateDismissal(updateInfo.version);
+    setShow(false);
+  };
+
   const handleStartUpdate = async () => {
     const canInst = await canInstallUnknownApps();
     if (!canInst) {
@@ -200,13 +213,14 @@ export default function UpdateChecker() {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-scrim/70 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-primary/50 rounded-3xl p-6 w-full max-w-sm shadow-xl dark:shadow-[0_0_40px_rgba(0,245,155,0.25)] animate-fade-in-up relative overflow-hidden max-h-[88dvh] overflow-x-hidden overflow-y-auto">
+      <div className="bg-white dark:bg-gradient-to-br dark:from-[#141828] dark:via-[#111422] dark:to-[#0D101A] border-slate-200 dark:border-primary/50 rounded-3xl p-6 w-full max-w-sm shadow-xl dark:shadow-[0_0_40px_rgba(0,245,155,0.25)] animate-fade-in-up relative overflow-hidden max-h-[88dvh] overflow-x-hidden overflow-y-auto" data-testid="update-dialog">
         {/* Glow effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/15 rounded-full blur-[60px] pointer-events-none" />
         
         {!isDownloading && (
           <button 
-            onClick={() => setShow(false)}
+            onClick={handleDismiss}
+            aria-label="Ahora no"
             className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-white/50 dark:hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
@@ -301,6 +315,21 @@ export default function UpdateChecker() {
             >
               Descargar desde el navegador
             </button>
+          )}
+
+          {!isDownloading && (
+            <>
+              <button
+                onClick={handleDismiss}
+                data-testid="update-dismiss"
+                className="mt-3 h-12 w-full rounded-2xl border border-slate-200 text-[13px] font-semibold text-slate-600 transition-colors hover:bg-slate-50 active:scale-[0.99] dark:border-white/10 dark:text-zinc-300 dark:hover:bg-white/5"
+              >
+                Ahora no
+              </button>
+              <p className="mt-1.5 text-[12px] leading-snug text-slate-400 dark:text-zinc-400">
+                No te avisaré de esta versión hasta mañana.
+              </p>
+            </>
           )}
         </div>
       </div>
