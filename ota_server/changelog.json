@@ -1,7 +1,17 @@
 {
-  "generatedAt": "2026-11-04T08:11:15.603Z",
+  "generatedAt": "2026-11-06T08:10:05.055Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
+    {
+      "version": "8.5.62",
+      "name": "FORTIXAM v8.5.62",
+      "publishedAt": "2026-11-06T08:10:04.000Z",
+      "notes": [
+        "docs: plan diario — F9.3 v8.5.61",
+        "fix(android): R8 conserva las anotaciones de Capacitor"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.62"
+    },
     {
       "version": "8.5.61",
       "name": "FORTIXAM v8.5.61",
@@ -111,16 +121,6 @@
         "fix(ui): el foco del teclado y el hover de la lista se leen siempre"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.51"
-    },
-    {
-      "version": "8.5.50",
-      "name": "FORTIXAM v8.5.50",
-      "publishedAt": "2026-10-18T07:06:25.000Z",
-      "notes": [
-        "docs: plan diario — F6.3 verificada en emulador con el APK de CI v8.5.49",
-        "fix(ui): el nombre del ejercicio se lee en el hover de la tarjeta"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.50"
     }
   ]
 }
