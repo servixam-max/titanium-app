@@ -466,9 +466,46 @@ recuerda entre arranques. Son cambios pequeños, pero se notan a diario.
   móvil) que reabre la app, cambia el día, publica otra versión y audita el
   contraste del diálogo en los dos temas.)*
 
+## Fase 10 — El APK que se publica
+
+La Fase 9 cerró el ciclo de interrupciones. Lo que queda por vigilar es lo
+que ocurre **después de compilar**: el APK de release pasa por R8 y por el
+empaquetado, y lo que se prueba en desarrollo puede no cumplirse en el móvil.
+Estas tareas miran el artefacto, no el código fuente.
+
+- [ ] **F10.1** **La app deja de cerrarse al comprobar permisos**: con
+  `minifyEnabled true`, R8 en modo completo borra los tipos de anotación de
+  Capacitor (`@CapacitorPlugin`, `@Permission`…) porque ninguna regla los
+  conserva; `PluginHandle.pluginAnnotation` queda en null y
+  `Bridge.getPermissionStates()` se compila como un `throw null`, así que el
+  primer `checkPermissions()` de un plugin mata el proceso en el hilo
+  CapacitorPlugins. Está medido en el DEX del APK v8.5.61. Hoy FORTIXAM se
+  cierra al abrir Ajustes con el recordatorio encendido (la sección consulta
+  el permiso al montar) y al intentar encenderlo. Deben conservarse el handle
+  y las anotaciones en `proguard-rules.pro`, con guarda que impida perderlas,
+  y verificarse en el APK de release real.
+  *(v8.5.62 · dos reglas en `proguard-rules.pro` —`-keep class
+  com.getcapacitor.PluginHandle { *; }` y `-keep @interface
+  com.getcapacitor.** { *; }`— y **4 pruebas** en `r8-capacitor.test.ts` que
+  vigilan el build de release, el keep del handle y el de las anotaciones. El
+  DEX del APK de release deja de acabar en `throw null` y vuelve a iterar
+  `CapacitorPlugin.permissions()`. Verificado en emulador Android 16 con el
+  APK minificado: Ajustes abre con el recordatorio encendido sin cerrarse, el
+  interruptor enciende, pide permiso y programa los 7 avisos.)*
+- [ ] **F10.2** **La tarjeta de tendencia de Peso pierde el borde**: el bloque
+  del objetivo en `/weight` usa `border-t` sobre un contenedor de más de
+  240 × 90 px, que el sistema visual prohíbe (las superficies no llevan
+  borde). Deja en rojo `design-system` y `flujos-criticos` en escritorio y
+  móvil desde F8.2. Debe ser una línea de 1 px (`h-px bg-[var(--fx-hairline)]`)
+  y la suite e2e completa debe volver a verde.
+- [ ] **F10.3** **La CI mira el APK que publica**: el job de release hoy solo
+  comprueba que el APK existe. Debe desensamblar el DEX y fallar si
+  `Plugin.getPermissionStates()` vuelve a contener un `throw null`, que es el
+  defecto que se coló en v8.5.58–v8.5.61 sin que ninguna puerta lo viera.
+
 ## Prioridad
 
-Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8 → Fase 9. Dentro de cada fase, de arriba abajo.
+Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8 → Fase 9 → Fase 10. Dentro de cada fase, de arriba abajo.
 Si una tarea resulta inviable o demasiado grande, se divide en una tarea nueva
 justo debajo y se documenta el motivo.
 
