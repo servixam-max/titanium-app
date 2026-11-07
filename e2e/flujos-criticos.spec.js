@@ -106,7 +106,7 @@ test.describe('Registro de peso (F4.2)', () => {
     await masUnKilo.click({ force: true });
     await masUnKilo.click({ force: true });
     await masUnKilo.click({ force: true });
-    await expect(page.locator('text=78.0').first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=78,0').first()).toBeVisible({ timeout: 5000 });
 
     // Guardar
     await page.getByRole('button', { name: 'Confirmar Pesaje' }).click({ force: true });
@@ -114,12 +114,12 @@ test.describe('Registro de peso (F4.2)', () => {
     // Queda en el historial y como último pesaje registrado
     await expect(page.locator('text=Historial de Mediciones (1)')).toBeVisible({ timeout: 8000 });
     await expect(page.locator('text=Último Pesaje Registrado').first()).toBeVisible();
-    await expect(page.locator('text=78.0').first()).toBeVisible();
+    await expect(page.locator('text=78,0').first()).toBeVisible();
 
     // Y se ha guardado de verdad: sigue ahí tras recargar la app
     await page.reload();
     await page.waitForLoadState('networkidle');
     await expect(page.locator('text=Historial de Mediciones (1)')).toBeVisible({ timeout: 8000 });
-    await expect(page.locator('text=78.0').first()).toBeVisible();
+    await expect(page.locator('text=78,0').first()).toBeVisible();
   });
 });

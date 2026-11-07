@@ -669,7 +669,8 @@ export default function WeightPage() {
             </div>
           )}
 
-          <div className="mt-4 pt-4 border-t border-[color:var(--fx-hairline)]">
+          <div className="mt-4 h-px bg-[var(--fx-hairline)]" aria-hidden="true" />
+          <div className="pt-4">
             {showGoalInput ? (
               <div>
                 <label
