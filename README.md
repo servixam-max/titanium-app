@@ -97,6 +97,8 @@ node scripts/optimize-assets.mjs --compress  # re-encode de imágenes >120KB a W
 ```bash
 npm run verify        # las tres puertas de calidad en un comando:
                       # lint + tests + build APK (se para en la primera que falle)
+npm run verify:apk    # abre el APK compilado y audita su DEX: falla si
+                      # getPermissionStates() volvió a quedar en `throw null`
 npm test              # Vitest: sync-merge y sync-mapping, progresión, coach,
                       # biomecánica, gamificación, récords, voz, theme, auth server
 npm run test:e2e      # Playwright contra dist-apk (requiere el export: npm run build:apk)
@@ -163,7 +165,8 @@ scripts/daily-improve.sh "feat(ui): resumen corto" "Motivo y alcance del cambio"
    `package.json`, `version.json`, `ota_server/version.json`, `src/lib/ota-sync.ts`
    y `android/app/build.gradle`) y lo commitea;
 5. empuja `main`;
-6. crea y empuja el tag `vX.Y.Z` → GitHub Actions compila y publica el APK.
+6. crea y empuja el tag `vX.Y.Z` → GitHub Actions compila el APK, audita su
+   DEX (`scripts/verify-apk-dex.mjs`) y solo entonces lo publica.
 
 El trabajo del día se define en [`docs/plan-mejora-diaria.md`](./docs/plan-mejora-diaria.md):
 fases ordenadas por prioridad, una casilla por día, y una bitácora con la versión

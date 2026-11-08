@@ -14,6 +14,7 @@
     "open:android": "npx cap open android",
     "release": "node scripts/release.mjs",
     "verify": "node scripts/verify.mjs",
+    "verify:apk": "node scripts/verify-apk-dex.mjs",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "test": "vitest",
     "test:e2e": "playwright test"

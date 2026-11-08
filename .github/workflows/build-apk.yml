@@ -99,6 +99,13 @@ jobs:
           echo "apk_name=$APK_NAME" >> $GITHUB_OUTPUT
           ls -lh "$APK_NAME"
 
+      - name: Auditar el DEX del APK antes de publicarlo (F10.3)
+        run: |
+          # Desensambla el APK que se va a publicar y falla si
+          # getPermissionStates() vuelve a compilarse como `throw null`
+          # (el defecto de v8.5.58–v8.5.61, que ninguna puerta veía).
+          node scripts/verify-apk-dex.mjs "${{ steps.prep.outputs.apk_name }}"
+
       - name: Guardar APK como artefacto de GitHub
         uses: actions/upload-artifact@v4
         with:
