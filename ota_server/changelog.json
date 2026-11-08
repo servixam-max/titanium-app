@@ -1,7 +1,17 @@
 {
-  "generatedAt": "2026-11-07T08:09:47.583Z",
+  "generatedAt": "2026-11-08T08:03:20.305Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
+    {
+      "version": "8.5.64",
+      "name": "FORTIXAM v8.5.64",
+      "publishedAt": "2026-11-08T08:03:20.000Z",
+      "notes": [
+        "docs: plan diario — F10.2 v8.5.63",
+        "feat(ci): la CI audita el DEX del APK que publica"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.64"
+    },
     {
       "version": "8.5.63",
       "name": "FORTIXAM v8.5.63",
@@ -111,16 +121,6 @@
         "fix(a11y): los avisos y la inicial del avatar se leen en los dos temas"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.53"
-    },
-    {
-      "version": "8.5.52",
-      "name": "FORTIXAM v8.5.52",
-      "publishedAt": "2026-10-21T07:18:16.000Z",
-      "notes": [
-        "docs: plan diario — F7.1 v8.5.51",
-        "fix(a11y): la auditoría mide el fondo real de las tarjetas con degradado"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.52"
     }
   ]
 }
