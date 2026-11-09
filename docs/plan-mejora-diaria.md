@@ -518,9 +518,32 @@ Estas tareas miran el artefacto, no el código fuente.
   v8.5.61 falla (`const/4 v0, #0 · throw v0`) y el de v8.5.63 pasa
   (94 instrucciones, invoca `permissions()`). En local: `npm run verify:apk`.)*
 
+## Fase 11 — La app con datos reales
+
+> Fase 10 cerró el plan original. Esta fase recoge lo que solo se ve cuando la
+> app tiene historial: estados que ninguna auditoría visitaba y que, al
+> medirlos, destapan defectos reales.
+
+- [x] **F11.1** **La auditoría de diseño entra en Peso con pesajes**: el e2e
+  auditaba `/weight` solo en su estado vacío, así que la tarjeta del último
+  pesaje —su gráfica, sus etiquetas y su separador— no se medía nunca. Debe
+  restaurar una copia con pesajes y un objetivo, auditar ese estado real y
+  corregir lo que destape: las etiquetas de mínimo, máximo y objetivo se
+  pintaban a 8 px, el número grande metía 51 px de tinta en una caja de 48 y
+  el bloque de la gráfica usaba `border-t`.
+  *(v8.5.65 · las tres etiquetas de la gráfica suben a 12 px —el suelo
+  tipográfico del sistema— con sus desplazamientos ajustados para que no
+  choquen entre sí ni se salgan del lienzo; el número de 48 px pasa a
+  `leading-[1.15]` (55,2 px de caja para 51 de tinta); el `border-t` del
+  bloque se sustituye por una hairline de 1 px; y `design-system` gana una
+  prueba que restaura una copia con pesajes y objetivo y audita ese estado,
+  con los helpers `openSettings`/`restoreBackup` extraídos a
+  `e2e/helpers/backup.js` para no duplicarlos. Los dos specs afectados:
+  **28/28 en verde** en escritorio y móvil; **646 pruebas** de Vitest.)*
+
 ## Prioridad
 
-Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8 → Fase 9 → Fase 10. Dentro de cada fase, de arriba abajo.
+Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8 → Fase 9 → Fase 10 → Fase 11. Dentro de cada fase, de arriba abajo.
 Si una tarea resulta inviable o demasiado grande, se divide en una tarea nueva
 justo debajo y se documenta el motivo.
 
@@ -585,3 +608,4 @@ justo debajo y se documenta el motivo.
 | v8.5.62 | F10.1 | **La app deja de cerrarse al comprobar permisos**: el APK de release se compila con R8 en modo completo y ninguna regla conservaba los tipos de anotación de Capacitor, así que `PluginHandle.pluginAnnotation` se quedaba en null y `Bridge.getPermissionStates()` acababa compilado como un `throw null` literal — medido en el DEX de la v8.5.61. El primer `checkPermissions()` de un plugin mataba el proceso en el hilo CapacitorPlugins: FORTIXAM se cerraba al abrir Ajustes con el recordatorio de entreno encendido y al intentar encenderlo, en Android 13 o superior. `proguard-rules.pro` gana dos reglas (`-keep class com.getcapacitor.PluginHandle { *; }` y `-keep @interface com.getcapacitor.** { *; }`) y `src/lib/r8-capacitor.test.ts` (**4 pruebas**) vigila que el release siga minificando y que los dos keep no se pierdan. Verificado en el APK de release real: `getPermissionStates()` vuelve a leer `getPluginAnnotation()` y a iterar `CapacitorPlugin.permissions()`, y en emulador Android 16 con ese APK minificado Ajustes abre con el recordatorio encendido sin cerrarse (PID estable), el interruptor enciende, pide permiso de alarmas y programa los **7 avisos** del 6 al 12 de noviembre a las 19:00 (ids 7301-7307). |
 | v8.5.63 | F10.2 | **La tarjeta de «Tendencia y objetivo» deja de llevar borde**: el bloque del objetivo se separaba con un `border-t` sobre un contenedor de 340 × 117 px —justo lo que el sistema visual prohíbe—, y eso mantenía en rojo la auditoría de diseño de Peso desde que existe la tarjeta. Ahora el separador es una línea real de 1 px con el token de hairline (blanco al 7 % en oscuro, tinta al 8 % en claro) y el contenido conserva los mismos 16 px de aire arriba y abajo. El e2e del registro de peso se alinea con la coma decimal que la app muestra desde F8.2 (`78,0` en vez de `78.0`). Suite e2e completa: **231 pasan, 0 fallan, 3 saltadas** en escritorio y móvil (las dos de contraste de Estadísticas en oscuro necesitaron reintento, como ya pasaba). Capturas reales a 375 px en claro y oscuro con objetivo fijado. |
 | v8.5.64 | F10.3 | **La CI ya abre el APK que publica y lo audita**: el job de release solo comprobaba que el archivo existía, así que el `throw null` de permisos (v8.5.58–v8.5.61) pasó tres publicaciones sin que ninguna puerta lo viera. Ahora `scripts/verify-apk-dex.mjs` extrae los `classes*.dex` del APK recién compilado y los desensambla con `dexdump`; si `getPermissionStates()` vuelve a tener un `throw` de cero, menos de 10 instrucciones o desaparece, el workflow falla **antes** de subir la release. La lógica pura vive en `scripts/lib/apk-dex.mjs` y `src/lib/apk-dex-guard.test.ts` la fija con **11 pruebas**, incluidos los dos volcados reales: el DEX de v8.5.61 se rechaza (`const/4 v0, #0 · throw v0`) y el de v8.5.63 pasa con 94 instrucciones. En local: `npm run verify:apk` (0 sano, 1 defecto, 2 no se pudo verificar). |
+| v8.5.65 | F11.1 | **La auditoría de diseño ya entra en Peso con pesajes**: la suite visitaba `/weight` solo vacío, así que la tarjeta del último pesaje no se medía nunca. Al restaurar una copia real (10 pesajes y objetivo 75 kg) destapó tres defectos: las etiquetas de mínimo, máximo y objetivo de la gráfica se pintaban a **8 px**; el número grande de 48 px metía **51 px de tinta en una caja de 48**; y el bloque de la gráfica llevaba el `border-t` que el sistema prohíbe. Ahora las tres etiquetas miden **12 px** con los desplazamientos ajustados (medido a 375 y 412 px: sin solapes y dentro del lienzo), el número usa `leading-[1.15]` (**55,2 px** de caja) y el separador es una hairline de 1 px. `design-system` gana la prueba «Peso con datos», con `openSettings`/`restoreBackup` extraídos a `e2e/helpers/backup.js`; los dos specs afectados quedan **28/28** en escritorio y móvil y Vitest en **646**. Capturas a 375 y 412 px en claro y oscuro. |
