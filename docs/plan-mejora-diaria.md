@@ -540,6 +540,14 @@ Estas tareas miran el artefacto, no el código fuente.
   con los helpers `openSettings`/`restoreBackup` extraídos a
   `e2e/helpers/backup.js` para no duplicarlos. Los dos specs afectados:
   **28/28 en verde** en escritorio y móvil; **646 pruebas** de Vitest.)*
+- [ ] **F11.2** **La auditoría de contraste entra en Peso con pesajes**: hoy
+  `/weight` solo se mide vacío, así que la tarjeta del último pesaje —la cifra
+  grande, la diferencia, IMC/mínimo/máximo y las etiquetas de la gráfica—
+  queda fuera de la medición a pie de píxel. Debe restaurar una copia con
+  pesajes y objetivo, auditar ese estado en los dos temas y corregir lo que
+  destape. Las etiquetas de la gráfica usan cian (`#00E1FF`) y ámbar
+  (`#F59E0B`) crudos: en oscuro dan 11,9:1 y 8,8:1, pero sobre tarjeta blanca
+  se quedan en **1,6:1 y 2,1:1** por cálculo, por debajo del mínimo de 4,5:1.
 
 ## Prioridad
 
