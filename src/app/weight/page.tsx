@@ -265,8 +265,10 @@ export default function WeightPage() {
     const maxPt = points[maxIdx];
 
     const goalY = goalKg !== null ? toY(goalKg) : null;
+    // El texto mide 12 px: la línea base necesita 12 px de aire arriba para
+    // que el ascendente no se salga del lienzo.
     const goalLabelY =
-      goalY !== null ? Math.min(height - 6, Math.max(8, goalY - 4)) : null;
+      goalY !== null ? Math.min(height - 4, Math.max(12, goalY - 6)) : null;
 
     return {
       points,
@@ -337,7 +339,7 @@ export default function WeightPage() {
                   Último Pesaje Registrado
                 </span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-5xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight">
+                  <span className="text-5xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight leading-[1.15]">
                     {formatKg(stats.current)}
                   </span>
                   <span className="text-xl font-bold text-primary">kg</span> </div> </div> {/* Difference Badge */} <div className={`px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs font-mono font-bold ${ stats.diff < 0 ?"bg-success-soft border-emerald-500/30 text-primary-strong"
@@ -383,7 +385,9 @@ export default function WeightPage() {
 
             {/* Enhanced Trend SVG Chart */}
             {trendPoints && (
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5 flex flex-col">
+              <>
+                <div className="mt-4 h-px bg-[var(--fx-hairline)]" aria-hidden="true" />
+                <div className="pt-3 flex flex-col">
                 <span className="text-[12px] text-slate-500 dark:text-zinc-400 mb-2 flex items-center gap-1">
                   <Activity className="w-3 h-3 text-primary" /> Evolución de peso
                 </span>
@@ -454,7 +458,7 @@ export default function WeightPage() {
                           x={2}
                           y={trendPoints.goalLabelY}
                           textAnchor="start"
-                          fontSize="8"
+                          fontSize="12"
                           fill="var(--text-tertiary)"
                           fontFamily="monospace"
                           fontWeight="bold"
@@ -486,12 +490,12 @@ export default function WeightPage() {
                         x={trendPoints.minPt.x}
                         y={
                           trendPoints.goalY !== null &&
-                          Math.abs(trendPoints.minPt.y - trendPoints.goalY) < 12
-                            ? trendPoints.minPt.y - 8
-                            : trendPoints.minPt.y + 14
+                          Math.abs(trendPoints.minPt.y - trendPoints.goalY) < 16
+                            ? Math.max(12, trendPoints.minPt.y - 12)
+                            : Math.min(trendPoints.height - 4, trendPoints.minPt.y + 18)
                         }
                         textAnchor="middle"
-                        fontSize="8"
+                        fontSize="12"
                         fill="#00E1FF"
                         fontFamily="monospace"
                         fontWeight="bold"
@@ -505,7 +509,7 @@ export default function WeightPage() {
                   {trendPoints.maxPt && (
                     <g>
                       <circle cx={trendPoints.maxPt.x} cy={trendPoints.maxPt.y} r="5" fill="#F59E0B" fillOpacity="0.2" stroke="#F59E0B" strokeWidth="1.5" />
-                      <text x={trendPoints.maxPt.x} y={trendPoints.maxPt.y - 8} textAnchor="middle" fontSize="8" fill="#F59E0B" fontFamily="monospace" fontWeight="bold">
+                      <text x={trendPoints.maxPt.x} y={Math.max(12, trendPoints.maxPt.y - 12)} textAnchor="middle" fontSize="12" fill="#F59E0B" fontFamily="monospace" fontWeight="bold">
                         {formatKg(trendPoints.dataMax)}
                       </text>
                     </g>
@@ -530,6 +534,7 @@ export default function WeightPage() {
                   )}
                 </div>
               </div>
+              </>
             )}
           </div>
         ) : null}
@@ -562,7 +567,7 @@ export default function WeightPage() {
 
             {/* Stepper Weight Display */}
             <div className="flex flex-col items-center my-3">
-              <span className="text-5xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight">
+              <span className="text-5xl font-semibold fx-num text-slate-900 dark:text-white tracking-tight leading-[1.15]">
                 {formatKg(inputWeight)} <span className="text-2xl text-primary font-bold">kg</span>
               </span>
 

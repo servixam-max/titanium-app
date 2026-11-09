@@ -1,6 +1,8 @@
 const { test, expect } = require('@playwright/test');
 const { seedSession } = require('./helpers/session');
+const { restoreBackup } = require('./helpers/backup');
 const { auditarContraste } = require('./helpers/contraste-pixel');
+
 
 // FORTIXAM — tendencia y objetivo de peso (F8.2).
 // Recorrido real: se restaura una copia con pesajes reales desde Ajustes (el
@@ -59,30 +61,6 @@ function backupWith(weights) {
     weights,
     lastExerciseWeights: {},
   };
-}
-
-async function openSettings(page) {
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
-
-  const boton = page.locator('button[aria-label*="Ajustes"]').first();
-  await boton.waitFor({ timeout: 10_000 });
-  await boton.click();
-  await expect(page.getByText('Copias de Seguridad Locales')).toBeVisible({
-    timeout: 8_000,
-  });
-}
-
-async function restoreBackup(page, backup) {
-  await openSettings(page);
-  await page.locator('input[type="file"]').setInputFiles({
-    name: 'fortixam-backup-peso.json',
-    mimeType: 'application/json',
-    buffer: Buffer.from(JSON.stringify(backup)),
-  });
-  await expect(page.getByText(/¡Datos restaurados!/)).toBeVisible({
-    timeout: 10_000,
-  });
 }
 
 test.describe('Control de peso — tendencia y objetivo (F8.2)', () => {
