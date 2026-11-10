@@ -1,11 +1,22 @@
 {
-  "generatedAt": "2026-11-09T08:04:05.155Z",
+  "generatedAt": "2026-11-10T08:06:24.804Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
     {
+      "version": "8.5.66",
+      "name": "FORTIXAM v8.5.66",
+      "publishedAt": "2026-11-10T08:06:24.000Z",
+      "notes": [
+        "docs: plan diario — F11.1 v8.5.65",
+        "docs: plan diario — abre F11.2 (contraste en Peso con datos)",
+        "fix(peso): las etiquetas de la gráfica se leen en los dos temas"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.66"
+    },
+    {
       "version": "8.5.65",
       "name": "FORTIXAM v8.5.65",
-      "publishedAt": "2026-11-09T08:04:04.000Z",
+      "publishedAt": "2026-11-09T08:04:05.000Z",
       "notes": [
         "docs: plan diario — F10.3 v8.5.64",
         "fix(peso): la gráfica se lee a 12 px y la auditoría entra con datos"
@@ -112,16 +123,6 @@
         "refactor(ui): el tema claro sale de tokens y no de 107 reescrituras"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.55"
-    },
-    {
-      "version": "8.5.54",
-      "name": "FORTIXAM v8.5.54",
-      "publishedAt": "2026-10-25T08:01:22.000Z",
-      "notes": [
-        "docs: plan diario — F7.3a v8.5.53",
-        "refactor(ui): las superficies salen de tokens de tema"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.54"
     }
   ]
 }
