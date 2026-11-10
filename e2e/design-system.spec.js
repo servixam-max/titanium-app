@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { seedSession } = require('./helpers/session');
-const { restoreBackup } = require('./helpers/backup');
 const { seedWorkout } = require('./helpers/workout-session');
+const { restaurarPesoConDatos } = require('./helpers/peso-datos');
 
 // FORTIXAM — vigilancia del sistema visual en todas las pantallas.
 // No comprueba "que se vea bonito", sino las reglas objetivas del sistema:
@@ -155,48 +155,9 @@ test.describe('Sistema de diseño · Peso con datos (F11.1)', () => {
   // El resto de la suite visitaba /weight vacío, así que la tarjeta del último
   // pesaje —con su gráfica, sus etiquetas y su separador— no se auditaba
   // nunca. Aquí se restaura una copia real y se mide ese estado.
-  const ISO = (days) => {
-    const d = new Date();
-    d.setHours(12, 0, 0, 0);
-    d.setDate(d.getDate() - days);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  };
-
-  const WEIGHTS = [
-    [27, 80.1], [24, 79.8], [21, 79.2], [18, 79.0], [15, 78.4],
-    [12, 77.9], [9, 77.5], [6, 77.1], [3, 76.4], [0, 76.0],
-  ].map(([days, weight], i) => {
-    const date = ISO(days);
-    return {
-      id: `diseno-wt-${i}`,
-      clientId: 'e2e',
-      ownerUserId: 'e2e-user-id',
-      createdAt: `${date}T07:00:00.000Z`,
-      modifiedAt: `${date}T07:00:00.000Z`,
-      version: 1,
-      weight,
-      date,
-    };
-  });
-
   test('la tarjeta del último pesaje respeta las reglas del sistema', async ({ page }) => {
     await seedSession(page, { theme: 'dark' });
-    // Objetivo fijado para que se pinte también su etiqueta sobre la gráfica.
-    await page.addInitScript(() => {
-      localStorage.setItem('fortixam_weight_goals_v1', JSON.stringify({ 'e2e-user-id': 75 }));
-    });
-    await restoreBackup(page, {
-      app: 'FORTIXAM',
-      version: '8.5.56',
-      exportedAt: new Date().toISOString(),
-      user: { id: 'e2e-user-id', username: 'E2E', email: 'e2e@fortixam.local' },
-      sessions: [],
-      weights: WEIGHTS,
-      lastExerciseWeights: {},
-    });
+    await restaurarPesoConDatos(page);
 
     await page.goto('/weight');
     await page.waitForLoadState('networkidle');

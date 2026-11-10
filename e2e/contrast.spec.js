@@ -1,6 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { seedSession } = require('./helpers/session');
 const { seedWorkout } = require('./helpers/workout-session');
+const { restaurarPesoConDatos } = require('./helpers/peso-datos');
 const { auditarContraste } = require('./helpers/contraste-pixel');
 
 // FORTIXAM — auditoría de contraste en los dos temas.
@@ -110,6 +111,39 @@ for (const tema of ['dark', 'light']) {
         expect(medidos, `solo se midieron ${medidos} de ${degradados} textos sobre degradado`).toBe(degradados);
       });
     }
+
+    // F11.2 — Peso con datos. La ruta de arriba mide /weight vacío, así que la
+    // tarjeta del último pesaje (la cifra grande, la diferencia, IMC/mínimo/
+    // máximo y las etiquetas de la gráfica) nunca se auditaba. Aquí se restaura
+    // una copia real con pesajes y objetivo y se mide ese estado.
+    test('/weight con pesajes y objetivo', async ({ page }) => {
+      await seedSession(page, { theme: tema });
+      await restaurarPesoConDatos(page);
+
+      await page.goto('/weight');
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(900);
+
+      await expect(page.getByText('Evolución de peso')).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('html')).toHaveClass(new RegExp(tema));
+
+      // Si la gráfica no pinta sus tres etiquetas, la auditoría no mediría lo
+      // que dice medir: se exige que estén antes de dar el resultado por bueno.
+      for (const id of ['weight-chart-min-label', 'weight-chart-max-label', 'weight-chart-goal-label']) {
+        await expect(page.getByTestId(id), `falta la etiqueta ${id}`).toBeVisible();
+      }
+
+      const { infracciones, medidos, degradados } = await auditarContraste(page);
+      expect(
+        infracciones,
+        `contraste insuficiente en /weight con datos (${tema}):\n  ${infracciones
+          .slice(0, 12)
+          .join('\n  ')}`,
+      ).toEqual([]);
+      if (degradados > 0) {
+        expect(medidos, `solo se midieron ${medidos} de ${degradados} textos sobre degradado`).toBe(degradados);
+      }
+    });
 
     // F6.4 — el estado hover también cuenta: el nombre del ejercicio se pinta
     // en verde al pasar el dedo/ratón por la tarjeta, y en claro el acento

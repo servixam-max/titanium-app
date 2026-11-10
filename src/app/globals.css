@@ -95,6 +95,12 @@
   --soft-danger: rgb(244 63 94 / 0.14);
   --soft-violet: rgb(139 92 246 / 0.16);
   --soft-flame: rgb(249 115 22 / 0.16);
+  /* Series de la gráfica de peso (F11.2): el mínimo y el máximo usan los
+     tonos de estado como TEXTO. En oscuro son el cian y el ámbar de siempre;
+     en claro bajan con ellos a cyan-700 / amber-800, que sí pasan 4,5:1 sobre
+     la tarjeta blanca (los crudos se quedaban en 1,6:1 y 2,1:1). */
+  --chart-min: rgb(var(--info-text-rgb));
+  --chart-max: rgb(var(--warning-text-rgb));
   /* Tinta sobre el esmeralda de acento: el verde es brillante en los dos
      temas, así que el texto va en negro. */
   --on-accent: #000000;

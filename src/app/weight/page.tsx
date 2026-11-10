@@ -431,10 +431,10 @@ export default function WeightPage() {
                       data-testid="weight-trend-ma"
                       d={trendPoints.maPath}
                       fill="none"
-                      stroke="#00E1FF"
+                      stroke="var(--chart-min)"
                       strokeWidth="1.2"
                       strokeDasharray="4 3"
-                      strokeOpacity="0.6"
+                      strokeOpacity="0.8"
                       strokeLinecap="round"
                     />
                   )}
@@ -455,6 +455,7 @@ export default function WeightPage() {
                           strokeOpacity="0.8"
                         />
                         <text
+                          data-testid="weight-chart-goal-label"
                           x={2}
                           y={trendPoints.goalLabelY}
                           textAnchor="start"
@@ -483,10 +484,11 @@ export default function WeightPage() {
                   {/* Min marker */}
                   {trendPoints.minPt && (
                     <g>
-                      <circle cx={trendPoints.minPt.x} cy={trendPoints.minPt.y} r="5" fill="#00E1FF" fillOpacity="0.2" stroke="#00E1FF" strokeWidth="1.5" />
+                      <circle cx={trendPoints.minPt.x} cy={trendPoints.minPt.y} r="5" fill="var(--chart-min)" fillOpacity="0.2" stroke="var(--chart-min)" strokeWidth="1.5" />
                       {/* Si el mínimo queda pegado a la línea de objetivo, su etiqueta
                           sube encima del punto para no chocar con la del objetivo. */}
                       <text
+                        data-testid="weight-chart-min-label"
                         x={trendPoints.minPt.x}
                         y={
                           trendPoints.goalY !== null &&
@@ -496,7 +498,7 @@ export default function WeightPage() {
                         }
                         textAnchor="middle"
                         fontSize="12"
-                        fill="#00E1FF"
+                        fill="var(--chart-min)"
                         fontFamily="monospace"
                         fontWeight="bold"
                       >
@@ -508,8 +510,8 @@ export default function WeightPage() {
                   {/* Max marker */}
                   {trendPoints.maxPt && (
                     <g>
-                      <circle cx={trendPoints.maxPt.x} cy={trendPoints.maxPt.y} r="5" fill="#F59E0B" fillOpacity="0.2" stroke="#F59E0B" strokeWidth="1.5" />
-                      <text x={trendPoints.maxPt.x} y={Math.max(12, trendPoints.maxPt.y - 12)} textAnchor="middle" fontSize="12" fill="#F59E0B" fontFamily="monospace" fontWeight="bold">
+                      <circle cx={trendPoints.maxPt.x} cy={trendPoints.maxPt.y} r="5" fill="var(--chart-max)" fillOpacity="0.2" stroke="var(--chart-max)" strokeWidth="1.5" />
+                      <text data-testid="weight-chart-max-label" x={trendPoints.maxPt.x} y={Math.max(12, trendPoints.maxPt.y - 12)} textAnchor="middle" fontSize="12" fill="var(--chart-max)" fontFamily="monospace" fontWeight="bold">
                         {formatKg(trendPoints.dataMax)}
                       </text>
                     </g>
