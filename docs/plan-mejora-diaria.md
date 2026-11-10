@@ -540,7 +540,7 @@ Estas tareas miran el artefacto, no el código fuente.
   con los helpers `openSettings`/`restoreBackup` extraídos a
   `e2e/helpers/backup.js` para no duplicarlos. Los dos specs afectados:
   **28/28 en verde** en escritorio y móvil; **646 pruebas** de Vitest.)*
-- [ ] **F11.2** **La auditoría de contraste entra en Peso con pesajes**: hoy
+- [x] **F11.2** **La auditoría de contraste entra en Peso con pesajes**: hoy
   `/weight` solo se mide vacío, así que la tarjeta del último pesaje —la cifra
   grande, la diferencia, IMC/mínimo/máximo y las etiquetas de la gráfica—
   queda fuera de la medición a pie de píxel. Debe restaurar una copia con
@@ -548,6 +548,17 @@ Estas tareas miran el artefacto, no el código fuente.
   destape. Las etiquetas de la gráfica usan cian (`#00E1FF`) y ámbar
   (`#F59E0B`) crudos: en oscuro dan 11,9:1 y 8,8:1, pero sobre tarjeta blanca
   se quedan en **1,6:1 y 2,1:1** por cálculo, por debajo del mínimo de 4,5:1.
+  *(v8.5.66 · `contrast.spec.js` gana la prueba «/weight con pesajes y
+  objetivo» en los dos temas: restaura 10 pesajes y un objetivo de 75 kg y
+  exige que las tres etiquetas de la gráfica estén pintadas antes de medir.
+  En claro destapó las dos previstas —«76,0» a **1,59:1** y «80,1» a
+  **2,15:1**—; el resto de la tarjeta ya pasaba. Las etiquetas, los dos
+  marcadores y la media 7d dejan los colores crudos y usan `--chart-min` /
+  `--chart-max`, que salen de los tonos de estado como texto: cian y ámbar en
+  oscuro, **cyan-700 (5,4:1)** y **amber-800 (7,1:1)** sobre blanco. La copia
+  con pesajes vive en `e2e/helpers/peso-datos.js`, compartida con la auditoría
+  de diseño. Los tres specs afectados: **40/40 en escritorio y 40/40 en
+  móvil**; Vitest **646**.)*
 
 ## Prioridad
 
@@ -617,3 +628,4 @@ justo debajo y se documenta el motivo.
 | v8.5.63 | F10.2 | **La tarjeta de «Tendencia y objetivo» deja de llevar borde**: el bloque del objetivo se separaba con un `border-t` sobre un contenedor de 340 × 117 px —justo lo que el sistema visual prohíbe—, y eso mantenía en rojo la auditoría de diseño de Peso desde que existe la tarjeta. Ahora el separador es una línea real de 1 px con el token de hairline (blanco al 7 % en oscuro, tinta al 8 % en claro) y el contenido conserva los mismos 16 px de aire arriba y abajo. El e2e del registro de peso se alinea con la coma decimal que la app muestra desde F8.2 (`78,0` en vez de `78.0`). Suite e2e completa: **231 pasan, 0 fallan, 3 saltadas** en escritorio y móvil (las dos de contraste de Estadísticas en oscuro necesitaron reintento, como ya pasaba). Capturas reales a 375 px en claro y oscuro con objetivo fijado. |
 | v8.5.64 | F10.3 | **La CI ya abre el APK que publica y lo audita**: el job de release solo comprobaba que el archivo existía, así que el `throw null` de permisos (v8.5.58–v8.5.61) pasó tres publicaciones sin que ninguna puerta lo viera. Ahora `scripts/verify-apk-dex.mjs` extrae los `classes*.dex` del APK recién compilado y los desensambla con `dexdump`; si `getPermissionStates()` vuelve a tener un `throw` de cero, menos de 10 instrucciones o desaparece, el workflow falla **antes** de subir la release. La lógica pura vive en `scripts/lib/apk-dex.mjs` y `src/lib/apk-dex-guard.test.ts` la fija con **11 pruebas**, incluidos los dos volcados reales: el DEX de v8.5.61 se rechaza (`const/4 v0, #0 · throw v0`) y el de v8.5.63 pasa con 94 instrucciones. En local: `npm run verify:apk` (0 sano, 1 defecto, 2 no se pudo verificar). |
 | v8.5.65 | F11.1 | **La auditoría de diseño ya entra en Peso con pesajes**: la suite visitaba `/weight` solo vacío, así que la tarjeta del último pesaje no se medía nunca. Al restaurar una copia real (10 pesajes y objetivo 75 kg) destapó tres defectos: las etiquetas de mínimo, máximo y objetivo de la gráfica se pintaban a **8 px**; el número grande de 48 px metía **51 px de tinta en una caja de 48**; y el bloque de la gráfica llevaba el `border-t` que el sistema prohíbe. Ahora las tres etiquetas miden **12 px** con los desplazamientos ajustados (medido a 375 y 412 px: sin solapes y dentro del lienzo), el número usa `leading-[1.15]` (**55,2 px** de caja) y el separador es una hairline de 1 px. `design-system` gana la prueba «Peso con datos», con `openSettings`/`restoreBackup` extraídos a `e2e/helpers/backup.js`; los dos specs afectados quedan **28/28** en escritorio y móvil y Vitest en **646**. Capturas a 375 y 412 px en claro y oscuro. |
+| v8.5.66 | F11.2 | **La auditoría de contraste ya entra en Peso con pesajes**: `/weight` solo se medía vacío, así que la tarjeta del último pesaje quedaba fuera. Nueva prueba en `contrast.spec.js` que restaura 10 pesajes y objetivo de 75 kg, exige las tres etiquetas de la gráfica pintadas y audita la pantalla en los dos temas. En claro destapó las dos previstas: «76,0» en cian crudo a **1,59:1** y «80,1» en ámbar crudo a **2,15:1** sobre la tarjeta blanca. Ahora etiquetas, marcadores y media 7d usan `--chart-min`/`--chart-max`, que salen de los tonos de estado como texto: cian y ámbar en oscuro, **cyan-700 (5,4:1)** y **amber-800 (7,1:1)** en claro. La copia con pesajes vive en `e2e/helpers/peso-datos.js`, compartida con la auditoría de diseño. Los tres specs afectados: **40/40 en escritorio y 40/40 en móvil**; Vitest **646**. |
