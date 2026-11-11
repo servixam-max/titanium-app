@@ -27,8 +27,12 @@ import {
   formatWeeklyChange,
 } from "@/lib/weight-trend";
 import { clearWeightGoal, loadWeightGoal, saveWeightGoal } from "@/lib/weight-goal";
-
-const ESTIMATED_HEIGHT_M = 1.75;
+import {
+  BODY_HEIGHT_CHANGED_EVENT,
+  computeBmi,
+  effectiveHeight,
+  formatHeightM,
+} from "@/lib/body-height";
 
 function formatSignedKg(value: number): string {
   const rounded = Math.round(value * 10) / 10;
@@ -61,6 +65,17 @@ export default function WeightPage() {
   const [showGoalInput, setShowGoalInput] = useState(false);
   const [goalInput, setGoalInput] = useState("");
   const [goalError, setGoalError] = useState<string | null>(null);
+
+  // Altura real para el IMC. El valor inicial es el mismo en servidor y
+  // cliente (1,75 m estimada); el efecto la sustituye por la guardada.
+  const [height, setHeight] = useState(() => ({ cm: 175, estimated: true }));
+
+  useEffect(() => {
+    const sync = () => setHeight(effectiveHeight(currentUser?.id));
+    sync();
+    window.addEventListener(BODY_HEIGHT_CHANGED_EVENT, sync);
+    return () => window.removeEventListener(BODY_HEIGHT_CHANGED_EVENT, sync);
+  }, [currentUser]);
 
   const loadWeights = useCallback(async () => {
     setIsLoading(true);
@@ -172,24 +187,11 @@ export default function WeightPage() {
     setGoalError(null);
   };
 
-  // BMI Calculation
-  const bmi = useMemo(() => {
-    if (!stats?.current) return null;
-    const value = stats.current / (ESTIMATED_HEIGHT_M * ESTIMATED_HEIGHT_M);
-    let category = "Normopeso";
-    let color = "#10B981";
-    if (value < 18.5) {
-      category = "Bajo peso";
-      color = "#06B6D4";
-    } else if (value >= 25 && value < 30) {
-      category = "Muscular / Sobrepeso";
-      color = "#F59E0B";
-    } else if (value >= 30) {
-      category = "Elevado";
-      color = "#EF4444";
-    }
-    return { value, category, color };
-  }, [stats]);
+  // BMI Calculation — usa la altura real guardada en Ajustes.
+  const bmi = useMemo(
+    () => (stats?.current ? computeBmi(stats.current, height.cm) : null),
+    [stats, height],
+  );
 
   // SVG Trend Points
   const trendPoints = useMemo(() => {
@@ -362,11 +364,23 @@ export default function WeightPage() {
             </div>
 
             {/* BMI & Stats Bar */}
-            <div className="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-slate-200 dark:border-white/10 relative z-10">
+            <div className="mt-5 h-px bg-[var(--fx-hairline)]" aria-hidden="true" />
+            <div className="grid grid-cols-3 gap-2 pt-4 relative z-10">
               <div className="text-center bg-slate-50 dark:bg-[#0d101a] rounded-xl p-2.5">
-                <span className="text-[12px] text-slate-500 dark:text-zinc-400 block">IMC Est.</span>
-                <span className="text-sm font-bold text-slate-900 dark:text-white mt-0.5 block">
+                <span className="text-[12px] text-slate-500 dark:text-zinc-400 block">IMC</span>
+                <span
+                  className="text-sm font-bold text-slate-900 dark:text-white mt-0.5 block"
+                  title={bmi?.category}
+                  aria-label={bmi ? `IMC ${formatKg(bmi.value)}, ${bmi.category}` : undefined}
+                >
                   {bmi ? formatKg(bmi.value) : "--"}
+                </span>
+                <span
+                  data-testid="bmi-height"
+                  className="text-[12px] text-[color:var(--text-tertiary)] mt-0.5 block"
+                >
+                  {formatHeightM(height.cm)}
+                  {height.estimated ? " · est." : ""}
                 </span>
               </div>
               <div className="text-center bg-slate-50 dark:bg-[#0d101a] rounded-xl p-2.5">

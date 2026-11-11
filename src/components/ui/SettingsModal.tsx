@@ -56,6 +56,7 @@ import { getSessions, saveSession, getWeights, saveWeight } from "@/lib/db";
 import { inkParaFondo } from "@/lib/avatar-ink";
 import ChangelogList from "@/components/ui/ChangelogList";
 import TrainingReminderSection from "@/components/ui/TrainingReminderSection";
+import BodyHeightSection from "@/components/ui/BodyHeightSection";
 import { ChangelogEntry, fetchChangelog } from "@/lib/changelog";
 import {
   buildBackupPayload,
@@ -692,6 +693,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </button>
                   </div>
                 </section>
+
+                {/* Altura para el IMC (F12.1) */}
+                <BodyHeightSection userId={currentUser?.id} />
 
                 {/* Training reminder (F8.3) */}
                 <TrainingReminderSection userId={currentUser?.id} sessions={sessions} />
