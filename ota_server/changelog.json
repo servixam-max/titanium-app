@@ -1,7 +1,18 @@
 {
-  "generatedAt": "2026-11-10T08:06:24.804Z",
+  "generatedAt": "2026-11-11T08:15:42.951Z",
   "repo": "servixam-max/titanium-app",
   "releases": [
+    {
+      "version": "8.5.67",
+      "name": "FORTIXAM v8.5.67",
+      "publishedAt": "2026-11-11T08:15:42.000Z",
+      "notes": [
+        "docs: plan diario — F11.2 v8.5.66",
+        "docs: plan diario — abre F12.1 (altura del IMC)",
+        "feat(peso): la altura del IMC se configura en Ajustes"
+      ],
+      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.67"
+    },
     {
       "version": "8.5.66",
       "name": "FORTIXAM v8.5.66",
@@ -113,16 +124,6 @@
         "feat(historial): filtrar por grupo muscular"
       ],
       "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.56"
-    },
-    {
-      "version": "8.5.55",
-      "name": "FORTIXAM v8.5.55",
-      "publishedAt": "2026-10-27T08:12:22.000Z",
-      "notes": [
-        "docs: plan diario — F7.3b v8.5.54",
-        "refactor(ui): el tema claro sale de tokens y no de 107 reescrituras"
-      ],
-      "url": "https://github.com/servixam-max/titanium-app/releases/tag/v8.5.55"
     }
   ]
 }
