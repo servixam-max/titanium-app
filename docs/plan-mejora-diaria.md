@@ -565,13 +565,25 @@ Estas tareas miran el artefacto, no el código fuente.
 > Fase 11 cerró el plan original. Esta fase corrige datos que la app da por
 > supuestos: el primero, la altura con la que calcula el IMC.
 
-- [ ] **F12.1** **La altura del IMC se puede ajustar**: Control de Peso calcula
+- [x] **F12.1** **La altura del IMC se puede ajustar**: Control de Peso calcula
   el IMC con una altura fija de 1,75 m, así que una persona de 1,60 m ve una
   cifra que no es la suya y la etiqueta «IMC Est.» no se puede quitar nunca.
   Debe poder fijarse la altura real en Ajustes (en cm), guardarse por usuario
   en el dispositivo, aplicarse al instante en el cálculo y decir en la pantalla
   de Peso qué altura se está usando; sin altura guardada se mantiene 1,75 m,
   pero marcada como estimada.
+  *(v8.5.67 · `src/lib/body-height.ts` guarda la altura por usuario en el
+  dispositivo (120–230 cm; 1,75 m estimada si no hay) y calcula el IMC con las
+  categorías OMS. Ajustes gana `BodyHeightSection`, con campo de 16 px y
+  botones de 48 px; Control de Peso muestra la altura usada bajo el IMC y
+  escucha el evento `fortixam:body-height-changed`, así que el cambio se aplica
+  al cerrar Ajustes sin recargar. 14 pruebas de lógica y 4 de componente
+  (**664** en Vitest); `altura-imc.spec.js` **6/6** en escritorio y móvil
+  (cambio al instante, persistencia, rechazo de 300 cm y contraste en los dos
+  temas). La auditoría de diseño destapó que, al crecer la celda, la fila
+  IMC/Mínimo/Máximo llevaba un `border-t`: pasa a hairline de 1 px.
+  `design-system`, `contrast` y `weight-trend`: **78 pasan** —las dos de
+  contraste de Estadísticas en oscuro necesitaron reintento, como ya pasaba—.)*
 
 ## Prioridad
 
@@ -642,3 +654,4 @@ justo debajo y se documenta el motivo.
 | v8.5.64 | F10.3 | **La CI ya abre el APK que publica y lo audita**: el job de release solo comprobaba que el archivo existía, así que el `throw null` de permisos (v8.5.58–v8.5.61) pasó tres publicaciones sin que ninguna puerta lo viera. Ahora `scripts/verify-apk-dex.mjs` extrae los `classes*.dex` del APK recién compilado y los desensambla con `dexdump`; si `getPermissionStates()` vuelve a tener un `throw` de cero, menos de 10 instrucciones o desaparece, el workflow falla **antes** de subir la release. La lógica pura vive en `scripts/lib/apk-dex.mjs` y `src/lib/apk-dex-guard.test.ts` la fija con **11 pruebas**, incluidos los dos volcados reales: el DEX de v8.5.61 se rechaza (`const/4 v0, #0 · throw v0`) y el de v8.5.63 pasa con 94 instrucciones. En local: `npm run verify:apk` (0 sano, 1 defecto, 2 no se pudo verificar). |
 | v8.5.65 | F11.1 | **La auditoría de diseño ya entra en Peso con pesajes**: la suite visitaba `/weight` solo vacío, así que la tarjeta del último pesaje no se medía nunca. Al restaurar una copia real (10 pesajes y objetivo 75 kg) destapó tres defectos: las etiquetas de mínimo, máximo y objetivo de la gráfica se pintaban a **8 px**; el número grande de 48 px metía **51 px de tinta en una caja de 48**; y el bloque de la gráfica llevaba el `border-t` que el sistema prohíbe. Ahora las tres etiquetas miden **12 px** con los desplazamientos ajustados (medido a 375 y 412 px: sin solapes y dentro del lienzo), el número usa `leading-[1.15]` (**55,2 px** de caja) y el separador es una hairline de 1 px. `design-system` gana la prueba «Peso con datos», con `openSettings`/`restoreBackup` extraídos a `e2e/helpers/backup.js`; los dos specs afectados quedan **28/28** en escritorio y móvil y Vitest en **646**. Capturas a 375 y 412 px en claro y oscuro. |
 | v8.5.66 | F11.2 | **La auditoría de contraste ya entra en Peso con pesajes**: `/weight` solo se medía vacío, así que la tarjeta del último pesaje quedaba fuera. Nueva prueba en `contrast.spec.js` que restaura 10 pesajes y objetivo de 75 kg, exige las tres etiquetas de la gráfica pintadas y audita la pantalla en los dos temas. En claro destapó las dos previstas: «76,0» en cian crudo a **1,59:1** y «80,1» en ámbar crudo a **2,15:1** sobre la tarjeta blanca. Ahora etiquetas, marcadores y media 7d usan `--chart-min`/`--chart-max`, que salen de los tonos de estado como texto: cian y ámbar en oscuro, **cyan-700 (5,4:1)** y **amber-800 (7,1:1)** en claro. La copia con pesajes vive en `e2e/helpers/peso-datos.js`, compartida con la auditoría de diseño. Los tres specs afectados: **40/40 en escritorio y 40/40 en móvil**; Vitest **646**. |
+| v8.5.67 | F12.1 | **La altura del IMC se configura en Ajustes**: Control de Peso calculaba el IMC con 1,75 m fijos, así que el dato no era el de nadie. Ahora la altura real (120–230 cm) se guarda por usuario en el dispositivo, se aplica al instante en la tarjeta del último pesaje y la pantalla dice qué altura usa —«1,75 m · est.» si no hay ninguna—. Ajustes gana una sección con campo de 16 px y botones de 48 px; el cambio viaja por evento, así que al cerrar Ajustes el IMC ya está recalculado. 14 pruebas de lógica y 4 de componente (**664** en Vitest); `altura-imc.spec.js` **6/6** en escritorio y móvil. La auditoría de diseño destapó que, al crecer la celda, la fila IMC/Mínimo/Máximo llevaba un `border-t`: pasa a hairline de 1 px. |
