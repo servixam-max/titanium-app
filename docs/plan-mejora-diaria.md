@@ -560,9 +560,22 @@ Estas tareas miran el artefacto, no el código fuente.
   de diseño. Los tres specs afectados: **40/40 en escritorio y 40/40 en
   móvil**; Vitest **646**.)*
 
+## Fase 12 — Tus datos, tus cifras
+
+> Fase 11 cerró el plan original. Esta fase corrige datos que la app da por
+> supuestos: el primero, la altura con la que calcula el IMC.
+
+- [ ] **F12.1** **La altura del IMC se puede ajustar**: Control de Peso calcula
+  el IMC con una altura fija de 1,75 m, así que una persona de 1,60 m ve una
+  cifra que no es la suya y la etiqueta «IMC Est.» no se puede quitar nunca.
+  Debe poder fijarse la altura real en Ajustes (en cm), guardarse por usuario
+  en el dispositivo, aplicarse al instante en el cálculo y decir en la pantalla
+  de Peso qué altura se está usando; sin altura guardada se mantiene 1,75 m,
+  pero marcada como estimada.
+
 ## Prioridad
 
-Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8 → Fase 9 → Fase 10 → Fase 11. Dentro de cada fase, de arriba abajo.
+Fase 0 → Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8 → Fase 9 → Fase 10 → Fase 11 → Fase 12. Dentro de cada fase, de arriba abajo.
 Si una tarea resulta inviable o demasiado grande, se divide en una tarea nueva
 justo debajo y se documenta el motivo.
 
